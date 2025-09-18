@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 const AboutCardContainer = () => {
   const aboutCardDetails = [
     {
-      h1: "4+",
+      h1: "5+",
       h2: "Years of Experience",
       p: "Passionate Full-Stack Developer crafting dynamic, user-friendly web apps.",
     },
@@ -16,7 +16,7 @@ const AboutCardContainer = () => {
       p: "From small web apps to complex platforms, delivering quality solutions.",
     },
     {
-      h1: "10+",
+      h1: "15+",
       h2: "Technologies Mastered",
       p: "Skilled in JS, TS, Next.js, React, Node.js, Tailwind CSS, and Python.",
     },

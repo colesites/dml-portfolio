@@ -27,7 +27,7 @@ const Footer = () => {
   return (
     <footer className="flex py-10 px-10 md:px-20 justify-between">
       <div>
-        <p>© 2024. All rights reserved.</p>
+        <p>© {new Date().getFullYear()}. All rights reserved.</p>
       </div>
 
       <div className="flex items-center gap-3">

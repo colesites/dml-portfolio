@@ -20,24 +20,56 @@ const MyStackContainer = () => {
       p: "Express.js",
     },
     {
-      img: "/next.png",
-      p: "Next.js",
+      img: "/mongo.png",
+      p: "MongoDB",
     },
     {
       img: "/react.png",
       p: "React.js",
     },
     {
+      img: "/next.png",
+      p: "Next.js",
+    },
+    {
       img: "/tailwind.png",
       p: "TailwindCSS",
     },
     {
-      img: "/postgres.png",
-      p: "Postgres + Prisma",
+      img: "/motion.png",
+      p: "Motion",
     },
     {
-      img: "/mongo.png",
-      p: "MongoDB",
+      img: "/gsap.png",
+      p: "GSAP",
+    },
+    {
+      img: "/sanity.png",
+      p: "Sanity",
+    },
+    {
+      img: "/payload.png",
+      p: "Payload CMS",
+    },
+    {
+      img: "/firebase.png",
+      p: "Firebase",
+    },
+    {
+      img: "/supabase.png",
+      p: "Supabase",
+    },
+    {
+      img: "/postgres.png",
+      p: "Postgres",
+    },
+    {
+      img: "/prisma.png",
+      p: "Prisma",
+    },
+    {
+      img: "/stripe.png",
+      p: "Stripe",
     },
     {
       img: "/react.png",
