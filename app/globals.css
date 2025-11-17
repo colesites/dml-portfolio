@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #120024;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  h1 {
+    @apply relative text-[2rem] md:text-[5rem] font-bold text-white text-center tracking-wide z-50;
+  }
+
+  h2 {
+    @apply relative text-xl md:text-2xl font-thin text-white/80 text-center tracking-tight z-50;
+  }
+
+  p {
+    @apply text-center text-pretty text-white;
+  }
+
+  button {
+    @apply inline-flex h-10 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#120024,45%,#120030,55%,#120024)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors hover:outline-none hover:ring-1 hover:ring-slate-400 hover:ring-offset-2
+  }
+
+  input {
+    @apply p-2 h-12 rounded-lg bg-transparent border border-slate-500 text-white;
+  }
+
+  textarea {
+    @apply p-2 h-40 rounded-lg bg-transparent border border-slate-500 text-white;
+  }
+  
+  :root {
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer components {
+  .header {
+    @apply fixed flex w-full justify-center bottom-0 mb-10 z-[999];
+  }
+
+  .nav-bar {
+    @apply relative h-max w-max flex space-x-4 p-[2.5px] max-w-[400px] justify-center items-center rounded-full bg-[#120024]/30 text-stone-400/70 text-base border border-stone-400/30 backdrop-blur-3xl;
+  }
+
+  .link-style {
+    @apply hover:rounded-full hover:bg-stone-400/20 hover:border hover:border-stone-300/20 px-3 py-2 cursor-pointer;
+  }
+
+  .page-container {
+    @apply flex flex-col items-center justify-center;
+  }
+
+  .card-containers {
+    @apply flex flex-col md:flex-row gap-10 my-20
+  }
+
+  .grid-container {
+    @apply !grid !grid-cols-1 md:!grid-cols-4 gap-10 my-10
+  }
+
+  .glowing-card-container {
+    @apply relative rounded-3xl w-60 border border-gray-200/50 p-3
+  }
+
+  .inner-glowing-card-container {
+    @apply relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl p-6 shadow-[0px_0px_27px_0px_#2D2D2D]
+  }
+}
