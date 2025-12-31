@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var proxy_exports = {};
 __export(proxy_exports, {
-  proxy: () => proxy
+  proxy: () => proxy,
 });
 module.exports = __toCommonJS(proxy_exports);
 var import_http_exception = require("../../http-exception");
@@ -30,7 +34,7 @@ const hopByHopHeaders = [
   "te",
   "trailer",
   "transfer-encoding",
-  "upgrade"
+  "upgrade",
 ];
 const ALLOWED_TOKEN_PATTERN = /^[!#$%&'*+\-.0-9A-Z^_`a-z|~]+$/;
 const buildRequestInitFromRequest = (request, strictConnectionProcessing) => {
@@ -42,10 +46,12 @@ const buildRequestInitFromRequest = (request, strictConnectionProcessing) => {
     const connectionValue = headers.get("connection");
     if (connectionValue) {
       const headerNames = connectionValue.split(",").map((h) => h.trim());
-      const invalidHeaders = headerNames.filter((h) => !ALLOWED_TOKEN_PATTERN.test(h));
+      const invalidHeaders = headerNames.filter(
+        (h) => !ALLOWED_TOKEN_PATTERN.test(h),
+      );
       if (invalidHeaders.length > 0) {
         throw new import_http_exception.HTTPException(400, {
-          message: `Invalid Connection header value: ${invalidHeaders.join(", ")}`
+          message: `Invalid Connection header value: ${invalidHeaders.join(", ")}`,
         });
       }
       headerNames.forEach((headerName) => {
@@ -61,11 +67,15 @@ const buildRequestInitFromRequest = (request, strictConnectionProcessing) => {
     body: request.body,
     duplex: request.body ? "half" : void 0,
     headers,
-    signal: request.signal
+    signal: request.signal,
   };
 };
 const preprocessRequestInit = (requestInit) => {
-  if (!requestInit.headers || Array.isArray(requestInit.headers) || requestInit.headers instanceof Headers) {
+  if (
+    !requestInit.headers ||
+    Array.isArray(requestInit.headers) ||
+    requestInit.headers instanceof Headers
+  ) {
     return requestInit;
   }
   const headers = new Headers();
@@ -85,10 +95,10 @@ const proxy = async (input, proxyInit) => {
     customFetch,
     strictConnectionProcessing = false,
     ...requestInit
-  } = proxyInit instanceof Request ? { raw: proxyInit } : proxyInit ?? {};
+  } = proxyInit instanceof Request ? { raw: proxyInit } : (proxyInit ?? {});
   const req = new Request(input, {
     ...buildRequestInitFromRequest(raw, strictConnectionProcessing),
-    ...preprocessRequestInit(requestInit)
+    ...preprocessRequestInit(requestInit),
   });
   req.headers.delete("accept-encoding");
   const res = await (customFetch || fetch)(req);
@@ -103,10 +113,11 @@ const proxy = async (input, proxyInit) => {
   return new Response(res.body, {
     status: res.status,
     statusText: res.statusText,
-    headers: resHeaders
+    headers: resHeaders,
   });
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  proxy
-});
+0 &&
+  (module.exports = {
+    proxy,
+  });

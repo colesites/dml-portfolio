@@ -1,52 +1,50 @@
-'use strict'
+const statuses = require("../lib/statuses");
+const supported = require("../lib/supported");
+const browsers = require("./browsers").browsers;
+const versions = require("./browserVersions").browserVersions;
 
-const statuses = require('../lib/statuses')
-const supported = require('../lib/supported')
-const browsers = require('./browsers').browsers
-const versions = require('./browserVersions').browserVersions
-
-const MATH2LOG = Math.log(2)
+const MATH2LOG = Math.log(2);
 
 function unpackSupport(cipher) {
   // bit flags
-  let stats = Object.keys(supported).reduce((list, support) => {
-    if (cipher & supported[support]) list.push(support)
-    return list
-  }, [])
+  const stats = Object.keys(supported).reduce((list, support) => {
+    if (cipher & supported[support]) list.push(support);
+    return list;
+  }, []);
 
   // notes
-  let notes = cipher >> 7
-  let notesArray = []
+  let notes = cipher >> 7;
+  const notesArray = [];
   while (notes) {
-    let note = Math.floor(Math.log(notes) / MATH2LOG) + 1
-    notesArray.unshift(`#${note}`)
-    notes -= Math.pow(2, note - 1)
+    const note = Math.floor(Math.log(notes) / MATH2LOG) + 1;
+    notesArray.unshift(`#${note}`);
+    notes -= 2 ** (note - 1);
   }
 
-  return stats.concat(notesArray).join(' ')
+  return stats.concat(notesArray).join(" ");
 }
 
 function unpackFeature(packed) {
-  let unpacked = {
+  const unpacked = {
     status: statuses[packed.B],
     title: packed.C,
-    shown: packed.D
-  }
+    shown: packed.D,
+  };
   unpacked.stats = Object.keys(packed.A).reduce((browserStats, key) => {
-    let browser = packed.A[key]
+    const browser = packed.A[key];
     browserStats[browsers[key]] = Object.keys(browser).reduce(
       (stats, support) => {
-        let packedVersions = browser[support].split(' ')
-        let unpacked2 = unpackSupport(support)
-        packedVersions.forEach(v => (stats[versions[v]] = unpacked2))
-        return stats
+        const packedVersions = browser[support].split(" ");
+        const unpacked2 = unpackSupport(support);
+        packedVersions.forEach((v) => (stats[versions[v]] = unpacked2));
+        return stats;
       },
-      {}
-    )
-    return browserStats
-  }, {})
-  return unpacked
+      {},
+    );
+    return browserStats;
+  }, {});
+  return unpacked;
 }
 
-module.exports = unpackFeature
-module.exports.default = unpackFeature
+module.exports = unpackFeature;
+module.exports.default = unpackFeature;

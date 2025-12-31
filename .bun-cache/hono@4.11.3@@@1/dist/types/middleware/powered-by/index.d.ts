@@ -2,13 +2,13 @@
  * @module
  * Powered By Middleware for Hono.
  */
-import type { MiddlewareHandler } from '../../types';
+import type { MiddlewareHandler } from "../../types";
 type PoweredByOptions = {
-    /**
-     * The value for X-Powered-By header.
-     * @default Hono
-     */
-    serverName?: string;
+  /**
+   * The value for X-Powered-By header.
+   * @default Hono
+   */
+  serverName?: string;
 };
 /**
  * Powered By Middleware for Hono.
@@ -25,5 +25,6 @@ type PoweredByOptions = {
  * app.use(poweredBy()) // With options: poweredBy({ serverName: "My Server" })
  * ```
  */
-export declare const poweredBy: (options?: PoweredByOptions) => MiddlewareHandler;
-export {};
+export declare const poweredBy: (
+  options?: PoweredByOptions,
+) => MiddlewareHandler;

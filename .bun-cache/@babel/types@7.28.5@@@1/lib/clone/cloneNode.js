@@ -1,15 +1,13 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = cloneNode;
 var _index = require("../definitions/index.js");
 var _index2 = require("../validators/generated/index.js");
-const {
-  hasOwn
-} = {
-  hasOwn: Function.call.bind(Object.prototype.hasOwnProperty)
+const { hasOwn } = {
+  hasOwn: Function.call.bind(Object.prototype.hasOwnProperty),
 };
 function cloneIfNode(obj, deep, withoutLoc, commentsCache) {
   if (obj && typeof obj.type === "string") {
@@ -19,20 +17,25 @@ function cloneIfNode(obj, deep, withoutLoc, commentsCache) {
 }
 function cloneIfNodeOrArray(obj, deep, withoutLoc, commentsCache) {
   if (Array.isArray(obj)) {
-    return obj.map(node => cloneIfNode(node, deep, withoutLoc, commentsCache));
+    return obj.map((node) =>
+      cloneIfNode(node, deep, withoutLoc, commentsCache),
+    );
   }
   return cloneIfNode(obj, deep, withoutLoc, commentsCache);
 }
 function cloneNode(node, deep = true, withoutLoc = false) {
   return cloneNodeInternal(node, deep, withoutLoc, new Map());
 }
-function cloneNodeInternal(node, deep = true, withoutLoc = false, commentsCache) {
+function cloneNodeInternal(
+  node,
+  deep = true,
+  withoutLoc = false,
+  commentsCache,
+) {
   if (!node) return node;
-  const {
-    type
-  } = node;
+  const { type } = node;
   const newNode = {
-    type: node.type
+    type: node.type,
   };
   if ((0, _index2.isIdentifier)(node)) {
     newNode.name = node.name;
@@ -40,10 +43,19 @@ function cloneNodeInternal(node, deep = true, withoutLoc = false, commentsCache)
       newNode.optional = node.optional;
     }
     if (hasOwn(node, "typeAnnotation")) {
-      newNode.typeAnnotation = deep ? cloneIfNodeOrArray(node.typeAnnotation, true, withoutLoc, commentsCache) : node.typeAnnotation;
+      newNode.typeAnnotation = deep
+        ? cloneIfNodeOrArray(
+            node.typeAnnotation,
+            true,
+            withoutLoc,
+            commentsCache,
+          )
+        : node.typeAnnotation;
     }
     if (hasOwn(node, "decorators")) {
-      newNode.decorators = deep ? cloneIfNodeOrArray(node.decorators, true, withoutLoc, commentsCache) : node.decorators;
+      newNode.decorators = deep
+        ? cloneIfNodeOrArray(node.decorators, true, withoutLoc, commentsCache)
+        : node.decorators;
     }
   } else if (!hasOwn(_index.NODE_FIELDS, type)) {
     throw new Error(`Unknown node type: "${type}"`);
@@ -51,7 +63,20 @@ function cloneNodeInternal(node, deep = true, withoutLoc = false, commentsCache)
     for (const field of Object.keys(_index.NODE_FIELDS[type])) {
       if (hasOwn(node, field)) {
         if (deep) {
-          newNode[field] = (0, _index2.isFile)(node) && field === "comments" ? maybeCloneComments(node.comments, deep, withoutLoc, commentsCache) : cloneIfNodeOrArray(node[field], true, withoutLoc, commentsCache);
+          newNode[field] =
+            (0, _index2.isFile)(node) && field === "comments"
+              ? maybeCloneComments(
+                  node.comments,
+                  deep,
+                  withoutLoc,
+                  commentsCache,
+                )
+              : cloneIfNodeOrArray(
+                  node[field],
+                  true,
+                  withoutLoc,
+                  commentsCache,
+                );
         } else {
           newNode[field] = node[field];
         }
@@ -66,13 +91,28 @@ function cloneNodeInternal(node, deep = true, withoutLoc = false, commentsCache)
     }
   }
   if (hasOwn(node, "leadingComments")) {
-    newNode.leadingComments = maybeCloneComments(node.leadingComments, deep, withoutLoc, commentsCache);
+    newNode.leadingComments = maybeCloneComments(
+      node.leadingComments,
+      deep,
+      withoutLoc,
+      commentsCache,
+    );
   }
   if (hasOwn(node, "innerComments")) {
-    newNode.innerComments = maybeCloneComments(node.innerComments, deep, withoutLoc, commentsCache);
+    newNode.innerComments = maybeCloneComments(
+      node.innerComments,
+      deep,
+      withoutLoc,
+      commentsCache,
+    );
   }
   if (hasOwn(node, "trailingComments")) {
-    newNode.trailingComments = maybeCloneComments(node.trailingComments, deep, withoutLoc, commentsCache);
+    newNode.trailingComments = maybeCloneComments(
+      node.trailingComments,
+      deep,
+      withoutLoc,
+      commentsCache,
+    );
   }
   if (hasOwn(node, "extra")) {
     newNode.extra = Object.assign({}, node.extra);
@@ -83,18 +123,14 @@ function maybeCloneComments(comments, deep, withoutLoc, commentsCache) {
   if (!comments || !deep) {
     return comments;
   }
-  return comments.map(comment => {
+  return comments.map((comment) => {
     const cache = commentsCache.get(comment);
     if (cache) return cache;
-    const {
-      type,
-      value,
-      loc
-    } = comment;
+    const { type, value, loc } = comment;
     const ret = {
       type,
       value,
-      loc
+      loc,
     };
     if (withoutLoc) {
       ret.loc = null;

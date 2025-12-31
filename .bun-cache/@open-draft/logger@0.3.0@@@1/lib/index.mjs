@@ -15,7 +15,7 @@ __export(colors_exports, {
   gray: () => gray,
   green: () => green,
   red: () => red,
-  yellow: () => yellow
+  yellow: () => yellow,
 });
 function yellow(text) {
   return `\x1B[33m${text}\x1B[0m`;
@@ -41,13 +41,26 @@ var Logger = class {
     this.prefix = `[${this.name}]`;
     const LOGGER_NAME = getVariable("DEBUG");
     const LOGGER_LEVEL = getVariable("LOG_LEVEL");
-    const isLoggingEnabled = LOGGER_NAME === "1" || LOGGER_NAME === "true" || typeof LOGGER_NAME !== "undefined" && this.name.startsWith(LOGGER_NAME);
+    const isLoggingEnabled =
+      LOGGER_NAME === "1" ||
+      LOGGER_NAME === "true" ||
+      (typeof LOGGER_NAME !== "undefined" && this.name.startsWith(LOGGER_NAME));
     if (isLoggingEnabled) {
-      this.debug = isDefinedAndNotEquals(LOGGER_LEVEL, "debug") ? noop : this.debug;
-      this.info = isDefinedAndNotEquals(LOGGER_LEVEL, "info") ? noop : this.info;
-      this.success = isDefinedAndNotEquals(LOGGER_LEVEL, "success") ? noop : this.success;
-      this.warning = isDefinedAndNotEquals(LOGGER_LEVEL, "warning") ? noop : this.warning;
-      this.error = isDefinedAndNotEquals(LOGGER_LEVEL, "error") ? noop : this.error;
+      this.debug = isDefinedAndNotEquals(LOGGER_LEVEL, "debug")
+        ? noop
+        : this.debug;
+      this.info = isDefinedAndNotEquals(LOGGER_LEVEL, "info")
+        ? noop
+        : this.info;
+      this.success = isDefinedAndNotEquals(LOGGER_LEVEL, "success")
+        ? noop
+        : this.success;
+      this.warning = isDefinedAndNotEquals(LOGGER_LEVEL, "warning")
+        ? noop
+        : this.warning;
+      this.error = isDefinedAndNotEquals(LOGGER_LEVEL, "error")
+        ? noop
+        : this.error;
     } else {
       this.info = noop;
       this.success = noop;
@@ -72,8 +85,8 @@ var Logger = class {
       positionals,
       prefix: this.prefix,
       colors: {
-        prefix: "gray"
-      }
+        prefix: "gray",
+      },
     });
   }
   /**
@@ -88,8 +101,8 @@ var Logger = class {
       positionals,
       prefix: this.prefix,
       colors: {
-        prefix: "blue"
-      }
+        prefix: "blue",
+      },
     });
     const performance2 = new PerformanceEntry();
     return (message2, ...positionals2) => {
@@ -100,8 +113,8 @@ var Logger = class {
         positionals: positionals2,
         prefix: this.prefix,
         colors: {
-          prefix: "blue"
-        }
+          prefix: "blue",
+        },
       });
     };
   }
@@ -118,8 +131,8 @@ var Logger = class {
       prefix: `\u2714 ${this.prefix}`,
       colors: {
         timestamp: "green",
-        prefix: "green"
-      }
+        prefix: "green",
+      },
     });
   }
   /**
@@ -135,8 +148,8 @@ var Logger = class {
       prefix: `\u26A0 ${this.prefix}`,
       colors: {
         timestamp: "yellow",
-        prefix: "yellow"
-      }
+        prefix: "yellow",
+      },
     });
   }
   /**
@@ -152,8 +165,8 @@ var Logger = class {
       prefix: `\u2716 ${this.prefix}`,
       colors: {
         timestamp: "red",
-        prefix: "red"
-      }
+        prefix: "red",
+      },
     });
   }
   /**
@@ -172,7 +185,7 @@ var Logger = class {
     return {
       timestamp: /* @__PURE__ */ new Date(),
       level,
-      message
+      message,
     };
   }
   logEntry(args) {
@@ -181,24 +194,27 @@ var Logger = class {
       message,
       prefix,
       colors: customColors,
-      positionals = []
+      positionals = [],
     } = args;
     const entry = this.createEntry(level, message);
     const timestampColor = customColors?.timestamp || "gray";
     const prefixColor = customColors?.prefix || "gray";
     const colorize = {
       timestamp: colors_exports[timestampColor],
-      prefix: colors_exports[prefixColor]
+      prefix: colors_exports[prefixColor],
     };
     const write = this.getWriter(level);
     write(
-      [colorize.timestamp(this.formatTimestamp(entry.timestamp))].concat(prefix != null ? colorize.prefix(prefix) : []).concat(serializeInput(message)).join(" "),
-      ...positionals.map(serializeInput)
+      [colorize.timestamp(this.formatTimestamp(entry.timestamp))]
+        .concat(prefix != null ? colorize.prefix(prefix) : [])
+        .concat(serializeInput(message))
+        .join(" "),
+      ...positionals.map(serializeInput),
     );
   }
   formatTimestamp(timestamp) {
     return `${timestamp.toLocaleTimeString(
-      "en-GB"
+      "en-GB",
     )}:${timestamp.getMilliseconds()}`;
   }
   getWriter(level) {
@@ -276,6 +292,4 @@ function serializeInput(message) {
   }
   return message.toString();
 }
-export {
-  Logger
-};
+export { Logger };

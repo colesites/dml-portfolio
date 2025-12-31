@@ -1,135 +1,140 @@
-import { encode, decode } from '@jridgewell/sourcemap-codec';
-
-import resolver from './resolve';
-import maybeSort from './sort';
-import buildBySources from './by-source';
+import { decode, encode } from "@jridgewell/sourcemap-codec";
+import type { MemoState } from "./binary-search";
 import {
-  memoizedState,
-  memoizedBinarySearch,
-  upperBound,
-  lowerBound,
   found as bsFound,
-} from './binary-search';
+  lowerBound,
+  memoizedBinarySearch,
+  memoizedState,
+  upperBound,
+} from "./binary-search";
+import type { Source } from "./by-source";
+import buildBySources from "./by-source";
+import resolver from "./resolve";
+import maybeSort from "./sort";
+
+import type { ReverseSegment, SourceMapSegment } from "./sourcemap-segment";
 import {
   COLUMN,
-  SOURCES_INDEX,
-  SOURCE_LINE,
-  SOURCE_COLUMN,
   NAMES_INDEX,
-  REV_GENERATED_LINE,
   REV_GENERATED_COLUMN,
-} from './sourcemap-segment';
-import { parse } from './types';
-
-import type { SourceMapSegment, ReverseSegment } from './sourcemap-segment';
+  REV_GENERATED_LINE,
+  SOURCE_COLUMN,
+  SOURCE_LINE,
+  SOURCES_INDEX,
+} from "./sourcemap-segment";
 import type {
-  SourceMapV3,
+  Bias,
   DecodedSourceMap,
+  EachMapping,
   EncodedSourceMap,
-  InvalidOriginalMapping,
-  OriginalMapping,
-  InvalidGeneratedMapping,
   GeneratedMapping,
-  SourceMapInput,
+  InvalidGeneratedMapping,
+  InvalidOriginalMapping,
   Needle,
-  SourceNeedle,
-  SourceMap,
-  EachMapping,
-  Bias,
-  XInput,
-  SectionedSourceMap,
+  OriginalMapping,
   Ro,
-} from './types';
-import type { Source } from './by-source';
-import type { MemoState } from './binary-search';
-
-export type { SourceMapSegment } from './sourcemap-segment';
-export type {
-  SourceMap,
-  DecodedSourceMap,
-  EncodedSourceMap,
-  Section,
   SectionedSourceMap,
+  SourceMap,
+  SourceMapInput,
   SourceMapV3,
+  SourceNeedle,
+  XInput,
+} from "./types";
+import { parse } from "./types";
+
+export type { SourceMapSegment } from "./sourcemap-segment";
+export type {
   Bias,
+  DecodedSourceMap,
+  DecodedSourceMapXInput,
   EachMapping,
+  EncodedSourceMap,
+  EncodedSourceMapXInput,
   GeneratedMapping,
   InvalidGeneratedMapping,
   InvalidOriginalMapping,
   Needle,
   OriginalMapping,
   OriginalMapping as Mapping,
+  Section,
+  SectionedSourceMap,
   SectionedSourceMapInput,
-  SourceMapInput,
-  SourceNeedle,
-  XInput,
-  EncodedSourceMapXInput,
-  DecodedSourceMapXInput,
   SectionedSourceMapXInput,
   SectionXInput,
-} from './types';
+  SourceMap,
+  SourceMapInput,
+  SourceMapV3,
+  SourceNeedle,
+  XInput,
+} from "./types";
 
 interface PublicMap {
-  _encoded: TraceMap['_encoded'];
-  _decoded: TraceMap['_decoded'];
-  _decodedMemo: TraceMap['_decodedMemo'];
-  _bySources: TraceMap['_bySources'];
-  _bySourceMemos: TraceMap['_bySourceMemos'];
+  _encoded: TraceMap["_encoded"];
+  _decoded: TraceMap["_decoded"];
+  _decodedMemo: TraceMap["_decodedMemo"];
+  _bySources: TraceMap["_bySources"];
+  _bySourceMemos: TraceMap["_bySourceMemos"];
 }
 
-const LINE_GTR_ZERO = '`line` must be greater than 0 (lines start at line 1)';
-const COL_GTR_EQ_ZERO = '`column` must be greater than or equal to 0 (columns start at column 0)';
+const LINE_GTR_ZERO = "`line` must be greater than 0 (lines start at line 1)";
+const COL_GTR_EQ_ZERO =
+  "`column` must be greater than or equal to 0 (columns start at column 0)";
 
 export const LEAST_UPPER_BOUND = -1;
 export const GREATEST_LOWER_BOUND = 1;
 
-export { FlattenMap, FlattenMap as AnyMap } from './flatten-map';
+export { FlattenMap, FlattenMap as AnyMap } from "./flatten-map";
 
 export class TraceMap implements SourceMap {
-  declare version: SourceMapV3['version'];
-  declare file: SourceMapV3['file'];
-  declare names: SourceMapV3['names'];
-  declare sourceRoot: SourceMapV3['sourceRoot'];
-  declare sources: SourceMapV3['sources'];
-  declare sourcesContent: SourceMapV3['sourcesContent'];
-  declare ignoreList: SourceMapV3['ignoreList'];
+  declare version: SourceMapV3["version"];
+  declare file: SourceMapV3["file"];
+  declare names: SourceMapV3["names"];
+  declare sourceRoot: SourceMapV3["sourceRoot"];
+  declare sources: SourceMapV3["sources"];
+  declare sourcesContent: SourceMapV3["sourcesContent"];
+  declare ignoreList: SourceMapV3["ignoreList"];
 
   declare resolvedSources: string[];
-  declare private _encoded: string | undefined;
+  private declare _encoded: string | undefined;
 
-  declare private _decoded: SourceMapSegment[][] | undefined;
-  declare private _decodedMemo: MemoState;
+  private declare _decoded: SourceMapSegment[][] | undefined;
+  private declare _decodedMemo: MemoState;
 
-  declare private _bySources: Source[] | undefined;
-  declare private _bySourceMemos: MemoState[] | undefined;
+  private declare _bySources: Source[] | undefined;
+  private declare _bySourceMemos: MemoState[] | undefined;
 
   constructor(map: Ro<SourceMapInput>, mapUrl?: string | null) {
-    const isString = typeof map === 'string';
-    if (!isString && (map as unknown as { _decodedMemo: any })._decodedMemo) return map as TraceMap;
+    const isString = typeof map === "string";
+    if (!isString && (map as unknown as { _decodedMemo: any })._decodedMemo)
+      return map as TraceMap;
 
     const parsed = parse(map as Exclude<SourceMapInput, TraceMap>);
 
-    const { version, file, names, sourceRoot, sources, sourcesContent } = parsed;
+    const { version, file, names, sourceRoot, sources, sourcesContent } =
+      parsed;
     this.version = version;
     this.file = file;
     this.names = names || [];
     this.sourceRoot = sourceRoot;
     this.sources = sources;
     this.sourcesContent = sourcesContent;
-    this.ignoreList = parsed.ignoreList || (parsed as XInput).x_google_ignoreList || undefined;
+    this.ignoreList =
+      parsed.ignoreList || (parsed as XInput).x_google_ignoreList || undefined;
 
     const resolve = resolver(mapUrl, sourceRoot);
     this.resolvedSources = sources.map(resolve);
 
     const { mappings } = parsed;
-    if (typeof mappings === 'string') {
+    if (typeof mappings === "string") {
       this._encoded = mappings;
       this._decoded = undefined;
     } else if (Array.isArray(mappings)) {
       this._encoded = undefined;
       this._decoded = maybeSort(mappings, isString);
     } else if ((parsed as unknown as SectionedSourceMap).sections) {
-      throw new Error(`TraceMap passed sectioned source map, please use FlattenMap export instead`);
+      throw new Error(
+        `TraceMap passed sectioned source map, please use FlattenMap export instead`,
+      );
     } else {
       throw new Error(`invalid source map: ${JSON.stringify(parsed)}`);
     }
@@ -151,14 +156,16 @@ function cast(map: unknown): PublicMap {
 /**
  * Returns the encoded (VLQ string) form of the SourceMap's mappings field.
  */
-export function encodedMappings(map: TraceMap): EncodedSourceMap['mappings'] {
+export function encodedMappings(map: TraceMap): EncodedSourceMap["mappings"] {
   return (cast(map)._encoded ??= encode(cast(map)._decoded!));
 }
 
 /**
  * Returns the decoded (array of lines of segments) form of the SourceMap's mappings field.
  */
-export function decodedMappings(map: TraceMap): Readonly<DecodedSourceMap['mappings']> {
+export function decodedMappings(
+  map: TraceMap,
+): Readonly<DecodedSourceMap["mappings"]> {
   return (cast(map)._decoded ||= decode(cast(map)._encoded!));
 }
 
@@ -240,22 +247,42 @@ export function generatedPositionFor(
   needle: SourceNeedle,
 ): GeneratedMapping | InvalidGeneratedMapping {
   const { source, line, column, bias } = needle;
-  return generatedPosition(map, source, line, column, bias || GREATEST_LOWER_BOUND, false);
+  return generatedPosition(
+    map,
+    source,
+    line,
+    column,
+    bias || GREATEST_LOWER_BOUND,
+    false,
+  );
 }
 
 /**
  * Finds all generated line/column positions of the provided source/line/column source position.
  */
-export function allGeneratedPositionsFor(map: TraceMap, needle: SourceNeedle): GeneratedMapping[] {
+export function allGeneratedPositionsFor(
+  map: TraceMap,
+  needle: SourceNeedle,
+): GeneratedMapping[] {
   const { source, line, column, bias } = needle;
   // SourceMapConsumer uses LEAST_UPPER_BOUND for some reason, so we follow suit.
-  return generatedPosition(map, source, line, column, bias || LEAST_UPPER_BOUND, true);
+  return generatedPosition(
+    map,
+    source,
+    line,
+    column,
+    bias || LEAST_UPPER_BOUND,
+    true,
+  );
 }
 
 /**
  * Iterates each mapping in generated position order.
  */
-export function eachMapping(map: TraceMap, cb: (mapping: EachMapping) => void): void {
+export function eachMapping(
+  map: TraceMap,
+  cb: (mapping: EachMapping) => void,
+): void {
   const decoded = decodedMappings(map);
   const { names, resolvedSources } = map;
 
@@ -320,7 +347,10 @@ export function isIgnored(map: TraceMap, source: string): boolean {
  * A helper that skips sorting of the input map's mappings array, which can be expensive for larger
  * maps.
  */
-export function presortedDecodedMap(map: DecodedSourceMap, mapUrl?: string): TraceMap {
+export function presortedDecodedMap(
+  map: DecodedSourceMap,
+  mapUrl?: string,
+): TraceMap {
   const tracer = new TraceMap(clone(map, []), mapUrl);
   cast(tracer)._decoded = map.mappings;
   return tracer;
@@ -330,9 +360,12 @@ export function presortedDecodedMap(map: DecodedSourceMap, mapUrl?: string): Tra
  * Returns a sourcemap object (with decoded mappings) suitable for passing to a library that expects
  * a sourcemap, or to JSON.stringify.
  */
-export function decodedMap(
-  map: TraceMap,
-): Omit<DecodedSourceMap, 'mappings'> & { mappings: readonly SourceMapSegment[][] } {
+export function decodedMap(map: TraceMap): Omit<
+  DecodedSourceMap,
+  "mappings"
+> & {
+  mappings: readonly SourceMapSegment[][];
+} {
   return clone(map, decodedMappings(map));
 }
 
@@ -360,7 +393,12 @@ function clone<T extends string | readonly SourceMapSegment[][]>(
   } as any;
 }
 
-function OMapping(source: null, line: null, column: null, name: null): InvalidOriginalMapping;
+function OMapping(
+  source: null,
+  line: null,
+  column: null,
+  name: null,
+): InvalidOriginalMapping;
 function OMapping(
   source: string,
   line: number,
@@ -408,7 +446,11 @@ function traceSegmentInternal(
 ): number {
   let index = memoizedBinarySearch(segments, column, memo, line);
   if (bsFound) {
-    index = (bias === LEAST_UPPER_BOUND ? upperBound : lowerBound)(segments, column, index);
+    index = (bias === LEAST_UPPER_BOUND ? upperBound : lowerBound)(
+      segments,
+      column,
+      index,
+    );
   } else if (bias === LEAST_UPPER_BOUND) index++;
 
   if (index === -1 || index === segments.length) return -1;
@@ -422,7 +464,13 @@ function sliceGeneratedPositions(
   column: number,
   bias: Bias,
 ): GeneratedMapping[] {
-  let min = traceSegmentInternal(segments, memo, line, column, GREATEST_LOWER_BOUND);
+  let min = traceSegmentInternal(
+    segments,
+    memo,
+    line,
+    column,
+    GREATEST_LOWER_BOUND,
+  );
 
   // We ignored the bias when tracing the segment so that we're guarnateed to find the first (in
   // insertion order) segment that matched. Even if we did respect the bias when tracing, we would
@@ -446,7 +494,9 @@ function sliceGeneratedPositions(
   const result = [];
   for (; min <= max; min++) {
     const segment = segments[min];
-    result.push(GMapping(segment[REV_GENERATED_LINE] + 1, segment[REV_GENERATED_COLUMN]));
+    result.push(
+      GMapping(segment[REV_GENERATED_LINE] + 1, segment[REV_GENERATED_COLUMN]),
+    );
   }
   return result;
 }
@@ -484,8 +534,12 @@ function generatedPosition(
   if (sourceIndex === -1) sourceIndex = resolvedSources.indexOf(source);
   if (sourceIndex === -1) return all ? [] : GMapping(null, null);
 
-  const bySourceMemos = (cast(map)._bySourceMemos ||= sources.map(memoizedState));
-  const generated = (cast(map)._bySources ||= buildBySources(decodedMappings(map), bySourceMemos));
+  const bySourceMemos = (cast(map)._bySourceMemos ||=
+    sources.map(memoizedState));
+  const generated = (cast(map)._bySources ||= buildBySources(
+    decodedMappings(map),
+    bySourceMemos,
+  ));
 
   const segments = generated[sourceIndex][line];
   if (segments == null) return all ? [] : GMapping(null, null);
@@ -498,5 +552,8 @@ function generatedPosition(
   if (index === -1) return GMapping(null, null);
 
   const segment = segments[index];
-  return GMapping(segment[REV_GENERATED_LINE] + 1, segment[REV_GENERATED_COLUMN]);
+  return GMapping(
+    segment[REV_GENERATED_LINE] + 1,
+    segment[REV_GENERATED_COLUMN],
+  );
 }

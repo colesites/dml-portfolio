@@ -1,33 +1,31 @@
-'use strict'
+const Container = require("./container");
 
-let Container = require('./container')
-
-let LazyResult, Processor
+let LazyResult, Processor;
 
 class Document extends Container {
   constructor(defaults) {
     // type needs to be passed to super, otherwise child roots won't be normalized correctly
-    super({ type: 'document', ...defaults })
+    super({ type: "document", ...defaults });
 
     if (!this.nodes) {
-      this.nodes = []
+      this.nodes = [];
     }
   }
 
   toResult(opts = {}) {
-    let lazy = new LazyResult(new Processor(), this, opts)
+    const lazy = new LazyResult(new Processor(), this, opts);
 
-    return lazy.stringify()
+    return lazy.stringify();
   }
 }
 
-Document.registerLazyResult = dependant => {
-  LazyResult = dependant
-}
+Document.registerLazyResult = (dependant) => {
+  LazyResult = dependant;
+};
 
-Document.registerProcessor = dependant => {
-  Processor = dependant
-}
+Document.registerProcessor = (dependant) => {
+  Processor = dependant;
+};
 
-module.exports = Document
-Document.default = Document
+module.exports = Document;
+Document.default = Document;

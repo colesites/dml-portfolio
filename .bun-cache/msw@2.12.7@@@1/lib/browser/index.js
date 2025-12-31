@@ -8,20 +8,24 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/browser/index.ts
 var index_exports = {};
 __export(index_exports, {
   SetupWorkerApi: () => SetupWorkerApi,
-  setupWorker: () => setupWorker
+  setupWorker: () => setupWorker,
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -63,7 +67,7 @@ function format(message, ...positionals) {
         return value;
       }
       return match;
-    }
+    },
   );
   if (positionalIndex < positionals.length) {
     formattedMessage += ` ${positionals.slice(positionalIndex).join(" ")}`;
@@ -96,12 +100,11 @@ var invariant = (predicate, message, ...positionals) => {
 };
 invariant.as = (ErrorConstructor, predicate, message, ...positionals) => {
   if (!predicate) {
-    const formatMessage = positionals.length === 0 ? message : format(message, ...positionals);
+    const formatMessage =
+      positionals.length === 0 ? message : format(message, ...positionals);
     let error2;
     try {
-      error2 = Reflect.construct(ErrorConstructor, [
-        formatMessage
-      ]);
+      error2 = Reflect.construct(ErrorConstructor, [formatMessage]);
     } catch (err) {
       error2 = ErrorConstructor(formatMessage);
     }
@@ -138,7 +141,9 @@ function createDeferredExecutor() {
         return value;
       };
       return resolve(
-        data instanceof Promise ? data : Promise.resolve(data).then(onFulfilled)
+        data instanceof Promise
+          ? data
+          : Promise.resolve(data).then(onFulfilled),
       );
     };
     executor.reject = (reason) => {
@@ -148,7 +153,7 @@ function createDeferredExecutor() {
       queueMicrotask(() => {
         executor.state = "rejected";
       });
-      return reject(executor.rejectionReason = reason);
+      return reject((executor.rejectionReason = reason));
     };
   };
   return executor;
@@ -185,7 +190,7 @@ var DeferredPromise = class extends Promise {
   #decorate(promise) {
     return Object.defineProperties(promise, {
       resolve: { configurable: true, value: this.resolve },
-      reject: { configurable: true, value: this.reject }
+      reject: { configurable: true, value: this.reject },
     });
   }
 };
@@ -195,14 +200,14 @@ var import_mergeRight = require("../core/utils/internal/mergeRight");
 var DEFAULT_START_OPTIONS = {
   serviceWorker: {
     url: "/mockServiceWorker.js",
-    options: null
+    options: null,
   },
   quiet: false,
   waitUntilReady: true,
   onUnhandledRequest: "warn",
   findWorker(scriptURL, mockServiceWorkerUrl) {
     return scriptURL === mockServiceWorkerUrl;
-  }
+  },
 };
 
 // src/browser/setupWorker/start/createStartHandler.ts
@@ -211,9 +216,12 @@ var import_devUtils6 = require("../core/utils/internal/devUtils");
 // node_modules/.pnpm/until-async@3.0.2/node_modules/until-async/lib/index.js
 async function until(callback) {
   try {
-    return [null, await callback().catch((error2) => {
-      throw error2;
-    })];
+    return [
+      null,
+      await callback().catch((error2) => {
+        throw error2;
+      }),
+    ];
   } catch (error2) {
     return [error2, null];
   }
@@ -232,7 +240,7 @@ function getWorkerByRegistration(registration, absoluteWorkerUrl, findWorker) {
   const allStates = [
     registration.active,
     registration.installing,
-    registration.waiting
+    registration.waiting,
   ];
   const relevantStates = allStates.filter((state) => {
     return state != null;
@@ -246,11 +254,13 @@ function getWorkerByRegistration(registration, absoluteWorkerUrl, findWorker) {
 // src/browser/setupWorker/start/utils/getWorkerInstance.ts
 var getWorkerInstance = async (url, options = {}, findWorker) => {
   const absoluteWorkerUrl = getAbsoluteWorkerUrl(url);
-  const mockRegistrations = await navigator.serviceWorker.getRegistrations().then(
-    (registrations) => registrations.filter(
-      (registration) => getWorkerByRegistration(registration, absoluteWorkerUrl, findWorker)
-    )
-  );
+  const mockRegistrations = await navigator.serviceWorker
+    .getRegistrations()
+    .then((registrations) =>
+      registrations.filter((registration) =>
+        getWorkerByRegistration(registration, absoluteWorkerUrl, findWorker),
+      ),
+    );
   if (!navigator.serviceWorker.controller && mockRegistrations.length > 0) {
     location.reload();
   }
@@ -261,9 +271,9 @@ var getWorkerInstance = async (url, options = {}, findWorker) => {
       getWorkerByRegistration(
         existingRegistration,
         absoluteWorkerUrl,
-        findWorker
+        findWorker,
       ),
-      existingRegistration
+      existingRegistration,
     ];
   }
   const [registrationError, registrationResult] = await until(async () => {
@@ -272,7 +282,7 @@ var getWorkerInstance = async (url, options = {}, findWorker) => {
       // Compare existing worker registration by its worker URL,
       // to prevent irrelevant workers to resolve here (such as Codesandbox worker).
       getWorkerByRegistration(registration, absoluteWorkerUrl, findWorker),
-      registration
+      registration,
     ];
   });
   if (registrationError) {
@@ -284,14 +294,14 @@ var getWorkerInstance = async (url, options = {}, findWorker) => {
 
 Did you forget to run "npx msw init <PUBLIC_DIR>"?
 
-Learn more about creating the Service Worker script: https://mswjs.io/docs/cli/init`)
+Learn more about creating the Service Worker script: https://mswjs.io/docs/cli/init`),
       );
     }
     throw new Error(
       import_devUtils.devUtils.formatMessage(
         "Failed to register the Service Worker:\n\n%s",
-        registrationError.message
-      )
+        registrationError.message,
+      ),
     );
   }
   return registrationResult;
@@ -306,12 +316,12 @@ function printStartMessage(args = {}) {
   const message = args.message || "Mocking enabled.";
   console.groupCollapsed(
     `%c${import_devUtils2.devUtils.formatMessage(message)}`,
-    "color:orangered;font-weight:bold;"
+    "color:orangered;font-weight:bold;",
   );
   console.log(
     "%cDocumentation: %chttps://mswjs.io/docs",
     "font-weight:bold",
-    "font-weight:normal"
+    "font-weight:normal",
   );
   console.log("Found an issue? https://github.com/mswjs/msw/issues");
   if (args.workerUrl) {
@@ -337,7 +347,7 @@ function enableMocking(context, options) {
       quiet: options.quiet,
       workerScope: context.registration?.scope,
       workerUrl: worker.scriptURL,
-      client: event.data.client
+      client: event.data.client,
     });
     mockingEnabledPromise.resolve(true);
   });
@@ -356,18 +366,23 @@ function pruneGetRequestBody(request) {
 function deserializeRequest(serializedRequest) {
   return new Request(serializedRequest.url, {
     ...serializedRequest,
-    body: pruneGetRequestBody(serializedRequest)
+    body: pruneGetRequestBody(serializedRequest),
   });
 }
 
 // src/browser/utils/supports.ts
 function supportsServiceWorker() {
-  return typeof navigator !== "undefined" && "serviceWorker" in navigator && typeof location !== "undefined" && location.protocol !== "file:";
+  return (
+    typeof navigator !== "undefined" &&
+    "serviceWorker" in navigator &&
+    typeof location !== "undefined" &&
+    location.protocol !== "file:"
+  );
 }
 function supportsReadableStreamTransfer() {
   try {
     const stream = new ReadableStream({
-      start: (controller) => controller.close()
+      start: (controller) => controller.close(),
     });
     const message = new MessageChannel();
     message.port1.postMessage(stream, [stream]);
@@ -386,7 +401,11 @@ var import_isHandlerKind = require("../core/utils/internal/isHandlerKind");
 var SUPPORTS_READABLE_STREAM_TRANSFER = supportsReadableStreamTransfer();
 var createRequestListener = (context, options) => {
   return async (event) => {
-    if (!context.isMockingEnabled && context.workerStoppedAt && event.data.interceptedAt > context.workerStoppedAt) {
+    if (
+      !context.isMockingEnabled &&
+      context.workerStoppedAt &&
+      event.data.interceptedAt > context.workerStoppedAt
+    ) {
       event.postMessage("PASSTHROUGH");
       return;
     }
@@ -399,12 +418,14 @@ var createRequestListener = (context, options) => {
       await (0, import_handleRequest.handleRequest)(
         request,
         requestId,
-        context.getRequestHandlers().filter((0, import_isHandlerKind.isHandlerKind)("RequestHandler")),
+        context
+          .getRequestHandlers()
+          .filter((0, import_isHandlerKind.isHandlerKind)("RequestHandler")),
         options,
         context.emitter,
         {
           resolutionContext: {
-            quiet: options.quiet
+            quiet: options.quiet,
           },
           onPassthroughResponse() {
             event.postMessage("PASSTHROUGH");
@@ -412,22 +433,27 @@ var createRequestListener = (context, options) => {
           async onMockedResponse(response, { handler, parsedResult }) {
             const responseClone = response.clone();
             const responseCloneForLogs = response.clone();
-            const responseInit = (0, import_toResponseInit.toResponseInit)(response);
+            const responseInit = (0, import_toResponseInit.toResponseInit)(
+              response,
+            );
             if (SUPPORTS_READABLE_STREAM_TRANSFER) {
               const responseStreamOrNull = response.body;
               event.postMessage(
                 "MOCK_RESPONSE",
                 {
                   ...responseInit,
-                  body: responseStreamOrNull
+                  body: responseStreamOrNull,
                 },
-                responseStreamOrNull ? [responseStreamOrNull] : void 0
+                responseStreamOrNull ? [responseStreamOrNull] : void 0,
               );
             } else {
-              const responseBufferOrNull = response.body === null ? null : await responseClone.arrayBuffer();
+              const responseBufferOrNull =
+                response.body === null
+                  ? null
+                  : await responseClone.arrayBuffer();
               event.postMessage("MOCK_RESPONSE", {
                 ...responseInit,
-                body: responseBufferOrNull
+                body: responseBufferOrNull,
               });
             }
             if (!options.quiet) {
@@ -435,12 +461,12 @@ var createRequestListener = (context, options) => {
                 handler.log({
                   request: requestCloneForLogs,
                   response: responseCloneForLogs,
-                  parsedResult
+                  parsedResult,
                 });
               });
             }
-          }
-        }
+          },
+        },
       );
     } catch (error2) {
       if (error2 instanceof Error) {
@@ -452,19 +478,19 @@ var createRequestListener = (context, options) => {
 This exception has been gracefully handled as a 500 response, however, it's strongly recommended to resolve this error, as it indicates a mistake in your code. If you wish to mock an error response, please see this guide: https://mswjs.io/docs/http/mocking-responses/error-responses`,
           request.method,
           request.url,
-          error2.stack ?? error2
+          error2.stack ?? error2,
         );
         event.postMessage("MOCK_RESPONSE", {
           status: 500,
           statusText: "Request Handler Error",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             name: error2.name,
             message: error2.message,
-            stack: error2.stack
-          })
+            stack: error2.stack,
+          }),
         });
       }
     }
@@ -486,7 +512,7 @@ It's recommended you update your worker script by running this command:
 
   \u2022 npx msw init <PUBLIC_DIR>
 
-You can also automate this process and make the worker script update automatically upon the library installations. Read more: https://mswjs.io/docs/cli/init.`
+You can also automate this process and make the worker script update automatically upon the library installations. Read more: https://mswjs.io/docs/cli/init.`,
       );
     }
     integrityCheckPromise.resolve();
@@ -506,7 +532,7 @@ function decodeBuffer(buffer, encoding) {
 function toArrayBuffer(array) {
   return array.buffer.slice(
     array.byteOffset,
-    array.byteOffset + array.byteLength
+    array.byteOffset + array.byteLength,
   );
 }
 
@@ -522,7 +548,7 @@ __export2(colors_exports, {
   gray: () => gray,
   green: () => green,
   red: () => red,
-  yellow: () => yellow
+  yellow: () => yellow,
 });
 function yellow(text) {
   return `\x1B[33m${text}\x1B[0m`;
@@ -546,13 +572,26 @@ var Logger = class {
     this.prefix = `[${this.name}]`;
     const LOGGER_NAME = getVariable("DEBUG");
     const LOGGER_LEVEL = getVariable("LOG_LEVEL");
-    const isLoggingEnabled = LOGGER_NAME === "1" || LOGGER_NAME === "true" || typeof LOGGER_NAME !== "undefined" && this.name.startsWith(LOGGER_NAME);
+    const isLoggingEnabled =
+      LOGGER_NAME === "1" ||
+      LOGGER_NAME === "true" ||
+      (typeof LOGGER_NAME !== "undefined" && this.name.startsWith(LOGGER_NAME));
     if (isLoggingEnabled) {
-      this.debug = isDefinedAndNotEquals(LOGGER_LEVEL, "debug") ? noop : this.debug;
-      this.info = isDefinedAndNotEquals(LOGGER_LEVEL, "info") ? noop : this.info;
-      this.success = isDefinedAndNotEquals(LOGGER_LEVEL, "success") ? noop : this.success;
-      this.warning = isDefinedAndNotEquals(LOGGER_LEVEL, "warning") ? noop : this.warning;
-      this.error = isDefinedAndNotEquals(LOGGER_LEVEL, "error") ? noop : this.error;
+      this.debug = isDefinedAndNotEquals(LOGGER_LEVEL, "debug")
+        ? noop
+        : this.debug;
+      this.info = isDefinedAndNotEquals(LOGGER_LEVEL, "info")
+        ? noop
+        : this.info;
+      this.success = isDefinedAndNotEquals(LOGGER_LEVEL, "success")
+        ? noop
+        : this.success;
+      this.warning = isDefinedAndNotEquals(LOGGER_LEVEL, "warning")
+        ? noop
+        : this.warning;
+      this.error = isDefinedAndNotEquals(LOGGER_LEVEL, "error")
+        ? noop
+        : this.error;
     } else {
       this.info = noop;
       this.success = noop;
@@ -577,8 +616,8 @@ var Logger = class {
       positionals,
       prefix: this.prefix,
       colors: {
-        prefix: "gray"
-      }
+        prefix: "gray",
+      },
     });
   }
   /**
@@ -593,8 +632,8 @@ var Logger = class {
       positionals,
       prefix: this.prefix,
       colors: {
-        prefix: "blue"
-      }
+        prefix: "blue",
+      },
     });
     const performance2 = new PerformanceEntry();
     return (message2, ...positionals2) => {
@@ -605,8 +644,8 @@ var Logger = class {
         positionals: positionals2,
         prefix: this.prefix,
         colors: {
-          prefix: "blue"
-        }
+          prefix: "blue",
+        },
       });
     };
   }
@@ -623,8 +662,8 @@ var Logger = class {
       prefix: `\u2714 ${this.prefix}`,
       colors: {
         timestamp: "green",
-        prefix: "green"
-      }
+        prefix: "green",
+      },
     });
   }
   /**
@@ -640,8 +679,8 @@ var Logger = class {
       prefix: `\u26A0 ${this.prefix}`,
       colors: {
         timestamp: "yellow",
-        prefix: "yellow"
-      }
+        prefix: "yellow",
+      },
     });
   }
   /**
@@ -657,8 +696,8 @@ var Logger = class {
       prefix: `\u2716 ${this.prefix}`,
       colors: {
         timestamp: "red",
-        prefix: "red"
-      }
+        prefix: "red",
+      },
     });
   }
   /**
@@ -677,7 +716,7 @@ var Logger = class {
     return {
       timestamp: /* @__PURE__ */ new Date(),
       level,
-      message
+      message,
     };
   }
   logEntry(args) {
@@ -686,24 +725,27 @@ var Logger = class {
       message,
       prefix,
       colors: customColors,
-      positionals = []
+      positionals = [],
     } = args;
     const entry = this.createEntry(level, message);
     const timestampColor = customColors?.timestamp || "gray";
     const prefixColor = customColors?.prefix || "gray";
     const colorize = {
       timestamp: colors_exports[timestampColor],
-      prefix: colors_exports[prefixColor]
+      prefix: colors_exports[prefixColor],
     };
     const write = this.getWriter(level);
     write(
-      [colorize.timestamp(this.formatTimestamp(entry.timestamp))].concat(prefix != null ? colorize.prefix(prefix) : []).concat(serializeInput(message)).join(" "),
-      ...positionals.map(serializeInput)
+      [colorize.timestamp(this.formatTimestamp(entry.timestamp))]
+        .concat(prefix != null ? colorize.prefix(prefix) : [])
+        .concat(serializeInput(message))
+        .join(" "),
+      ...positionals.map(serializeInput),
     );
   }
   formatTimestamp(timestamp) {
     return `${timestamp.toLocaleTimeString(
-      "en-GB"
+      "en-GB",
     )}:${timestamp.getMilliseconds()}`;
   }
   getWriter(level) {
@@ -786,7 +828,7 @@ function serializeInput(message) {
 var MemoryLeakError = class extends Error {
   constructor(emitter, type, count) {
     super(
-      `Possible EventEmitter memory leak detected. ${count} ${type.toString()} listeners added. Use emitter.setMaxListeners() to increase limit`
+      `Possible EventEmitter memory leak detected. ${count} ${type.toString()} listeners added. Use emitter.setMaxListeners() to increase limit`,
     );
     this.emitter = emitter;
     this.type = type;
@@ -804,10 +846,7 @@ var _Emitter = class {
     this.hasWarnedAboutPotentialMemoryLeak = false;
   }
   _emitInternalEvent(internalEventName, eventName, listener) {
-    this.emit(
-      internalEventName,
-      ...[eventName, listener]
-    );
+    this.emit(internalEventName, ...[eventName, listener]);
   }
   _getListeners(eventName) {
     return Array.prototype.concat.apply([], this.events.get(eventName)) || [];
@@ -866,12 +905,16 @@ var _Emitter = class {
     this._emitInternalEvent("newListener", eventName, listener);
     const nextListeners = this._getListeners(eventName).concat(listener);
     this.events.set(eventName, nextListeners);
-    if (this.maxListeners > 0 && this.listenerCount(eventName) > this.maxListeners && !this.hasWarnedAboutPotentialMemoryLeak) {
+    if (
+      this.maxListeners > 0 &&
+      this.listenerCount(eventName) > this.maxListeners &&
+      !this.hasWarnedAboutPotentialMemoryLeak
+    ) {
       this.hasWarnedAboutPotentialMemoryLeak = true;
       const memoryLeakWarning = new MemoryLeakError(
         this,
         eventName,
-        this.listenerCount(eventName)
+        this.listenerCount(eventName),
       );
       console.warn(memoryLeakWarning);
     }
@@ -883,7 +926,7 @@ var _Emitter = class {
   once(eventName, listener) {
     return this.addListener(
       eventName,
-      this._wrapOnceListener(eventName, listener)
+      this._wrapOnceListener(eventName, listener),
     );
   }
   prependListener(eventName, listener) {
@@ -899,7 +942,7 @@ var _Emitter = class {
   prependOnceListener(eventName, listener) {
     return this.prependListener(
       eventName,
-      this._wrapOnceListener(eventName, listener)
+      this._wrapOnceListener(eventName, listener),
     );
   }
   removeListener(eventName, listener) {
@@ -949,8 +992,7 @@ Emitter.defaultMaxListeners = 10;
 
 // node_modules/.pnpm/@mswjs+interceptors@0.40.0/node_modules/@mswjs/interceptors/lib/browser/chunk-Z5TSB3T6.mjs
 var __accessCheck = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
+  if (!member.has(obj)) throw TypeError("Cannot " + msg);
 };
 var __privateGet = (obj, member, getter) => {
   __accessCheck(obj, member, "read from private field");
@@ -1033,8 +1075,7 @@ var Interceptor = class {
    * This method is not run if there's a running interceptor instance
    * to prevent instantiating an interceptor multiple times.
    */
-  setup() {
-  }
+  setup() {}
   /**
    * Listen to the interceptor's public events.
    */
@@ -1078,7 +1119,10 @@ var Interceptor = class {
     this.clearInstance();
     logger.info("global symbol deleted:", getGlobalSymbol(this.symbol));
     if (this.subscriptions.length > 0) {
-      logger.info("disposing of %d subscriptions...", this.subscriptions.length);
+      logger.info(
+        "disposing of %d subscriptions...",
+        this.subscriptions.length,
+      );
       for (const dispose of this.subscriptions) {
         dispose();
       }
@@ -1092,7 +1136,12 @@ var Interceptor = class {
   getInstance() {
     var _a;
     const instance = getGlobalSymbol(this.symbol);
-    this.logger.info("retrieved global instance:", (_a = instance == null ? void 0 : instance.constructor) == null ? void 0 : _a.name);
+    this.logger.info(
+      "retrieved global instance:",
+      (_a = instance == null ? void 0 : instance.constructor) == null
+        ? void 0
+        : _a.name,
+    );
     return instance;
   }
   setInstance() {
@@ -1136,7 +1185,7 @@ var _RequestController = class {
       this.readyState === _RequestController.PENDING,
       'Failed to passthrough the "%s %s" request: the request has already been handled',
       this.request.method,
-      this.request.url
+      this.request.url,
     );
     this.readyState = _RequestController.PASSTHROUGH;
     await this.source.passthrough();
@@ -1159,7 +1208,7 @@ var _RequestController = class {
       this.request.url,
       response.status,
       response.statusText || "OK",
-      this.readyState
+      this.readyState,
     );
     this.readyState = _RequestController.RESPONSE;
     __privateGet(this, _handled, handled_get).resolve();
@@ -1181,7 +1230,7 @@ var _RequestController = class {
       this.request.method,
       this.request.url,
       reason == null ? void 0 : reason.toString(),
-      this.readyState
+      this.readyState,
     );
     this.readyState = _RequestController.ERROR;
     this.source.errorWith(reason);
@@ -1190,7 +1239,7 @@ var _RequestController = class {
 };
 var RequestController = _RequestController;
 _handled = /* @__PURE__ */ new WeakSet();
-handled_get = function() {
+handled_get = function () {
   return this.handled;
 };
 RequestController.PENDING = 0;
@@ -1241,7 +1290,7 @@ var _FetchResponse = class extends Response {
         value: url,
         enumerable: true,
         configurable: true,
-        writable: false
+        writable: false,
       });
     }
   }
@@ -1258,12 +1307,14 @@ var _FetchResponse = class extends Response {
   constructor(body, init = {}) {
     var _a;
     const status = (_a = init.status) != null ? _a : 200;
-    const safeStatus = _FetchResponse.isConfigurableStatusCode(status) ? status : 200;
+    const safeStatus = _FetchResponse.isConfigurableStatusCode(status)
+      ? status
+      : 200;
     const finalBody = _FetchResponse.isResponseWithBody(status) ? body : null;
     super(finalBody, {
       status: safeStatus,
       statusText: init.statusText,
-      headers: init.headers
+      headers: init.headers,
     });
     if (status !== safeStatus) {
       const state = getValueBySymbol("state", this);
@@ -1274,7 +1325,7 @@ var _FetchResponse = class extends Response {
           value: status,
           enumerable: true,
           configurable: true,
-          writable: false
+          writable: false,
         });
       }
     }
@@ -1340,31 +1391,36 @@ function createResponseListener(context) {
     if (responseMessage.response.type?.includes("opaque")) {
       return;
     }
-    const response = responseMessage.response.status === 0 ? Response.error() : new FetchResponse(
-      /**
-       * Responses may be streams here, but when we create a response object
-       * with null-body status codes, like 204, 205, 304 Response will
-       * throw when passed a non-null body, so ensure it's null here
-       * for those codes
-       */
-      FetchResponse.isResponseWithBody(responseMessage.response.status) ? responseMessage.response.body : null,
-      {
-        ...responseMessage.response,
-        /**
-         * Set response URL if it's not set already.
-         * @see https://github.com/mswjs/msw/issues/2030
-         * @see https://developer.mozilla.org/en-US/docs/Web/API/Response/url
-         */
-        url: request.url
-      }
-    );
+    const response =
+      responseMessage.response.status === 0
+        ? Response.error()
+        : new FetchResponse(
+            /**
+             * Responses may be streams here, but when we create a response object
+             * with null-body status codes, like 204, 205, 304 Response will
+             * throw when passed a non-null body, so ensure it's null here
+             * for those codes
+             */
+            FetchResponse.isResponseWithBody(responseMessage.response.status)
+              ? responseMessage.response.body
+              : null,
+            {
+              ...responseMessage.response,
+              /**
+               * Set response URL if it's not set already.
+               * @see https://github.com/mswjs/msw/issues/2030
+               * @see https://developer.mozilla.org/en-US/docs/Web/API/Response/url
+               */
+              url: request.url,
+            },
+          );
     context.emitter.emit(
       responseMessage.isMockedResponse ? "response:mocked" : "response:bypass",
       {
         requestId: responseMessage.request.id,
         request,
-        response
-      }
+        response,
+      },
     );
   };
 }
@@ -1377,7 +1433,7 @@ function validateWorkerScope(registration, options) {
       `Cannot intercept requests on this page because it's outside of the worker's scope ("${registration.scope}"). If you wish to mock API requests on this page, you must resolve this scope issue.
 
 - (Recommended) Register the worker at the root level ("/") of your application.
-- Set the "Service-Worker-Allowed" response header to allow out-of-scope workers.`
+- Set the "Service-Worker-Allowed" response header to allow out-of-scope workers.`,
     );
   }
 }
@@ -1389,32 +1445,34 @@ var createStartHandler = (context) => {
       context.workerChannel.removeAllListeners();
       context.workerChannel.on(
         "REQUEST",
-        createRequestListener(context, options)
+        createRequestListener(context, options),
       );
       context.workerChannel.on("RESPONSE", createResponseListener(context));
       const instance = await getWorkerInstance(
         options.serviceWorker.url,
         options.serviceWorker.options,
-        options.findWorker
+        options.findWorker,
       );
       const [worker, registration] = instance;
       if (!worker) {
-        const missingWorkerMessage = customOptions?.findWorker ? import_devUtils6.devUtils.formatMessage(
-          `Failed to locate the Service Worker registration using a custom "findWorker" predicate.
+        const missingWorkerMessage = customOptions?.findWorker
+          ? import_devUtils6.devUtils.formatMessage(
+              `Failed to locate the Service Worker registration using a custom "findWorker" predicate.
 
 Please ensure that the custom predicate properly locates the Service Worker registration at "%s".
 More details: https://mswjs.io/docs/api/setup-worker/start#findworker
 `,
-          options.serviceWorker.url
-        ) : import_devUtils6.devUtils.formatMessage(
-          `Failed to locate the Service Worker registration.
+              options.serviceWorker.url,
+            )
+          : import_devUtils6.devUtils.formatMessage(
+              `Failed to locate the Service Worker registration.
 
 This most likely means that the worker script URL "%s" cannot resolve against the actual public hostname (%s). This may happen if your application runs behind a proxy, or has a dynamic hostname.
 
 Please consider using a custom "serviceWorker.url" option to point to the actual worker script location, or a custom "findWorker" option to resolve the Service Worker registration manually. More details: https://mswjs.io/docs/api/setup-worker/start`,
-          options.serviceWorker.url,
-          location.host
-        );
+              options.serviceWorker.url,
+              location.host,
+            );
         throw new Error(missingWorkerMessage);
       }
       context.workerPromise.resolve(worker);
@@ -1428,13 +1486,13 @@ Please consider using a custom "serviceWorker.url" option to point to the actual
       });
       await checkWorkerIntegrity(context).catch((error2) => {
         import_devUtils6.devUtils.error(
-          "Error while checking the worker script integrity. Please report this on GitHub (https://github.com/mswjs/msw/issues) and include the original error below."
+          "Error while checking the worker script integrity. Please report this on GitHub (https://github.com/mswjs/msw/issues) and include the original error below.",
         );
         console.error(error2);
       });
       context.keepAliveInterval = window.setInterval(
         () => context.workerChannel.postMessage("KEEPALIVE_REQUEST"),
-        5e3
+        5e3,
       );
       validateWorkerScope(registration, context.startOptions);
       return registration;
@@ -1453,12 +1511,12 @@ Please consider using a custom "serviceWorker.url" option to point to the actual
         }
         await enableMocking(context, options).catch((error2) => {
           import_devUtils6.devUtils.error(
-            "Failed to enable mocking. Please report this on GitHub (https://github.com/mswjs/msw/issues) and include the original error below."
+            "Failed to enable mocking. Please report this on GitHub (https://github.com/mswjs/msw/issues) and include the original error below.",
           );
           throw error2;
         });
         return registration;
-      }
+      },
     );
     return workerRegistration;
   };
@@ -1522,7 +1580,7 @@ var Emitter2 = class {
    * @returns {AbortController} An `AbortController` that can be used to remove the listener.
    */
   once(type, listener, options) {
-    return this.on(type, listener, { ...options || {}, once: true });
+    return this.on(type, listener, { ...(options || {}), once: true });
   }
   /**
    * Prepends a listener for the given event type.
@@ -1536,7 +1594,7 @@ var Emitter2 = class {
    * Prepends a one-time listener for the given event type.
    */
   earlyOnce(type, listener, options) {
-    return this.earlyOn(type, listener, { ...options || {}, once: true });
+    return this.earlyOn(type, listener, { ...(options || {}), once: true });
   }
   /**
    * Emits the given typed event.
@@ -1549,7 +1607,10 @@ var Emitter2 = class {
     }
     const proxiedEvent = this.#proxyEvent(event);
     for (const listener of this.#listeners[event.type]) {
-      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+      if (
+        proxiedEvent.event[kPropagationStopped] != null &&
+        proxiedEvent.event[kPropagationStopped] !== this
+      ) {
         return false;
       }
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
@@ -1574,7 +1635,10 @@ var Emitter2 = class {
     const pendingListeners = [];
     const proxiedEvent = this.#proxyEvent(event);
     for (const listener of this.#listeners[event.type]) {
-      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+      if (
+        proxiedEvent.event[kPropagationStopped] != null &&
+        proxiedEvent.event[kPropagationStopped] !== this
+      ) {
         return [];
       }
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
@@ -1582,13 +1646,13 @@ var Emitter2 = class {
       }
       pendingListeners.push(
         // Awaiting individual listeners guarantees their call order.
-        await Promise.resolve(this.#callListener(proxiedEvent.event, listener))
+        await Promise.resolve(this.#callListener(proxiedEvent.event, listener)),
       );
     }
     proxiedEvent.revoke();
     return Promise.allSettled(pendingListeners).then((results) => {
-      return results.map(
-        (result) => result.status === "fulfilled" ? result.value : result.reason
+      return results.map((result) =>
+        result.status === "fulfilled" ? result.value : result.reason,
       );
     });
   }
@@ -1603,7 +1667,10 @@ var Emitter2 = class {
     }
     const proxiedEvent = this.#proxyEvent(event);
     for (const listener of this.#listeners[event.type]) {
-      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+      if (
+        proxiedEvent.event[kPropagationStopped] != null &&
+        proxiedEvent.event[kPropagationStopped] !== this
+      ) {
         return;
       }
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
@@ -1667,7 +1734,7 @@ var Emitter2 = class {
       Object.defineProperty(listener, kListenerOptions, {
         value: options,
         enumerable: false,
-        writable: false
+        writable: false,
       });
       if (options.signal) {
         options.signal.addEventListener(
@@ -1675,7 +1742,7 @@ var Emitter2 = class {
           () => {
             this.removeListener(type, listener);
           },
-          { once: true }
+          { once: true },
         );
       }
     }
@@ -1687,13 +1754,13 @@ var Emitter2 = class {
       apply: (target, thisArg, argArray) => {
         event[kPropagationStopped] = this;
         return Reflect.apply(target, thisArg, argArray);
-      }
+      },
     });
     return {
       event,
       revoke() {
         event.stopPropagation = stopPropagation;
-      }
+      },
     };
   }
   #callListener(event, listener) {
@@ -1716,7 +1783,7 @@ var WorkerEvent = class extends TypedEvent {
     super(
       // @ts-expect-error Troublesome `TypedEvent` extension.
       type,
-      { data }
+      { data },
     );
     this.#workerEvent = workerEvent;
   }
@@ -1729,7 +1796,7 @@ var WorkerEvent = class extends TypedEvent {
   postMessage(type, ...rest) {
     this.#workerEvent.ports[0].postMessage(
       { type, data: rest[0] },
-      { transfer: rest[1] }
+      { transfer: rest[1] },
     );
   }
 };
@@ -1745,7 +1812,11 @@ var WorkerChannel = class extends Emitter2 {
       if (event.source != null && event.source !== worker) {
         return;
       }
-      if (event.data && (0, import_isObject.isObject)(event.data) && "type" in event.data) {
+      if (
+        event.data &&
+        (0, import_isObject.isObject)(event.data) &&
+        "type" in event.data
+      ) {
         this.emit(new WorkerEvent(event));
       }
     });
@@ -1757,7 +1828,7 @@ var WorkerChannel = class extends Emitter2 {
   postMessage(type) {
     invariant(
       SUPPORTS_SERVICE_WORKER,
-      "Failed to post message on a WorkerChannel: the Service Worker API is unavailable in this context. This is likely an issue with MSW. Please report it on GitHub: https://github.com/mswjs/msw/issues"
+      "Failed to post message on a WorkerChannel: the Service Worker API is unavailable in this context. This is likely an issue with MSW. Please report it on GitHub: https://github.com/mswjs/msw/issues",
     );
     this.options.worker.then((worker) => {
       worker.postMessage(type);
@@ -1780,7 +1851,10 @@ function hasConfigurableGlobal(propertyName) {
   if (typeof descriptor === "undefined") {
     return false;
   }
-  if (typeof descriptor.get === "function" && typeof descriptor.get() === "undefined") {
+  if (
+    typeof descriptor.get === "function" &&
+    typeof descriptor.get() === "undefined"
+  ) {
     return false;
   }
   if (typeof descriptor.get === "undefined" && descriptor.value == null) {
@@ -1788,7 +1862,7 @@ function hasConfigurableGlobal(propertyName) {
   }
   if (typeof descriptor.set === "undefined" && !descriptor.configurable) {
     console.error(
-      `[MSW] Failed to apply interceptor: the global \`${propertyName}\` property is non-configurable. This is likely an issue with your environment. If you are using a framework, please open an issue about this in their repository.`
+      `[MSW] Failed to apply interceptor: the global \`${propertyName}\` property is non-configurable. This is likely an issue with your environment. If you are using a framework, please open an issue about this in their repository.`,
     );
     return false;
   }
@@ -1809,7 +1883,9 @@ var until2 = async (promise) => {
 
 // node_modules/.pnpm/@mswjs+interceptors@0.40.0/node_modules/@mswjs/interceptors/lib/browser/chunk-VOUOVDAW.mjs
 function isObject2(value, loose = false) {
-  return loose ? Object.prototype.toString.call(value).startsWith("[object ") : Object.prototype.toString.call(value) === "[object Object]";
+  return loose
+    ? Object.prototype.toString.call(value).startsWith("[object ")
+    : Object.prototype.toString.call(value) === "[object Object]";
 }
 function isPropertyAccessible(obj, key) {
   try {
@@ -1822,26 +1898,38 @@ function isPropertyAccessible(obj, key) {
 function createServerErrorResponse(body) {
   return new Response(
     JSON.stringify(
-      body instanceof Error ? {
-        name: body.name,
-        message: body.message,
-        stack: body.stack
-      } : body
+      body instanceof Error
+        ? {
+            name: body.name,
+            message: body.message,
+            stack: body.stack,
+          }
+        : body,
     ),
     {
       status: 500,
       statusText: "Unhandled Exception",
       headers: {
-        "Content-Type": "application/json"
-      }
-    }
+        "Content-Type": "application/json",
+      },
+    },
   );
 }
 function isResponseError(response) {
-  return response != null && response instanceof Response && isPropertyAccessible(response, "type") && response.type === "error";
+  return (
+    response != null &&
+    response instanceof Response &&
+    isPropertyAccessible(response, "type") &&
+    response.type === "error"
+  );
 }
 function isResponseLike(value) {
-  return isObject2(value, true) && isPropertyAccessible(value, "status") && isPropertyAccessible(value, "statusText") && isPropertyAccessible(value, "bodyUsed");
+  return (
+    isObject2(value, true) &&
+    isPropertyAccessible(value, "status") &&
+    isPropertyAccessible(value, "statusText") &&
+    isPropertyAccessible(value, "bodyUsed")
+  );
 }
 function isNodeLikeError(error2) {
   if (error2 == null) {
@@ -1896,20 +1984,20 @@ async function handleRequest2(options) {
       () => {
         requestAbortPromise.reject(options.request.signal.reason);
       },
-      { once: true }
+      { once: true },
     );
   }
   const result = await until2(async () => {
     const requestListenersPromise = emitAsync(options.emitter, "request", {
       requestId: options.requestId,
       request: options.request,
-      controller: options.controller
+      controller: options.controller,
     });
     await Promise.race([
       // Short-circuit the request handling promise if the request gets aborted.
       requestAbortPromise,
       requestListenersPromise,
-      options.controller.handled
+      options.controller.handled,
     ]);
   });
   if (requestAbortPromise.state === "rejected") {
@@ -1929,28 +2017,29 @@ async function handleRequest2(options) {
            * This controller is created within another controller and we only need
            * to know if `unhandledException` listeners handled the request.
            */
-          passthrough() {
-          },
+          passthrough() {},
           async respondWith(response) {
             await handleResponse(response);
           },
           async errorWith(reason) {
             await options.controller.errorWith(reason);
-          }
-        }
+          },
+        },
       );
       await emitAsync(options.emitter, "unhandledException", {
         error: result.error,
         request: options.request,
         requestId: options.requestId,
-        controller: unhandledExceptionController
+        controller: unhandledExceptionController,
       });
-      if (unhandledExceptionController.readyState !== RequestController.PENDING) {
+      if (
+        unhandledExceptionController.readyState !== RequestController.PENDING
+      ) {
         return;
       }
     }
     await options.controller.respondWith(
-      createServerErrorResponse(result.error)
+      createServerErrorResponse(result.error),
     );
     return;
   }
@@ -1963,7 +2052,7 @@ async function handleRequest2(options) {
 // node_modules/.pnpm/@mswjs+interceptors@0.40.0/node_modules/@mswjs/interceptors/lib/browser/chunk-WOWPV4GR.mjs
 function createNetworkError(cause) {
   return Object.assign(new TypeError("Failed to fetch"), {
-    cause
+    cause,
   });
 }
 var REQUEST_BODY_HEADERS = [
@@ -1971,7 +2060,7 @@ var REQUEST_BODY_HEADERS = [
   "content-language",
   "content-location",
   "content-type",
-  "content-length"
+  "content-length",
 ];
 var kRedirectCount = Symbol("kRedirectCount");
 async function followFetchRedirect(request, response) {
@@ -1985,24 +2074,33 @@ async function followFetchRedirect(request, response) {
   } catch (error2) {
     return Promise.reject(createNetworkError(error2));
   }
-  if (!(locationUrl.protocol === "http:" || locationUrl.protocol === "https:")) {
+  if (
+    !(locationUrl.protocol === "http:" || locationUrl.protocol === "https:")
+  ) {
     return Promise.reject(
-      createNetworkError("URL scheme must be a HTTP(S) scheme")
+      createNetworkError("URL scheme must be a HTTP(S) scheme"),
     );
   }
   if (Reflect.get(request, kRedirectCount) > 20) {
     return Promise.reject(createNetworkError("redirect count exceeded"));
   }
   Object.defineProperty(request, kRedirectCount, {
-    value: (Reflect.get(request, kRedirectCount) || 0) + 1
+    value: (Reflect.get(request, kRedirectCount) || 0) + 1,
   });
-  if (request.mode === "cors" && (locationUrl.username || locationUrl.password) && !sameOrigin(requestUrl, locationUrl)) {
+  if (
+    request.mode === "cors" &&
+    (locationUrl.username || locationUrl.password) &&
+    !sameOrigin(requestUrl, locationUrl)
+  ) {
     return Promise.reject(
-      createNetworkError('cross origin not allowed for request mode "cors"')
+      createNetworkError('cross origin not allowed for request mode "cors"'),
     );
   }
   const requestInit = {};
-  if ([301, 302].includes(response.status) && request.method === "POST" || response.status === 303 && !["HEAD", "GET"].includes(request.method)) {
+  if (
+    ([301, 302].includes(response.status) && request.method === "POST") ||
+    (response.status === 303 && !["HEAD", "GET"].includes(request.method))
+  ) {
     requestInit.method = "GET";
     requestInit.body = null;
     REQUEST_BODY_HEADERS.forEach((headerName) => {
@@ -2019,7 +2117,7 @@ async function followFetchRedirect(request, response) {
   const finalResponse = await fetch(new Request(locationUrl, requestInit));
   Object.defineProperty(finalResponse, "redirected", {
     value: true,
-    configurable: true
+    configurable: true,
   });
   return finalResponse;
 }
@@ -2027,7 +2125,11 @@ function sameOrigin(left, right) {
   if (left.origin === right.origin && left.origin === "null") {
     return true;
   }
-  if (left.protocol === right.protocol && left.hostname === right.hostname && left.port === right.port) {
+  if (
+    left.protocol === right.protocol &&
+    left.hostname === right.hostname &&
+    left.port === right.port
+  ) {
     return true;
   }
   return false;
@@ -2035,12 +2137,12 @@ function sameOrigin(left, right) {
 var BrotliDecompressionStream = class extends TransformStream {
   constructor() {
     console.warn(
-      "[Interceptors]: Brotli decompression of response streams is not supported in the browser"
+      "[Interceptors]: Brotli decompression of response streams is not supported in the browser",
     );
     super({
       transform(chunk, controller) {
         controller.enqueue(chunk);
-      }
+      },
     });
   }
 };
@@ -2048,17 +2150,20 @@ var PipelineStream = class extends TransformStream {
   constructor(transformStreams, ...strategies) {
     super({}, ...strategies);
     const readable = [super.readable, ...transformStreams].reduce(
-      (readable2, transform) => readable2.pipeThrough(transform)
+      (readable2, transform) => readable2.pipeThrough(transform),
     );
     Object.defineProperty(this, "readable", {
       get() {
         return readable;
-      }
+      },
     });
   }
 };
 function parseContentEncoding(contentEncoding) {
-  return contentEncoding.toLowerCase().split(",").map((coding) => coding.trim());
+  return contentEncoding
+    .toLowerCase()
+    .split(",")
+    .map((coding) => coding.trim());
 }
 function createDecompressionStream(contentEncoding) {
   if (contentEncoding === "") {
@@ -2068,21 +2173,18 @@ function createDecompressionStream(contentEncoding) {
   if (codings.length === 0) {
     return null;
   }
-  const transformers = codings.reduceRight(
-    (transformers2, coding) => {
-      if (coding === "gzip" || coding === "x-gzip") {
-        return transformers2.concat(new DecompressionStream("gzip"));
-      } else if (coding === "deflate") {
-        return transformers2.concat(new DecompressionStream("deflate"));
-      } else if (coding === "br") {
-        return transformers2.concat(new BrotliDecompressionStream());
-      } else {
-        transformers2.length = 0;
-      }
-      return transformers2;
-    },
-    []
-  );
+  const transformers = codings.reduceRight((transformers2, coding) => {
+    if (coding === "gzip" || coding === "x-gzip") {
+      return transformers2.concat(new DecompressionStream("gzip"));
+    } else if (coding === "deflate") {
+      return transformers2.concat(new DecompressionStream("deflate"));
+    } else if (coding === "br") {
+      return transformers2.concat(new BrotliDecompressionStream());
+    } else {
+      transformers2.length = 0;
+    }
+    return transformers2;
+  }, []);
   return new PipelineStream(transformers);
 }
 function decompressResponse(response) {
@@ -2090,7 +2192,7 @@ function decompressResponse(response) {
     return null;
   }
   const decompressionStream = createDecompressionStream(
-    response.headers.get("content-encoding") || ""
+    response.headers.get("content-encoding") || "",
   );
   if (!decompressionStream) {
     return null;
@@ -2109,11 +2211,16 @@ var _FetchInterceptor = class extends Interceptor {
     const pureFetch = globalThis.fetch;
     invariant(
       !pureFetch[IS_PATCHED_MODULE],
-      'Failed to patch the "fetch" module: already patched.'
+      'Failed to patch the "fetch" module: already patched.',
     );
     globalThis.fetch = async (input, init) => {
       const requestId = createRequestId();
-      const resolvedInput = typeof input === "string" && typeof location !== "undefined" && !canParseUrl(input) ? new URL(input, location.href) : input;
+      const resolvedInput =
+        typeof input === "string" &&
+        typeof location !== "undefined" &&
+        !canParseUrl(input)
+          ? new URL(input, location.href)
+          : input;
       const request = new Request(resolvedInput, init);
       if (input instanceof Request) {
         setRawRequest(request, input);
@@ -2124,7 +2231,7 @@ var _FetchInterceptor = class extends Interceptor {
           this.logger.info("request has not been handled, passthrough...");
           const requestCloneForResponseEvent = request.clone();
           const { error: responseError, data: originalResponse } = await until2(
-            () => pureFetch(request)
+            () => pureFetch(request),
           );
           if (responseError) {
             return responsePromise.reject(responseError);
@@ -2137,7 +2244,7 @@ var _FetchInterceptor = class extends Interceptor {
               response: responseClone,
               isMockedResponse: false,
               request: requestCloneForResponseEvent,
-              requestId
+              requestId,
             });
           }
           responsePromise.resolve(originalResponse);
@@ -2149,10 +2256,13 @@ var _FetchInterceptor = class extends Interceptor {
             return;
           }
           this.logger.info("received mocked response!", {
-            rawResponse
+            rawResponse,
           });
           const decompressedStream = decompressResponse(rawResponse);
-          const response = decompressedStream === null ? rawResponse : new FetchResponse(decompressedStream, rawResponse);
+          const response =
+            decompressedStream === null
+              ? rawResponse
+              : new FetchResponse(decompressedStream, rawResponse);
           FetchResponse.setUrl(request.url, response);
           if (FetchResponse.isRedirectResponse(response.status)) {
             if (request.redirect === "error") {
@@ -2166,7 +2276,7 @@ var _FetchInterceptor = class extends Interceptor {
                 },
                 (reason) => {
                   responsePromise.reject(reason);
-                }
+                },
               );
               return;
             }
@@ -2180,7 +2290,7 @@ var _FetchInterceptor = class extends Interceptor {
               response: response.clone(),
               isMockedResponse: true,
               request,
-              requestId
+              requestId,
             });
           }
           responsePromise.resolve(response);
@@ -2188,35 +2298,35 @@ var _FetchInterceptor = class extends Interceptor {
         errorWith: (reason) => {
           this.logger.info("request has been aborted!", { reason });
           responsePromise.reject(reason);
-        }
+        },
       });
       this.logger.info("[%s] %s", request.method, request.url);
       this.logger.info("awaiting for the mocked response...");
       this.logger.info(
         'emitting the "request" event for %s listener(s)...',
-        this.emitter.listenerCount("request")
+        this.emitter.listenerCount("request"),
       );
       await handleRequest2({
         request,
         requestId,
         emitter: this.emitter,
-        controller
+        controller,
       });
       return responsePromise;
     };
     Object.defineProperty(globalThis.fetch, IS_PATCHED_MODULE, {
       enumerable: true,
       configurable: true,
-      value: true
+      value: true,
     });
     this.subscriptions.push(() => {
       Object.defineProperty(globalThis.fetch, IS_PATCHED_MODULE, {
-        value: void 0
+        value: void 0,
       });
       globalThis.fetch = pureFetch;
       this.logger.info(
         'restored native "globalThis.fetch"!',
-        globalThis.fetch.name
+        globalThis.fetch.name,
       );
     });
   }
@@ -2253,7 +2363,8 @@ var EventPolyfill = class {
     this.returnValue = true;
     this.type = type;
     this.target = (options == null ? void 0 : options.target) || null;
-    this.currentTarget = (options == null ? void 0 : options.currentTarget) || null;
+    this.currentTarget =
+      (options == null ? void 0 : options.currentTarget) || null;
     this.timeStamp = Date.now();
   }
   composedPath() {
@@ -2267,15 +2378,14 @@ var EventPolyfill = class {
   preventDefault() {
     this.defaultPrevented = true;
   }
-  stopPropagation() {
-  }
-  stopImmediatePropagation() {
-  }
+  stopPropagation() {}
+  stopImmediatePropagation() {}
 };
 var ProgressEventPolyfill = class extends EventPolyfill {
   constructor(type, init) {
     super(type);
-    this.lengthComputable = (init == null ? void 0 : init.lengthComputable) || false;
+    this.lengthComputable =
+      (init == null ? void 0 : init.lengthComputable) || false;
     this.composed = (init == null ? void 0 : init.composed) || false;
     this.loaded = (init == null ? void 0 : init.loaded) || 0;
     this.total = (init == null ? void 0 : init.total) || 0;
@@ -2290,24 +2400,28 @@ function createEvent(target, type, init) {
     "loadend",
     "load",
     "timeout",
-    "abort"
+    "abort",
   ];
-  const ProgressEventClass = SUPPORTS_PROGRESS_EVENT ? ProgressEvent : ProgressEventPolyfill;
-  const event = progressEvents.includes(type) ? new ProgressEventClass(type, {
-    lengthComputable: true,
-    loaded: (init == null ? void 0 : init.loaded) || 0,
-    total: (init == null ? void 0 : init.total) || 0
-  }) : new EventPolyfill(type, {
-    target,
-    currentTarget: target
-  });
+  const ProgressEventClass = SUPPORTS_PROGRESS_EVENT
+    ? ProgressEvent
+    : ProgressEventPolyfill;
+  const event = progressEvents.includes(type)
+    ? new ProgressEventClass(type, {
+        lengthComputable: true,
+        loaded: (init == null ? void 0 : init.loaded) || 0,
+        total: (init == null ? void 0 : init.total) || 0,
+      })
+    : new EventPolyfill(type, {
+        target,
+        currentTarget: target,
+      });
   return event;
 }
 function findPropertySource(target, propertyName) {
   if (!(propertyName in target)) {
     return null;
   }
-  const hasProperty = Object.prototype.hasOwnProperty.call(target, propertyName);
+  const hasProperty = Object.hasOwn(target, propertyName);
   if (hasProperty) {
     return target;
   }
@@ -2322,19 +2436,22 @@ function optionsToProxyHandler(options) {
   const { constructorCall, methodCall, getProperty, setProperty } = options;
   const handler = {};
   if (typeof constructorCall !== "undefined") {
-    handler.construct = function(target, args, newTarget) {
+    handler.construct = (target, args, newTarget) => {
       const next = Reflect.construct.bind(null, target, args, newTarget);
       return constructorCall.call(newTarget, args, next);
     };
   }
-  handler.set = function(target, propertyName, nextValue) {
+  handler.set = (target, propertyName, nextValue) => {
     const next = () => {
       const propertySource = findPropertySource(target, propertyName) || target;
       const ownDescriptors = Reflect.getOwnPropertyDescriptor(
         propertySource,
-        propertyName
+        propertyName,
       );
-      if (typeof (ownDescriptors == null ? void 0 : ownDescriptors.set) !== "undefined") {
+      if (
+        typeof (ownDescriptors == null ? void 0 : ownDescriptors.set) !==
+        "undefined"
+      ) {
         ownDescriptors.set.apply(target, [nextValue]);
         return true;
       }
@@ -2342,7 +2459,7 @@ function optionsToProxyHandler(options) {
         writable: true,
         enumerable: true,
         configurable: true,
-        value: nextValue
+        value: nextValue,
       });
     };
     if (typeof setProperty !== "undefined") {
@@ -2350,9 +2467,12 @@ function optionsToProxyHandler(options) {
     }
     return next();
   };
-  handler.get = function(target, propertyName, receiver) {
+  handler.get = (target, propertyName, receiver) => {
     const next = () => target[propertyName];
-    const value = typeof getProperty !== "undefined" ? getProperty.call(target, [propertyName, receiver], next) : next();
+    const value =
+      typeof getProperty !== "undefined"
+        ? getProperty.call(target, [propertyName, receiver], next)
+        : next();
     if (typeof value === "function") {
       return (...args) => {
         const next2 = value.bind(target, ...args);
@@ -2372,7 +2492,7 @@ function isDomParserSupportedType(type) {
     "application/xml",
     "image/svg+xml",
     "text/html",
-    "text/xml"
+    "text/xml",
   ];
   return supportedTypes.some((supportedType) => {
     return type.startsWith(supportedType);
@@ -2387,14 +2507,16 @@ function parseJson(data) {
   }
 }
 function createResponse(request, body) {
-  const responseBodyOrNull = FetchResponse.isResponseWithBody(request.status) ? body : null;
+  const responseBodyOrNull = FetchResponse.isResponseWithBody(request.status)
+    ? body
+    : null;
   return new FetchResponse(responseBodyOrNull, {
     url: request.responseURL,
     status: request.status,
     statusText: request.statusText,
     headers: createHeadersFromXMLHttpRequestHeaders(
-      request.getAllResponseHeaders()
-    )
+      request.getAllResponseHeaders(),
+    ),
   });
 }
 function createHeadersFromXMLHttpRequestHeaders(headersString) {
@@ -2437,9 +2559,7 @@ var XMLHttpRequestController = class {
       setProperty: ([propertyName, nextValue], invoke) => {
         switch (propertyName) {
           case "ontimeout": {
-            const eventName = propertyName.slice(
-              2
-            );
+            const eventName = propertyName.slice(2);
             this.request.addEventListener(eventName, nextValue);
             return invoke();
           }
@@ -2486,35 +2606,39 @@ var XMLHttpRequestController = class {
                    * the ambiguous response body, as the request's "responseType" may differ.
                    * @see https://xhr.spec.whatwg.org/#the-response-attribute
                    */
-                  this.request.response
+                  this.request.response,
                 );
                 this.onResponse.call(this, {
                   response: fetchResponse,
                   isMockedResponse: this[kIsRequestHandled],
                   request: fetchRequest,
-                  requestId: this.requestId
+                  requestId: this.requestId,
                 });
               }
             });
-            const requestBody = typeof body === "string" ? encodeBuffer(body) : body;
+            const requestBody =
+              typeof body === "string" ? encodeBuffer(body) : body;
             const fetchRequest = this.toFetchApiRequest(requestBody);
             this[kFetchRequest] = fetchRequest.clone();
             queueMicrotask(() => {
               var _a;
-              const onceRequestSettled = ((_a = this.onRequest) == null ? void 0 : _a.call(this, {
-                request: fetchRequest,
-                requestId: this.requestId
-              })) || Promise.resolve();
+              const onceRequestSettled =
+                ((_a = this.onRequest) == null
+                  ? void 0
+                  : _a.call(this, {
+                      request: fetchRequest,
+                      requestId: this.requestId,
+                    })) || Promise.resolve();
               onceRequestSettled.finally(() => {
                 if (!this[kIsRequestHandled]) {
                   this.logger.info(
                     "request callback settled but request has not been handled (readystate %d), performing as-is...",
-                    this.request.readyState
+                    this.request.readyState,
                   );
                   if (IS_NODE2) {
                     this.request.setRequestHeader(
                       INTERNAL_REQUEST_ID_HEADER_NAME,
-                      this.requestId
+                      this.requestId,
                     );
                   }
                   return invoke();
@@ -2527,7 +2651,7 @@ var XMLHttpRequestController = class {
             return invoke();
           }
         }
-      }
+      },
     });
     define(
       this.request,
@@ -2542,9 +2666,7 @@ var XMLHttpRequestController = class {
             case "onload":
             case "ontimeout":
             case "onloadend": {
-              const eventName = propertyName.slice(
-                2
-              );
+              const eventName = propertyName.slice(2);
               this.registerUploadEvent(eventName, nextValue);
             }
           }
@@ -2559,8 +2681,8 @@ var XMLHttpRequestController = class {
               return invoke();
             }
           }
-        }
-      })
+        },
+      }),
     );
   }
   registerEvent(eventName, listener) {
@@ -2583,29 +2705,29 @@ var XMLHttpRequestController = class {
     this[kIsRequestHandled] = true;
     if (this[kFetchRequest]) {
       const totalRequestBodyLength = await getBodyByteLength(
-        this[kFetchRequest]
+        this[kFetchRequest],
       );
       this.trigger("loadstart", this.request.upload, {
         loaded: 0,
-        total: totalRequestBodyLength
+        total: totalRequestBodyLength,
       });
       this.trigger("progress", this.request.upload, {
         loaded: totalRequestBodyLength,
-        total: totalRequestBodyLength
+        total: totalRequestBodyLength,
       });
       this.trigger("load", this.request.upload, {
         loaded: totalRequestBodyLength,
-        total: totalRequestBodyLength
+        total: totalRequestBodyLength,
       });
       this.trigger("loadend", this.request.upload, {
         loaded: totalRequestBodyLength,
-        total: totalRequestBodyLength
+        total: totalRequestBodyLength,
       });
     }
     this.logger.info(
       "responding with a mocked response: %d %s",
       response.status,
-      response.statusText
+      response.statusText,
     );
     define(this.request, "status", response.status);
     define(this.request, "statusText", response.statusText);
@@ -2621,10 +2743,10 @@ var XMLHttpRequestController = class {
         this.logger.info(
           'resolved response header "%s" to',
           args[0],
-          headerValue
+          headerValue,
         );
         return headerValue;
-      }
+      },
     });
     this.request.getAllResponseHeaders = new Proxy(
       this.request.getAllResponseHeaders,
@@ -2632,40 +2754,47 @@ var XMLHttpRequestController = class {
         apply: () => {
           this.logger.info("getAllResponseHeaders");
           if (this.request.readyState < this.request.HEADERS_RECEIVED) {
-            this.logger.info("headers not received yet, returning empty string");
+            this.logger.info(
+              "headers not received yet, returning empty string",
+            );
             return "";
           }
           const headersList = Array.from(response.headers.entries());
-          const allHeaders = headersList.map(([headerName, headerValue]) => {
-            return `${headerName}: ${headerValue}`;
-          }).join("\r\n");
+          const allHeaders = headersList
+            .map(([headerName, headerValue]) => {
+              return `${headerName}: ${headerValue}`;
+            })
+            .join("\r\n");
           this.logger.info("resolved all response headers to", allHeaders);
           return allHeaders;
-        }
-      }
+        },
+      },
     );
     Object.defineProperties(this.request, {
       response: {
         enumerable: true,
         configurable: false,
-        get: () => this.response
+        get: () => this.response,
       },
       responseText: {
         enumerable: true,
         configurable: false,
-        get: () => this.responseText
+        get: () => this.responseText,
       },
       responseXML: {
         enumerable: true,
         configurable: false,
-        get: () => this.responseXML
-      }
+        get: () => this.responseXML,
+      },
     });
     const totalResponseBodyLength = await getBodyByteLength(response.clone());
-    this.logger.info("calculated response body length", totalResponseBodyLength);
+    this.logger.info(
+      "calculated response body length",
+      totalResponseBodyLength,
+    );
     this.trigger("loadstart", this.request, {
       loaded: 0,
-      total: totalResponseBodyLength
+      total: totalResponseBodyLength,
     });
     this.setReadyState(this.request.HEADERS_RECEIVED);
     this.setReadyState(this.request.LOADING);
@@ -2674,11 +2803,11 @@ var XMLHttpRequestController = class {
       this.setReadyState(this.request.DONE);
       this.trigger("load", this.request, {
         loaded: this.responseBuffer.byteLength,
-        total: totalResponseBodyLength
+        total: totalResponseBodyLength,
       });
       this.trigger("loadend", this.request, {
         loaded: this.responseBuffer.byteLength,
-        total: totalResponseBodyLength
+        total: totalResponseBodyLength,
       });
     };
     if (response.body) {
@@ -2696,7 +2825,7 @@ var XMLHttpRequestController = class {
           this.responseBuffer = concatArrayBuffer(this.responseBuffer, value);
           this.trigger("progress", this.request, {
             loaded: this.responseBuffer.byteLength,
-            total: totalResponseBodyLength
+            total: totalResponseBodyLength,
           });
         }
         readNextResponseBodyChunk();
@@ -2712,7 +2841,7 @@ var XMLHttpRequestController = class {
   get response() {
     this.logger.info(
       "getResponse (responseType: %s)",
-      this.request.responseType
+      this.request.responseType,
     );
     if (this.request.readyState !== this.request.DONE) {
       return null;
@@ -2729,14 +2858,15 @@ var XMLHttpRequestController = class {
         return arrayBuffer;
       }
       case "blob": {
-        const mimeType = this.request.getResponseHeader("Content-Type") || "text/plain";
+        const mimeType =
+          this.request.getResponseHeader("Content-Type") || "text/plain";
         const responseBlob = new Blob([this.responseBufferToText()], {
-          type: mimeType
+          type: mimeType,
         });
         this.logger.info(
           "resolved response Blob (mime type: %s)",
           responseBlob,
-          mimeType
+          mimeType,
         );
         return responseBlob;
       }
@@ -2745,7 +2875,7 @@ var XMLHttpRequestController = class {
         this.logger.info(
           'resolving "%s" response type as text',
           this.request.responseType,
-          responseText
+          responseText,
         );
         return responseText;
       }
@@ -2754,9 +2884,12 @@ var XMLHttpRequestController = class {
   get responseText() {
     invariant(
       this.request.responseType === "" || this.request.responseType === "text",
-      "InvalidStateError: The object is in invalid state."
+      "InvalidStateError: The object is in invalid state.",
     );
-    if (this.request.readyState !== this.request.LOADING && this.request.readyState !== this.request.DONE) {
+    if (
+      this.request.readyState !== this.request.LOADING &&
+      this.request.readyState !== this.request.DONE
+    ) {
       return "";
     }
     const responseText = this.responseBufferToText();
@@ -2765,8 +2898,9 @@ var XMLHttpRequestController = class {
   }
   get responseXML() {
     invariant(
-      this.request.responseType === "" || this.request.responseType === "document",
-      "InvalidStateError: The object is in invalid state."
+      this.request.responseType === "" ||
+        this.request.responseType === "document",
+      "InvalidStateError: The object is in invalid state.",
     );
     if (this.request.readyState !== this.request.DONE) {
       return null;
@@ -2774,14 +2908,14 @@ var XMLHttpRequestController = class {
     const contentType = this.request.getResponseHeader("Content-Type") || "";
     if (typeof DOMParser === "undefined") {
       console.warn(
-        "Cannot retrieve XMLHttpRequest response body as XML: DOMParser is not defined. You are likely using an environment that is not browser or does not polyfill browser globals correctly."
+        "Cannot retrieve XMLHttpRequest response body as XML: DOMParser is not defined. You are likely using an environment that is not browser or does not polyfill browser globals correctly.",
       );
       return null;
     }
     if (isDomParserSupportedType(contentType)) {
       return new DOMParser().parseFromString(
         this.responseBufferToText(),
-        contentType
+        contentType,
       );
     }
     return null;
@@ -2800,7 +2934,7 @@ var XMLHttpRequestController = class {
     this.logger.info(
       "setReadyState: %d -> %d",
       this.request.readyState,
-      nextReadyState
+      nextReadyState,
     );
     if (this.request.readyState === nextReadyState) {
       this.logger.info("ready state identical, skipping transition...");
@@ -2824,13 +2958,14 @@ var XMLHttpRequestController = class {
       this.logger.info('found a direct "%s" callback, calling...', eventName);
       callback.call(target, event);
     }
-    const events = target instanceof XMLHttpRequestUpload ? this.uploadEvents : this.events;
+    const events =
+      target instanceof XMLHttpRequestUpload ? this.uploadEvents : this.events;
     for (const [registeredEventName, listeners] of events) {
       if (registeredEventName === eventName) {
         this.logger.info(
           'found %d listener(s) for "%s" event, calling...',
           listeners.length,
-          eventName
+          eventName,
         );
         listeners.forEach((listener) => listener.call(target, event));
       }
@@ -2841,7 +2976,8 @@ var XMLHttpRequestController = class {
    */
   toFetchApiRequest(body) {
     this.logger.info("converting request to a Fetch API Request...");
-    const resolvedBody = body instanceof Document ? body.documentElement.innerText : body;
+    const resolvedBody =
+      body instanceof Document ? body.documentElement.innerText : body;
     const fetchRequest = new Request(this.url.href, {
       method: this.method,
       headers: this.requestHeaders,
@@ -2849,7 +2985,9 @@ var XMLHttpRequestController = class {
        * @see https://xhr.spec.whatwg.org/#cross-origin-credentials
        */
       credentials: this.request.withCredentials ? "include" : "same-origin",
-      body: ["GET", "HEAD"].includes(this.method.toUpperCase()) ? null : resolvedBody
+      body: ["GET", "HEAD"].includes(this.method.toUpperCase())
+        ? null
+        : resolvedBody,
     });
     const proxyHeaders = createProxy(fetchRequest.headers, {
       methodCall: ([methodName, args], invoke) => {
@@ -2863,13 +3001,13 @@ var XMLHttpRequestController = class {
           case "delete": {
             const [headerName] = args;
             console.warn(
-              `XMLHttpRequest: Cannot remove a "${headerName}" header from the Fetch API representation of the "${fetchRequest.method} ${fetchRequest.url}" request. XMLHttpRequest headers cannot be removed.`
+              `XMLHttpRequest: Cannot remove a "${headerName}" header from the Fetch API representation of the "${fetchRequest.method} ${fetchRequest.url}" request. XMLHttpRequest headers cannot be removed.`,
             );
             break;
           }
         }
         return invoke();
-      }
+      },
     });
     define(fetchRequest, "headers", proxyHeaders);
     setRawRequest(fetchRequest, this.request);
@@ -2888,40 +3026,33 @@ function define(target, property, value) {
     // Ensure writable properties to allow redefining readonly properties.
     writable: true,
     enumerable: true,
-    value
+    value,
   });
 }
-function createXMLHttpRequestProxy({
-  emitter,
-  logger
-}) {
+function createXMLHttpRequestProxy({ emitter, logger }) {
   const XMLHttpRequestProxy = new Proxy(globalThis.XMLHttpRequest, {
     construct(target, args, newTarget) {
       logger.info("constructed new XMLHttpRequest");
-      const originalRequest = Reflect.construct(
-        target,
-        args,
-        newTarget
-      );
+      const originalRequest = Reflect.construct(target, args, newTarget);
       const prototypeDescriptors = Object.getOwnPropertyDescriptors(
-        target.prototype
+        target.prototype,
       );
       for (const propertyName in prototypeDescriptors) {
         Reflect.defineProperty(
           originalRequest,
           propertyName,
-          prototypeDescriptors[propertyName]
+          prototypeDescriptors[propertyName],
         );
       }
       const xhrRequestController = new XMLHttpRequestController(
         originalRequest,
-        logger
+        logger,
       );
-      xhrRequestController.onRequest = async function({ request, requestId }) {
+      xhrRequestController.onRequest = async function ({ request, requestId }) {
         const controller = new RequestController(request, {
           passthrough: () => {
             this.logger.info(
-              "no mocked response received, performing request as-is..."
+              "no mocked response received, performing request as-is...",
             );
           },
           respondWith: async (response) => {
@@ -2936,39 +3067,39 @@ function createXMLHttpRequestProxy({
             if (reason instanceof Error) {
               this.errorWith(reason);
             }
-          }
+          },
         });
         this.logger.info("awaiting mocked response...");
         this.logger.info(
           'emitting the "request" event for %s listener(s)...',
-          emitter.listenerCount("request")
+          emitter.listenerCount("request"),
         );
         await handleRequest2({
           request,
           requestId,
           controller,
-          emitter
+          emitter,
         });
       };
-      xhrRequestController.onResponse = async function({
+      xhrRequestController.onResponse = async function ({
         response,
         isMockedResponse,
         request,
-        requestId
+        requestId,
       }) {
         this.logger.info(
           'emitting the "response" event for %s listener(s)...',
-          emitter.listenerCount("response")
+          emitter.listenerCount("response"),
         );
         emitter.emit("response", {
           response,
           isMockedResponse,
           request,
-          requestId
+          requestId,
         });
       };
       return xhrRequestController.request;
-    }
+    },
   });
   return XMLHttpRequestProxy;
 }
@@ -2985,29 +3116,29 @@ var _XMLHttpRequestInterceptor = class extends Interceptor {
     const PureXMLHttpRequest = globalThis.XMLHttpRequest;
     invariant(
       !PureXMLHttpRequest[IS_PATCHED_MODULE],
-      'Failed to patch the "XMLHttpRequest" module: already patched.'
+      'Failed to patch the "XMLHttpRequest" module: already patched.',
     );
     globalThis.XMLHttpRequest = createXMLHttpRequestProxy({
       emitter: this.emitter,
-      logger: this.logger
+      logger: this.logger,
     });
     logger.info(
       'native "XMLHttpRequest" module patched!',
-      globalThis.XMLHttpRequest.name
+      globalThis.XMLHttpRequest.name,
     );
     Object.defineProperty(globalThis.XMLHttpRequest, IS_PATCHED_MODULE, {
       enumerable: true,
       configurable: true,
-      value: true
+      value: true,
     });
     this.subscriptions.push(() => {
       Object.defineProperty(globalThis.XMLHttpRequest, IS_PATCHED_MODULE, {
-        value: void 0
+        value: void 0,
       });
       globalThis.XMLHttpRequest = PureXMLHttpRequest;
       logger.info(
         'native "XMLHttpRequest" module restored!',
-        globalThis.XMLHttpRequest.name
+        globalThis.XMLHttpRequest.name,
       );
     });
   }
@@ -3021,32 +3152,37 @@ var import_isHandlerKind2 = require("../core/utils/internal/isHandlerKind");
 function createFallbackRequestListener(context, options) {
   const interceptor = new BatchInterceptor({
     name: "fallback",
-    interceptors: [new FetchInterceptor(), new XMLHttpRequestInterceptor()]
+    interceptors: [new FetchInterceptor(), new XMLHttpRequestInterceptor()],
   });
   interceptor.on("request", async ({ request, requestId, controller }) => {
     const requestCloneForLogs = request.clone();
     const response = await (0, import_handleRequest2.handleRequest)(
       request,
       requestId,
-      context.getRequestHandlers().filter((0, import_isHandlerKind2.isHandlerKind)("RequestHandler")),
+      context
+        .getRequestHandlers()
+        .filter((0, import_isHandlerKind2.isHandlerKind)("RequestHandler")),
       options,
       context.emitter,
       {
         resolutionContext: {
-          quiet: options.quiet
+          quiet: options.quiet,
         },
         onMockedResponse(_, { handler, parsedResult }) {
           if (!options.quiet) {
-            context.emitter.once("response:mocked", ({ response: response2 }) => {
-              handler.log({
-                request: requestCloneForLogs,
-                response: response2,
-                parsedResult
-              });
-            });
+            context.emitter.once(
+              "response:mocked",
+              ({ response: response2 }) => {
+                handler.log({
+                  request: requestCloneForLogs,
+                  response: response2,
+                  parsedResult,
+                });
+              },
+            );
           }
-        }
-      }
+        },
+      },
     );
     if (response) {
       controller.respondWith(response);
@@ -3060,10 +3196,10 @@ function createFallbackRequestListener(context, options) {
         {
           response,
           request,
-          requestId
-        }
+          requestId,
+        },
       );
-    }
+    },
   );
   interceptor.apply();
   return interceptor;
@@ -3077,7 +3213,7 @@ function printStopMessage(args = {}) {
   }
   console.log(
     `%c${import_devUtils7.devUtils.formatMessage("Mocking disabled.")}`,
-    "color:orangered;font-weight:bold;"
+    "color:orangered;font-weight:bold;",
   );
 }
 
@@ -3089,8 +3225,8 @@ var SetupWorkerApi = class extends import_SetupApi.SetupApi {
     invariant(
       !isNodeProcess(),
       import_devUtils8.devUtils.formatMessage(
-        "Failed to execute `setupWorker` in a non-browser environment. Consider using `setupServer` for Node.js environment instead."
-      )
+        "Failed to execute `setupWorker` in a non-browser environment. Consider using `setupServer` for Node.js environment instead.",
+      ),
     );
     this.context = this.createWorkerContext();
   }
@@ -3108,26 +3244,26 @@ var SetupWorkerApi = class extends import_SetupApi.SetupApi {
       },
       emitter: this.emitter,
       workerChannel: new WorkerChannel({
-        worker: workerPromise
-      })
+        worker: workerPromise,
+      }),
     };
   }
   async start(options = {}) {
     if ("waitUntilReady" in options) {
       import_devUtils8.devUtils.warn(
-        'The "waitUntilReady" option has been deprecated. Please remove it from this "worker.start()" call. Follow the recommended Browser integration (https://mswjs.io/docs/integrations/browser) to eliminate any race conditions between the Service Worker registration and any requests made by your application on initial render.'
+        'The "waitUntilReady" option has been deprecated. Please remove it from this "worker.start()" call. Follow the recommended Browser integration (https://mswjs.io/docs/integrations/browser) to eliminate any race conditions between the Service Worker registration and any requests made by your application on initial render.',
       );
     }
     if (this.context.isMockingEnabled) {
       import_devUtils8.devUtils.warn(
-        `Found a redundant "worker.start()" call. Note that starting the worker while mocking is already enabled will have no effect. Consider removing this "worker.start()" call.`
+        `Found a redundant "worker.start()" call. Note that starting the worker while mocking is already enabled will have no effect. Consider removing this "worker.start()" call.`,
       );
       return this.context.registration;
     }
     this.context.workerStoppedAt = void 0;
     this.context.startOptions = (0, import_mergeRight2.mergeRight)(
       DEFAULT_START_OPTIONS,
-      options
+      options,
     );
     (0, import_handleWebSocketEvent.handleWebSocketEvent)({
       getUnhandledRequestStrategy: () => {
@@ -3141,8 +3277,7 @@ var SetupWorkerApi = class extends import_SetupApi.SetupApi {
           (0, import_attachWebSocketLogger.attachWebSocketLogger)(connection);
         }
       },
-      onPassthroughConnection() {
-      }
+      onPassthroughConnection() {},
     });
     import_webSocketInterceptor.webSocketInterceptor.apply();
     this.subscriptions.push(() => {
@@ -3151,7 +3286,7 @@ var SetupWorkerApi = class extends import_SetupApi.SetupApi {
     if (!supportsServiceWorker()) {
       const fallbackInterceptor = createFallbackRequestListener(
         this.context,
-        this.context.startOptions
+        this.context.startOptions,
       );
       this.subscriptions.push(() => {
         fallbackInterceptor.dispose();
@@ -3159,7 +3294,7 @@ var SetupWorkerApi = class extends import_SetupApi.SetupApi {
       this.context.isMockingEnabled = true;
       printStartMessage({
         message: "Mocking enabled (fallback mode).",
-        quiet: this.context.startOptions.quiet
+        quiet: this.context.startOptions.quiet,
       });
       return void 0;
     }
@@ -3172,7 +3307,7 @@ var SetupWorkerApi = class extends import_SetupApi.SetupApi {
     super.dispose();
     if (!this.context.isMockingEnabled) {
       import_devUtils8.devUtils.warn(
-        'Found a redundant "worker.stop()" call. Notice that stopping the worker after it has already been stopped has no effect. Consider removing this "worker.stop()" call.'
+        'Found a redundant "worker.stop()" call. Notice that stopping the worker after it has already been stopped has no effect. Consider removing this "worker.stop()" call.',
       );
       return;
     }
@@ -3185,7 +3320,7 @@ var SetupWorkerApi = class extends import_SetupApi.SetupApi {
     }
     window.postMessage({ type: "msw/worker:stop" });
     printStopMessage({
-      quiet: this.context.startOptions?.quiet
+      quiet: this.context.startOptions?.quiet,
     });
   }
 };

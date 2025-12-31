@@ -1,5 +1,5 @@
-import type {ApplyDefaultOptions} from './internal/index.d.ts';
-import type {Words, WordsOptions} from './words.d.ts';
+import type { ApplyDefaultOptions } from "./internal/index.d.ts";
+import type { Words, WordsOptions } from "./words.d.ts";
 
 /**
 CamelCase options.
@@ -7,34 +7,34 @@ CamelCase options.
 @see {@link CamelCase}
 */
 export type CamelCaseOptions = WordsOptions & {
-	/**
+  /**
 	Whether to preserved consecutive uppercase letter.
 
 	@default false
 	*/
-	preserveConsecutiveUppercase?: boolean;
+  preserveConsecutiveUppercase?: boolean;
 };
 
 export type _DefaultCamelCaseOptions = {
-	splitOnNumbers: true;
-	preserveConsecutiveUppercase: false;
+  splitOnNumbers: true;
+  preserveConsecutiveUppercase: false;
 };
 
 /**
 Convert an array of words to camel-case.
 */
 type CamelCaseFromArray<
-	Words extends string[],
-	Options extends Required<CamelCaseOptions>,
-	OutputString extends string = '',
+  Words extends string[],
+  Options extends Required<CamelCaseOptions>,
+  OutputString extends string = "",
 > = Words extends [
-	infer FirstWord extends string,
-	...infer RemainingWords extends string[],
+  infer FirstWord extends string,
+  ...infer RemainingWords extends string[],
 ]
-	? Options['preserveConsecutiveUppercase'] extends true
-		? `${Capitalize<FirstWord>}${CamelCaseFromArray<RemainingWords, Options>}`
-		: `${Capitalize<Lowercase<FirstWord>>}${CamelCaseFromArray<RemainingWords, Options>}`
-	: OutputString;
+  ? Options["preserveConsecutiveUppercase"] extends true
+    ? `${Capitalize<FirstWord>}${CamelCaseFromArray<RemainingWords, Options>}`
+    : `${Capitalize<Lowercase<FirstWord>>}${CamelCaseFromArray<RemainingWords, Options>}`
+  : OutputString;
 
 /**
 Convert a string literal to camel-case.
@@ -80,13 +80,20 @@ const dbResult: CamelCasedProperties<RawOptions> = {
 @category Change case
 @category Template literal
 */
-export type CamelCase<Type, Options extends CamelCaseOptions = {}> = Type extends string
-	? string extends Type
-		? Type
-		: Uncapitalize<CamelCaseFromArray<
-			Words<Type extends Uppercase<Type> ? Lowercase<Type> : Type, Options>,
-			ApplyDefaultOptions<CamelCaseOptions, _DefaultCamelCaseOptions, Options>
-		>>
-	: Type;
-
-export {};
+export type CamelCase<
+  Type,
+  Options extends CamelCaseOptions = {},
+> = Type extends string
+  ? string extends Type
+    ? Type
+    : Uncapitalize<
+        CamelCaseFromArray<
+          Words<Type extends Uppercase<Type> ? Lowercase<Type> : Type, Options>,
+          ApplyDefaultOptions<
+            CamelCaseOptions,
+            _DefaultCamelCaseOptions,
+            Options
+          >
+        >
+      >
+  : Type;

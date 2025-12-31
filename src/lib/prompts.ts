@@ -17,5 +17,3 @@ export async function loadPrompt(fileName: string) {
 
   return cache.get(fileName)!;
 }
-
-

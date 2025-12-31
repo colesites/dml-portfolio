@@ -1,12 +1,3 @@
-/*!
- * cookie
- * Copyright(c) 2012-2014 Roman Shtylman
- * Copyright(c) 2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict';
-
 /**
  * Module exports.
  * @public
@@ -20,8 +11,8 @@ exports.serialize = serialize;
  * @private
  */
 
-var __toString = Object.prototype.toString
-var __hasOwnProperty = Object.prototype.hasOwnProperty
+var __toString = Object.prototype.toString;
+var __hasOwnProperty = Object.prototype.hasOwnProperty;
 
 /**
  * RegExp to match cookie-name in RFC 6265 sec 4.1.1
@@ -47,7 +38,8 @@ var cookieNameRegExp = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
  *                     ; and backslash
  */
 
-var cookieValueRegExp = /^("?)[\u0021\u0023-\u002B\u002D-\u003A\u003C-\u005B\u005D-\u007E]*\1$/;
+var cookieValueRegExp =
+  /^("?)[\u0021\u0023-\u002B\u002D-\u003A\u003C-\u005B\u005D-\u007E]*\1$/;
 
 /**
  * RegExp to match domain-value in RFC 6265 sec 4.1.1
@@ -73,7 +65,8 @@ var cookieValueRegExp = /^("?)[\u0021\u0023-\u002B\u002D-\u003A\u003C-\u005B\u00
  * cause the user agent to ignore the attribute.)
  */
 
-var domainValueRegExp = /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i;
+var domainValueRegExp =
+  /^([.]?[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$/i;
 
 /**
  * RegExp to match path-value in RFC 6265 sec 4.1.1
@@ -98,8 +91,8 @@ var pathValueRegExp = /^[\u0020-\u003A\u003D-\u007E]*$/;
  */
 
 function parse(str, opt) {
-  if (typeof str !== 'string') {
-    throw new TypeError('argument str must be a string');
+  if (typeof str !== "string") {
+    throw new TypeError("argument str must be a string");
   }
 
   var obj = {};
@@ -113,16 +106,16 @@ function parse(str, opt) {
   var endIdx = 0;
 
   do {
-    eqIdx = str.indexOf('=', index);
+    eqIdx = str.indexOf("=", index);
     if (eqIdx === -1) break; // No more cookie pairs.
 
-    endIdx = str.indexOf(';', index);
+    endIdx = str.indexOf(";", index);
 
     if (endIdx === -1) {
       endIdx = len;
     } else if (eqIdx > endIdx) {
       // backtrack on prior semicolon
-      index = str.lastIndexOf(';', eqIdx - 1) + 1;
+      index = str.lastIndexOf(";", eqIdx - 1) + 1;
       continue;
     }
 
@@ -135,7 +128,10 @@ function parse(str, opt) {
       var valStartIdx = startIndex(str, eqIdx + 1, endIdx);
       var valEndIdx = endIndex(str, endIdx, valStartIdx);
 
-      if (str.charCodeAt(valStartIdx) === 0x22 /* " */ && str.charCodeAt(valEndIdx - 1) === 0x22 /* " */) {
+      if (
+        str.charCodeAt(valStartIdx) === 0x22 /* " */ &&
+        str.charCodeAt(valEndIdx - 1) === 0x22 /* " */
+      ) {
         valStartIdx++;
         valEndIdx--;
       }
@@ -144,7 +140,7 @@ function parse(str, opt) {
       obj[key] = tryDecode(val, dec);
     }
 
-    index = endIdx + 1
+    index = endIdx + 1;
   } while (index < len);
 
   return obj;
@@ -185,109 +181,113 @@ function endIndex(str, index, min) {
 function serialize(name, val, opt) {
   var enc = (opt && opt.encode) || encodeURIComponent;
 
-  if (typeof enc !== 'function') {
-    throw new TypeError('option encode is invalid');
+  if (typeof enc !== "function") {
+    throw new TypeError("option encode is invalid");
   }
 
   if (!cookieNameRegExp.test(name)) {
-    throw new TypeError('argument name is invalid');
+    throw new TypeError("argument name is invalid");
   }
 
   var value = enc(val);
 
   if (!cookieValueRegExp.test(value)) {
-    throw new TypeError('argument val is invalid');
+    throw new TypeError("argument val is invalid");
   }
 
-  var str = name + '=' + value;
+  var str = name + "=" + value;
   if (!opt) return str;
 
   if (null != opt.maxAge) {
     var maxAge = Math.floor(opt.maxAge);
 
     if (!isFinite(maxAge)) {
-      throw new TypeError('option maxAge is invalid')
+      throw new TypeError("option maxAge is invalid");
     }
 
-    str += '; Max-Age=' + maxAge;
+    str += "; Max-Age=" + maxAge;
   }
 
   if (opt.domain) {
     if (!domainValueRegExp.test(opt.domain)) {
-      throw new TypeError('option domain is invalid');
+      throw new TypeError("option domain is invalid");
     }
 
-    str += '; Domain=' + opt.domain;
+    str += "; Domain=" + opt.domain;
   }
 
   if (opt.path) {
     if (!pathValueRegExp.test(opt.path)) {
-      throw new TypeError('option path is invalid');
+      throw new TypeError("option path is invalid");
     }
 
-    str += '; Path=' + opt.path;
+    str += "; Path=" + opt.path;
   }
 
   if (opt.expires) {
-    var expires = opt.expires
+    var expires = opt.expires;
 
     if (!isDate(expires) || isNaN(expires.valueOf())) {
-      throw new TypeError('option expires is invalid');
+      throw new TypeError("option expires is invalid");
     }
 
-    str += '; Expires=' + expires.toUTCString()
+    str += "; Expires=" + expires.toUTCString();
   }
 
   if (opt.httpOnly) {
-    str += '; HttpOnly';
+    str += "; HttpOnly";
   }
 
   if (opt.secure) {
-    str += '; Secure';
+    str += "; Secure";
   }
 
   if (opt.partitioned) {
-    str += '; Partitioned'
+    str += "; Partitioned";
   }
 
   if (opt.priority) {
-    var priority = typeof opt.priority === 'string'
-      ? opt.priority.toLowerCase() : opt.priority;
+    var priority =
+      typeof opt.priority === "string"
+        ? opt.priority.toLowerCase()
+        : opt.priority;
 
     switch (priority) {
-      case 'low':
-        str += '; Priority=Low'
-        break
-      case 'medium':
-        str += '; Priority=Medium'
-        break
-      case 'high':
-        str += '; Priority=High'
-        break
+      case "low":
+        str += "; Priority=Low";
+        break;
+      case "medium":
+        str += "; Priority=Medium";
+        break;
+      case "high":
+        str += "; Priority=High";
+        break;
       default:
-        throw new TypeError('option priority is invalid')
+        throw new TypeError("option priority is invalid");
     }
   }
 
   if (opt.sameSite) {
-    var sameSite = typeof opt.sameSite === 'string'
-      ? opt.sameSite.toLowerCase() : opt.sameSite;
+    var sameSite =
+      typeof opt.sameSite === "string"
+        ? opt.sameSite.toLowerCase()
+        : opt.sameSite;
 
     switch (sameSite) {
       case true:
-        str += '; SameSite=Strict';
+        str += "; SameSite=Strict";
         break;
-      case 'lax':
-        str += '; SameSite=Lax';
+      case "lax":
+        str += "; SameSite=Lax";
         break;
-      case 'strict':
-        str += '; SameSite=Strict';
+      case "strict":
+        str += "; SameSite=Strict";
         break;
-      case 'none':
-        str += '; SameSite=None';
+      case "none":
+        str += "; SameSite=None";
         break;
       default:
-        throw new TypeError('option sameSite is invalid');
+        throw new TypeError("option sameSite is invalid");
     }
   }
 
@@ -301,10 +301,8 @@ function serialize(name, val, opt) {
  * @returns {string}
  */
 
-function decode (str) {
-  return str.indexOf('%') !== -1
-    ? decodeURIComponent(str)
-    : str
+function decode(str) {
+  return str.indexOf("%") !== -1 ? decodeURIComponent(str) : str;
 }
 
 /**
@@ -314,8 +312,8 @@ function decode (str) {
  * @private
  */
 
-function isDate (val) {
-  return __toString.call(val) === '[object Date]';
+function isDate(val) {
+  return __toString.call(val) === "[object Date]";
 }
 
 /**

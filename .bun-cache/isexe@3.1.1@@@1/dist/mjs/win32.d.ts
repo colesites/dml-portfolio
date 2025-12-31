@@ -4,12 +4,15 @@
  *
  * @module
  */
-import { IsexeOptions } from './options';
+import { IsexeOptions } from "./options";
 /**
  * Determine whether a path is executable based on the file extension
  * and PATHEXT environment variable (or specified pathExt option)
  */
-export declare const isexe: (path: string, options?: IsexeOptions) => Promise<boolean>;
+export declare const isexe: (
+  path: string,
+  options?: IsexeOptions,
+) => Promise<boolean>;
 /**
  * Synchronously determine whether a path is executable based on the file
  * extension and PATHEXT environment variable (or specified pathExt option)

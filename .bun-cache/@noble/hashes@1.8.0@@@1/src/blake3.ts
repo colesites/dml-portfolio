@@ -11,15 +11,25 @@
  * * It is still possible to make it faster using: a) loop unrolling b) web workers c) wasm
  * @module
  */
-import { SHA256_IV } from './_md.ts';
-import { fromBig } from './_u64.ts';
-import { BLAKE2, compress } from './blake2.ts';
+import { SHA256_IV } from "./_md.ts";
+import { fromBig } from "./_u64.ts";
+import { BLAKE2, compress } from "./blake2.ts";
 // prettier-ignore
 import {
-  abytes, aexists, anumber, aoutput,
-  clean, createXOFer, swap32IfBE, toBytes, u32, u8,
-  type CHashXO, type HashXOF, type Input
-} from './utils.ts';
+  abytes,
+  aexists,
+  anumber,
+  aoutput,
+  type CHashXO,
+  clean,
+  createXOFer,
+  type HashXOF,
+  type Input,
+  swap32IfBE,
+  toBytes,
+  u8,
+  u32,
+} from "./utils.ts";
 
 // Flag bitset
 const B3_Flags = {
@@ -72,7 +82,10 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
     const { key, context } = opts;
     const hasContext = context !== undefined;
     if (key !== undefined) {
-      if (hasContext) throw new Error('Only "key" or "context" can be specified at same time');
+      if (hasContext)
+        throw new Error(
+          'Only "key" or "context" can be specified at same time',
+        );
       const k = toBytes(key).slice();
       abytes(k, 32);
       this.IV = u32(k);
@@ -98,16 +111,54 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
     return [];
   }
   protected set(): void {}
-  private b2Compress(counter: number, flags: number, buf: Uint32Array, bufPos: number = 0) {
+  private b2Compress(
+    counter: number,
+    flags: number,
+    buf: Uint32Array,
+    bufPos: number = 0,
+  ) {
     const { state: s, pos } = this;
     const { h, l } = fromBig(BigInt(counter), true);
     // prettier-ignore
-    const { v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15 } =
-      compress(
-        B3_SIGMA, bufPos, buf, 7,
-        s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7],
-        B3_IV[0], B3_IV[1], B3_IV[2], B3_IV[3], h, l, pos, flags
-      );
+    const {
+      v0,
+      v1,
+      v2,
+      v3,
+      v4,
+      v5,
+      v6,
+      v7,
+      v8,
+      v9,
+      v10,
+      v11,
+      v12,
+      v13,
+      v14,
+      v15,
+    } = compress(
+      B3_SIGMA,
+      bufPos,
+      buf,
+      7,
+      s[0],
+      s[1],
+      s[2],
+      s[3],
+      s[4],
+      s[5],
+      s[6],
+      s[7],
+      B3_IV[0],
+      B3_IV[1],
+      B3_IV[2],
+      B3_IV[3],
+      h,
+      l,
+      pos,
+      flags,
+    );
     s[0] = v0 ^ v8;
     s[1] = v1 ^ v9;
     s[2] = v2 ^ v10;
@@ -117,7 +168,11 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
     s[6] = v6 ^ v14;
     s[7] = v7 ^ v15;
   }
-  protected compress(buf: Uint32Array, bufPos: number = 0, isLast: boolean = false): void {
+  protected compress(
+    buf: Uint32Array,
+    bufPos: number = 0,
+    isLast: boolean = false,
+  ): void {
     // Compress last block
     let flags = this.flags;
     if (!this.chunkPos) flags |= B3_Flags.CHUNK_START;
@@ -135,7 +190,11 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
       // 2 (010) - leaf finished at depth=1 (merge with last elm on stack and push back)
       // 3 (011) - last leaf not finished
       // 4 (100) - leafs finished at depth=1 and depth=2
-      for (let last, chunks = this.chunksDone + 1; isLast || !(chunks & 1); chunks >>= 1) {
+      for (
+        let last, chunks = this.chunksDone + 1;
+        isLast || !(chunks & 1);
+        chunks >>= 1
+      ) {
         if (!(last = this.stack.pop())) break;
         this.buffer32.set(last, 0);
         this.buffer32.set(chunk, 8);
@@ -152,7 +211,8 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
   }
   _cloneInto(to?: BLAKE3): BLAKE3 {
     to = super._cloneInto(to) as BLAKE3;
-    const { IV, flags, state, chunkPos, posOut, chunkOut, stack, chunksDone } = this;
+    const { IV, flags, state, chunkPos, posOut, chunkOut, stack, chunksDone } =
+      this;
     to.state.set(state.slice());
     to.stack = stack.map((i) => Uint32Array.from(i));
     to.IV.set(IV);
@@ -176,12 +236,45 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
     const { h, l } = fromBig(BigInt(this.chunkOut++));
     swap32IfBE(buffer32);
     // prettier-ignore
-    const { v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15 } =
-      compress(
-        B3_SIGMA, 0, buffer32, 7,
-        s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7],
-        B3_IV[0], B3_IV[1], B3_IV[2], B3_IV[3], l, h, pos, flags
-      );
+    const {
+      v0,
+      v1,
+      v2,
+      v3,
+      v4,
+      v5,
+      v6,
+      v7,
+      v8,
+      v9,
+      v10,
+      v11,
+      v12,
+      v13,
+      v14,
+      v15,
+    } = compress(
+      B3_SIGMA,
+      0,
+      buffer32,
+      7,
+      s[0],
+      s[1],
+      s[2],
+      s[3],
+      s[4],
+      s[5],
+      s[6],
+      s[7],
+      B3_IV[0],
+      B3_IV[1],
+      B3_IV[2],
+      B3_IV[3],
+      l,
+      h,
+      pos,
+      flags,
+    );
     out32[0] = v0 ^ v8;
     out32[1] = v1 ^ v9;
     out32[2] = v2 ^ v10;
@@ -237,7 +330,8 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
     return out;
   }
   xofInto(out: Uint8Array): Uint8Array {
-    if (!this.enableXOF) throw new Error('XOF is not possible after digest call');
+    if (!this.enableXOF)
+      throw new Error("XOF is not possible after digest call");
     return this.writeInto(out);
   }
   xof(bytes: number): Uint8Array {
@@ -246,7 +340,7 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
   }
   digestInto(out: Uint8Array): Uint8Array {
     aoutput(out, this);
-    if (this.finished) throw new Error('digest() was already called');
+    if (this.finished) throw new Error("digest() was already called");
     this.enableXOF = false;
     this.writeInto(out);
     this.destroy();
@@ -268,5 +362,5 @@ export class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
  * const kdf = blake3(data, { context: 'application name' });
  */
 export const blake3: CHashXO = /* @__PURE__ */ createXOFer<BLAKE3, Blake3Opts>(
-  (opts) => new BLAKE3(opts)
+  (opts) => new BLAKE3(opts),
 );

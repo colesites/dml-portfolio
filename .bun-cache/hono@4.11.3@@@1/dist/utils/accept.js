@@ -3,12 +3,21 @@ var parseAccept = (acceptHeader) => {
   if (!acceptHeader) {
     return [];
   }
-  const acceptValues = acceptHeader.split(",").map((value, index) => ({ value, index }));
-  return acceptValues.map(parseAcceptValue).filter((item) => Boolean(item)).sort(sortByQualityAndIndex).map(({ type, params, q }) => ({ type, params, q }));
+  const acceptValues = acceptHeader
+    .split(",")
+    .map((value, index) => ({ value, index }));
+  return acceptValues
+    .map(parseAcceptValue)
+    .filter((item) => Boolean(item))
+    .sort(sortByQualityAndIndex)
+    .map(({ type, params, q }) => ({ type, params, q }));
 };
 var parseAcceptValueRegex = /;(?=(?:(?:[^"]*"){2})*[^"]*$)/;
 var parseAcceptValue = ({ value, index }) => {
-  const parts = value.trim().split(parseAcceptValueRegex).map((s) => s.trim());
+  const parts = value
+    .trim()
+    .split(parseAcceptValueRegex)
+    .map((s) => s.trim());
   const type = parts[0];
   if (!type) {
     return null;
@@ -58,6 +67,4 @@ var sortByQualityAndIndex = (a, b) => {
   }
   return a.index - b.index;
 };
-export {
-  parseAccept
-};
+export { parseAccept };

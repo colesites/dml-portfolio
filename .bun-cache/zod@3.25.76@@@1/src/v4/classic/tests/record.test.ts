@@ -8,16 +8,28 @@ test("type inference", () => {
   const recordWithEnumKeys = z.record(z.enum(["Tuna", "Salmon"]), z.string());
   type recordWithEnumKeys = z.infer<typeof recordWithEnumKeys>;
 
-  const recordWithLiteralKey = z.record(z.literal(["Tuna", "Salmon"]), z.string());
+  const recordWithLiteralKey = z.record(
+    z.literal(["Tuna", "Salmon"]),
+    z.string(),
+  );
   type recordWithLiteralKey = z.infer<typeof recordWithLiteralKey>;
 
-  const recordWithLiteralUnionKeys = z.record(z.union([z.literal("Tuna"), z.literal("Salmon")]), z.string());
+  const recordWithLiteralUnionKeys = z.record(
+    z.union([z.literal("Tuna"), z.literal("Salmon")]),
+    z.string(),
+  );
   type recordWithLiteralUnionKeys = z.infer<typeof recordWithLiteralUnionKeys>;
 
   expectTypeOf<booleanRecord>().toEqualTypeOf<Record<string, boolean>>();
-  expectTypeOf<recordWithEnumKeys>().toEqualTypeOf<Record<"Tuna" | "Salmon", string>>();
-  expectTypeOf<recordWithLiteralKey>().toEqualTypeOf<Record<"Tuna" | "Salmon", string>>();
-  expectTypeOf<recordWithLiteralUnionKeys>().toEqualTypeOf<Record<"Tuna" | "Salmon", string>>();
+  expectTypeOf<recordWithEnumKeys>().toEqualTypeOf<
+    Record<"Tuna" | "Salmon", string>
+  >();
+  expectTypeOf<recordWithLiteralKey>().toEqualTypeOf<
+    Record<"Tuna" | "Salmon", string>
+  >();
+  expectTypeOf<recordWithLiteralUnionKeys>().toEqualTypeOf<
+    Record<"Tuna" | "Salmon", string>
+  >();
 });
 
 test("enum exhaustiveness", () => {
@@ -26,13 +38,15 @@ test("enum exhaustiveness", () => {
     schema.parse({
       Tuna: "asdf",
       Salmon: "asdf",
-    })
+    }),
   ).toEqual({
     Tuna: "asdf",
     Salmon: "asdf",
   });
 
-  expect(schema.safeParse({ Tuna: "asdf", Salmon: "asdf", Trout: "asdf" })).toMatchInlineSnapshot(`
+  expect(
+    schema.safeParse({ Tuna: "asdf", Salmon: "asdf", Trout: "asdf" }),
+  ).toMatchInlineSnapshot(`
     {
       "error": [ZodError: [
       {
@@ -71,7 +85,9 @@ test("literal exhaustiveness", () => {
     Salmon: "asdf",
   });
 
-  expect(schema.safeParse({ Tuna: "asdf", Salmon: "asdf", Trout: "asdf" })).toMatchInlineSnapshot(`
+  expect(
+    schema.safeParse({ Tuna: "asdf", Salmon: "asdf", Trout: "asdf" }),
+  ).toMatchInlineSnapshot(`
     {
       "error": [ZodError: [
       {
@@ -110,7 +126,9 @@ test("pipe exhaustiveness", () => {
     Salmon: "asdf",
   });
 
-  expect(schema.safeParse({ Tuna: "asdf", Salmon: "asdf", Trout: "asdf" })).toMatchInlineSnapshot(`
+  expect(
+    schema.safeParse({ Tuna: "asdf", Salmon: "asdf", Trout: "asdf" }),
+  ).toMatchInlineSnapshot(`
     {
       "error": [ZodError: [
       {
@@ -143,13 +161,18 @@ test("pipe exhaustiveness", () => {
 });
 
 test("union exhaustiveness", () => {
-  const schema = z.record(z.union([z.literal("Tuna"), z.literal("Salmon")]), z.string());
+  const schema = z.record(
+    z.union([z.literal("Tuna"), z.literal("Salmon")]),
+    z.string(),
+  );
   expect(schema.parse({ Tuna: "asdf", Salmon: "asdf" })).toEqual({
     Tuna: "asdf",
     Salmon: "asdf",
   });
 
-  expect(schema.safeParse({ Tuna: "asdf", Salmon: "asdf", Trout: "asdf" })).toMatchInlineSnapshot(`
+  expect(
+    schema.safeParse({ Tuna: "asdf", Salmon: "asdf", Trout: "asdf" }),
+  ).toMatchInlineSnapshot(`
     {
       "error": [ZodError: [
       {
@@ -217,7 +240,7 @@ test("is not vulnerable to prototype pollution", async () => {
     z.string(),
     z.object({
       a: z.string(),
-    })
+    }),
   );
 
   const data = JSON.parse(`
@@ -265,8 +288,8 @@ test("allow undefined values", () => {
     Object.keys(
       schema.parse({
         _test: undefined,
-      })
-    )
+      }),
+    ),
   ).toEqual(["_test"]);
 });
 
@@ -277,7 +300,7 @@ test("async parsing", async () => {
       z
         .string()
         .optional()
-        .refine(async () => true)
+        .refine(async () => true),
     )
     .refine(async () => true);
 
@@ -296,7 +319,7 @@ test("async parsing", async () => {
       z
         .string()
         .optional()
-        .refine(async () => false)
+        .refine(async () => false),
     )
     .refine(async () => false);
 
@@ -338,5 +361,7 @@ test("partial record", () => {
 
   const Keys = z.enum(["id", "name", "email"]).or(z.never());
   const Person = z.partialRecord(Keys, z.string());
-  expectTypeOf<z.infer<typeof Person>>().toEqualTypeOf<Partial<Record<"id" | "name" | "email", string>>>();
+  expectTypeOf<z.infer<typeof Person>>().toEqualTypeOf<
+    Partial<Record<"id" | "name" | "email", string>>
+  >();
 });

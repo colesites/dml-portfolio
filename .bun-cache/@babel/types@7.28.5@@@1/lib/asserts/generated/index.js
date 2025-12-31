@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.assertAccessor = assertAccessor;
 exports.assertAnyTypeAnnotation = assertAnyTypeAnnotation;
@@ -177,7 +177,8 @@ exports.assertParenthesizedExpression = assertParenthesizedExpression;
 exports.assertPattern = assertPattern;
 exports.assertPatternLike = assertPatternLike;
 exports.assertPipelineBareFunction = assertPipelineBareFunction;
-exports.assertPipelinePrimaryTopicReference = assertPipelinePrimaryTopicReference;
+exports.assertPipelinePrimaryTopicReference =
+  assertPipelinePrimaryTopicReference;
 exports.assertPipelineTopicExpression = assertPipelineTopicExpression;
 exports.assertPlaceholder = assertPlaceholder;
 exports.assertPrivate = assertPrivate;
@@ -214,7 +215,8 @@ exports.assertTSBigIntKeyword = assertTSBigIntKeyword;
 exports.assertTSBooleanKeyword = assertTSBooleanKeyword;
 exports.assertTSCallSignatureDeclaration = assertTSCallSignatureDeclaration;
 exports.assertTSConditionalType = assertTSConditionalType;
-exports.assertTSConstructSignatureDeclaration = assertTSConstructSignatureDeclaration;
+exports.assertTSConstructSignatureDeclaration =
+  assertTSConstructSignatureDeclaration;
 exports.assertTSConstructorType = assertTSConstructorType;
 exports.assertTSDeclareFunction = assertTSDeclareFunction;
 exports.assertTSDeclareMethod = assertTSDeclareMethod;
@@ -223,7 +225,8 @@ exports.assertTSEnumBody = assertTSEnumBody;
 exports.assertTSEnumDeclaration = assertTSEnumDeclaration;
 exports.assertTSEnumMember = assertTSEnumMember;
 exports.assertTSExportAssignment = assertTSExportAssignment;
-exports.assertTSExpressionWithTypeArguments = assertTSExpressionWithTypeArguments;
+exports.assertTSExpressionWithTypeArguments =
+  assertTSExpressionWithTypeArguments;
 exports.assertTSExternalModuleReference = assertTSExternalModuleReference;
 exports.assertTSFunctionType = assertTSFunctionType;
 exports.assertTSImportEqualsDeclaration = assertTSImportEqualsDeclaration;
@@ -315,7 +318,10 @@ var _is = require("../../validators/is.js");
 var _deprecationWarning = require("../../utils/deprecationWarning.js");
 function assert(type, node, opts) {
   if (!(0, _is.default)(type, node, opts)) {
-    throw new Error(`Expected type "${type}" with option ${JSON.stringify(opts)}, ` + `but instead got "${node.type}".`);
+    throw new Error(
+      `Expected type "${type}" with option ${JSON.stringify(opts)}, ` +
+        `but instead got "${node.type}".`,
+    );
   }
 }
 function assertArrayExpression(node, opts) {
@@ -1228,7 +1234,10 @@ function assertTSBaseType(node, opts) {
   assert("TSBaseType", node, opts);
 }
 function assertNumberLiteral(node, opts) {
-  (0, _deprecationWarning.default)("assertNumberLiteral", "assertNumericLiteral");
+  (0, _deprecationWarning.default)(
+    "assertNumberLiteral",
+    "assertNumericLiteral",
+  );
   assert("NumberLiteral", node, opts);
 }
 function assertRegexLiteral(node, opts) {
@@ -1240,11 +1249,17 @@ function assertRestProperty(node, opts) {
   assert("RestProperty", node, opts);
 }
 function assertSpreadProperty(node, opts) {
-  (0, _deprecationWarning.default)("assertSpreadProperty", "assertSpreadElement");
+  (0, _deprecationWarning.default)(
+    "assertSpreadProperty",
+    "assertSpreadElement",
+  );
   assert("SpreadProperty", node, opts);
 }
 function assertModuleDeclaration(node, opts) {
-  (0, _deprecationWarning.default)("assertModuleDeclaration", "assertImportOrExportDeclaration");
+  (0, _deprecationWarning.default)(
+    "assertModuleDeclaration",
+    "assertImportOrExportDeclaration",
+  );
   assert("ModuleDeclaration", node, opts);
 }
 

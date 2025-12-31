@@ -6,11 +6,11 @@
 import { weierstrass } from "./abstract/weierstrass.js";
 /** connects noble-curves to noble-hashes */
 export function getHash(hash) {
-    return { hash };
+  return { hash };
 }
 /** @deprecated use new `weierstrass()` and `ecdsa()` methods */
 export function createCurve(curveDef, defHash) {
-    const create = (hash) => weierstrass({ ...curveDef, hash: hash });
-    return { ...create(defHash), create };
+  const create = (hash) => weierstrass({ ...curveDef, hash: hash });
+  return { ...create(defHash), create };
 }
 //# sourceMappingURL=_shortw_utils.js.map

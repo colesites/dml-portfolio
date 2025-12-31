@@ -1,4 +1,4 @@
-import type {IsNever} from './is-never.d.ts';
+import type { IsNever } from "./is-never.d.ts";
 
 /**
 Returns a boolean for whether the given type is a union.
@@ -19,21 +19,19 @@ export type IsUnion<T> = InternalIsUnion<T>;
 /**
 The actual implementation of `IsUnion`.
 */
-type InternalIsUnion<T, U = T> =
-(
-	IsNever<T> extends true
-		? false
-		: T extends any
-			? [U] extends [T]
-				? false
-				: true
-			: never
+type InternalIsUnion<T, U = T> = (
+  IsNever<T> extends true
+    ? false
+    : T extends any
+      ? [U] extends [T]
+        ? false
+        : true
+      : never
 ) extends infer Result
-	// In some cases `Result` will return `false | true` which is `boolean`,
-	// that means `T` has at least two types and it's a union type,
-	// so we will return `true` instead of `boolean`.
-	? boolean extends Result ? true
-		: Result
-	: never; // Should never happen
-
-export {};
+  ? // In some cases `Result` will return `false | true` which is `boolean`,
+    // that means `T` has at least two types and it's a union type,
+    // so we will return `true` instead of `boolean`.
+    boolean extends Result
+    ? true
+    : Result
+  : never; // Should never happen

@@ -1,11 +1,9 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.getOperationAST = getOperationAST;
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
 /**
  * Returns an operation AST given a document AST and optionally an operation

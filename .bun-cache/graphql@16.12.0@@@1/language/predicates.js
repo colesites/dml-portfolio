@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.isConstValueNode = isConstValueNode;
@@ -15,7 +13,7 @@ exports.isTypeSystemDefinitionNode = isTypeSystemDefinitionNode;
 exports.isTypeSystemExtensionNode = isTypeSystemExtensionNode;
 exports.isValueNode = isValueNode;
 
-var _kinds = require('./kinds.js');
+var _kinds = require("./kinds.js");
 
 function isDefinitionNode(node) {
   return (
@@ -60,8 +58,8 @@ function isConstValueNode(node) {
     (node.kind === _kinds.Kind.LIST
       ? node.values.some(isConstValueNode)
       : node.kind === _kinds.Kind.OBJECT
-      ? node.fields.some((field) => isConstValueNode(field.value))
-      : node.kind !== _kinds.Kind.VARIABLE)
+        ? node.fields.some((field) => isConstValueNode(field.value))
+        : node.kind !== _kinds.Kind.VARIABLE)
   );
 }
 

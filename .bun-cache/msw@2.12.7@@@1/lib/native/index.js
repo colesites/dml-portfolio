@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/native/index.ts
 var index_exports = {};
 __export(index_exports, {
-  setupServer: () => setupServer
+  setupServer: () => setupServer,
 });
 module.exports = __toCommonJS(index_exports);
 var import_fetch = require("@mswjs/interceptors/fetch");
@@ -37,7 +41,7 @@ var import_handleWebSocketEvent = require("../core/ws/handleWebSocketEvent");
 var import_webSocketInterceptor = require("../core/ws/webSocketInterceptor");
 var import_isHandlerKind = require("../core/utils/internal/isHandlerKind");
 var DEFAULT_LISTEN_OPTIONS = {
-  onUnhandledRequest: "warn"
+  onUnhandledRequest: "warn",
 };
 var SetupServerCommonApi = class extends import_SetupApi.SetupApi {
   interceptor;
@@ -46,7 +50,7 @@ var SetupServerCommonApi = class extends import_SetupApi.SetupApi {
     super(...handlers);
     this.interceptor = new import_interceptors.BatchInterceptor({
       name: "setup-server",
-      interceptors
+      interceptors,
     });
     this.resolvedOptions = {};
   }
@@ -60,7 +64,9 @@ var SetupServerCommonApi = class extends import_SetupApi.SetupApi {
         const response = await (0, import_handleRequest.handleRequest)(
           request,
           requestId,
-          this.handlersController.currentHandlers().filter((0, import_isHandlerKind.isHandlerKind)("RequestHandler")),
+          this.handlersController
+            .currentHandlers()
+            .filter((0, import_isHandlerKind.isHandlerKind)("RequestHandler")),
           this.resolvedOptions,
           this.emitter,
           {
@@ -69,7 +75,7 @@ var SetupServerCommonApi = class extends import_SetupApi.SetupApi {
               if (acceptHeader) {
                 const nextAcceptHeader = acceptHeader.replace(
                   /(,\s+)?msw\/passthrough/,
-                  ""
+                  "",
                 );
                 if (nextAcceptHeader) {
                   request2.headers.set("accept", nextAcceptHeader);
@@ -77,14 +83,14 @@ var SetupServerCommonApi = class extends import_SetupApi.SetupApi {
                   request2.headers.delete("accept");
                 }
               }
-            }
-          }
+            },
+          },
         );
         if (response) {
           controller.respondWith(response);
         }
         return;
-      }
+      },
     );
     this.interceptor.on("unhandledException", ({ error }) => {
       if (error instanceof import_devUtils.InternalError) {
@@ -99,10 +105,10 @@ var SetupServerCommonApi = class extends import_SetupApi.SetupApi {
           {
             response,
             request,
-            requestId
-          }
+            requestId,
+          },
         );
-      }
+      },
     );
     (0, import_handleWebSocketEvent.handleWebSocketEvent)({
       getUnhandledRequestStrategy: () => {
@@ -111,30 +117,31 @@ var SetupServerCommonApi = class extends import_SetupApi.SetupApi {
       getHandlers: () => {
         return this.handlersController.currentHandlers();
       },
-      onMockedConnection: () => {
-      },
-      onPassthroughConnection: () => {
-      }
+      onMockedConnection: () => {},
+      onPassthroughConnection: () => {},
     });
   }
   listen(options = {}) {
     this.resolvedOptions = (0, import_mergeRight.mergeRight)(
       DEFAULT_LISTEN_OPTIONS,
-      options
+      options,
     );
     this.interceptor.apply();
     this.init();
     this.subscriptions.push(() => this.interceptor.dispose());
     import_webSocketInterceptor.webSocketInterceptor.apply();
-    this.subscriptions.push(() => import_webSocketInterceptor.webSocketInterceptor.dispose());
+    this.subscriptions.push(() =>
+      import_webSocketInterceptor.webSocketInterceptor.dispose(),
+    );
     (0, import_outvariant.invariant)(
-      [import_interceptors.InterceptorReadyState.APPLYING, import_interceptors.InterceptorReadyState.APPLIED].includes(
-        this.interceptor.readyState
-      ),
+      [
+        import_interceptors.InterceptorReadyState.APPLYING,
+        import_interceptors.InterceptorReadyState.APPLIED,
+      ].includes(this.interceptor.readyState),
       import_devUtils.devUtils.formatMessage(
-        'Failed to start "setupServer": the interceptor failed to apply. This is likely an issue with the library and you should report it at "%s".'
+        'Failed to start "setupServer": the interceptor failed to apply. This is likely an issue with the library and you should report it at "%s".',
       ),
-      "https://github.com/mswjs/msw/issues/new/choose"
+      "https://github.com/mswjs/msw/issues/new/choose",
     );
   }
   close() {
@@ -145,12 +152,16 @@ var SetupServerCommonApi = class extends import_SetupApi.SetupApi {
 // src/native/index.ts
 function setupServer(...handlers) {
   return new SetupServerCommonApi(
-    [new import_fetch.FetchInterceptor(), new import_XMLHttpRequest.XMLHttpRequestInterceptor()],
-    handlers
+    [
+      new import_fetch.FetchInterceptor(),
+      new import_XMLHttpRequest.XMLHttpRequestInterceptor(),
+    ],
+    handlers,
   );
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  setupServer
-});
+0 &&
+  (module.exports = {
+    setupServer,
+  });
 //# sourceMappingURL=index.js.map

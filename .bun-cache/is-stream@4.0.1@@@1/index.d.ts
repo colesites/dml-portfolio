@@ -1,18 +1,18 @@
 import {
-	type Stream,
-	type Writable as WritableStream,
-	type Readable as ReadableStream,
-	type Duplex as DuplexStream,
-	type Transform as TransformStream,
-} from 'node:stream';
+  type Stream,
+  type Writable as WritableStream,
+  type Readable as ReadableStream,
+  type Duplex as DuplexStream,
+  type Transform as TransformStream,
+} from "node:stream";
 
 export type Options = {
-	/**
+  /**
 	When this option is `true`, the method returns `false` if the stream has already been closed.
 
 	@default true
 	*/
-	checkOpen?: boolean;
+  checkOpen?: boolean;
 };
 
 /**
@@ -44,7 +44,10 @@ isWritableStream(fs.createWriteStrem('unicorn.txt'));
 //=> true
 ```
 */
-export function isWritableStream(stream: unknown, options?: Options): stream is WritableStream;
+export function isWritableStream(
+  stream: unknown,
+  options?: Options,
+): stream is WritableStream;
 
 /**
 @returns Whether `stream` is a [`stream.Readable`](https://nodejs.org/api/stream.html#stream_class_stream_readable) or an [`http.IncomingMessage`](https://nodejs.org/api/http.html#class-httpincomingmessage).
@@ -58,7 +61,10 @@ isReadableStream(fs.createReadStream('unicorn.png'));
 //=> true
 ```
 */
-export function isReadableStream(stream: unknown, options?: Options): stream is ReadableStream;
+export function isReadableStream(
+  stream: unknown,
+  options?: Options,
+): stream is ReadableStream;
 
 /**
 @returns Whether `stream` is a [`stream.Duplex`](https://nodejs.org/api/stream.html#stream_class_stream_duplex).
@@ -72,7 +78,10 @@ isDuplexStream(new DuplexStream());
 //=> true
 ```
 */
-export function isDuplexStream(stream: unknown, options?: Options): stream is DuplexStream;
+export function isDuplexStream(
+  stream: unknown,
+  options?: Options,
+): stream is DuplexStream;
 
 /**
 @returns Whether `stream` is a [`stream.Transform`](https://nodejs.org/api/stream.html#stream_class_stream_transform).
@@ -87,4 +96,7 @@ isTransformStream(StringifyStream());
 //=> true
 ```
 */
-export function isTransformStream(stream: unknown, options?: Options): stream is TransformStream;
+export function isTransformStream(
+  stream: unknown,
+  options?: Options,
+): stream is TransformStream;

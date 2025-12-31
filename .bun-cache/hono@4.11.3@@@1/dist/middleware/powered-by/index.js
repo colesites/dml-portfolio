@@ -5,6 +5,4 @@ var poweredBy = (options) => {
     c.res.headers.set("X-Powered-By", options?.serverName ?? "Hono");
   };
 };
-export {
-  poweredBy
-};
+export { poweredBy };

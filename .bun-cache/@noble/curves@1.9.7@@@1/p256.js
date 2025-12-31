@@ -1,6 +1,9 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.encodeToCurve = exports.hashToCurve = exports.secp256r1 = exports.p256 = void 0;
+exports.encodeToCurve =
+  exports.hashToCurve =
+  exports.secp256r1 =
+  exports.p256 =
+    void 0;
 const nist_ts_1 = require("./nist.js");
 /** @deprecated use `import { p256 } from '@noble/curves/nist.js';` */
 exports.p256 = nist_ts_1.p256;

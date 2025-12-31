@@ -1,8 +1,9 @@
 // src/helper/ssg/utils.ts
 import { METHOD_NAME_ALL } from "../../router.js";
 import { findTargetHandler, isMiddleware } from "../../utils/handler.js";
+
 var dirname = (path) => {
-  const separatedPath = path.split(/[\/\\]/);
+  const separatedPath = path.split(/[/\\]/);
   return separatedPath.slice(0, -1).join("/");
 };
 var normalizePath = (path) => {
@@ -42,18 +43,18 @@ var joinPaths = (...paths) => {
 var filterStaticGenerateRoutes = (hono) => {
   return hono.routes.reduce((acc, { method, handler, path }) => {
     const targetHandler = findTargetHandler(handler);
-    if (["GET", METHOD_NAME_ALL].includes(method) && !isMiddleware(targetHandler)) {
+    if (
+      ["GET", METHOD_NAME_ALL].includes(method) &&
+      !isMiddleware(targetHandler)
+    ) {
       acc.push({ path });
     }
     return acc;
   }, []);
 };
 var isDynamicRoute = (path) => {
-  return path.split("/").some((segment) => segment.startsWith(":") || segment.includes("*"));
+  return path
+    .split("/")
+    .some((segment) => segment.startsWith(":") || segment.includes("*"));
 };
-export {
-  dirname,
-  filterStaticGenerateRoutes,
-  isDynamicRoute,
-  joinPaths
-};
+export { dirname, filterStaticGenerateRoutes, isDynamicRoute, joinPaths };

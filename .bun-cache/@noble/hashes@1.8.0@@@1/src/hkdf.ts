@@ -3,8 +3,15 @@
  * See https://soatok.blog/2021/11/17/understanding-hkdf/.
  * @module
  */
-import { hmac } from './hmac.ts';
-import { ahash, anumber, type CHash, clean, type Input, toBytes } from './utils.ts';
+import { hmac } from "./hmac.ts";
+import {
+  ahash,
+  anumber,
+  type CHash,
+  clean,
+  type Input,
+  toBytes,
+} from "./utils.ts";
 
 /**
  * HKDF-extract from spec. Less important part. `HKDF-Extract(IKM, salt) -> PRK`
@@ -32,11 +39,16 @@ const EMPTY_BUFFER = /* @__PURE__ */ Uint8Array.of();
  * @param info - optional context and application specific information (can be a zero-length string)
  * @param length - length of output keying material in bytes
  */
-export function expand(hash: CHash, prk: Input, info?: Input, length: number = 32): Uint8Array {
+export function expand(
+  hash: CHash,
+  prk: Input,
+  info?: Input,
+  length: number = 32,
+): Uint8Array {
   ahash(hash);
   anumber(length);
   const olen = hash.outputLen;
-  if (length > 255 * olen) throw new Error('Length should be <= 255*HashLen');
+  if (length > 255 * olen) throw new Error("Length should be <= 255*HashLen");
   const blocks = Math.ceil(length / olen);
   if (info === undefined) info = EMPTY_BUFFER;
   // first L(ength) octets of T
@@ -84,5 +96,5 @@ export const hkdf = (
   ikm: Input,
   salt: Input | undefined,
   info: Input | undefined,
-  length: number
+  length: number,
 ): Uint8Array => expand(hash, extract(hash, ikm, salt), info, length);

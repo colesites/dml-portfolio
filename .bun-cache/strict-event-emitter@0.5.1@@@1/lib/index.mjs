@@ -2,7 +2,7 @@
 var MemoryLeakError = class extends Error {
   constructor(emitter, type, count) {
     super(
-      `Possible EventEmitter memory leak detected. ${count} ${type.toString()} listeners added. Use emitter.setMaxListeners() to increase limit`
+      `Possible EventEmitter memory leak detected. ${count} ${type.toString()} listeners added. Use emitter.setMaxListeners() to increase limit`,
     );
     this.emitter = emitter;
     this.type = type;
@@ -22,10 +22,7 @@ var _Emitter = class {
     this.hasWarnedAboutPotentialMemoryLeak = false;
   }
   _emitInternalEvent(internalEventName, eventName, listener) {
-    this.emit(
-      internalEventName,
-      ...[eventName, listener]
-    );
+    this.emit(internalEventName, ...[eventName, listener]);
   }
   _getListeners(eventName) {
     return Array.prototype.concat.apply([], this.events.get(eventName)) || [];
@@ -84,12 +81,16 @@ var _Emitter = class {
     this._emitInternalEvent("newListener", eventName, listener);
     const nextListeners = this._getListeners(eventName).concat(listener);
     this.events.set(eventName, nextListeners);
-    if (this.maxListeners > 0 && this.listenerCount(eventName) > this.maxListeners && !this.hasWarnedAboutPotentialMemoryLeak) {
+    if (
+      this.maxListeners > 0 &&
+      this.listenerCount(eventName) > this.maxListeners &&
+      !this.hasWarnedAboutPotentialMemoryLeak
+    ) {
       this.hasWarnedAboutPotentialMemoryLeak = true;
       const memoryLeakWarning = new MemoryLeakError(
         this,
         eventName,
-        this.listenerCount(eventName)
+        this.listenerCount(eventName),
       );
       console.warn(memoryLeakWarning);
     }
@@ -101,7 +102,7 @@ var _Emitter = class {
   once(eventName, listener) {
     return this.addListener(
       eventName,
-      this._wrapOnceListener(eventName, listener)
+      this._wrapOnceListener(eventName, listener),
     );
   }
   prependListener(eventName, listener) {
@@ -117,7 +118,7 @@ var _Emitter = class {
   prependOnceListener(eventName, listener) {
     return this.prependListener(
       eventName,
-      this._wrapOnceListener(eventName, listener)
+      this._wrapOnceListener(eventName, listener),
     );
   }
   removeListener(eventName, listener) {
@@ -164,8 +165,5 @@ var _Emitter = class {
 };
 var Emitter = _Emitter;
 Emitter.defaultMaxListeners = 10;
-export {
-  Emitter,
-  MemoryLeakError
-};
+export { Emitter, MemoryLeakError };
 //# sourceMappingURL=index.mjs.map

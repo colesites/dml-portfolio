@@ -1,26 +1,37 @@
-import type {ApplyDefaultOptions, AsciiPunctuation, StartsWith} from './internal/index.d.ts';
-import type {IsStringLiteral} from './is-literal.d.ts';
-import type {Merge} from './merge.d.ts';
-import type {RemovePrefix} from './remove-prefix.d.ts';
-import type {_DefaultWordsOptions, Words, WordsOptions} from './words.d.ts';
+import type {
+  ApplyDefaultOptions,
+  AsciiPunctuation,
+  StartsWith,
+} from "./internal/index.d.ts";
+import type { IsStringLiteral } from "./is-literal.d.ts";
+import type { Merge } from "./merge.d.ts";
+import type { RemovePrefix } from "./remove-prefix.d.ts";
+import type { _DefaultWordsOptions, Words, WordsOptions } from "./words.d.ts";
 
-export type _DefaultDelimiterCaseOptions = Merge<_DefaultWordsOptions, {splitOnNumbers: false}>;
+export type _DefaultDelimiterCaseOptions = Merge<
+  _DefaultWordsOptions,
+  { splitOnNumbers: false }
+>;
 
 /**
 Convert an array of words to delimiter case starting with a delimiter with input capitalization.
 */
 type DelimiterCaseFromArray<
-	Words extends string[],
-	Delimiter extends string,
-	OutputString extends string = '',
+  Words extends string[],
+  Delimiter extends string,
+  OutputString extends string = "",
 > = Words extends [
-	infer FirstWord extends string,
-	...infer RemainingWords extends string[],
+  infer FirstWord extends string,
+  ...infer RemainingWords extends string[],
 ]
-	? DelimiterCaseFromArray<RemainingWords, Delimiter, `${OutputString}${
-		StartsWith<FirstWord, AsciiPunctuation> extends true ? '' : Delimiter
-	}${FirstWord}`>
-	: OutputString;
+  ? DelimiterCaseFromArray<
+      RemainingWords,
+      Delimiter,
+      `${OutputString}${StartsWith<FirstWord, AsciiPunctuation> extends true
+        ? ""
+        : Delimiter}${FirstWord}`
+    >
+  : OutputString;
 
 /**
 Convert a string literal to a custom string delimiter casing.
@@ -62,16 +73,27 @@ const rawCliOptions: OddlyCasedProperties<SomeOptions> = {
 @category Template literal
  */
 export type DelimiterCase<
-	Value,
-	Delimiter extends string,
-	Options extends WordsOptions = {},
+  Value,
+  Delimiter extends string,
+  Options extends WordsOptions = {},
 > = Value extends string
-	? IsStringLiteral<Value> extends false
-		? Value
-		: Lowercase<RemovePrefix<DelimiterCaseFromArray<
-			Words<Value, ApplyDefaultOptions<WordsOptions, _DefaultDelimiterCaseOptions, Options>>,
-			Delimiter
-		>, string, {strict: false}>>
-	: Value;
-
-export {};
+  ? IsStringLiteral<Value> extends false
+    ? Value
+    : Lowercase<
+        RemovePrefix<
+          DelimiterCaseFromArray<
+            Words<
+              Value,
+              ApplyDefaultOptions<
+                WordsOptions,
+                _DefaultDelimiterCaseOptions,
+                Options
+              >
+            >,
+            Delimiter
+          >,
+          string,
+          { strict: false }
+        >
+      >
+  : Value;

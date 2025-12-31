@@ -5,7 +5,5 @@ function truncateMessage(message) {
   }
   return `${message.slice(0, MAX_LENGTH)}\u2026`;
 }
-export {
-  truncateMessage
-};
+export { truncateMessage };
 //# sourceMappingURL=truncateMessage.mjs.map

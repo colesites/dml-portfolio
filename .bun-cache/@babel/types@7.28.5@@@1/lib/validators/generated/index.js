@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.isAccessor = isAccessor;
 exports.isAnyTypeAnnotation = isAnyTypeAnnotation;
@@ -2790,7 +2790,10 @@ function isSpreadProperty(node, opts) {
   return opts == null || (0, _shallowEqual.default)(node, opts);
 }
 function isModuleDeclaration(node, opts) {
-  (0, _deprecationWarning.default)("isModuleDeclaration", "isImportOrExportDeclaration");
+  (0, _deprecationWarning.default)(
+    "isModuleDeclaration",
+    "isImportOrExportDeclaration",
+  );
   return isImportOrExportDeclaration(node, opts);
 }
 

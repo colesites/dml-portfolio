@@ -15,6 +15,4 @@ var AlgorithmTypes = /* @__PURE__ */ ((AlgorithmTypes2) => {
   AlgorithmTypes2["EdDSA"] = "EdDSA";
   return AlgorithmTypes2;
 })(AlgorithmTypes || {});
-export {
-  AlgorithmTypes
-};
+export { AlgorithmTypes };

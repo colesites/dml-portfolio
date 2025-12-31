@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var hono_base_exports = {};
 __export(hono_base_exports, {
-  HonoBase: () => Hono
+  HonoBase: () => Hono,
 });
 module.exports = __toCommonJS(hono_base_exports);
 var import_compose = require("./compose");
@@ -58,7 +62,10 @@ class Hono {
   #path = "/";
   routes = [];
   constructor(options = {}) {
-    const allMethods = [...import_router.METHODS, import_router.METHOD_NAME_ALL_LOWERCASE];
+    const allMethods = [
+      ...import_router.METHODS,
+      import_router.METHOD_NAME_ALL_LOWERCASE,
+    ];
     allMethods.forEach((method) => {
       this[method] = (args1, ...args) => {
         if (typeof args1 === "string") {
@@ -97,12 +104,15 @@ class Hono {
     };
     const { strict, ...optionsWithoutStrict } = options;
     Object.assign(this, optionsWithoutStrict);
-    this.getPath = strict ?? true ? options.getPath ?? import_url.getPath : import_url.getPathNoStrict;
+    this.getPath =
+      (strict ?? true)
+        ? (options.getPath ?? import_url.getPath)
+        : import_url.getPathNoStrict;
   }
   #clone() {
     const clone = new Hono({
       router: this.router,
-      getPath: this.getPath
+      getPath: this.getPath,
     });
     clone.errorHandler = this.errorHandler;
     clone.#notFoundHandler = this.#notFoundHandler;
@@ -137,7 +147,12 @@ class Hono {
       if (app.errorHandler === errorHandler) {
         handler = r.handler;
       } else {
-        handler = async (c, next) => (await (0, import_compose.compose)([], app.errorHandler)(c, () => r.handler(c, next))).res;
+        handler = async (c, next) =>
+          (
+            await (0, import_compose.compose)([], app.errorHandler)(c, () =>
+              r.handler(c, next),
+            )
+          ).res;
         handler[import_constants.COMPOSED_HANDLER] = r.handler;
       }
       subApp.#addRoute(r.method, r.path, handler);
@@ -248,17 +263,18 @@ class Hono {
         }
       }
     }
-    const getOptions = optionHandler ? (c) => {
-      const options2 = optionHandler(c);
-      return Array.isArray(options2) ? options2 : [options2];
-    } : (c) => {
-      let executionContext = void 0;
-      try {
-        executionContext = c.executionCtx;
-      } catch {
-      }
-      return [c.env, executionContext];
-    };
+    const getOptions = optionHandler
+      ? (c) => {
+          const options2 = optionHandler(c);
+          return Array.isArray(options2) ? options2 : [options2];
+        }
+      : (c) => {
+          let executionContext = void 0;
+          try {
+            executionContext = c.executionCtx;
+          } catch {}
+          return [c.env, executionContext];
+        };
     replaceRequest ||= (() => {
       const mergedPath = (0, import_url.mergePath)(this._basePath, path);
       const pathPrefixLength = mergedPath === "/" ? 0 : mergedPath.length;
@@ -269,13 +285,20 @@ class Hono {
       };
     })();
     const handler = async (c, next) => {
-      const res = await applicationHandler(replaceRequest(c.req.raw), ...getOptions(c));
+      const res = await applicationHandler(
+        replaceRequest(c.req.raw),
+        ...getOptions(c),
+      );
       if (res) {
         return res;
       }
       await next();
     };
-    this.#addRoute(import_router.METHOD_NAME_ALL, (0, import_url.mergePath)(path, "*"), handler);
+    this.#addRoute(
+      import_router.METHOD_NAME_ALL,
+      (0, import_url.mergePath)(path, "*"),
+      handler,
+    );
     return this;
   }
   #addRoute(method, path, handler) {
@@ -293,7 +316,11 @@ class Hono {
   }
   #dispatch(request, executionCtx, env, method) {
     if (method === "HEAD") {
-      return (async () => new Response(null, await this.#dispatch(request, executionCtx, env, "GET")))();
+      return (async () =>
+        new Response(
+          null,
+          await this.#dispatch(request, executionCtx, env, "GET"),
+        ))();
     }
     const path = this.getPath(request, { env });
     const matchResult = this.router.match(method, path);
@@ -302,7 +329,7 @@ class Hono {
       matchResult,
       env,
       executionCtx,
-      notFoundHandler: this.#notFoundHandler
+      notFoundHandler: this.#notFoundHandler,
     });
     if (matchResult[0].length === 1) {
       let res;
@@ -313,17 +340,26 @@ class Hono {
       } catch (err) {
         return this.#handleError(err, c);
       }
-      return res instanceof Promise ? res.then(
-        (resolved) => resolved || (c.finalized ? c.res : this.#notFoundHandler(c))
-      ).catch((err) => this.#handleError(err, c)) : res ?? this.#notFoundHandler(c);
+      return res instanceof Promise
+        ? res
+            .then(
+              (resolved) =>
+                resolved || (c.finalized ? c.res : this.#notFoundHandler(c)),
+            )
+            .catch((err) => this.#handleError(err, c))
+        : (res ?? this.#notFoundHandler(c));
     }
-    const composed = (0, import_compose.compose)(matchResult[0], this.errorHandler, this.#notFoundHandler);
+    const composed = (0, import_compose.compose)(
+      matchResult[0],
+      this.errorHandler,
+      this.#notFoundHandler,
+    );
     return (async () => {
       try {
         const context = await composed(c);
         if (!context.finalized) {
           throw new Error(
-            "Context is not finalized. Did you forget to return a Response object or `await next()`?"
+            "Context is not finalized. Did you forget to return a Response object or `await next()`?",
           );
         }
         return context.res;
@@ -360,16 +396,22 @@ class Hono {
    */
   request = (input, requestInit, Env, executionCtx) => {
     if (input instanceof Request) {
-      return this.fetch(requestInit ? new Request(input, requestInit) : input, Env, executionCtx);
+      return this.fetch(
+        requestInit ? new Request(input, requestInit) : input,
+        Env,
+        executionCtx,
+      );
     }
     input = input.toString();
     return this.fetch(
       new Request(
-        /^https?:\/\//.test(input) ? input : `http://localhost${(0, import_url.mergePath)("/", input)}`,
-        requestInit
+        /^https?:\/\//.test(input)
+          ? input
+          : `http://localhost${(0, import_url.mergePath)("/", input)}`,
+        requestInit,
       ),
       Env,
-      executionCtx
+      executionCtx,
     );
   };
   /**
@@ -391,11 +433,14 @@ class Hono {
    */
   fire = () => {
     addEventListener("fetch", (event) => {
-      event.respondWith(this.#dispatch(event.request, event, void 0, event.request.method));
+      event.respondWith(
+        this.#dispatch(event.request, event, void 0, event.request.method),
+      );
     });
   };
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  HonoBase
-});
+0 &&
+  (module.exports = {
+    HonoBase,
+  });

@@ -1,4 +1,3 @@
-"use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -8,21 +7,25 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/response.ts
 var response_exports = {};
 __export(response_exports, {
   GlobalResponse: () => GlobalResponse,
   Response: () => Response,
-  cacheKey: () => cacheKey
+  cacheKey: () => cacheKey,
 });
 module.exports = __toCommonJS(response_exports);
 var responseCache = Symbol("responseCache");
@@ -34,7 +37,7 @@ var Response = class _Response {
   #init;
   [getResponseCache]() {
     delete this[cacheKey];
-    return this[responseCache] ||= new GlobalResponse(this.#body, this.#init);
+    return (this[responseCache] ||= new GlobalResponse(this.#body, this.#init));
   }
   constructor(body, init) {
     let headers;
@@ -52,8 +55,15 @@ var Response = class _Response {
     } else {
       this.#init = init;
     }
-    if (typeof body === "string" || typeof body?.getReader !== "undefined" || body instanceof Blob || body instanceof Uint8Array) {
-      headers ||= init?.headers || { "content-type": "text/plain; charset=UTF-8" };
+    if (
+      typeof body === "string" ||
+      typeof body?.getReader !== "undefined" ||
+      body instanceof Blob ||
+      body instanceof Uint8Array
+    ) {
+      headers ||= init?.headers || {
+        "content-type": "text/plain; charset=UTF-8",
+      };
       this[cacheKey] = [init?.status || 200, body, headers];
     }
   }
@@ -75,25 +85,34 @@ var Response = class _Response {
     return status >= 200 && status < 300;
   }
 };
-["body", "bodyUsed", "redirected", "statusText", "trailers", "type", "url"].forEach((k) => {
+[
+  "body",
+  "bodyUsed",
+  "redirected",
+  "statusText",
+  "trailers",
+  "type",
+  "url",
+].forEach((k) => {
   Object.defineProperty(Response.prototype, k, {
     get() {
       return this[getResponseCache]()[k];
-    }
+    },
   });
 });
 ["arrayBuffer", "blob", "clone", "formData", "json", "text"].forEach((k) => {
   Object.defineProperty(Response.prototype, k, {
-    value: function() {
+    value: function () {
       return this[getResponseCache]()[k]();
-    }
+    },
   });
 });
 Object.setPrototypeOf(Response, GlobalResponse);
 Object.setPrototypeOf(Response.prototype, GlobalResponse.prototype);
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  GlobalResponse,
-  Response,
-  cacheKey
-});
+0 &&
+  (module.exports = {
+    GlobalResponse,
+    Response,
+    cacheKey,
+  });

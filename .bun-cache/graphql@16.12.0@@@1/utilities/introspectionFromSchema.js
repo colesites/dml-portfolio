@@ -1,17 +1,15 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.introspectionFromSchema = introspectionFromSchema;
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
-var _parser = require('../language/parser.js');
+var _parser = require("../language/parser.js");
 
-var _execute = require('../execution/execute.js');
+var _execute = require("../execution/execute.js");
 
-var _getIntrospectionQuery = require('./getIntrospectionQuery.js');
+var _getIntrospectionQuery = require("./getIntrospectionQuery.js");
 
 /**
  * Build an IntrospectionQuery from a GraphQLSchema

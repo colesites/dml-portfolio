@@ -37,16 +37,35 @@ test("flat inference", () => {
   expectTypeOf<typeof readonlyUndefined._output>().toEqualTypeOf<undefined>();
   expectTypeOf<typeof readonlyNull._output>().toEqualTypeOf<null>();
   expectTypeOf<typeof readonlyAny._output>().toEqualTypeOf<any>();
-  expectTypeOf<typeof readonlyUnknown._output>().toEqualTypeOf<Readonly<unknown>>();
+  expectTypeOf<typeof readonlyUnknown._output>().toEqualTypeOf<
+    Readonly<unknown>
+  >();
   expectTypeOf<typeof readonlyVoid._output>().toEqualTypeOf<void>();
-  expectTypeOf<typeof readonlyStringArray._output>().toEqualTypeOf<readonly string[]>();
-  expectTypeOf<typeof readonlyTuple._output>().toEqualTypeOf<readonly [string, number]>();
-  expectTypeOf<typeof readonlyMap._output>().toEqualTypeOf<ReadonlyMap<string, Date>>();
-  expectTypeOf<typeof readonlySet._output>().toEqualTypeOf<ReadonlySet<string>>();
-  expectTypeOf<typeof readonlyStringRecord._output>().toEqualTypeOf<Readonly<Record<string, string>>>();
-  expectTypeOf<typeof readonlyNumberRecord._output>().toEqualTypeOf<Readonly<Record<string, number>>>();
-  expectTypeOf<typeof readonlyObject._output>().toEqualTypeOf<{ readonly a: string; readonly 1: number }>();
-  expectTypeOf<typeof readonlyEnum._output>().toEqualTypeOf<Readonly<testEnum>>();
+  expectTypeOf<typeof readonlyStringArray._output>().toEqualTypeOf<
+    readonly string[]
+  >();
+  expectTypeOf<typeof readonlyTuple._output>().toEqualTypeOf<
+    readonly [string, number]
+  >();
+  expectTypeOf<typeof readonlyMap._output>().toEqualTypeOf<
+    ReadonlyMap<string, Date>
+  >();
+  expectTypeOf<typeof readonlySet._output>().toEqualTypeOf<
+    ReadonlySet<string>
+  >();
+  expectTypeOf<typeof readonlyStringRecord._output>().toEqualTypeOf<
+    Readonly<Record<string, string>>
+  >();
+  expectTypeOf<typeof readonlyNumberRecord._output>().toEqualTypeOf<
+    Readonly<Record<string, number>>
+  >();
+  expectTypeOf<typeof readonlyObject._output>().toEqualTypeOf<{
+    readonly a: string;
+    readonly 1: number;
+  }>();
+  expectTypeOf<typeof readonlyEnum._output>().toEqualTypeOf<
+    Readonly<testEnum>
+  >();
   expectTypeOf<typeof readonlyPromise._output>().toEqualTypeOf<string>();
 });
 
@@ -119,56 +138,104 @@ test("flat inference", () => {
 // });
 
 test("object freezing", async () => {
-  expect(Object.isFrozen(z.array(z.string()).readonly().parse(["a"]))).toBe(true);
-  expect(Object.isFrozen(z.tuple([z.string(), z.number()]).readonly().parse(["a", 1]))).toBe(true);
+  expect(Object.isFrozen(z.array(z.string()).readonly().parse(["a"]))).toBe(
+    true,
+  );
+  expect(
+    Object.isFrozen(
+      z.tuple([z.string(), z.number()]).readonly().parse(["a", 1]),
+    ),
+  ).toBe(true);
   expect(
     Object.isFrozen(
       z
         .map(z.string(), z.date())
         .readonly()
-        .parse(new Map([["a", new Date()]]))
-    )
+        .parse(new Map([["a", new Date()]])),
+    ),
   ).toBe(true);
 
-  expect(Object.isFrozen(z.record(z.string(), z.string()).readonly().parse({ a: "b" }))).toBe(true);
-  expect(Object.isFrozen(z.record(z.string(), z.number()).readonly().parse({ a: 1 }))).toBe(true);
-  expect(Object.isFrozen(z.object({ a: z.string(), 1: z.number() }).readonly().parse({ a: "b", 1: 2 }))).toBe(true);
+  expect(
+    Object.isFrozen(
+      z.record(z.string(), z.string()).readonly().parse({ a: "b" }),
+    ),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      z.record(z.string(), z.number()).readonly().parse({ a: 1 }),
+    ),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      z
+        .object({ a: z.string(), 1: z.number() })
+        .readonly()
+        .parse({ a: "b", 1: 2 }),
+    ),
+  ).toBe(true);
   expect(
     Object.isFrozen(
       await z
         .set(z.promise(z.string()))
         .readonly()
-        .parseAsync(new Set([Promise.resolve("a")]))
-    )
+        .parseAsync(new Set([Promise.resolve("a")])),
+    ),
   ).toBe(true);
-  expect(Object.isFrozen(await z.promise(z.string()).readonly().parseAsync(Promise.resolve("a")))).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z.promise(z.string()).readonly().parseAsync(Promise.resolve("a")),
+    ),
+  ).toBe(true);
 });
 
 test("async object freezing", async () => {
-  expect(Object.isFrozen(await z.array(z.string()).readonly().parseAsync(["a"]))).toBe(true);
-  expect(Object.isFrozen(await z.tuple([z.string(), z.number()]).readonly().parseAsync(["a", 1]))).toBe(true);
+  expect(
+    Object.isFrozen(await z.array(z.string()).readonly().parseAsync(["a"])),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z.tuple([z.string(), z.number()]).readonly().parseAsync(["a", 1]),
+    ),
+  ).toBe(true);
   expect(
     Object.isFrozen(
       await z
         .map(z.string(), z.date())
         .readonly()
-        .parseAsync(new Map([["a", new Date()]]))
-    )
+        .parseAsync(new Map([["a", new Date()]])),
+    ),
   ).toBe(true);
   expect(
     Object.isFrozen(
       await z
         .set(z.promise(z.string()))
         .readonly()
-        .parseAsync(new Set([Promise.resolve("a")]))
-    )
+        .parseAsync(new Set([Promise.resolve("a")])),
+    ),
   ).toBe(true);
-  expect(Object.isFrozen(await z.record(z.string(), z.string()).readonly().parseAsync({ a: "b" }))).toBe(true);
-  expect(Object.isFrozen(await z.record(z.string(), z.number()).readonly().parseAsync({ a: 1 }))).toBe(true);
   expect(
-    Object.isFrozen(await z.object({ a: z.string(), 1: z.number() }).readonly().parseAsync({ a: "b", 1: 2 }))
+    Object.isFrozen(
+      await z.record(z.string(), z.string()).readonly().parseAsync({ a: "b" }),
+    ),
   ).toBe(true);
-  expect(Object.isFrozen(await z.promise(z.string()).readonly().parseAsync(Promise.resolve("a")))).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z.record(z.string(), z.number()).readonly().parseAsync({ a: 1 }),
+    ),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z
+        .object({ a: z.string(), 1: z.number() })
+        .readonly()
+        .parseAsync({ a: "b", 1: 2 }),
+    ),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z.promise(z.string()).readonly().parseAsync(Promise.resolve("a")),
+    ),
+  ).toBe(true);
 });
 
 test("readonly inference", () => {
@@ -225,13 +292,19 @@ test("readonly and the get method", () => {
   expectTypeOf<z.infer<typeof readonlyUndefined>>().toEqualTypeOf<undefined>();
   expectTypeOf<z.infer<typeof readonlyNull>>().toEqualTypeOf<null>();
   expectTypeOf<z.infer<typeof readonlyAny>>().toEqualTypeOf<any>();
-  expectTypeOf<z.infer<typeof readonlyUnknown>>().toEqualTypeOf<Readonly<unknown>>();
+  expectTypeOf<z.infer<typeof readonlyUnknown>>().toEqualTypeOf<
+    Readonly<unknown>
+  >();
   expectTypeOf<z.infer<typeof readonlyVoid>>().toEqualTypeOf<void>();
   // expectTypeOf<z.infer<typeof readonlyFunction>>().toEqualTypeOf<
   //   (args_0: string, args_1: number, ...args_2: unknown[]) => unknown
   // >();
-  expectTypeOf<z.infer<typeof readonlyStringArray>>().toEqualTypeOf<readonly string[]>();
-  expectTypeOf<z.infer<typeof readonlyTuple>>().toEqualTypeOf<readonly [string, number]>();
+  expectTypeOf<z.infer<typeof readonlyStringArray>>().toEqualTypeOf<
+    readonly string[]
+  >();
+  expectTypeOf<z.infer<typeof readonlyTuple>>().toEqualTypeOf<
+    readonly [string, number]
+  >();
 
   expect(readonlyString.parse("asdf")).toEqual("asdf");
   expect(readonlyNumber1.parse(1234)).toEqual(1234);

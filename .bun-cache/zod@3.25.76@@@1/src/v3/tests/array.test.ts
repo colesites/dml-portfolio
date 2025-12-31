@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -41,7 +41,7 @@ test("parse empty array in nonempty", () => {
     z
       .array(z.string())
       .nonempty()
-      .parse([] as any)
+      .parse([] as any),
   ).toThrow();
 });
 

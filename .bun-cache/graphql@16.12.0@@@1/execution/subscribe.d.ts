@@ -1,8 +1,8 @@
-import type { Maybe } from '../jsutils/Maybe';
-import type { DocumentNode } from '../language/ast';
-import type { GraphQLFieldResolver } from '../type/definition';
-import type { GraphQLSchema } from '../type/schema';
-import type { ExecutionArgs, ExecutionResult } from './execute';
+import type { Maybe } from "../jsutils/Maybe";
+import type { DocumentNode } from "../language/ast";
+import type { GraphQLFieldResolver } from "../type/definition";
+import type { GraphQLSchema } from "../type/schema";
+import type { ExecutionArgs, ExecutionResult } from "./execute";
 /**
  * Implements the "Subscribe" algorithm described in the GraphQL specification.
  *

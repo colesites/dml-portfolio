@@ -1,5 +1,5 @@
-import { OAuthClientProvider } from './auth.js';
-import { FetchLike } from '../shared/transport.js';
+import { OAuthClientProvider } from "./auth.js";
+import { FetchLike } from "../shared/transport.js";
 /**
  * Middleware function that wraps and enhances fetch functionality.
  * Takes a fetch handler and returns an enhanced fetch handler.
@@ -31,44 +31,47 @@ export type Middleware = (next: FetchLike) => FetchLike;
  * @param baseUrl - Base URL for OAuth server discovery (defaults to request URL domain)
  * @returns A fetch middleware function
  */
-export declare const withOAuth: (provider: OAuthClientProvider, baseUrl?: string | URL) => Middleware;
+export declare const withOAuth: (
+  provider: OAuthClientProvider,
+  baseUrl?: string | URL,
+) => Middleware;
 /**
  * Logger function type for HTTP requests
  */
 export type RequestLogger = (input: {
-    method: string;
-    url: string | URL;
-    status: number;
-    statusText: string;
-    duration: number;
-    requestHeaders?: Headers;
-    responseHeaders?: Headers;
-    error?: Error;
+  method: string;
+  url: string | URL;
+  status: number;
+  statusText: string;
+  duration: number;
+  requestHeaders?: Headers;
+  responseHeaders?: Headers;
+  error?: Error;
 }) => void;
 /**
  * Configuration options for the logging middleware
  */
 export type LoggingOptions = {
-    /**
-     * Custom logger function, defaults to console logging
-     */
-    logger?: RequestLogger;
-    /**
-     * Whether to include request headers in logs
-     * @default false
-     */
-    includeRequestHeaders?: boolean;
-    /**
-     * Whether to include response headers in logs
-     * @default false
-     */
-    includeResponseHeaders?: boolean;
-    /**
-     * Status level filter - only log requests with status >= this value
-     * Set to 0 to log all requests, 400 to log only errors
-     * @default 0
-     */
-    statusLevel?: number;
+  /**
+   * Custom logger function, defaults to console logging
+   */
+  logger?: RequestLogger;
+  /**
+   * Whether to include request headers in logs
+   * @default false
+   */
+  includeRequestHeaders?: boolean;
+  /**
+   * Whether to include response headers in logs
+   * @default false
+   */
+  includeResponseHeaders?: boolean;
+  /**
+   * Status level filter - only log requests with status >= this value
+   * Set to 0 to log all requests, 400 to log only errors
+   * @default 0
+   */
+  statusLevel?: number;
 };
 /**
  * Creates a fetch middleware that logs HTTP requests and responses.
@@ -106,7 +109,9 @@ export declare const withLogging: (options?: LoggingOptions) => Middleware;
  * @param middleware - Array of fetch middleware to compose into a pipeline
  * @returns A single composed middleware function
  */
-export declare const applyMiddlewares: (...middleware: Middleware[]) => Middleware;
+export declare const applyMiddlewares: (
+  ...middleware: Middleware[]
+) => Middleware;
 /**
  * Helper function to create custom fetch middleware with cleaner syntax.
  * Provides the next handler and request details as separate parameters for easier access.
@@ -165,5 +170,11 @@ export declare const applyMiddlewares: (...middleware: Middleware[]) => Middlewa
  * @param handler - Function that receives the next handler and request parameters
  * @returns A fetch middleware function
  */
-export declare const createMiddleware: (handler: (next: FetchLike, input: string | URL, init?: RequestInit) => Promise<Response>) => Middleware;
+export declare const createMiddleware: (
+  handler: (
+    next: FetchLike,
+    input: string | URL,
+    init?: RequestInit,
+  ) => Promise<Response>,
+) => Middleware;
 //# sourceMappingURL=middleware.d.ts.map

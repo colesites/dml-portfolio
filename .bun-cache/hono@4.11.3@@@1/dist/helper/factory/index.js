@@ -1,5 +1,6 @@
 // src/helper/factory/index.ts
 import { Hono } from "../../hono.js";
+
 var Factory = class {
   initApp;
   #defaultAppOptions;
@@ -9,7 +10,9 @@ var Factory = class {
   }
   createApp = (options) => {
     const app = new Hono(
-      options && this.#defaultAppOptions ? { ...this.#defaultAppOptions, ...options } : options ?? this.#defaultAppOptions
+      options && this.#defaultAppOptions
+        ? { ...this.#defaultAppOptions, ...options }
+        : (options ?? this.#defaultAppOptions),
     );
     if (this.initApp) {
       this.initApp(app);
@@ -23,8 +26,4 @@ var Factory = class {
 };
 var createFactory = (init) => new Factory(init);
 var createMiddleware = (middleware) => middleware;
-export {
-  Factory,
-  createFactory,
-  createMiddleware
-};
+export { Factory, createFactory, createMiddleware };

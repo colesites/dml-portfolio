@@ -1,6 +1,6 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});var __accessCheck = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
+Object.defineProperty(exports, "__esModule", { value: true });
+var __accessCheck = (obj, member, msg) => {
+  if (!member.has(obj)) throw TypeError("Cannot " + msg);
 };
 var __privateGet = (obj, member, getter) => {
   __accessCheck(obj, member, "read from private field");
@@ -13,12 +13,12 @@ var __privateAdd = (obj, member, value) => {
 };
 
 // src/Interceptor.ts
-var _logger = require('@open-draft/logger');
-var _stricteventemitter = require('strict-event-emitter');
+var _logger = require("@open-draft/logger");
+var _stricteventemitter = require("strict-event-emitter");
 var INTERNAL_REQUEST_ID_HEADER_NAME = "x-interceptors-internal-request-id";
 function getGlobalSymbol(symbol) {
   return (
-    // @ts-ignore https://github.com/Microsoft/TypeScript/issues/24587
+    // @ts-expect-error https://github.com/Microsoft/TypeScript/issues/24587
     globalThis[symbol] || void 0
   );
 }
@@ -95,14 +95,16 @@ var Interceptor = class {
    * This method is not run if there's a running interceptor instance
    * to prevent instantiating an interceptor multiple times.
    */
-  setup() {
-  }
+  setup() {}
   /**
    * Listen to the interceptor's public events.
    */
   on(event, listener) {
     const logger = this.logger.extend("on");
-    if (this.readyState === "DISPOSING" /* DISPOSING */ || this.readyState === "DISPOSED" /* DISPOSED */) {
+    if (
+      this.readyState === "DISPOSING" /* DISPOSING */ ||
+      this.readyState === "DISPOSED" /* DISPOSED */
+    ) {
       logger.info("cannot listen to events, already disposed!");
       return this;
     }
@@ -140,7 +142,10 @@ var Interceptor = class {
     this.clearInstance();
     logger.info("global symbol deleted:", getGlobalSymbol(this.symbol));
     if (this.subscriptions.length > 0) {
-      logger.info("disposing of %d subscriptions...", this.subscriptions.length);
+      logger.info(
+        "disposing of %d subscriptions...",
+        this.subscriptions.length,
+      );
       for (const dispose of this.subscriptions) {
         dispose();
       }
@@ -154,7 +159,12 @@ var Interceptor = class {
   getInstance() {
     var _a;
     const instance = getGlobalSymbol(this.symbol);
-    this.logger.info("retrieved global instance:", (_a = instance == null ? void 0 : instance.constructor) == null ? void 0 : _a.name);
+    this.logger.info(
+      "retrieved global instance:",
+      (_a = instance == null ? void 0 : instance.constructor) == null
+        ? void 0
+        : _a.name,
+    );
     return instance;
   }
   setInstance() {
@@ -172,14 +182,12 @@ function createRequestId() {
   return Math.random().toString(16).slice(2);
 }
 
-
-
-
-
-
-
-
-
-
-exports.__privateGet = __privateGet; exports.__privateAdd = __privateAdd; exports.INTERNAL_REQUEST_ID_HEADER_NAME = INTERNAL_REQUEST_ID_HEADER_NAME; exports.getGlobalSymbol = getGlobalSymbol; exports.deleteGlobalSymbol = deleteGlobalSymbol; exports.InterceptorReadyState = InterceptorReadyState; exports.Interceptor = Interceptor; exports.createRequestId = createRequestId;
+exports.__privateGet = __privateGet;
+exports.__privateAdd = __privateAdd;
+exports.INTERNAL_REQUEST_ID_HEADER_NAME = INTERNAL_REQUEST_ID_HEADER_NAME;
+exports.getGlobalSymbol = getGlobalSymbol;
+exports.deleteGlobalSymbol = deleteGlobalSymbol;
+exports.InterceptorReadyState = InterceptorReadyState;
+exports.Interceptor = Interceptor;
+exports.createRequestId = createRequestId;
 //# sourceMappingURL=chunk-JQ2S7G56.js.map

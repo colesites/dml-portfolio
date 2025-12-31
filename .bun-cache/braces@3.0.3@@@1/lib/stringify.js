@@ -1,16 +1,14 @@
-'use strict';
-
-const utils = require('./utils');
+const utils = require("./utils");
 
 module.exports = (ast, options = {}) => {
   const stringify = (node, parent = {}) => {
     const invalidBlock = options.escapeInvalid && utils.isInvalidBrace(parent);
     const invalidNode = node.invalid === true && options.escapeInvalid === true;
-    let output = '';
+    let output = "";
 
     if (node.value) {
       if ((invalidBlock || invalidNode) && utils.isOpenOrClose(node)) {
-        return '\\' + node.value;
+        return "\\" + node.value;
       }
       return node.value;
     }
@@ -29,4 +27,3 @@ module.exports = (ast, options = {}) => {
 
   return stringify(ast);
 };
-

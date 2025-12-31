@@ -4,12 +4,12 @@ import * as core from "../core/index.js";
 import type { ZodType } from "./schemas.js";
 
 export type {
+  /** @deprecated Use `z.core.$$ZodFirstPartyTypes` instead */
+  $ZodTypes as ZodFirstPartySchemaTypes,
   /** @deprecated Use `z.output<T>` instead. */
   output as TypeOf,
   /** @deprecated Use `z.output<T>` instead. */
   output as Infer,
-  /** @deprecated Use `z.core.$$ZodFirstPartyTypes` instead */
-  $ZodTypes as ZodFirstPartySchemaTypes,
 } from "../core/index.js";
 
 /** @deprecated Use the raw string literal codes instead, e.g. "invalid_type". */
@@ -28,16 +28,21 @@ export const ZodIssueCode = {
 } as const;
 
 /** @deprecated Use `z.$ZodFlattenedError` */
-export type inferFlattenedErrors<T extends core.$ZodType, U = string> = core.$ZodFlattenedError<core.output<T>, U>;
+export type inferFlattenedErrors<
+  T extends core.$ZodType,
+  U = string,
+> = core.$ZodFlattenedError<core.output<T>, U>;
 
 /** @deprecated Use `z.$ZodFormattedError` */
-export type inferFormattedError<T extends core.$ZodType<any, any>, U = string> = core.$ZodFormattedError<
-  core.output<T>,
-  U
->;
+export type inferFormattedError<
+  T extends core.$ZodType<any, any>,
+  U = string,
+> = core.$ZodFormattedError<core.output<T>, U>;
 
 /** Use `z.$brand` instead */
-export type BRAND<T extends string | number | symbol = string | number | symbol> = {
+export type BRAND<
+  T extends string | number | symbol = string | number | symbol,
+> = {
   [core.$brand]: { [k in T]: true };
 };
 export { $brand, config } from "../core/index.js";

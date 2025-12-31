@@ -9,13 +9,18 @@ const errors_js_1 = require("../errors.js");
  * @returns Express middleware that returns a 405 error if method not in allowed list
  */
 function allowedMethods(allowedMethods) {
-    return (req, res, next) => {
-        if (allowedMethods.includes(req.method)) {
-            next();
-            return;
-        }
-        const error = new errors_js_1.MethodNotAllowedError(`The method ${req.method} is not allowed for this endpoint`);
-        res.status(405).set('Allow', allowedMethods.join(', ')).json(error.toResponseObject());
-    };
+  return (req, res, next) => {
+    if (allowedMethods.includes(req.method)) {
+      next();
+      return;
+    }
+    const error = new errors_js_1.MethodNotAllowedError(
+      `The method ${req.method} is not allowed for this endpoint`,
+    );
+    res
+      .status(405)
+      .set("Allow", allowedMethods.join(", "))
+      .json(error.toResponseObject());
+  };
 }
 //# sourceMappingURL=allowedMethods.js.map

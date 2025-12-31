@@ -1,18 +1,18 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { inspect } from '../jsutils/inspect.mjs';
-import { instanceOf } from '../jsutils/instanceOf.mjs';
-import { isObjectLike } from '../jsutils/isObjectLike.mjs';
-import { toObjMap } from '../jsutils/toObjMap.mjs';
-import { OperationTypeNode } from '../language/ast.mjs';
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { instanceOf } from "../jsutils/instanceOf.mjs";
+import { isObjectLike } from "../jsutils/isObjectLike.mjs";
+import { toObjMap } from "../jsutils/toObjMap.mjs";
+import { OperationTypeNode } from "../language/ast.mjs";
 import {
   getNamedType,
   isInputObjectType,
   isInterfaceType,
   isObjectType,
   isUnionType,
-} from './definition.mjs';
-import { isDirective, specifiedDirectives } from './directives.mjs';
-import { __Schema } from './introspection.mjs';
+} from "./definition.mjs";
+import { isDirective, specifiedDirectives } from "./directives.mjs";
+import { __Schema } from "./introspection.mjs";
 /**
  * Test if the given value is a GraphQL schema.
  */
@@ -115,7 +115,7 @@ export class GraphQLSchema {
     this.__validationErrors = config.assumeValid === true ? [] : undefined; // Check for common mistakes during construction to produce early errors.
 
     isObjectLike(config) ||
-      devAssert(false, 'Must provide configuration object.');
+      devAssert(false, "Must provide configuration object.");
     !config.types ||
       Array.isArray(config.types) ||
       devAssert(
@@ -196,7 +196,7 @@ export class GraphQLSchema {
       typeName ||
         devAssert(
           false,
-          'One of the provided types for building the Schema is missing a name.',
+          "One of the provided types for building the Schema is missing a name.",
         );
 
       if (this._typeMap[typeName] !== undefined) {
@@ -244,7 +244,7 @@ export class GraphQLSchema {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLSchema';
+    return "GraphQLSchema";
   }
 
   getQueryType() {

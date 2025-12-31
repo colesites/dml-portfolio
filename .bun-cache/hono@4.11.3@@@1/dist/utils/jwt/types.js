@@ -26,7 +26,7 @@ var JwtTokenExpired = class extends Error {
 var JwtTokenIssuedAt = class extends Error {
   constructor(currentTimestamp, iat) {
     super(
-      `Invalid "iat" claim, must be a valid number lower than "${currentTimestamp}" (iat: "${iat}")`
+      `Invalid "iat" claim, must be a valid number lower than "${currentTimestamp}" (iat: "${iat}")`,
     );
     this.name = "JwtTokenIssuedAt";
   }
@@ -64,7 +64,7 @@ var JwtPayloadRequiresAud = class extends Error {
 var JwtTokenAudience = class extends Error {
   constructor(expected, aud) {
     super(
-      `expected audience "${Array.isArray(expected) ? expected.join(", ") : expected}", got "${aud}"`
+      `expected audience "${Array.isArray(expected) ? expected.join(", ") : expected}", got "${aud}"`,
     );
     this.name = "JwtTokenAudience";
   }
@@ -92,5 +92,5 @@ export {
   JwtTokenIssuedAt,
   JwtTokenIssuer,
   JwtTokenNotBefore,
-  JwtTokenSignatureMismatched
+  JwtTokenSignatureMismatched,
 };

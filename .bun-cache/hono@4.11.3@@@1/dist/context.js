@@ -1,11 +1,12 @@
 // src/context.ts
 import { HonoRequest } from "./request.js";
 import { HtmlEscapedCallbackPhase, resolveCallback } from "./utils/html.js";
+
 var TEXT_PLAIN = "text/plain; charset=UTF-8";
 var setDefaultContentType = (contentType, headers) => {
   return {
     "Content-Type": contentType,
-    ...headers
+    ...headers,
   };
 };
 var Context = class {
@@ -72,7 +73,11 @@ var Context = class {
    * `.req` is the instance of {@link HonoRequest}.
    */
   get req() {
-    this.#req ??= new HonoRequest(this.#rawRequest, this.#path, this.#matchResult);
+    this.#req ??= new HonoRequest(
+      this.#rawRequest,
+      this.#path,
+      this.#matchResult,
+    );
     return this.#req;
   }
   /**
@@ -106,9 +111,9 @@ var Context = class {
    * The Response object for the current request.
    */
   get res() {
-    return this.#res ||= new Response(null, {
-      headers: this.#preparedHeaders ??= new Headers()
-    });
+    return (this.#res ||= new Response(null, {
+      headers: (this.#preparedHeaders ??= new Headers()),
+    }));
   }
   /**
    * Sets the Response object for the current request.
@@ -158,7 +163,7 @@ var Context = class {
    * @param layout - The layout to set.
    * @returns The layout function.
    */
-  setLayout = (layout) => this.#layout = layout;
+  setLayout = (layout) => (this.#layout = layout);
   /**
    * Gets the current layout for the response.
    *
@@ -209,7 +214,9 @@ var Context = class {
     if (this.finalized) {
       this.#res = new Response(this.#res.body, this.#res);
     }
-    const headers = this.#res ? this.#res.headers : this.#preparedHeaders ??= new Headers();
+    const headers = this.#res
+      ? this.#res.headers
+      : (this.#preparedHeaders ??= new Headers());
     if (value === void 0) {
       headers.delete(name);
     } else if (options?.append) {
@@ -272,9 +279,12 @@ var Context = class {
     return Object.fromEntries(this.#var);
   }
   #newResponse(data, arg, headers) {
-    const responseHeaders = this.#res ? new Headers(this.#res.headers) : this.#preparedHeaders ?? new Headers();
+    const responseHeaders = this.#res
+      ? new Headers(this.#res.headers)
+      : (this.#preparedHeaders ?? new Headers());
     if (typeof arg === "object" && "headers" in arg) {
-      const argHeaders = arg.headers instanceof Headers ? arg.headers : new Headers(arg.headers);
+      const argHeaders =
+        arg.headers instanceof Headers ? arg.headers : new Headers(arg.headers);
       for (const [key, value] of argHeaders) {
         if (key.toLowerCase() === "set-cookie") {
           responseHeaders.append(key, value);
@@ -295,7 +305,8 @@ var Context = class {
         }
       }
     }
-    const status = typeof arg === "number" ? arg : arg?.status ?? this.#status;
+    const status =
+      typeof arg === "number" ? arg : (arg?.status ?? this.#status);
     return new Response(data, { status, headers: responseHeaders });
   }
   newResponse = (...args) => this.#newResponse(...args);
@@ -334,11 +345,17 @@ var Context = class {
    * ```
    */
   text = (text, arg, headers) => {
-    return !this.#preparedHeaders && !this.#status && !arg && !headers && !this.finalized ? new Response(text) : this.#newResponse(
-      text,
-      arg,
-      setDefaultContentType(TEXT_PLAIN, headers)
-    );
+    return !this.#preparedHeaders &&
+      !this.#status &&
+      !arg &&
+      !headers &&
+      !this.finalized
+      ? new Response(text)
+      : this.#newResponse(
+          text,
+          arg,
+          setDefaultContentType(TEXT_PLAIN, headers),
+        );
   };
   /**
    * `.json()` can render JSON as `Content-Type:application/json`.
@@ -356,12 +373,24 @@ var Context = class {
     return this.#newResponse(
       JSON.stringify(object),
       arg,
-      setDefaultContentType("application/json", headers)
+      setDefaultContentType("application/json", headers),
     );
   };
   html = (html, arg, headers) => {
-    const res = (html2) => this.#newResponse(html2, arg, setDefaultContentType("text/html; charset=UTF-8", headers));
-    return typeof html === "object" ? resolveCallback(html, HtmlEscapedCallbackPhase.Stringify, false, {}).then(res) : res(html);
+    const res = (html2) =>
+      this.#newResponse(
+        html2,
+        arg,
+        setDefaultContentType("text/html; charset=UTF-8", headers),
+      );
+    return typeof html === "object"
+      ? resolveCallback(
+          html,
+          HtmlEscapedCallbackPhase.Stringify,
+          false,
+          {},
+        ).then(res)
+      : res(html);
   };
   /**
    * `.redirect()` can Redirect, default status code is 302.
@@ -384,7 +413,9 @@ var Context = class {
       "Location",
       // Multibyes should be encoded
       // eslint-disable-next-line no-control-regex
-      !/[^\x00-\xFF]/.test(locationString) ? locationString : encodeURI(locationString)
+      !/[^\x00-\xFF]/.test(locationString)
+        ? locationString
+        : encodeURI(locationString),
     );
     return this.newResponse(null, status ?? 302);
   };
@@ -405,7 +436,4 @@ var Context = class {
     return this.#notFoundHandler(this);
   };
 };
-export {
-  Context,
-  TEXT_PLAIN
-};
+export { Context, TEXT_PLAIN };

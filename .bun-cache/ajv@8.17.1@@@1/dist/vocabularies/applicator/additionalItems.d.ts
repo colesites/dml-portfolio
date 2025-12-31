@@ -1,8 +1,19 @@
-import type { CodeKeywordDefinition, ErrorObject, AnySchema } from "../../types";
+import type {
+  CodeKeywordDefinition,
+  ErrorObject,
+  AnySchema,
+} from "../../types";
 import type { KeywordCxt } from "../../compile/validate";
-export type AdditionalItemsError = ErrorObject<"additionalItems", {
+export type AdditionalItemsError = ErrorObject<
+  "additionalItems",
+  {
     limit: number;
-}, AnySchema>;
+  },
+  AnySchema
+>;
 declare const def: CodeKeywordDefinition;
-export declare function validateAdditionalItems(cxt: KeywordCxt, items: AnySchema[]): void;
+export declare function validateAdditionalItems(
+  cxt: KeywordCxt,
+  items: AnySchema[],
+): void;
 export default def;

@@ -1,9 +1,9 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
-import { ZodIssueCode } from "../ZodError.js";
 import { util } from "../helpers/util.js";
+import { ZodIssueCode } from "../ZodError.js";
 
 test("refinement", () => {
   const obj1 = z.object({
@@ -12,7 +12,10 @@ test("refinement", () => {
   });
   const obj2 = obj1.partial().strict();
 
-  const obj3 = obj2.refine((data) => data.first || data.second, "Either first or second should be filled in.");
+  const obj3 = obj2.refine(
+    (data) => data.first || data.second,
+    "Either first or second should be filled in.",
+  );
 
   expect(obj1 === (obj2 as any)).toEqual(false);
   expect(obj2 === (obj3 as any)).toEqual(false);
@@ -32,14 +35,17 @@ test("refinement 2", () => {
       password: z.string(),
       confirmPassword: z.string(),
     })
-    .refine((data) => data.password === data.confirmPassword, "Both password and confirmation must match");
+    .refine(
+      (data) => data.password === data.confirmPassword,
+      "Both password and confirmation must match",
+    );
 
   expect(() =>
     validationSchema.parse({
       email: "aaaa@gmail.com",
       password: "aaaaaaaa",
       confirmPassword: "bbbbbbbb",
-    })
+    }),
   ).toThrow();
 });
 
@@ -65,8 +71,9 @@ test("refinement Promise", async () => {
       confirmPassword: z.string(),
     })
     .refine(
-      (data) => Promise.resolve().then(() => data.password === data.confirmPassword),
-      "Both password and confirmation must match"
+      (data) =>
+        Promise.resolve().then(() => data.password === data.confirmPassword),
+      "Both password and confirmation must match",
     );
 
   await validationSchema.parseAsync({
@@ -113,7 +120,9 @@ test("use path in refinement context", async () => {
   expect(t1.success).toBe(true);
   expect(t2.success).toBe(false);
   if (t2.success === false) {
-    expect(t2.error.issues[0].message).toEqual("schema cannot be nested. path: foo");
+    expect(t2.error.issues[0].message).toEqual(
+      "schema cannot be nested. path: foo",
+    );
   }
 });
 

@@ -2,41 +2,41 @@ import type {
   DocumentNode,
   OperationDefinitionNode,
   OperationTypeNode,
-} from 'graphql'
-import type { GraphQLVariables } from '../../handlers/GraphQLHandler'
-import { toPublicUrl } from '../request/toPublicUrl'
-import { devUtils } from './devUtils'
-import { jsonParse } from './jsonParse'
-import { parseMultipartData } from './parseMultipartData'
+} from "graphql";
+import type { GraphQLVariables } from "../../handlers/GraphQLHandler";
+import { toPublicUrl } from "../request/toPublicUrl";
+import { devUtils } from "./devUtils";
+import { jsonParse } from "./jsonParse";
+import { parseMultipartData } from "./parseMultipartData";
 
 interface GraphQLInput {
-  query: string | null
-  variables?: GraphQLVariables
+  query: string | null;
+  variables?: GraphQLVariables;
 }
 
 export interface ParsedGraphQLQuery {
-  operationType: OperationTypeNode
-  operationName?: string
+  operationType: OperationTypeNode;
+  operationName?: string;
 }
 
 export type ParsedGraphQLRequest<
   VariablesType extends GraphQLVariables = GraphQLVariables,
 > =
   | (ParsedGraphQLQuery & {
-      query: string
-      variables?: VariablesType
+      query: string;
+      variables?: VariablesType;
     })
-  | undefined
+  | undefined;
 
 export function parseDocumentNode(node: DocumentNode): ParsedGraphQLQuery {
   const operationDef = node.definitions.find((definition) => {
-    return definition.kind === 'OperationDefinition'
-  }) as OperationDefinitionNode
+    return definition.kind === "OperationDefinition";
+  }) as OperationDefinitionNode;
 
   return {
     operationType: operationDef?.operation,
     operationName: operationDef?.name?.value,
-  }
+  };
 }
 
 async function parseQuery(query: string): Promise<ParsedGraphQLQuery | Error> {
@@ -47,132 +47,133 @@ async function parseQuery(query: string): Promise<ParsedGraphQLQuery | Error> {
    * handling dynamic imports. It gets replaced with a dynamic import on build time.
    */
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { parse } = require('graphql')
+  const { parse } = require("graphql");
 
   try {
-    const ast = parse(query)
-    return parseDocumentNode(ast)
+    const ast = parse(query);
+    return parseDocumentNode(ast);
   } catch (error) {
-    return error as Error
+    return error as Error;
   }
 }
 
-export type GraphQLParsedOperationsMap = Record<string, string[]>
+export type GraphQLParsedOperationsMap = Record<string, string[]>;
 export type GraphQLMultipartRequestBody = {
-  operations: string
-  map?: string
+  operations: string;
+  map?: string;
 } & {
-  [fileName: string]: File
-}
+  [fileName: string]: File;
+};
 
 function extractMultipartVariables<VariablesType extends GraphQLVariables>(
   variables: VariablesType,
   map: GraphQLParsedOperationsMap,
   files: Record<string, File>,
 ) {
-  const operations = { variables }
+  const operations = { variables };
 
   for (const [key, pathArray] of Object.entries(map)) {
     if (!(key in files)) {
-      throw new Error(`Given files do not have a key '${key}' .`)
+      throw new Error(`Given files do not have a key '${key}' .`);
     }
 
     for (const dotPath of pathArray) {
-      const [lastPath, ...reversedPaths] = dotPath.split('.').reverse()
-      const paths = reversedPaths.reverse()
-      let target: Record<string, any> = operations
+      const [lastPath, ...reversedPaths] = dotPath.split(".").reverse();
+      const paths = reversedPaths.reverse();
+      let target: Record<string, any> = operations;
 
       for (const path of paths) {
         if (!(path in target)) {
-          throw new Error(`Property '${paths}' is not in operations.`)
+          throw new Error(`Property '${paths}' is not in operations.`);
         }
 
-        target = target[path]
+        target = target[path];
       }
 
-      target[lastPath] = files[key]
+      target[lastPath] = files[key];
     }
   }
 
-  return operations.variables
+  return operations.variables;
 }
 
 async function getGraphQLInput(request: Request): Promise<GraphQLInput | null> {
   switch (request.method) {
-    case 'GET': {
-      const url = new URL(request.url)
-      const query = url.searchParams.get('query')
-      const variables = url.searchParams.get('variables') || ''
+    case "GET": {
+      const url = new URL(request.url);
+      const query = url.searchParams.get("query");
+      const variables = url.searchParams.get("variables") || "";
 
       return {
         query,
         variables: jsonParse(variables),
-      }
+      };
     }
 
-    case 'POST': {
+    case "POST": {
       // Clone the request so we could read its body without locking
       // the body stream to the downward consumers.
-      const requestClone = request.clone()
+      const requestClone = request.clone();
 
       // Handle multipart body GraphQL operations.
       if (
-        request.headers.get('content-type')?.includes('multipart/form-data')
+        request.headers.get("content-type")?.includes("multipart/form-data")
       ) {
         const responseJson = parseMultipartData<GraphQLMultipartRequestBody>(
           await requestClone.text(),
           request.headers,
-        )
+        );
 
         if (!responseJson) {
-          return null
+          return null;
         }
 
-        const { operations, map, ...files } = responseJson
+        const { operations, map, ...files } = responseJson;
         const parsedOperations =
           jsonParse<{ query?: string; variables?: GraphQLVariables }>(
             operations,
-          ) || {}
+          ) || {};
 
         if (!parsedOperations.query) {
-          return null
+          return null;
         }
 
-        const parsedMap = jsonParse<GraphQLParsedOperationsMap>(map || '') || {}
+        const parsedMap =
+          jsonParse<GraphQLParsedOperationsMap>(map || "") || {};
         const variables = parsedOperations.variables
           ? extractMultipartVariables(
               parsedOperations.variables,
               parsedMap,
               files,
             )
-          : {}
+          : {};
 
         return {
           query: parsedOperations.query,
           variables,
-        }
+        };
       }
 
       // Handle plain POST GraphQL operations.
       const requestJson: {
-        query: string
-        variables?: GraphQLVariables
-        operations?: any /** @todo Annotate this */
-      } = await requestClone.json().catch(() => null)
+        query: string;
+        variables?: GraphQLVariables;
+        operations?: any /** @todo Annotate this */;
+      } = await requestClone.json().catch(() => null);
 
       if (requestJson?.query) {
-        const { query, variables } = requestJson
+        const { query, variables } = requestJson;
 
         return {
           query,
           variables,
-        }
+        };
       }
-      return null
+      return null;
     }
 
     default:
-      return null
+      return null;
   }
 }
 
@@ -183,17 +184,17 @@ async function getGraphQLInput(request: Request): Promise<GraphQLInput | null> {
 export async function parseGraphQLRequest(
   request: Request,
 ): Promise<ParsedGraphQLRequest> {
-  const input = await getGraphQLInput(request)
+  const input = await getGraphQLInput(request);
 
   if (!input || !input.query) {
-    return
+    return;
   }
 
-  const { query, variables } = input
-  const parsedResult = await parseQuery(query)
+  const { query, variables } = input;
+  const parsedResult = await parseQuery(query);
 
   if (parsedResult instanceof Error) {
-    const requestPublicUrl = toPublicUrl(request.url)
+    const requestPublicUrl = toPublicUrl(request.url);
 
     throw new Error(
       devUtils.formatMessage(
@@ -202,7 +203,7 @@ export async function parseGraphQLRequest(
         requestPublicUrl,
         parsedResult.message,
       ),
-    )
+    );
   }
 
   return {
@@ -210,5 +211,5 @@ export async function parseGraphQLRequest(
     operationType: parsedResult.operationType,
     operationName: parsedResult.operationName,
     variables,
-  }
+  };
 }

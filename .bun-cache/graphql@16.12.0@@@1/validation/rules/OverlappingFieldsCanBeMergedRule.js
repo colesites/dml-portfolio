@@ -1,23 +1,21 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.OverlappingFieldsCanBeMergedRule = OverlappingFieldsCanBeMergedRule;
 
-var _inspect = require('../../jsutils/inspect.js');
+var _inspect = require("../../jsutils/inspect.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _printer = require('../../language/printer.js');
+var _printer = require("../../language/printer.js");
 
-var _definition = require('../../type/definition.js');
+var _definition = require("../../type/definition.js");
 
-var _sortValueNode = require('../../utilities/sortValueNode.js');
+var _sortValueNode = require("../../utilities/sortValueNode.js");
 
-var _typeFromAST = require('../../utilities/typeFromAST.js');
+var _typeFromAST = require("../../utilities/typeFromAST.js");
 
 function reasonMessage(reason) {
   if (Array.isArray(reason)) {
@@ -27,7 +25,7 @@ function reasonMessage(reason) {
           `subfields "${responseName}" conflict because ` +
           reasonMessage(subReason),
       )
-      .join(' and ');
+      .join(" and ");
   }
 
   return reason;
@@ -569,7 +567,7 @@ function findConflict(
 
     if (!sameArguments(node1, node2)) {
       return [
-        [responseName, 'they have differing arguments'],
+        [responseName, "they have differing arguments"],
         [node1],
         [node2],
       ];
@@ -798,8 +796,8 @@ function subfieldConflicts(conflicts, responseName, node1, node2) {
   if (conflicts.length > 0) {
     return [
       [responseName, conflicts.map(([reason]) => reason)],
-      [node1, ...conflicts.map(([, fields1]) => fields1).flat()],
-      [node2, ...conflicts.map(([, , fields2]) => fields2).flat()],
+      [node1, ...conflicts.flatMap(([, fields1]) => fields1)],
+      [node2, ...conflicts.flatMap(([, , fields2]) => fields2)],
     ];
   }
 }

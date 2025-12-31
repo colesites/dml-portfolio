@@ -1,14 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = createTSUnionType;
 var _index = require("../generated/index.js");
 var _removeTypeDuplicates = require("../../modifications/typescript/removeTypeDuplicates.js");
 var _index2 = require("../../validators/generated/index.js");
 function createTSUnionType(typeAnnotations) {
-  const types = typeAnnotations.map(type => {
+  const types = typeAnnotations.map((type) => {
     return (0, _index2.isTSTypeAnnotation)(type) ? type.typeAnnotation : type;
   });
   const flattened = (0, _removeTypeDuplicates.default)(types);

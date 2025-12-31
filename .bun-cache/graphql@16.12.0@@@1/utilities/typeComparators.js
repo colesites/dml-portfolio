@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.doTypesOverlap = doTypesOverlap;
 exports.isEqualType = isEqualType;
 exports.isTypeSubTypeOf = isTypeSubTypeOf;
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
 /**
  * Provided two types, return true if the types are equal (invariant).

@@ -1,11 +1,9 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.syntaxError = syntaxError;
 
-var _GraphQLError = require('./GraphQLError.js');
+var _GraphQLError = require("./GraphQLError.js");
 
 /**
  * Produces a GraphQLError representing a syntax error, containing useful

@@ -2,15 +2,23 @@
  * @module
  * CORS Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
 type CORSOptions = {
-    origin: string | string[] | ((origin: string, c: Context) => Promise<string | undefined | null> | string | undefined | null);
-    allowMethods?: string[] | ((origin: string, c: Context) => Promise<string[]> | string[]);
-    allowHeaders?: string[];
-    maxAge?: number;
-    credentials?: boolean;
-    exposeHeaders?: string[];
+  origin:
+    | string
+    | string[]
+    | ((
+        origin: string,
+        c: Context,
+      ) => Promise<string | undefined | null> | string | undefined | null);
+  allowMethods?:
+    | string[]
+    | ((origin: string, c: Context) => Promise<string[]> | string[]);
+  allowHeaders?: string[];
+  maxAge?: number;
+  credentials?: boolean;
+  exposeHeaders?: string[];
 };
 /**
  * CORS Middleware for Hono.
@@ -52,4 +60,3 @@ type CORSOptions = {
  * ```
  */
 export declare const cors: (options?: CORSOptions) => MiddlewareHandler;
-export {};

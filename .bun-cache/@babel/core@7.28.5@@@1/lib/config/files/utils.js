@@ -1,16 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.makeStaticFileCache = makeStaticFileCache;
 var _caching = require("../caching.js");
 var fs = require("../../gensync-utils/fs.js");
 function _fs2() {
   const data = require("fs");
-  _fs2 = function () {
-    return data;
-  };
+  _fs2 = () => data;
   return data;
 }
 function makeStaticFileCache(fn) {

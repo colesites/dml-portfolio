@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import { RequestHandler } from "express";
 /**
  * Express middleware for DNS rebinding protection.
  * Validates Host header hostname (port-agnostic) against an allowed list.
@@ -18,7 +18,9 @@ import { RequestHandler } from 'express';
  * app.use(middleware);
  * ```
  */
-export declare function hostHeaderValidation(allowedHostnames: string[]): RequestHandler;
+export declare function hostHeaderValidation(
+  allowedHostnames: string[],
+): RequestHandler;
 /**
  * Convenience middleware for localhost DNS rebinding protection.
  * Allows only localhost, 127.0.0.1, and [::1] (IPv6 localhost) hostnames.

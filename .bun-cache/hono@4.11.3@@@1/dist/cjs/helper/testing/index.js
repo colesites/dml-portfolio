@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var testing_exports = {};
 __export(testing_exports, {
-  testClient: () => testClient
+  testClient: () => testClient,
 });
 module.exports = __toCommonJS(testing_exports);
 var import_client = require("../../client");
@@ -26,9 +30,13 @@ const testClient = (app, Env, executionCtx, options) => {
   const customFetch = (input, init) => {
     return app.request(input, init, Env, executionCtx);
   };
-  return (0, import_client.hc)("http://localhost", { ...options, fetch: customFetch });
+  return (0, import_client.hc)("http://localhost", {
+    ...options,
+    fetch: customFetch,
+  });
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  testClient
-});
+0 &&
+  (module.exports = {
+    testClient,
+  });

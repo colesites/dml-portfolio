@@ -1,5 +1,6 @@
 // src/client/utils.ts
-import { fetchRP, DetailedError } from "./fetch-result-please.js";
+import { DetailedError, fetchRP } from "./fetch-result-please.js";
+
 var mergePath = (base, path) => {
   base = base.replace(/\/+$/, "");
   base = base + "/";
@@ -38,7 +39,7 @@ var replaceUrlProtocol = (urlString, protocol) => {
   }
 };
 var removeIndexString = (urlString) => {
-  if (/^https?:\/\/[^\/]+?\/index(?=\?|$)/.test(urlString)) {
+  if (/^https?:\/\/[^/]+?\/index(?=\?|$)/.test(urlString)) {
     return urlString.replace(/\/index(?=\?|$)/, "/");
   }
   return urlString.replace(/\/index(?=\?|$)/, "");
@@ -72,5 +73,5 @@ export {
   parseResponse,
   removeIndexString,
   replaceUrlParam,
-  replaceUrlProtocol
+  replaceUrlProtocol,
 };

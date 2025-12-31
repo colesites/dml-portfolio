@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = is;
 var _shallowEqual = require("../utils/shallowEqual.js");
@@ -12,7 +12,11 @@ function is(type, node, opts) {
   if (!node) return false;
   const matches = (0, _isType.default)(node.type, type);
   if (!matches) {
-    if (!opts && node.type === "Placeholder" && type in _index.FLIPPED_ALIAS_KEYS) {
+    if (
+      !opts &&
+      node.type === "Placeholder" &&
+      type in _index.FLIPPED_ALIAS_KEYS
+    ) {
       return (0, _isPlaceholderType.default)(node.expectedNode, type);
     }
     return false;

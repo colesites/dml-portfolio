@@ -1,4 +1,4 @@
-import type {Vocabulary} from "../types"
+import type { Vocabulary } from "../types";
 
 export const metadataVocabulary: Vocabulary = [
   "title",
@@ -8,10 +8,10 @@ export const metadataVocabulary: Vocabulary = [
   "readOnly",
   "writeOnly",
   "examples",
-]
+];
 
 export const contentVocabulary: Vocabulary = [
   "contentMediaType",
   "contentEncoding",
   "contentSchema",
-]
+];

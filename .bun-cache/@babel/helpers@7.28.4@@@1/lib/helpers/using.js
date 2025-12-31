@@ -1,16 +1,19 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _using;
 function _using(stack, value, isAwait) {
   if (value === null || value === void 0) return value;
   if (Object(value) !== value) {
-    throw new TypeError("using declarations can only be used with objects, functions, null, or undefined.");
+    throw new TypeError(
+      "using declarations can only be used with objects, functions, null, or undefined.",
+    );
   }
   if (isAwait) {
-    var dispose = value[Symbol.asyncDispose || Symbol.for("Symbol.asyncDispose")];
+    var dispose =
+      value[Symbol.asyncDispose || Symbol.for("Symbol.asyncDispose")];
   }
   if (dispose === null || dispose === void 0) {
     dispose = value[Symbol.dispose || Symbol.for("Symbol.dispose")];
@@ -21,7 +24,7 @@ function _using(stack, value, isAwait) {
   stack.push({
     v: value,
     d: dispose,
-    a: isAwait
+    a: isAwait,
   });
   return value;
 }

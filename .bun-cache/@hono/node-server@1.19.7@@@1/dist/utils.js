@@ -1,4 +1,3 @@
-"use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -8,14 +7,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/utils.ts
 var utils_exports = {};
@@ -23,16 +26,23 @@ __export(utils_exports, {
   buildOutgoingHttpHeaders: () => buildOutgoingHttpHeaders,
   readWithoutBlocking: () => readWithoutBlocking,
   writeFromReadableStream: () => writeFromReadableStream,
-  writeFromReadableStreamDefaultReader: () => writeFromReadableStreamDefaultReader
+  writeFromReadableStreamDefaultReader: () =>
+    writeFromReadableStreamDefaultReader,
 });
 module.exports = __toCommonJS(utils_exports);
 async function readWithoutBlocking(readPromise) {
-  return Promise.race([readPromise, Promise.resolve().then(() => Promise.resolve(void 0))]);
+  return Promise.race([
+    readPromise,
+    Promise.resolve().then(() => Promise.resolve(void 0)),
+  ]);
 }
-function writeFromReadableStreamDefaultReader(reader, writable, currentReadPromise) {
+function writeFromReadableStreamDefaultReader(
+  reader,
+  writable,
+  currentReadPromise,
+) {
   const cancel = (error) => {
-    reader.cancel(error).catch(() => {
-    });
+    reader.cancel(error).catch(() => {});
   };
   writable.on("close", cancel);
   writable.on("error", cancel);
@@ -91,9 +101,10 @@ var buildOutgoingHttpHeaders = (headers) => {
   return res;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  buildOutgoingHttpHeaders,
-  readWithoutBlocking,
-  writeFromReadableStream,
-  writeFromReadableStreamDefaultReader
-});
+0 &&
+  (module.exports = {
+    buildOutgoingHttpHeaders,
+    readWithoutBlocking,
+    writeFromReadableStream,
+    writeFromReadableStreamDefaultReader,
+  });

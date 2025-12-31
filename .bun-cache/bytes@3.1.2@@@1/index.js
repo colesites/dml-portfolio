@@ -1,12 +1,3 @@
-/*!
- * bytes
- * Copyright(c) 2012-2014 TJ Holowaychuk
- * Copyright(c) 2015 Jed Watson
- * MIT Licensed
- */
-
-'use strict';
-
 /**
  * Module exports.
  * @public
@@ -26,12 +17,12 @@ var formatThousandsRegExp = /\B(?=(\d{3})+(?!\d))/g;
 var formatDecimalsRegExp = /(?:\.0*|(\.[^0]+)0+)$/;
 
 var map = {
-  b:  1,
+  b: 1,
   kb: 1 << 10,
   mb: 1 << 20,
   gb: 1 << 30,
-  tb: Math.pow(1024, 4),
-  pb: Math.pow(1024, 5),
+  tb: 1024 ** 4,
+  pb: 1024 ** 5,
 };
 
 var parseRegExp = /^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i;
@@ -52,11 +43,11 @@ var parseRegExp = /^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i;
  */
 
 function bytes(value, options) {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return parse(value);
   }
 
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     return format(value, options);
   }
 
@@ -87,25 +78,26 @@ function format(value, options) {
   }
 
   var mag = Math.abs(value);
-  var thousandsSeparator = (options && options.thousandsSeparator) || '';
-  var unitSeparator = (options && options.unitSeparator) || '';
-  var decimalPlaces = (options && options.decimalPlaces !== undefined) ? options.decimalPlaces : 2;
+  var thousandsSeparator = (options && options.thousandsSeparator) || "";
+  var unitSeparator = (options && options.unitSeparator) || "";
+  var decimalPlaces =
+    options && options.decimalPlaces !== undefined ? options.decimalPlaces : 2;
   var fixedDecimals = Boolean(options && options.fixedDecimals);
-  var unit = (options && options.unit) || '';
+  var unit = (options && options.unit) || "";
 
   if (!unit || !map[unit.toLowerCase()]) {
     if (mag >= map.pb) {
-      unit = 'PB';
+      unit = "PB";
     } else if (mag >= map.tb) {
-      unit = 'TB';
+      unit = "TB";
     } else if (mag >= map.gb) {
-      unit = 'GB';
+      unit = "GB";
     } else if (mag >= map.mb) {
-      unit = 'MB';
+      unit = "MB";
     } else if (mag >= map.kb) {
-      unit = 'KB';
+      unit = "KB";
     } else {
-      unit = 'B';
+      unit = "B";
     }
   }
 
@@ -113,15 +105,16 @@ function format(value, options) {
   var str = val.toFixed(decimalPlaces);
 
   if (!fixedDecimals) {
-    str = str.replace(formatDecimalsRegExp, '$1');
+    str = str.replace(formatDecimalsRegExp, "$1");
   }
 
   if (thousandsSeparator) {
-    str = str.split('.').map(function (s, i) {
-      return i === 0
-        ? s.replace(formatThousandsRegExp, thousandsSeparator)
-        : s
-    }).join('.');
+    str = str
+      .split(".")
+      .map((s, i) =>
+        i === 0 ? s.replace(formatThousandsRegExp, thousandsSeparator) : s,
+      )
+      .join(".");
   }
 
   return str + unitSeparator + unit;
@@ -139,23 +132,23 @@ function format(value, options) {
  */
 
 function parse(val) {
-  if (typeof val === 'number' && !isNaN(val)) {
+  if (typeof val === "number" && !isNaN(val)) {
     return val;
   }
 
-  if (typeof val !== 'string') {
+  if (typeof val !== "string") {
     return null;
   }
 
   // Test if the string passed is valid
   var results = parseRegExp.exec(val);
   var floatValue;
-  var unit = 'b';
+  var unit = "b";
 
   if (!results) {
     // Nothing could be extracted from the given string
     floatValue = parseInt(val, 10);
-    unit = 'b'
+    unit = "b";
   } else {
     // Retrieve the value and the unit
     floatValue = parseFloat(results[1]);

@@ -1,19 +1,17 @@
-'use strict';
-
 module.exports = cliWidth;
 
 function normalizeOpts(options) {
   const defaultOpts = {
     defaultWidth: 0,
     output: process.stdout,
-    tty: require('tty'),
+    tty: require("tty"),
   };
 
   if (!options) {
     return defaultOpts;
   }
 
-  Object.keys(defaultOpts).forEach(function (key) {
+  Object.keys(defaultOpts).forEach((key) => {
     if (!options[key]) {
       options[key] = defaultOpts[key];
     }

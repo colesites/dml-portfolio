@@ -10,4 +10,6 @@ await delay({seconds: 1});
 console.log('1 second later');
 ```
 */
-export function delay(duration: {seconds: number} | {milliseconds: number}): Promise<void>;
+export function delay(
+  duration: { seconds: number } | { milliseconds: number },
+): Promise<void>;

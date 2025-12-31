@@ -3,11 +3,12 @@ import { PERMALINK } from "../../constants.js";
 import { useContext } from "../../context.js";
 import { useCallback, useState } from "../../hooks/index.js";
 import { createContext } from "../context.js";
+
 var FormContext = createContext({
   pending: false,
   data: null,
   method: null,
-  action: null
+  action: null,
 });
 var actions = /* @__PURE__ */ new Set();
 var registerAction = (action) => {
@@ -44,5 +45,5 @@ export {
   registerAction,
   useActionState,
   useFormStatus,
-  useOptimistic
+  useOptimistic,
 };

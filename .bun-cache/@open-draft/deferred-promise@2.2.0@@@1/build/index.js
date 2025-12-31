@@ -7,20 +7,24 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
   DeferredPromise: () => DeferredPromise,
-  createDeferredExecutor: () => createDeferredExecutor
+  createDeferredExecutor: () => createDeferredExecutor,
 });
 module.exports = __toCommonJS(src_exports);
 
@@ -38,7 +42,9 @@ function createDeferredExecutor() {
         return value;
       };
       return resolve(
-        data instanceof Promise ? data : Promise.resolve(data).then(onFulfilled)
+        data instanceof Promise
+          ? data
+          : Promise.resolve(data).then(onFulfilled),
       );
     };
     executor.reject = (reason) => {
@@ -48,7 +54,7 @@ function createDeferredExecutor() {
       queueMicrotask(() => {
         executor.state = "rejected";
       });
-      return reject(executor.rejectionReason = reason);
+      return reject((executor.rejectionReason = reason));
     };
   };
   return executor;
@@ -87,13 +93,14 @@ var DeferredPromise = class extends Promise {
   #decorate(promise) {
     return Object.defineProperties(promise, {
       resolve: { configurable: true, value: this.resolve },
-      reject: { configurable: true, value: this.reject }
+      reject: { configurable: true, value: this.reject },
     });
   }
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  DeferredPromise,
-  createDeferredExecutor
-});
+0 &&
+  (module.exports = {
+    DeferredPromise,
+    createDeferredExecutor,
+  });
 //# sourceMappingURL=index.js.map

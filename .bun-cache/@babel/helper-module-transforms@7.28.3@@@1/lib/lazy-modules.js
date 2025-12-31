@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.toGetWrapperPayload = toGetWrapperPayload;
 exports.wrapReference = wrapReference;
@@ -10,7 +10,11 @@ var _normalizeAndLoadMetadata = require("./normalize-and-load-metadata.js");
 function toGetWrapperPayload(lazy) {
   return (source, metadata) => {
     if (lazy === false) return null;
-    if ((0, _normalizeAndLoadMetadata.isSideEffectImport)(metadata) || metadata.reexportAll) return null;
+    if (
+      (0, _normalizeAndLoadMetadata.isSideEffectImport)(metadata) ||
+      metadata.reexportAll
+    )
+      return null;
     if (lazy === true) {
       return source.includes(".") ? null : "lazy";
     }

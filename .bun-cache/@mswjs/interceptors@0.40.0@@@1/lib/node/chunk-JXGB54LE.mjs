@@ -1,15 +1,12 @@
-import {
-  __privateAdd,
-  __privateGet
-} from "./chunk-YWNGXXUQ.mjs";
-
 // src/Interceptor.ts
 import { Logger } from "@open-draft/logger";
 import { Emitter } from "strict-event-emitter";
+import { __privateAdd, __privateGet } from "./chunk-YWNGXXUQ.mjs";
+
 var INTERNAL_REQUEST_ID_HEADER_NAME = "x-interceptors-internal-request-id";
 function getGlobalSymbol(symbol) {
   return (
-    // @ts-ignore https://github.com/Microsoft/TypeScript/issues/24587
+    // @ts-expect-error https://github.com/Microsoft/TypeScript/issues/24587
     globalThis[symbol] || void 0
   );
 }
@@ -86,14 +83,16 @@ var Interceptor = class {
    * This method is not run if there's a running interceptor instance
    * to prevent instantiating an interceptor multiple times.
    */
-  setup() {
-  }
+  setup() {}
   /**
    * Listen to the interceptor's public events.
    */
   on(event, listener) {
     const logger = this.logger.extend("on");
-    if (this.readyState === "DISPOSING" /* DISPOSING */ || this.readyState === "DISPOSED" /* DISPOSED */) {
+    if (
+      this.readyState === "DISPOSING" /* DISPOSING */ ||
+      this.readyState === "DISPOSED" /* DISPOSED */
+    ) {
       logger.info("cannot listen to events, already disposed!");
       return this;
     }
@@ -131,7 +130,10 @@ var Interceptor = class {
     this.clearInstance();
     logger.info("global symbol deleted:", getGlobalSymbol(this.symbol));
     if (this.subscriptions.length > 0) {
-      logger.info("disposing of %d subscriptions...", this.subscriptions.length);
+      logger.info(
+        "disposing of %d subscriptions...",
+        this.subscriptions.length,
+      );
       for (const dispose of this.subscriptions) {
         dispose();
       }
@@ -145,7 +147,12 @@ var Interceptor = class {
   getInstance() {
     var _a;
     const instance = getGlobalSymbol(this.symbol);
-    this.logger.info("retrieved global instance:", (_a = instance == null ? void 0 : instance.constructor) == null ? void 0 : _a.name);
+    this.logger.info(
+      "retrieved global instance:",
+      (_a = instance == null ? void 0 : instance.constructor) == null
+        ? void 0
+        : _a.name,
+    );
     return instance;
   }
   setInstance() {
@@ -190,7 +197,7 @@ var _RequestController = class {
       this.readyState === _RequestController.PENDING,
       'Failed to passthrough the "%s %s" request: the request has already been handled',
       this.request.method,
-      this.request.url
+      this.request.url,
     );
     this.readyState = _RequestController.PASSTHROUGH;
     await this.source.passthrough();
@@ -213,7 +220,7 @@ var _RequestController = class {
       this.request.url,
       response.status,
       response.statusText || "OK",
-      this.readyState
+      this.readyState,
     );
     this.readyState = _RequestController.RESPONSE;
     __privateGet(this, _handled, handled_get).resolve();
@@ -235,7 +242,7 @@ var _RequestController = class {
       this.request.method,
       this.request.url,
       reason == null ? void 0 : reason.toString(),
-      this.readyState
+      this.readyState,
     );
     this.readyState = _RequestController.ERROR;
     this.source.errorWith(reason);
@@ -244,7 +251,7 @@ var _RequestController = class {
 };
 var RequestController = _RequestController;
 _handled = new WeakSet();
-handled_get = function() {
+handled_get = function () {
   return this.handled;
 };
 RequestController.PENDING = 0;
@@ -306,7 +313,7 @@ var _FetchResponse = class extends Response {
         value: url,
         enumerable: true,
         configurable: true,
-        writable: false
+        writable: false,
       });
     }
   }
@@ -323,12 +330,14 @@ var _FetchResponse = class extends Response {
   constructor(body, init = {}) {
     var _a;
     const status = (_a = init.status) != null ? _a : 200;
-    const safeStatus = _FetchResponse.isConfigurableStatusCode(status) ? status : 200;
+    const safeStatus = _FetchResponse.isConfigurableStatusCode(status)
+      ? status
+      : 200;
     const finalBody = _FetchResponse.isResponseWithBody(status) ? body : null;
     super(finalBody, {
       status: safeStatus,
       statusText: init.statusText,
-      headers: init.headers
+      headers: init.headers,
     });
     if (status !== safeStatus) {
       const state = getValueBySymbol("state", this);
@@ -339,7 +348,7 @@ var _FetchResponse = class extends Response {
           value: status,
           enumerable: true,
           configurable: true,
-          writable: false
+          writable: false,
         });
       }
     }
@@ -364,6 +373,6 @@ export {
   RequestController,
   createRequestId,
   canParseUrl,
-  FetchResponse
+  FetchResponse,
 };
 //# sourceMappingURL=chunk-JXGB54LE.mjs.map

@@ -1,9 +1,9 @@
-import type {NonRecursiveType, StringToNumber} from './internal/index.d.ts';
-import type {Paths} from './paths.d.ts';
-import type {SetNonNullable} from './set-non-nullable.d.ts';
-import type {Simplify} from './simplify.d.ts';
-import type {UnionToTuple} from './union-to-tuple.d.ts';
-import type {UnknownArray} from './unknown-array.d.ts';
+import type { NonRecursiveType, StringToNumber } from "./internal/index.d.ts";
+import type { Paths } from "./paths.d.ts";
+import type { SetNonNullable } from "./set-non-nullable.d.ts";
+import type { Simplify } from "./simplify.d.ts";
+import type { UnionToTuple } from "./union-to-tuple.d.ts";
+import type { UnknownArray } from "./unknown-array.d.ts";
 
 /**
 Create a type that makes the specified keys non-nullable (removes `null` and `undefined`), supports deeply nested key paths, and leaves all other keys unchanged.
@@ -55,31 +55,43 @@ type ArrayExample2 = SetNonNullableDeep<{a: [(number | null)?, (number | null)?]
 
 @category Object
 */
-export type SetNonNullableDeep<BaseType, KeyPaths extends Paths<BaseType>> =
-	SetNonNullableDeepHelper<BaseType, UnionToTuple<KeyPaths>>;
+export type SetNonNullableDeep<
+  BaseType,
+  KeyPaths extends Paths<BaseType>,
+> = SetNonNullableDeepHelper<BaseType, UnionToTuple<KeyPaths>>;
 
 /**
 Internal helper for {@link SetNonNullableDeep}.
 
 Recursively transforms the `BaseType` by applying {@link SetNonNullableDeepSinglePath} for each path in `KeyPathsTuple`.
 */
-type SetNonNullableDeepHelper<BaseType, KeyPathsTuple extends UnknownArray> =
-	KeyPathsTuple extends [infer KeyPath, ...infer RestPaths]
-		? SetNonNullableDeepHelper<SetNonNullableDeepSinglePath<BaseType, KeyPath>, RestPaths>
-		: BaseType;
+type SetNonNullableDeepHelper<
+  BaseType,
+  KeyPathsTuple extends UnknownArray,
+> = KeyPathsTuple extends [infer KeyPath, ...infer RestPaths]
+  ? SetNonNullableDeepHelper<
+      SetNonNullableDeepSinglePath<BaseType, KeyPath>,
+      RestPaths
+    >
+  : BaseType;
 
 /**
 Makes a single path non-nullable in `BaseType`.
 */
-type SetNonNullableDeepSinglePath<BaseType, KeyPath> =
-	BaseType extends NonRecursiveType | ReadonlySet<unknown> | ReadonlyMap<unknown, unknown> // Also distributes `BaseType`
-		? BaseType
-		: KeyPath extends `${infer Property}.${infer RestPath}`
-			? {
-				[Key in keyof BaseType]: Property extends `${Key & (string | number)}`
-					? SetNonNullableDeepSinglePath<BaseType[Key], RestPath>
-					: BaseType[Key];
-			}
-			: Simplify<SetNonNullable<BaseType, (KeyPath | StringToNumber<KeyPath & string>) & keyof BaseType>>;
-
-export {};
+type SetNonNullableDeepSinglePath<BaseType, KeyPath> = BaseType extends
+  | NonRecursiveType
+  | ReadonlySet<unknown>
+  | ReadonlyMap<unknown, unknown> // Also distributes `BaseType`
+  ? BaseType
+  : KeyPath extends `${infer Property}.${infer RestPath}`
+    ? {
+        [Key in keyof BaseType]: Property extends `${Key & (string | number)}`
+          ? SetNonNullableDeepSinglePath<BaseType[Key], RestPath>
+          : BaseType[Key];
+      }
+    : Simplify<
+        SetNonNullable<
+          BaseType,
+          (KeyPath | StringToNumber<KeyPath & string>) & keyof BaseType
+        >
+      >;

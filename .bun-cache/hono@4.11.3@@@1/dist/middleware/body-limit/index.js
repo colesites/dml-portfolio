@@ -1,5 +1,6 @@
 // src/middleware/body-limit/index.ts
 import { HTTPException } from "../../http-exception.js";
+
 var ERROR_MESSAGE = "Payload Too Large";
 var BodyLimitError = class extends Error {
   constructor(message) {
@@ -8,12 +9,14 @@ var BodyLimitError = class extends Error {
   }
 };
 var bodyLimit = (options) => {
-  const onError = options.onError || (() => {
-    const res = new Response(ERROR_MESSAGE, {
-      status: 413
+  const onError =
+    options.onError ||
+    (() => {
+      const res = new Response(ERROR_MESSAGE, {
+        status: 413,
+      });
+      throw new HTTPException(413, { res });
     });
-    throw new HTTPException(413, { res });
-  });
   const maxSize = options.maxSize;
   return async function bodyLimit2(c, next) {
     if (!c.req.raw.body) {
@@ -24,7 +27,10 @@ var bodyLimit = (options) => {
     if (hasTransferEncoding && hasContentLength) {
     }
     if (hasContentLength && !hasTransferEncoding) {
-      const contentLength = parseInt(c.req.raw.headers.get("content-length") || "0", 10);
+      const contentLength = parseInt(
+        c.req.raw.headers.get("content-length") || "0",
+        10,
+      );
       return contentLength > maxSize ? onError(c) : next();
     }
     let size = 0;
@@ -32,7 +38,7 @@ var bodyLimit = (options) => {
     const reader = new ReadableStream({
       async start(controller) {
         try {
-          for (; ; ) {
+          for (;;) {
             const { done, value } = await rawReader.read();
             if (done) {
               break;
@@ -47,7 +53,7 @@ var bodyLimit = (options) => {
         } finally {
           controller.close();
         }
-      }
+      },
     });
     const requestInit = { body: reader, duplex: "half" };
     c.req.raw = new Request(c.req.raw, requestInit);
@@ -57,6 +63,4 @@ var bodyLimit = (options) => {
     }
   };
 };
-export {
-  bodyLimit
-};
+export { bodyLimit };

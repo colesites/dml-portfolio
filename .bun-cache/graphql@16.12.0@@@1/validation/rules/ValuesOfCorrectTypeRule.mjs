@@ -1,10 +1,10 @@
-import { didYouMean } from '../../jsutils/didYouMean.mjs';
-import { inspect } from '../../jsutils/inspect.mjs';
-import { keyMap } from '../../jsutils/keyMap.mjs';
-import { suggestionList } from '../../jsutils/suggestionList.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
-import { print } from '../../language/printer.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { didYouMean } from "../../jsutils/didYouMean.mjs";
+import { inspect } from "../../jsutils/inspect.mjs";
+import { keyMap } from "../../jsutils/keyMap.mjs";
+import { suggestionList } from "../../jsutils/suggestionList.mjs";
+import { Kind } from "../../language/kinds.mjs";
+import { print } from "../../language/printer.mjs";
 import {
   getNamedType,
   getNullableType,
@@ -13,7 +13,7 @@ import {
   isListType,
   isNonNullType,
   isRequiredInputField,
-} from '../../type/definition.mjs';
+} from "../../type/definition.mjs";
 
 /**
  * Value literals of correct type

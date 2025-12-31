@@ -1,7 +1,13 @@
-export type WidthType = 'fullwidth' | 'halfwidth' | 'wide' | 'narrow' | 'neutral' | 'ambiguous';
+export type WidthType =
+  | "fullwidth"
+  | "halfwidth"
+  | "wide"
+  | "narrow"
+  | "neutral"
+  | "ambiguous";
 
 export type Options = {
-	/**
+  /**
 	Whether to treat an `'ambiguous'` character as wide.
 
 	@default true
@@ -22,7 +28,7 @@ export type Options = {
 	> Ambiguous characters behave like wide or narrow characters depending on the context (language tag, script identification, associated font, source of data, or explicit markup; all can provide the context). __If the context cannot be established reliably, they should be treated as narrow characters by default.__
 	> - http://www.unicode.org/reports/tr11/
 	*/
-	readonly ambiguousAsWide?: boolean;
+  readonly ambiguousAsWide?: boolean;
 };
 
 /**

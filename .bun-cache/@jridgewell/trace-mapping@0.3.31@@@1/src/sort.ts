@@ -1,6 +1,5 @@
-import { COLUMN } from './sourcemap-segment';
-
-import type { ReverseSegment, SourceMapSegment } from './sourcemap-segment';
+import type { ReverseSegment, SourceMapSegment } from "./sourcemap-segment";
+import { COLUMN } from "./sourcemap-segment";
 
 export default function maybeSort(
   mappings: SourceMapSegment[][],
@@ -13,13 +12,20 @@ export default function maybeSort(
   // not, we do not want to modify the consumer's input array.
   if (!owned) mappings = mappings.slice();
 
-  for (let i = unsortedIndex; i < mappings.length; i = nextUnsortedSegmentLine(mappings, i + 1)) {
+  for (
+    let i = unsortedIndex;
+    i < mappings.length;
+    i = nextUnsortedSegmentLine(mappings, i + 1)
+  ) {
     mappings[i] = sortSegments(mappings[i], owned);
   }
   return mappings;
 }
 
-function nextUnsortedSegmentLine(mappings: SourceMapSegment[][], start: number): number {
+function nextUnsortedSegmentLine(
+  mappings: SourceMapSegment[][],
+  start: number,
+): number {
   for (let i = start; i < mappings.length; i++) {
     if (!isSorted(mappings[i])) return i;
   }
@@ -35,11 +41,17 @@ function isSorted(line: SourceMapSegment[]): boolean {
   return true;
 }
 
-function sortSegments(line: SourceMapSegment[], owned: boolean): SourceMapSegment[] {
+function sortSegments(
+  line: SourceMapSegment[],
+  owned: boolean,
+): SourceMapSegment[] {
   if (!owned) line = line.slice();
   return line.sort(sortComparator);
 }
 
-export function sortComparator<T extends SourceMapSegment | ReverseSegment>(a: T, b: T): number {
+export function sortComparator<T extends SourceMapSegment | ReverseSegment>(
+  a: T,
+  b: T,
+): number {
   return a[COLUMN] - b[COLUMN];
 }

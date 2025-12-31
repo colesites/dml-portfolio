@@ -39,13 +39,11 @@ type Example2 = ExtractStrict<{x: number; y: number} | {x: string; y: string}, u
 @category Improved Built-in
 */
 export type ExtractStrict<
-	T,
-	U extends [U] extends [
-		// Ensure every member of `U` extracts something from `T`
-		U extends unknown ? (Extract<T, U> extends never ? never : U) : never,
-	]
-		? unknown
-		: never,
+  T,
+  U extends [U] extends [
+    // Ensure every member of `U` extracts something from `T`
+    U extends unknown ? (Extract<T, U> extends never ? never : U) : never,
+  ]
+    ? unknown
+    : never,
 > = Extract<T, U>;
-
-export {};

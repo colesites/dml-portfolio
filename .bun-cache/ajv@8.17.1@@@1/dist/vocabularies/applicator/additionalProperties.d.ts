@@ -1,6 +1,15 @@
-import type { CodeKeywordDefinition, AddedKeywordDefinition, ErrorObject, AnySchema } from "../../types";
-export type AdditionalPropertiesError = ErrorObject<"additionalProperties", {
+import type {
+  CodeKeywordDefinition,
+  AddedKeywordDefinition,
+  ErrorObject,
+  AnySchema,
+} from "../../types";
+export type AdditionalPropertiesError = ErrorObject<
+  "additionalProperties",
+  {
     additionalProperty: string;
-}, AnySchema>;
+  },
+  AnySchema
+>;
 declare const def: CodeKeywordDefinition & AddedKeywordDefinition;
 export default def;

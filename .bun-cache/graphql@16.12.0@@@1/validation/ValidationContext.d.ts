@@ -1,5 +1,5 @@
-import type { Maybe } from '../jsutils/Maybe';
-import type { GraphQLError } from '../error/GraphQLError';
+import type { Maybe } from "../jsutils/Maybe";
+import type { GraphQLError } from "../error/GraphQLError";
 import type {
   DocumentNode,
   FragmentDefinitionNode,
@@ -7,8 +7,8 @@ import type {
   OperationDefinitionNode,
   SelectionSetNode,
   VariableNode,
-} from '../language/ast';
-import type { ASTVisitor } from '../language/visitor';
+} from "../language/ast";
+import type { ASTVisitor } from "../language/visitor";
 import type {
   GraphQLArgument,
   GraphQLCompositeType,
@@ -16,10 +16,10 @@ import type {
   GraphQLField,
   GraphQLInputType,
   GraphQLOutputType,
-} from '../type/definition';
-import type { GraphQLDirective } from '../type/directives';
-import type { GraphQLSchema } from '../type/schema';
-import { TypeInfo } from '../utilities/TypeInfo';
+} from "../type/definition";
+import type { GraphQLDirective } from "../type/directives";
+import type { GraphQLSchema } from "../type/schema";
+import { TypeInfo } from "../utilities/TypeInfo";
 declare type NodeWithSelectionSet =
   | OperationDefinitionNode
   | FragmentDefinitionNode;
@@ -93,4 +93,3 @@ export declare class ValidationContext extends ASTValidationContext {
   getEnumValue(): Maybe<GraphQLEnumValue>;
 }
 export declare type ValidationRule = (context: ValidationContext) => ASTVisitor;
-export {};

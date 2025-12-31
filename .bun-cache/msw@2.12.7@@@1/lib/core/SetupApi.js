@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var SetupApi_exports = {};
 __export(SetupApi_exports, {
   HandlersController: () => HandlersController,
   InMemoryHandlersController: () => InMemoryHandlersController,
-  SetupApi: () => SetupApi
+  SetupApi: () => SetupApi,
 });
 module.exports = __toCommonJS(SetupApi_exports);
 var import_outvariant = require("outvariant");
@@ -29,8 +33,7 @@ var import_devUtils = require("./utils/internal/devUtils");
 var import_pipeEvents = require("./utils/internal/pipeEvents");
 var import_toReadonlyArray = require("./utils/internal/toReadonlyArray");
 var import_Disposable = require("./utils/internal/Disposable");
-class HandlersController {
-}
+class HandlersController {}
 class InMemoryHandlersController {
   constructor(initialHandlers) {
     this.initialHandlers = initialHandlers;
@@ -41,7 +44,8 @@ class InMemoryHandlersController {
     this.handlers.unshift(...runtimeHandles);
   }
   reset(nextHandlers) {
-    this.handlers = nextHandlers.length > 0 ? [...nextHandlers] : [...this.initialHandlers];
+    this.handlers =
+      nextHandlers.length > 0 ? [...nextHandlers] : [...this.initialHandlers];
   }
   currentHandlers() {
     return this.handlers;
@@ -57,8 +61,8 @@ class SetupApi extends import_Disposable.Disposable {
     (0, import_outvariant.invariant)(
       this.validateHandlers(initialHandlers),
       import_devUtils.devUtils.formatMessage(
-        `Failed to apply given request handlers: invalid input. Did you forget to spread the request handlers Array?`
-      )
+        `Failed to apply given request handlers: invalid input. Did you forget to spread the request handlers Array?`,
+      ),
     );
     this.handlersController = new InMemoryHandlersController(initialHandlers);
     this.emitter = new import_strict_event_emitter.Emitter();
@@ -77,8 +81,8 @@ class SetupApi extends import_Disposable.Disposable {
     (0, import_outvariant.invariant)(
       this.validateHandlers(runtimeHandlers),
       import_devUtils.devUtils.formatMessage(
-        `Failed to call "use()" with the given request handlers: invalid input. Did you forget to spread the array of request handlers?`
-      )
+        `Failed to call "use()" with the given request handlers: invalid input. Did you forget to spread the array of request handlers?`,
+      ),
     );
     this.handlersController.prepend(runtimeHandlers);
   }
@@ -93,7 +97,9 @@ class SetupApi extends import_Disposable.Disposable {
     this.handlersController.reset(nextHandlers);
   }
   listHandlers() {
-    return (0, import_toReadonlyArray.toReadonlyArray)(this.handlersController.currentHandlers());
+    return (0, import_toReadonlyArray.toReadonlyArray)(
+      this.handlersController.currentHandlers(),
+    );
   }
   createLifeCycleEvents() {
     return {
@@ -105,7 +111,7 @@ class SetupApi extends import_Disposable.Disposable {
       },
       removeAllListeners: (...args) => {
         return this.publicEmitter.removeAllListeners(...args);
-      }
+      },
     };
   }
 }

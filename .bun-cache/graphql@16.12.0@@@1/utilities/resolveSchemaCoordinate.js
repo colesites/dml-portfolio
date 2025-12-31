@@ -1,18 +1,16 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.resolveASTSchemaCoordinate = resolveASTSchemaCoordinate;
 exports.resolveSchemaCoordinate = resolveSchemaCoordinate;
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _parser = require('../language/parser.js');
+var _parser = require("../language/parser.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
 /**
  * A schema coordinate is resolved in the context of a GraphQL schema to
@@ -43,7 +41,7 @@ function resolveTypeCoordinate(schema, schemaCoordinate) {
   }
 
   return {
-    kind: 'NamedType',
+    kind: "NamedType",
     type,
   };
 }
@@ -88,7 +86,7 @@ function resolveMemberCoordinate(schema, schemaCoordinate) {
     }
 
     return {
-      kind: 'EnumValue',
+      kind: "EnumValue",
       type,
       enumValue,
     };
@@ -104,7 +102,7 @@ function resolveMemberCoordinate(schema, schemaCoordinate) {
     }
 
     return {
-      kind: 'InputField',
+      kind: "InputField",
       type,
       inputField,
     };
@@ -119,7 +117,7 @@ function resolveMemberCoordinate(schema, schemaCoordinate) {
   }
 
   return {
-    kind: 'Field',
+    kind: "Field",
     type,
     field,
   };
@@ -177,7 +175,7 @@ function resolveArgumentCoordinate(schema, schemaCoordinate) {
   }
 
   return {
-    kind: 'FieldArgument',
+    kind: "FieldArgument",
     type,
     field,
     fieldArgument,
@@ -197,7 +195,7 @@ function resolveDirectiveCoordinate(schema, schemaCoordinate) {
   }
 
   return {
-    kind: 'Directive',
+    kind: "Directive",
     directive,
   };
 }
@@ -231,7 +229,7 @@ function resolveDirectiveArgumentCoordinate(schema, schemaCoordinate) {
   }
 
   return {
-    kind: 'DirectiveArgument',
+    kind: "DirectiveArgument",
     directive,
     directiveArgument,
   };

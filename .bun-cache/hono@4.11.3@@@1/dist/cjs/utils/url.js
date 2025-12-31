@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var url_exports = {};
 __export(url_exports, {
   checkOptionalParameter: () => checkOptionalParameter,
@@ -29,7 +33,7 @@ __export(url_exports, {
   mergePath: () => mergePath,
   splitPath: () => splitPath,
   splitRoutingPath: () => splitRoutingPath,
-  tryDecode: () => tryDecode
+  tryDecode: () => tryDecode,
 });
 module.exports = __toCommonJS(url_exports);
 const splitPath = (path) => {
@@ -70,12 +74,15 @@ const getPattern = (label, next) => {
   if (label === "*") {
     return "*";
   }
-  const match = label.match(/^\:([^\{\}]+)(?:\{(.+)\})?$/);
+  const match = label.match(/^:([^{}]+)(?:\{(.+)\})?$/);
   if (match) {
     const cacheKey = `${label}#${next}`;
     if (!patternCache[cacheKey]) {
       if (match[2]) {
-        patternCache[cacheKey] = next && next[0] !== ":" && next[0] !== "*" ? [cacheKey, match[1], new RegExp(`^${match[2]}(?=/${next})`)] : [label, match[1], new RegExp(`^${match[2]}$`)];
+        patternCache[cacheKey] =
+          next && next[0] !== ":" && next[0] !== "*"
+            ? [cacheKey, match[1], new RegExp(`^${match[2]}(?=/${next})`)]
+            : [label, match[1], new RegExp(`^${match[2]}$`)];
       } else {
         patternCache[cacheKey] = [label, match[1], true];
       }
@@ -107,7 +114,9 @@ const getPath = (request) => {
     if (charCode === 37) {
       const queryIndex = url.indexOf("?", i);
       const path = url.slice(start, queryIndex === -1 ? void 0 : queryIndex);
-      return tryDecodeURI(path.includes("%25") ? path.replace(/%25/g, "%2525") : path);
+      return tryDecodeURI(
+        path.includes("%25") ? path.replace(/%25/g, "%2525") : path,
+      );
     } else if (charCode === 63) {
       break;
     }
@@ -120,7 +129,9 @@ const getQueryStrings = (url) => {
 };
 const getPathNoStrict = (request) => {
   const result = getPath(request);
-  return result.length > 1 && result.at(-1) === "/" ? result.slice(0, -1) : result;
+  return result.length > 1 && result.at(-1) === "/"
+    ? result.slice(0, -1)
+    : result;
 };
 const mergePath = (base, sub, ...rest) => {
   if (rest.length) {
@@ -136,9 +147,9 @@ const checkOptionalParameter = (path) => {
   const results = [];
   let basePath = "";
   segments.forEach((segment) => {
-    if (segment !== "" && !/\:/.test(segment)) {
+    if (segment !== "" && !/:/.test(segment)) {
       basePath += "/" + segment;
-    } else if (/\:/.test(segment)) {
+    } else if (/:/.test(segment)) {
       if (/\?/.test(segment)) {
         if (results.length === 0 && basePath === "") {
           results.push("/");
@@ -162,7 +173,9 @@ const _decodeURI = (value) => {
   if (value.indexOf("+") !== -1) {
     value = value.replace(/\+/g, " ");
   }
-  return value.indexOf("%") !== -1 ? tryDecode(value, decodeURIComponent_) : value;
+  return value.indexOf("%") !== -1
+    ? tryDecode(value, decodeURIComponent_)
+    : value;
 };
 const _getQueryParam = (url, key, multiple) => {
   let encoded;
@@ -179,7 +192,9 @@ const _getQueryParam = (url, key, multiple) => {
       if (trailingKeyCode === 61) {
         const valueIndex = keyIndex2 + key.length + 2;
         const endIndex = url.indexOf("&", valueIndex);
-        return _decodeURI(url.slice(valueIndex, endIndex === -1 ? void 0 : endIndex));
+        return _decodeURI(
+          url.slice(valueIndex, endIndex === -1 ? void 0 : endIndex),
+        );
       } else if (trailingKeyCode == 38 || isNaN(trailingKeyCode)) {
         return "";
       }
@@ -201,7 +216,11 @@ const _getQueryParam = (url, key, multiple) => {
     }
     let name = url.slice(
       keyIndex + 1,
-      valueIndex === -1 ? nextKeyIndex === -1 ? void 0 : nextKeyIndex : valueIndex
+      valueIndex === -1
+        ? nextKeyIndex === -1
+          ? void 0
+          : nextKeyIndex
+        : valueIndex,
     );
     if (encoded) {
       name = _decodeURI(name);
@@ -214,7 +233,10 @@ const _getQueryParam = (url, key, multiple) => {
     if (valueIndex === -1) {
       value = "";
     } else {
-      value = url.slice(valueIndex + 1, nextKeyIndex === -1 ? void 0 : nextKeyIndex);
+      value = url.slice(
+        valueIndex + 1,
+        nextKeyIndex === -1 ? void 0 : nextKeyIndex,
+      );
       if (encoded) {
         value = _decodeURI(value);
       }
@@ -223,7 +245,6 @@ const _getQueryParam = (url, key, multiple) => {
       if (!(results[name] && Array.isArray(results[name]))) {
         results[name] = [];
       }
-      ;
       results[name].push(value);
     } else {
       results[name] ??= value;
@@ -237,17 +258,18 @@ const getQueryParams = (url, key) => {
 };
 const decodeURIComponent_ = decodeURIComponent;
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  checkOptionalParameter,
-  decodeURIComponent_,
-  getPath,
-  getPathNoStrict,
-  getPattern,
-  getQueryParam,
-  getQueryParams,
-  getQueryStrings,
-  mergePath,
-  splitPath,
-  splitRoutingPath,
-  tryDecode
-});
+0 &&
+  (module.exports = {
+    checkOptionalParameter,
+    decodeURIComponent_,
+    getPath,
+    getPathNoStrict,
+    getPattern,
+    getQueryParam,
+    getQueryParams,
+    getQueryStrings,
+    mergePath,
+    splitPath,
+    splitRoutingPath,
+    tryDecode,
+  });

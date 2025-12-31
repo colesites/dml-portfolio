@@ -1,18 +1,18 @@
-import type { OperationTypeNode } from 'graphql'
-import {
-  ResponseResolver,
-  RequestHandlerOptions,
-} from './handlers/RequestHandler'
+import type { OperationTypeNode } from "graphql";
 import {
   GraphQLHandler,
-  GraphQLVariables,
-  GraphQLOperationType,
-  GraphQLResolverExtras,
-  GraphQLResponseBody,
-  GraphQLQuery,
-  GraphQLPredicate,
-} from './handlers/GraphQLHandler'
-import type { Path } from './utils/matching/matchRequestUrl'
+  type GraphQLOperationType,
+  type GraphQLPredicate,
+  type GraphQLQuery,
+  type GraphQLResolverExtras,
+  type GraphQLResponseBody,
+  type GraphQLVariables,
+} from "./handlers/GraphQLHandler";
+import type {
+  RequestHandlerOptions,
+  ResponseResolver,
+} from "./handlers/RequestHandler";
+import type { Path } from "./utils/matching/matchRequestUrl";
 
 export type GraphQLRequestHandler = <
   Query extends GraphQLQuery = GraphQLQuery,
@@ -24,7 +24,7 @@ export type GraphQLRequestHandler = <
     Variables
   >,
   options?: RequestHandlerOptions,
-) => GraphQLHandler
+) => GraphQLHandler;
 
 export type GraphQLOperationHandler = <
   Query extends GraphQLQuery = GraphQLQuery,
@@ -35,7 +35,7 @@ export type GraphQLOperationHandler = <
     Variables
   >,
   options?: RequestHandlerOptions,
-) => GraphQLHandler
+) => GraphQLHandler;
 
 export type GraphQLResponseResolver<
   Query extends GraphQLQuery = GraphQLQuery,
@@ -44,27 +44,27 @@ export type GraphQLResponseResolver<
   GraphQLResolverExtras<Variables>,
   null,
   GraphQLResponseBody<[Query] extends [never] ? GraphQLQuery : Query>
->
+>;
 
 function createScopedGraphQLHandler(
   operationType: GraphQLOperationType,
   url: Path,
 ): GraphQLRequestHandler {
   return (predicate, resolver, options = {}) => {
-    return new GraphQLHandler(operationType, predicate, url, resolver, options)
-  }
+    return new GraphQLHandler(operationType, predicate, url, resolver, options);
+  };
 }
 
 function createGraphQLOperationHandler(url: Path): GraphQLOperationHandler {
   return (resolver, options) => {
-    return new GraphQLHandler('all', new RegExp('.*'), url, resolver, options)
-  }
+    return new GraphQLHandler("all", /.*/, url, resolver, options);
+  };
 }
 
 export interface GraphQLLinkHandlers {
-  query: GraphQLRequestHandler
-  mutation: GraphQLRequestHandler
-  operation: GraphQLOperationHandler
+  query: GraphQLRequestHandler;
+  mutation: GraphQLRequestHandler;
+  operation: GraphQLOperationHandler;
 }
 
 /**
@@ -87,7 +87,7 @@ export const graphql = {
    *
    * @see {@link https://mswjs.io/docs/api/graphql#graphqlqueryqueryname-resolver `graphql.query()` API reference}
    */
-  query: createScopedGraphQLHandler('query' as OperationTypeNode, '*'),
+  query: createScopedGraphQLHandler("query" as OperationTypeNode, "*"),
 
   /**
    * Intercepts a GraphQL mutation by its name.
@@ -100,7 +100,7 @@ export const graphql = {
    * @see {@link https://mswjs.io/docs/api/graphql#graphqlmutationmutationname-resolver `graphql.query()` API reference}
    *
    */
-  mutation: createScopedGraphQLHandler('mutation' as OperationTypeNode, '*'),
+  mutation: createScopedGraphQLHandler("mutation" as OperationTypeNode, "*"),
 
   /**
    * Intercepts any GraphQL operation, regardless of its type or name.
@@ -112,7 +112,7 @@ export const graphql = {
    *
    * @see {@link https://mswjs.io/docs/api/graphql#graphqloperationresolver `graphql.operation()` API reference}
    */
-  operation: createGraphQLOperationHandler('*'),
+  operation: createGraphQLOperationHandler("*"),
 
   /**
    * Intercepts GraphQL operations scoped by the given URL.
@@ -126,11 +126,11 @@ export const graphql = {
   link(url: Path): GraphQLLinkHandlers {
     return {
       operation: createGraphQLOperationHandler(url),
-      query: createScopedGraphQLHandler('query' as OperationTypeNode, url),
+      query: createScopedGraphQLHandler("query" as OperationTypeNode, url),
       mutation: createScopedGraphQLHandler(
-        'mutation' as OperationTypeNode,
+        "mutation" as OperationTypeNode,
         url,
       ),
-    }
+    };
   },
-}
+};

@@ -1,14 +1,14 @@
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.readFile = readFile;
 exports.readFileSync = readFileSync;
 
 var _fs = _interopRequireDefault(require("fs"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 async function fsReadFileAsync(pathname, encoding) {
   return new Promise((resolve, reject) => {
@@ -27,10 +27,13 @@ async function readFile(filepath, options = {}) {
   const throwNotFound = options.throwNotFound === true;
 
   try {
-    const content = await fsReadFileAsync(filepath, 'utf8');
+    const content = await fsReadFileAsync(filepath, "utf8");
     return content;
   } catch (error) {
-    if (throwNotFound === false && (error.code === 'ENOENT' || error.code === 'EISDIR')) {
+    if (
+      throwNotFound === false &&
+      (error.code === "ENOENT" || error.code === "EISDIR")
+    ) {
       return null;
     }
 
@@ -42,11 +45,14 @@ function readFileSync(filepath, options = {}) {
   const throwNotFound = options.throwNotFound === true;
 
   try {
-    const content = _fs.default.readFileSync(filepath, 'utf8');
+    const content = _fs.default.readFileSync(filepath, "utf8");
 
     return content;
   } catch (error) {
-    if (throwNotFound === false && (error.code === 'ENOENT' || error.code === 'EISDIR')) {
+    if (
+      throwNotFound === false &&
+      (error.code === "ENOENT" || error.code === "EISDIR")
+    ) {
       return null;
     }
 

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.ArrowFunctionExpression = ArrowFunctionExpression;
 exports.FunctionDeclaration = exports.FunctionExpression = FunctionExpression;
@@ -14,9 +14,7 @@ exports._predicate = _predicate;
 exports._shouldPrintArrowParamsParens = _shouldPrintArrowParamsParens;
 var _t = require("@babel/types");
 var _index = require("../node/index.js");
-const {
-  isIdentifier
-} = _t;
+const { isIdentifier } = _t;
 function _params(node, idNode, parentNode) {
   this.print(node.typeParameters);
   const nameInfo = _getFuncIdName.call(this, idNode, parentNode);
@@ -77,7 +75,10 @@ function _methodHead(node) {
   if (node.optional) {
     this.tokenChar(63);
   }
-  this._params(node, node.computed && node.key.type !== "StringLiteral" ? undefined : node.key);
+  this._params(
+    node,
+    node.computed && node.key.type !== "StringLiteral" ? undefined : node.key,
+  );
 }
 function _predicate(node, noLineTerminatorAfter) {
   if (node.predicate) {
@@ -142,7 +143,15 @@ function _shouldPrintArrowParamsParens(node) {
     return true;
   }
   const firstParam = node.params[0];
-  if (!isIdentifier(firstParam) || firstParam.typeAnnotation || firstParam.optional || (_firstParam$leadingCo = firstParam.leadingComments) != null && _firstParam$leadingCo.length || (_firstParam$trailingC = firstParam.trailingComments) != null && _firstParam$trailingC.length) {
+  if (
+    !isIdentifier(firstParam) ||
+    firstParam.typeAnnotation ||
+    firstParam.optional ||
+    ((_firstParam$leadingCo = firstParam.leadingComments) != null &&
+      _firstParam$leadingCo.length) ||
+    ((_firstParam$trailingC = firstParam.trailingComments) != null &&
+      _firstParam$trailingC.length)
+  ) {
     return true;
   }
   if (this.tokenMap) {
@@ -161,13 +170,22 @@ function _getFuncIdName(idNode, parent) {
     const parentType = parent.type;
     if (parentType === "VariableDeclarator") {
       id = parent.id;
-    } else if (parentType === "AssignmentExpression" || parentType === "AssignmentPattern") {
+    } else if (
+      parentType === "AssignmentExpression" ||
+      parentType === "AssignmentPattern"
+    ) {
       id = parent.left;
-    } else if (parentType === "ObjectProperty" || parentType === "ClassProperty") {
+    } else if (
+      parentType === "ObjectProperty" ||
+      parentType === "ClassProperty"
+    ) {
       if (!parent.computed || parent.key.type === "StringLiteral") {
         id = parent.key;
       }
-    } else if (parentType === "ClassPrivateProperty" || parentType === "ClassAccessorProperty") {
+    } else if (
+      parentType === "ClassPrivateProperty" ||
+      parentType === "ClassAccessorProperty"
+    ) {
       id = parent.key;
     }
   }
@@ -177,19 +195,21 @@ function _getFuncIdName(idNode, parent) {
     var _id$loc, _id$loc2;
     nameInfo = {
       pos: (_id$loc = id.loc) == null ? void 0 : _id$loc.start,
-      name: ((_id$loc2 = id.loc) == null ? void 0 : _id$loc2.identifierName) || id.name
+      name:
+        ((_id$loc2 = id.loc) == null ? void 0 : _id$loc2.identifierName) ||
+        id.name,
     };
   } else if (id.type === "PrivateName") {
     var _id$loc3;
     nameInfo = {
       pos: (_id$loc3 = id.loc) == null ? void 0 : _id$loc3.start,
-      name: "#" + id.id.name
+      name: "#" + id.id.name,
     };
   } else if (id.type === "StringLiteral") {
     var _id$loc4;
     nameInfo = {
       pos: (_id$loc4 = id.loc) == null ? void 0 : _id$loc4.start,
-      name: id.value
+      name: id.value,
     };
   }
   return nameInfo;

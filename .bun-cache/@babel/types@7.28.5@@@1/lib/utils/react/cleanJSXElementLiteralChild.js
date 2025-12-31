@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = cleanJSXElementLiteralChild;
 var _index = require("../../builders/generated/index.js");
@@ -34,7 +34,8 @@ function cleanJSXElementLiteralChild(child, args) {
       str += trimmedLine;
     }
   }
-  if (str) args.push((0, _index2.inherits)((0, _index.stringLiteral)(str), child));
+  if (str)
+    args.push((0, _index2.inherits)((0, _index.stringLiteral)(str), child));
 }
 
 //# sourceMappingURL=cleanJSXElementLiteralChild.js.map

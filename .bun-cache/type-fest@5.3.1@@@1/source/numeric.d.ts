@@ -1,5 +1,5 @@
-import type {IsFloat} from './is-float.d.ts';
-import type {IsInteger} from './is-integer.d.ts';
+import type { IsFloat } from "./is-float.d.ts";
+import type { IsInteger } from "./is-integer.d.ts";
 
 export type _Numeric = number | bigint;
 
@@ -48,7 +48,11 @@ declare function setScore<T extends number>(length: Finite<T>): void;
 
 @category Numeric
 */
-export type Finite<T extends number> = T extends PositiveInfinity | NegativeInfinity ? never : T;
+export type Finite<T extends number> = T extends
+  | PositiveInfinity
+  | NegativeInfinity
+  ? never
+  : T;
 
 /**
 A `number` that is an integer.
@@ -97,10 +101,11 @@ declare function setYear<T extends number>(length: Integer<T>): void;
 */
 // `${bigint}` is a type that matches a valid bigint literal without the `n` (ex. 1, 0b1, 0o1, 0x1)
 // Because T is a number and not a string we can effectively use this to filter out any numbers containing decimal points
-export type Integer<T> =
-	T extends unknown // To distributive type
-		? IsInteger<T> extends true ? T : never
-		: never; // Never happens
+export type Integer<T> = T extends unknown // To distributive type
+  ? IsInteger<T> extends true
+    ? T
+    : never
+  : never; // Never happens
 
 /**
 A `number` that is not an integer.
@@ -120,10 +125,11 @@ declare function setPercentage<T extends number>(length: Float<T>): void;
 
 @category Numeric
 */
-export type Float<T> =
-T extends unknown // To distributive type
-	? IsFloat<T> extends true ? T : never
-	: never; // Never happens
+export type Float<T> = T extends unknown // To distributive type
+  ? IsFloat<T> extends true
+    ? T
+    : never
+  : never; // Never happens
 
 /**
 A negative (`-∞ < x < 0`) `number` that is not an integer.
@@ -148,7 +154,11 @@ Use-case: Validating and documenting parameters.
 
 @category Numeric
 */
-export type Negative<T extends _Numeric> = T extends Zero ? never : `${T}` extends `-${string}` ? T : never;
+export type Negative<T extends _Numeric> = T extends Zero
+  ? never
+  : `${T}` extends `-${string}`
+    ? T
+    : never;
 
 /**
 A negative (`-∞ < x < 0`) `number` that is an integer.
@@ -182,7 +192,11 @@ declare function setLength<T extends number>(length: NonNegative<T>): void;
 
 @category Numeric
 */
-export type NonNegative<T extends _Numeric> = T extends Zero ? T : Negative<T> extends never ? T : never;
+export type NonNegative<T extends _Numeric> = T extends Zero
+  ? T
+  : Negative<T> extends never
+    ? T
+    : never;
 
 /**
 A non-negative (`0 <= x < ∞`) `number` that is an integer.
@@ -221,6 +235,6 @@ type ShouldBeTrue = IsNegative<-1>;
 
 @category Numeric
 */
-export type IsNegative<T extends _Numeric> = T extends Negative<T> ? true : false;
-
-export {};
+export type IsNegative<T extends _Numeric> = T extends Negative<T>
+  ? true
+  : false;

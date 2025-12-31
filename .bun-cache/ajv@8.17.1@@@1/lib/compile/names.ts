@@ -1,4 +1,4 @@
-import {Name} from "./codegen"
+import { Name } from "./codegen";
 
 const names = {
   // validation function arguments
@@ -22,6 +22,6 @@ const names = {
   jsonPos: new Name("jsonPos"),
   jsonLen: new Name("jsonLen"),
   jsonPart: new Name("jsonPart"),
-}
+};
 
-export default names
+export default names;

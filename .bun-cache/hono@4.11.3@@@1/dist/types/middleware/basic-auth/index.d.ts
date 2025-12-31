@@ -2,21 +2,29 @@
  * @module
  * Basic Auth Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
-type MessageFunction = (c: Context) => string | object | Promise<string | object>;
-type BasicAuthOptions = {
-    username: string;
-    password: string;
-    realm?: string;
-    hashFunction?: Function;
-    invalidUserMessage?: string | object | MessageFunction;
-} | {
-    verifyUser: (username: string, password: string, c: Context) => boolean | Promise<boolean>;
-    realm?: string;
-    hashFunction?: Function;
-    invalidUserMessage?: string | object | MessageFunction;
-};
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
+type MessageFunction = (
+  c: Context,
+) => string | object | Promise<string | object>;
+type BasicAuthOptions =
+  | {
+      username: string;
+      password: string;
+      realm?: string;
+      hashFunction?: Function;
+      invalidUserMessage?: string | object | MessageFunction;
+    }
+  | {
+      verifyUser: (
+        username: string,
+        password: string,
+        c: Context,
+      ) => boolean | Promise<boolean>;
+      realm?: string;
+      hashFunction?: Function;
+      invalidUserMessage?: string | object | MessageFunction;
+    };
 /**
  * Basic Auth Middleware for Hono.
  *
@@ -49,8 +57,10 @@ type BasicAuthOptions = {
  * })
  * ```
  */
-export declare const basicAuth: (options: BasicAuthOptions, ...users: {
+export declare const basicAuth: (
+  options: BasicAuthOptions,
+  ...users: {
     username: string;
     password: string;
-}[]) => MiddlewareHandler;
-export {};
+  }[]
+) => MiddlewareHandler;

@@ -1,28 +1,28 @@
-import { mergeRight } from './mergeRight'
+import { mergeRight } from "./mergeRight";
 
-test('shallowly merges two given objects', () => {
+test("shallowly merges two given objects", () => {
   expect(mergeRight({ a: 1, b: 2 }, { b: 3, c: 4 })).toEqual({
     a: 1,
     b: 3,
     c: 4,
-  })
-})
+  });
+});
 
-test('deeply merges two given objects', () => {
+test("deeply merges two given objects", () => {
   expect(
     mergeRight(
       {
-        a: 'string',
+        a: "string",
         b: [1, 2],
         c: {
           d: 2,
         },
       },
       {
-        a: 'another-string',
+        a: "another-string",
         b: [3],
         c: {
-          e: 'five',
+          e: "five",
           f: {
             g: true,
           },
@@ -30,14 +30,14 @@ test('deeply merges two given objects', () => {
       },
     ),
   ).toEqual({
-    a: 'another-string',
+    a: "another-string",
     b: [1, 2, 3],
     c: {
       d: 2,
-      e: 'five',
+      e: "five",
       f: {
         g: true,
       },
     },
-  })
-})
+  });
+});

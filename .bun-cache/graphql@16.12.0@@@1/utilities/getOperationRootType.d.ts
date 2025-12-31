@@ -1,9 +1,9 @@
 import type {
   OperationDefinitionNode,
   OperationTypeDefinitionNode,
-} from '../language/ast';
-import type { GraphQLObjectType } from '../type/definition';
-import type { GraphQLSchema } from '../type/schema';
+} from "../language/ast";
+import type { GraphQLObjectType } from "../type/definition";
+import type { GraphQLSchema } from "../type/schema";
 /**
  * Extracts the root type of the operation from the schema.
  *

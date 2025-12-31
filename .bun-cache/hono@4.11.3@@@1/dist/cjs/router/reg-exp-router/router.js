@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var router_exports = {};
 __export(router_exports, {
-  RegExpRouter: () => RegExpRouter
+  RegExpRouter: () => RegExpRouter,
 });
 module.exports = __toCommonJS(router_exports);
 var import_router = require("../../router");
@@ -29,12 +33,13 @@ var import_trie = require("./trie");
 const nullMatcher = [/^$/, [], /* @__PURE__ */ Object.create(null)];
 let wildcardRegExpCache = /* @__PURE__ */ Object.create(null);
 function buildWildcardRegExp(path) {
-  return wildcardRegExpCache[path] ??= new RegExp(
-    path === "*" ? "" : `^${path.replace(
-      /\/\*$|([.\\+*[^\]$()])/g,
-      (_, metaChar) => metaChar ? `\\${metaChar}` : "(?:|/.*)"
-    )}$`
-  );
+  return (wildcardRegExpCache[path] ??= new RegExp(
+    path === "*"
+      ? ""
+      : `^${path.replace(/\/\*$|([.\\+*[^\]$()])/g, (_, metaChar) =>
+          metaChar ? `\\${metaChar}` : "(?:|/.*)",
+        )}$`,
+  ));
 }
 function clearWildcardRegExpCache() {
   wildcardRegExpCache = /* @__PURE__ */ Object.create(null);
@@ -45,16 +50,19 @@ function buildMatcherFromPreprocessedRoutes(routes) {
   if (routes.length === 0) {
     return nullMatcher;
   }
-  const routesWithStaticPathFlag = routes.map(
-    (route) => [!/\*|\/:/.test(route[0]), ...route]
-  ).sort(
-    ([isStaticA, pathA], [isStaticB, pathB]) => isStaticA ? 1 : isStaticB ? -1 : pathA.length - pathB.length
-  );
+  const routesWithStaticPathFlag = routes
+    .map((route) => [!/\*|\/:/.test(route[0]), ...route])
+    .sort(([isStaticA, pathA], [isStaticB, pathB]) =>
+      isStaticA ? 1 : isStaticB ? -1 : pathA.length - pathB.length,
+    );
   const staticMap = /* @__PURE__ */ Object.create(null);
   for (let i = 0, j = -1, len = routesWithStaticPathFlag.length; i < len; i++) {
     const [pathErrorCheckOnly, path, handlers] = routesWithStaticPathFlag[i];
     if (pathErrorCheckOnly) {
-      staticMap[path] = [handlers.map(([h]) => [h, /* @__PURE__ */ Object.create(null)]), import_matcher.emptyParam];
+      staticMap[path] = [
+        handlers.map(([h]) => [h, /* @__PURE__ */ Object.create(null)]),
+        import_matcher.emptyParam,
+      ];
     } else {
       j++;
     }
@@ -62,7 +70,9 @@ function buildMatcherFromPreprocessedRoutes(routes) {
     try {
       paramAssoc = trie.insert(path, j, pathErrorCheckOnly);
     } catch (e) {
-      throw e === import_node.PATH_ERROR ? new import_router.UnsupportedPathError(path) : e;
+      throw e === import_node.PATH_ERROR
+        ? new import_router.UnsupportedPathError(path)
+        : e;
     }
     if (pathErrorCheckOnly) {
       continue;
@@ -112,8 +122,12 @@ class RegExpRouter {
   #middleware;
   #routes;
   constructor() {
-    this.#middleware = { [import_router.METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
-    this.#routes = { [import_router.METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null) };
+    this.#middleware = {
+      [import_router.METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null),
+    };
+    this.#routes = {
+      [import_router.METHOD_NAME_ALL]: /* @__PURE__ */ Object.create(null),
+    };
   }
   add(method, path, handler) {
     const middleware = this.#middleware;
@@ -122,11 +136,12 @@ class RegExpRouter {
       throw new Error(import_router.MESSAGE_MATCHER_IS_ALREADY_BUILT);
     }
     if (!middleware[method]) {
-      ;
       [middleware, routes].forEach((handlerMap) => {
         handlerMap[method] = /* @__PURE__ */ Object.create(null);
         Object.keys(handlerMap[import_router.METHOD_NAME_ALL]).forEach((p) => {
-          handlerMap[method][p] = [...handlerMap[import_router.METHOD_NAME_ALL][p]];
+          handlerMap[method][p] = [
+            ...handlerMap[import_router.METHOD_NAME_ALL][p],
+          ];
         });
       });
     }
@@ -138,10 +153,16 @@ class RegExpRouter {
       const re = buildWildcardRegExp(path);
       if (method === import_router.METHOD_NAME_ALL) {
         Object.keys(middleware).forEach((m) => {
-          middleware[m][path] ||= findMiddleware(middleware[m], path) || findMiddleware(middleware[import_router.METHOD_NAME_ALL], path) || [];
+          middleware[m][path] ||=
+            findMiddleware(middleware[m], path) ||
+            findMiddleware(middleware[import_router.METHOD_NAME_ALL], path) ||
+            [];
         });
       } else {
-        middleware[method][path] ||= findMiddleware(middleware[method], path) || findMiddleware(middleware[import_router.METHOD_NAME_ALL], path) || [];
+        middleware[method][path] ||=
+          findMiddleware(middleware[method], path) ||
+          findMiddleware(middleware[import_router.METHOD_NAME_ALL], path) ||
+          [];
       }
       Object.keys(middleware).forEach((m) => {
         if (method === import_router.METHOD_NAME_ALL || method === m) {
@@ -153,7 +174,7 @@ class RegExpRouter {
       Object.keys(routes).forEach((m) => {
         if (method === import_router.METHOD_NAME_ALL || method === m) {
           Object.keys(routes[m]).forEach(
-            (p) => re.test(p) && routes[m][p].push([handler, paramCount])
+            (p) => re.test(p) && routes[m][p].push([handler, paramCount]),
           );
         }
       });
@@ -165,7 +186,12 @@ class RegExpRouter {
       Object.keys(routes).forEach((m) => {
         if (method === import_router.METHOD_NAME_ALL || method === m) {
           routes[m][path2] ||= [
-            ...findMiddleware(middleware[m], path2) || findMiddleware(middleware[import_router.METHOD_NAME_ALL], path2) || []
+            ...(findMiddleware(middleware[m], path2) ||
+              findMiddleware(
+                middleware[import_router.METHOD_NAME_ALL],
+                path2,
+              ) ||
+              []),
           ];
           routes[m][path2].push([handler, paramCount - len + i + 1]);
         }
@@ -175,9 +201,11 @@ class RegExpRouter {
   match = import_matcher.match;
   buildAllMatchers() {
     const matchers = /* @__PURE__ */ Object.create(null);
-    Object.keys(this.#routes).concat(Object.keys(this.#middleware)).forEach((method) => {
-      matchers[method] ||= this.#buildMatcher(method);
-    });
+    Object.keys(this.#routes)
+      .concat(Object.keys(this.#middleware))
+      .forEach((method) => {
+        matchers[method] ||= this.#buildMatcher(method);
+      });
     this.#middleware = this.#routes = void 0;
     clearWildcardRegExpCache();
     return matchers;
@@ -186,13 +214,18 @@ class RegExpRouter {
     const routes = [];
     let hasOwnRoute = method === import_router.METHOD_NAME_ALL;
     [this.#middleware, this.#routes].forEach((r) => {
-      const ownRoute = r[method] ? Object.keys(r[method]).map((path) => [path, r[method][path]]) : [];
+      const ownRoute = r[method]
+        ? Object.keys(r[method]).map((path) => [path, r[method][path]])
+        : [];
       if (ownRoute.length !== 0) {
         hasOwnRoute ||= true;
         routes.push(...ownRoute);
       } else if (method !== import_router.METHOD_NAME_ALL) {
         routes.push(
-          ...Object.keys(r[import_router.METHOD_NAME_ALL]).map((path) => [path, r[import_router.METHOD_NAME_ALL][path]])
+          ...Object.keys(r[import_router.METHOD_NAME_ALL]).map((path) => [
+            path,
+            r[import_router.METHOD_NAME_ALL][path],
+          ]),
         );
       }
     });
@@ -204,6 +237,7 @@ class RegExpRouter {
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  RegExpRouter
-});
+0 &&
+  (module.exports = {
+    RegExpRouter,
+  });

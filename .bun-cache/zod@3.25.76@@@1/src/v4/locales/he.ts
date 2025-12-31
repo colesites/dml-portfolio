@@ -29,7 +29,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -76,7 +79,8 @@ const error: () => errors.$ZodErrorMap = () => {
         return `קלט לא תקין: צריך ${issue.expected}, התקבל ${parsedType(issue.input)}`;
       // return `Invalid input: expected ${issue.expected}, received ${util.getParsedType(issue.input)}`;
       case "invalid_value":
-        if (issue.values.length === 1) return `קלט לא תקין: צריך ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `קלט לא תקין: צריך ${util.stringifyPrimitive(issue.values[0])}`;
         return `קלט לא תקין: צריך אחת מהאפשרויות  ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
@@ -96,10 +100,14 @@ const error: () => errors.$ZodErrorMap = () => {
       }
       case "invalid_format": {
         const _issue = issue as errors.$ZodStringFormatIssues;
-        if (_issue.format === "starts_with") return `מחרוזת לא תקינה: חייבת להתחיל ב"${_issue.prefix}"`;
-        if (_issue.format === "ends_with") return `מחרוזת לא תקינה: חייבת להסתיים ב "${_issue.suffix}"`;
-        if (_issue.format === "includes") return `מחרוזת לא תקינה: חייבת לכלול "${_issue.includes}"`;
-        if (_issue.format === "regex") return `מחרוזת לא תקינה: חייבת להתאים לתבנית ${_issue.pattern}`;
+        if (_issue.format === "starts_with")
+          return `מחרוזת לא תקינה: חייבת להתחיל ב"${_issue.prefix}"`;
+        if (_issue.format === "ends_with")
+          return `מחרוזת לא תקינה: חייבת להסתיים ב "${_issue.suffix}"`;
+        if (_issue.format === "includes")
+          return `מחרוזת לא תקינה: חייבת לכלול "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `מחרוזת לא תקינה: חייבת להתאים לתבנית ${_issue.pattern}`;
         return `${Nouns[_issue.format] ?? issue.format} לא תקין`;
       }
       case "not_multiple_of":

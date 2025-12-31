@@ -1,14 +1,14 @@
-import { FetchResponse } from '@mswjs/interceptors'
-import type { Emitter } from 'rettime'
-import type { SetupWorkerInternalContext } from '../glossary'
-import { deserializeRequest } from '../../utils/deserializeRequest'
+import { FetchResponse } from "@mswjs/interceptors";
+import type { Emitter } from "rettime";
+import { deserializeRequest } from "../../utils/deserializeRequest";
+import type { SetupWorkerInternalContext } from "../glossary";
 
 export function createResponseListener(
   context: SetupWorkerInternalContext,
-): Emitter.ListenerType<typeof context.workerChannel, 'RESPONSE'> {
+): Emitter.ListenerType<typeof context.workerChannel, "RESPONSE"> {
   return (event) => {
-    const responseMessage = event.data
-    const request = deserializeRequest(responseMessage.request)
+    const responseMessage = event.data;
+    const request = deserializeRequest(responseMessage.request);
 
     /**
      * CORS requests with `mode: "no-cors"` result in "opaque" responses.
@@ -17,8 +17,8 @@ export function createResponseListener(
      * @see https://fetch.spec.whatwg.org/#concept-filtered-response-opaque
      * @see https://github.com/mswjs/msw/issues/529
      */
-    if (responseMessage.response.type?.includes('opaque')) {
-      return
+    if (responseMessage.response.type?.includes("opaque")) {
+      return;
     }
 
     const response =
@@ -43,15 +43,15 @@ export function createResponseListener(
                */
               url: request.url,
             },
-          )
+          );
 
     context.emitter.emit(
-      responseMessage.isMockedResponse ? 'response:mocked' : 'response:bypass',
+      responseMessage.isMockedResponse ? "response:mocked" : "response:bypass",
       {
         requestId: responseMessage.request.id,
         request,
         response,
       },
-    )
-  }
+    );
+  };
 }

@@ -1,6 +1,7 @@
 // src/middleware/language/language.ts
-import { setCookie, getCookie } from "../../helper/cookie/index.js";
+import { getCookie, setCookie } from "../../helper/cookie/index.js";
 import { parseAccept } from "../../utils/accept.js";
+
 var DEFAULT_OPTIONS = {
   order: ["querystring", "cookie", "header"],
   lookupQueryString: "lang",
@@ -15,9 +16,9 @@ var DEFAULT_OPTIONS = {
     sameSite: "Strict",
     secure: true,
     maxAge: 365 * 24 * 60 * 60,
-    httpOnly: true
+    httpOnly: true,
   },
-  debug: false
+  debug: false,
 };
 function parseAcceptLanguage(header) {
   return parseAccept(header).map(({ type, q }) => ({ lang: type, q }));
@@ -31,12 +32,16 @@ var normalizeLanguage = (lang, options) => {
     if (options.convertDetectedLanguage) {
       normalizedLang = options.convertDetectedLanguage(normalizedLang);
     }
-    const compLang = options.ignoreCase ? normalizedLang.toLowerCase() : normalizedLang;
-    const compSupported = options.supportedLanguages.map(
-      (l) => options.ignoreCase ? l.toLowerCase() : l
+    const compLang = options.ignoreCase
+      ? normalizedLang.toLowerCase()
+      : normalizedLang;
+    const compSupported = options.supportedLanguages.map((l) =>
+      options.ignoreCase ? l.toLowerCase() : l,
     );
     const matchedLang = compSupported.find((l) => l === compLang);
-    return matchedLang ? options.supportedLanguages[compSupported.indexOf(matchedLang)] : void 0;
+    return matchedLang
+      ? options.supportedLanguages[compSupported.indexOf(matchedLang)]
+      : void 0;
   } catch {
     return void 0;
   }
@@ -89,16 +94,22 @@ var detectors = {
   querystring: detectFromQuery,
   cookie: detectFromCookie,
   header: detectFromHeader,
-  path: detectFromPath
+  path: detectFromPath,
 };
 function validateOptions(options) {
   if (!options.supportedLanguages.includes(options.fallbackLanguage)) {
-    throw new Error("Fallback language must be included in supported languages");
+    throw new Error(
+      "Fallback language must be included in supported languages",
+    );
   }
   if (options.lookupFromPathIndex < 0) {
     throw new Error("Path index must be non-negative");
   }
-  if (!options.order.every((detector) => Object.keys(detectors).includes(detector))) {
+  if (
+    !options.order.every((detector) =>
+      Object.keys(detectors).includes(detector),
+    )
+  ) {
     throw new Error("Invalid detector type in order array");
   }
 }
@@ -125,7 +136,9 @@ var detectLanguage = (c, options) => {
       detectedLang = detector(c, options);
       if (detectedLang) {
         if (options.debug) {
-          console.log(`Language detected from ${detectorName}: ${detectedLang}`);
+          console.log(
+            `Language detected from ${detectorName}: ${detectedLang}`,
+          );
         }
         break;
       }
@@ -133,7 +146,6 @@ var detectLanguage = (c, options) => {
       if (options.debug) {
         console.error(`Error in ${detectorName} detector:`, error);
       }
-      continue;
     }
   }
   const finalLang = detectedLang || options.fallbackLanguage;
@@ -148,8 +160,8 @@ var languageDetector = (userOptions) => {
     ...userOptions,
     cookieOptions: {
       ...DEFAULT_OPTIONS.cookieOptions,
-      ...userOptions.cookieOptions
-    }
+      ...userOptions.cookieOptions,
+    },
   };
   validateOptions(options);
   return async function languageDetector2(ctx, next) {
@@ -175,5 +187,5 @@ export {
   languageDetector,
   normalizeLanguage,
   parseAcceptLanguage,
-  validateOptions
+  validateOptions,
 };

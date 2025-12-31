@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.UniqueFieldDefinitionNamesRule = UniqueFieldDefinitionNamesRule;
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _definition = require('../../type/definition.js');
+var _definition = require("../../type/definition.js");
 
 /**
  * Unique field definition names

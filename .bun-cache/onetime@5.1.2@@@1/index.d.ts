@@ -1,16 +1,16 @@
 declare namespace onetime {
-	interface Options {
-		/**
+  interface Options {
+    /**
 		Throw an error when called more than once.
 
 		@default false
 		*/
-		throw?: boolean;
-	}
+    throw?: boolean;
+  }
 }
 
 declare const onetime: {
-	/**
+  /**
 	Ensure a function is only called once. When called multiple times it will return the return value from the first call.
 
 	@param fn - Function that should only be called once.
@@ -31,12 +31,12 @@ declare const onetime: {
 	onetime.callCount(foo); //=> 3
 	```
 	*/
-	<ArgumentsType extends unknown[], ReturnType>(
-		fn: (...arguments: ArgumentsType) => ReturnType,
-		options?: onetime.Options
-	): (...arguments: ArgumentsType) => ReturnType;
+  <ArgumentsType extends unknown[], ReturnType>(
+    fn: (...arguments: ArgumentsType) => ReturnType,
+    options?: onetime.Options,
+  ): (...arguments: ArgumentsType) => ReturnType;
 
-	/**
+  /**
 	Get the number of times `fn` has been called.
 
 	@param fn - Function to get call count from.
@@ -55,10 +55,10 @@ declare const onetime: {
 	//=> 3
 	```
 	*/
-	callCount(fn: (...arguments: any[]) => unknown): number;
+  callCount(fn: (...arguments: any[]) => unknown): number;
 
-	// TODO: Remove this for the next major release
-	default: typeof onetime;
+  // TODO: Remove this for the next major release
+  default: typeof onetime;
 };
 
 export = onetime;

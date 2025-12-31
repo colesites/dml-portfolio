@@ -1,9 +1,8 @@
-import { Emitter } from "strict-event-emitter";
 import { createRequestId } from "@mswjs/interceptors";
-import {
-  matchRequestUrl
-} from '../utils/matching/matchRequestUrl.mjs';
-import { getCallFrame } from '../utils/internal/getCallFrame.mjs';
+import { Emitter } from "strict-event-emitter";
+import { getCallFrame } from "../utils/internal/getCallFrame.mjs";
+import { matchRequestUrl } from "../utils/matching/matchRequestUrl.mjs";
+
 const kEmitter = Symbol("kEmitter");
 const kSender = Symbol("kSender");
 const kStopPropagationPatched = Symbol("kStopPropagationPatched");
@@ -26,10 +25,10 @@ class WebSocketHandler {
     const match = matchRequestUrl(
       clientUrl,
       this.url,
-      args.resolutionContext?.baseUrl
+      args.resolutionContext?.baseUrl,
     );
     return {
-      match
+      match,
     };
   }
   predicate(args) {
@@ -38,41 +37,41 @@ class WebSocketHandler {
   async run(connection, resolutionContext) {
     const parsedResult = this.parse({
       url: connection.client.url,
-      resolutionContext
+      resolutionContext,
     });
     if (!this.predicate({ url: connection.client.url, parsedResult })) {
       return false;
     }
     const resolvedConnection = {
       ...connection,
-      params: parsedResult.match.params || {}
+      params: parsedResult.match.params || {},
     };
     return this.connect(resolvedConnection);
   }
   connect(connection) {
     connection.client.addEventListener(
       "message",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.client.addEventListener(
       "close",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.server.addEventListener(
       "open",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.server.addEventListener(
       "message",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.server.addEventListener(
       "error",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.server.addEventListener(
       "close",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     return this[kEmitter].emit("connection", connection);
   }
@@ -87,29 +86,25 @@ function createStopPropagationListener(handler) {
     Object.defineProperty(event, KOnStopPropagation, {
       value() {
         Object.defineProperty(event, "kPropagationStoppedAt", {
-          value: handler.id
+          value: handler.id,
         });
       },
-      configurable: true
+      configurable: true,
     });
     if (!Reflect.get(event, kStopPropagationPatched)) {
       event.stopPropagation = new Proxy(event.stopPropagation, {
         apply: (target, thisArg, args) => {
           Reflect.get(event, KOnStopPropagation)?.call(handler);
           return Reflect.apply(target, thisArg, args);
-        }
+        },
       });
       Object.defineProperty(event, kStopPropagationPatched, {
         value: true,
         // If something else attempts to redefine this, throw.
-        configurable: false
+        configurable: false,
       });
     }
   };
 }
-export {
-  WebSocketHandler,
-  kEmitter,
-  kSender
-};
+export { WebSocketHandler, kEmitter, kSender };
 //# sourceMappingURL=WebSocketHandler.mjs.map

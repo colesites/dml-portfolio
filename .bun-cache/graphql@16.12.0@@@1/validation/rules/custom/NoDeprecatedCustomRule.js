@@ -1,15 +1,13 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.NoDeprecatedCustomRule = NoDeprecatedCustomRule;
 
-var _invariant = require('../../../jsutils/invariant.js');
+var _invariant = require("../../../jsutils/invariant.js");
 
-var _GraphQLError = require('../../../error/GraphQLError.js');
+var _GraphQLError = require("../../../error/GraphQLError.js");
 
-var _definition = require('../../../type/definition.js');
+var _definition = require("../../../type/definition.js");
 
 /**
  * No deprecated

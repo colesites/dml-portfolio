@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -263,7 +263,7 @@ test("enum async parse", async () => {
 enum nativeEnumTest {
   asdf = "qwer",
 }
-// @ts-ignore
+// @ts-expect-error
 const nativeEnumSchema = z.nativeEnum(nativeEnumTest);
 test("nativeEnum async parse", async () => {
   const goodData = nativeEnumTest.asdf;
@@ -319,7 +319,8 @@ test("async validation non-empty strings", async () => {
 
   const r1 = result1;
   await result2.then((r2) => {
-    if (r1.success === false && r2.success === false) expect(r1.error.issues.length).toBe(r2.error.issues.length); // <--- r1 has length 2, r2 has length 1
+    if (r1.success === false && r2.success === false)
+      expect(r1.error.issues.length).toBe(r2.error.issues.length); // <--- r1 has length 2, r2 has length 1
   });
 });
 
@@ -335,7 +336,8 @@ test("async validation multiple errors 1", async () => {
 
   const r1 = result1;
   await result2.then((r2) => {
-    if (r1.success === false && r2.success === false) expect(r2.error.issues.length).toBe(r1.error.issues.length);
+    if (r1.success === false && r2.success === false)
+      expect(r2.error.issues.length).toBe(r1.error.issues.length);
   });
 });
 
@@ -354,7 +356,8 @@ test("async validation multiple errors 2", async () => {
 
   const r1 = result1;
   await result2.then((r2) => {
-    if (r1.success === false && r2.success === false) expect(r2.error.issues.length).toBe(r1.error.issues.length);
+    if (r1.success === false && r2.success === false)
+      expect(r2.error.issues.length).toBe(r1.error.issues.length);
   });
 });
 

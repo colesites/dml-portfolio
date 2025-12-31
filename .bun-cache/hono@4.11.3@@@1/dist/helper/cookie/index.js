@@ -1,5 +1,11 @@
 // src/helper/cookie/index.ts
-import { parse, parseSigned, serialize, serializeSigned } from "../../utils/cookie.js";
+import {
+  parse,
+  parseSigned,
+  serialize,
+  serializeSigned,
+} from "../../utils/cookie.js";
+
 var getCookie = (c, key, prefix) => {
   const cookie = c.req.raw.headers.get("Cookie");
   if (typeof key === "string") {
@@ -45,13 +51,17 @@ var getSignedCookie = async (c, secret, key, prefix) => {
 var generateCookie = (name, value, opt) => {
   let cookie;
   if (opt?.prefix === "secure") {
-    cookie = serialize("__Secure-" + name, value, { path: "/", ...opt, secure: true });
+    cookie = serialize("__Secure-" + name, value, {
+      path: "/",
+      ...opt,
+      secure: true,
+    });
   } else if (opt?.prefix === "host") {
     cookie = serialize("__Host-" + name, value, {
       ...opt,
       path: "/",
       secure: true,
-      domain: void 0
+      domain: void 0,
     });
   } else {
     cookie = serialize(name, value, { path: "/", ...opt });
@@ -68,14 +78,14 @@ var generateSignedCookie = async (name, value, secret, opt) => {
     cookie = await serializeSigned("__Secure-" + name, value, secret, {
       path: "/",
       ...opt,
-      secure: true
+      secure: true,
     });
   } else if (opt?.prefix === "host") {
     cookie = await serializeSigned("__Host-" + name, value, secret, {
       ...opt,
       path: "/",
       secure: true,
-      domain: void 0
+      domain: void 0,
     });
   } else {
     cookie = await serializeSigned(name, value, secret, { path: "/", ...opt });
@@ -98,5 +108,5 @@ export {
   getCookie,
   getSignedCookie,
   setCookie,
-  setSignedCookie
+  setSignedCookie,
 };

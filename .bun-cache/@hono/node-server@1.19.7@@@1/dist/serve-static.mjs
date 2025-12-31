@@ -1,12 +1,15 @@
 // src/serve-static.ts
+
+import { createReadStream, existsSync, statSync } from "fs";
 import { getMimeType } from "hono/utils/mime";
-import { createReadStream, statSync, existsSync } from "fs";
 import { join } from "path";
-var COMPRESSIBLE_CONTENT_TYPE_REGEX = /^\s*(?:text\/[^;\s]+|application\/(?:javascript|json|xml|xml-dtd|ecmascript|dart|postscript|rtf|tar|toml|vnd\.dart|vnd\.ms-fontobject|vnd\.ms-opentype|wasm|x-httpd-php|x-javascript|x-ns-proxy-autoconfig|x-sh|x-tar|x-virtualbox-hdd|x-virtualbox-ova|x-virtualbox-ovf|x-virtualbox-vbox|x-virtualbox-vdi|x-virtualbox-vhd|x-virtualbox-vmdk|x-www-form-urlencoded)|font\/(?:otf|ttf)|image\/(?:bmp|vnd\.adobe\.photoshop|vnd\.microsoft\.icon|vnd\.ms-dds|x-icon|x-ms-bmp)|message\/rfc822|model\/gltf-binary|x-shader\/x-fragment|x-shader\/x-vertex|[^;\s]+?\+(?:json|text|xml|yaml))(?:[;\s]|$)/i;
+
+var COMPRESSIBLE_CONTENT_TYPE_REGEX =
+  /^\s*(?:text\/[^;\s]+|application\/(?:javascript|json|xml|xml-dtd|ecmascript|dart|postscript|rtf|tar|toml|vnd\.dart|vnd\.ms-fontobject|vnd\.ms-opentype|wasm|x-httpd-php|x-javascript|x-ns-proxy-autoconfig|x-sh|x-tar|x-virtualbox-hdd|x-virtualbox-ova|x-virtualbox-ovf|x-virtualbox-vbox|x-virtualbox-vdi|x-virtualbox-vhd|x-virtualbox-vmdk|x-www-form-urlencoded)|font\/(?:otf|ttf)|image\/(?:bmp|vnd\.adobe\.photoshop|vnd\.microsoft\.icon|vnd\.ms-dds|x-icon|x-ms-bmp)|message\/rfc822|model\/gltf-binary|x-shader\/x-fragment|x-shader\/x-vertex|[^;\s]+?\+(?:json|text|xml|yaml))(?:[;\s]|$)/i;
 var ENCODINGS = {
   br: ".br",
   zstd: ".zst",
-  gzip: ".gz"
+  gzip: ".gz",
 };
 var ENCODINGS_ORDERED_KEYS = Object.keys(ENCODINGS);
 var createStreamBody = (stream) => {
@@ -24,7 +27,7 @@ var createStreamBody = (stream) => {
     },
     cancel() {
       stream.destroy();
-    }
+    },
   });
   return body;
 };
@@ -32,15 +35,16 @@ var getStats = (path) => {
   let stats;
   try {
     stats = statSync(path);
-  } catch {
-  }
+  } catch {}
   return stats;
 };
 var serveStatic = (options = { root: "" }) => {
   const root = options.root || "";
   const optionPath = options.path;
   if (root !== "" && !existsSync(root)) {
-    console.error(`serveStatic: root path '${root}' is not found, are you sure it's correct?`);
+    console.error(
+      `serveStatic: root path '${root}' is not found, are you sure it's correct?`,
+    );
   }
   return async (c, next) => {
     if (c.finalized) {
@@ -52,7 +56,7 @@ var serveStatic = (options = { root: "" }) => {
     } else {
       try {
         filename = decodeURIComponent(c.req.path);
-        if (/(?:^|[\/\\])\.\.(?:$|[\/\\])/.test(filename)) {
+        if (/(?:^|[/\\])\.\.(?:$|[/\\])/.test(filename)) {
           throw new Error();
         }
       } catch {
@@ -62,7 +66,9 @@ var serveStatic = (options = { root: "" }) => {
     }
     let path = join(
       root,
-      !optionPath && options.rewriteRequestPath ? options.rewriteRequestPath(filename, c) : filename
+      !optionPath && options.rewriteRequestPath
+        ? options.rewriteRequestPath(filename, c)
+        : filename,
     );
     let stats = getStats(path);
     if (stats && stats.isDirectory()) {
@@ -76,9 +82,15 @@ var serveStatic = (options = { root: "" }) => {
     }
     const mimeType = getMimeType(path);
     c.header("Content-Type", mimeType || "application/octet-stream");
-    if (options.precompressed && (!mimeType || COMPRESSIBLE_CONTENT_TYPE_REGEX.test(mimeType))) {
+    if (
+      options.precompressed &&
+      (!mimeType || COMPRESSIBLE_CONTENT_TYPE_REGEX.test(mimeType))
+    ) {
       const acceptEncodingSet = new Set(
-        c.req.header("Accept-Encoding")?.split(",").map((encoding) => encoding.trim())
+        c.req
+          .header("Accept-Encoding")
+          ?.split(",")
+          .map((encoding) => encoding.trim()),
       );
       for (const encoding of ENCODINGS_ORDERED_KEYS) {
         if (!acceptEncodingSet.has(encoding)) {
@@ -123,6 +135,4 @@ var serveStatic = (options = { root: "" }) => {
     return result;
   };
 };
-export {
-  serveStatic
-};
+export { serveStatic };

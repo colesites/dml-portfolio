@@ -1,4 +1,5 @@
 import { isNodeProcess } from "is-node-process";
+
 const SET_TIMEOUT_MAX_ALLOWED_INT = 2147483647;
 const MIN_SERVER_RESPONSE_TIME = 100;
 const MAX_SERVER_RESPONSE_TIME = 400;
@@ -8,7 +9,8 @@ function getRealisticResponseTime() {
     return NODE_SERVER_RESPONSE_TIME;
   }
   return Math.floor(
-    Math.random() * (MAX_SERVER_RESPONSE_TIME - MIN_SERVER_RESPONSE_TIME) + MIN_SERVER_RESPONSE_TIME
+    Math.random() * (MAX_SERVER_RESPONSE_TIME - MIN_SERVER_RESPONSE_TIME) +
+      MIN_SERVER_RESPONSE_TIME,
   );
 }
 async function delay(durationOrMode) {
@@ -25,7 +27,7 @@ async function delay(durationOrMode) {
       }
       default: {
         throw new Error(
-          `Failed to delay a response: unknown delay mode "${durationOrMode}". Please make sure you provide one of the supported modes ("real", "infinite") or a number.`
+          `Failed to delay a response: unknown delay mode "${durationOrMode}". Please make sure you provide one of the supported modes ("real", "infinite") or a number.`,
         );
       }
     }
@@ -34,7 +36,7 @@ async function delay(durationOrMode) {
   } else {
     if (durationOrMode > SET_TIMEOUT_MAX_ALLOWED_INT) {
       throw new Error(
-        `Failed to delay a response: provided delay duration (${durationOrMode}) exceeds the maximum allowed duration for "setTimeout" (${SET_TIMEOUT_MAX_ALLOWED_INT}). This will cause the response to be returned immediately. Please use a number within the allowed range to delay the response by exact duration, or consider the "infinite" delay mode to delay the response indefinitely.`
+        `Failed to delay a response: provided delay duration (${durationOrMode}) exceeds the maximum allowed duration for "setTimeout" (${SET_TIMEOUT_MAX_ALLOWED_INT}). This will cause the response to be returned immediately. Please use a number within the allowed range to delay the response by exact duration, or consider the "infinite" delay mode to delay the response indefinitely.`,
       );
     }
     delayTime = durationOrMode;
@@ -46,6 +48,6 @@ export {
   MIN_SERVER_RESPONSE_TIME,
   NODE_SERVER_RESPONSE_TIME,
   SET_TIMEOUT_MAX_ALLOWED_INT,
-  delay
+  delay,
 };
 //# sourceMappingURL=delay.mjs.map

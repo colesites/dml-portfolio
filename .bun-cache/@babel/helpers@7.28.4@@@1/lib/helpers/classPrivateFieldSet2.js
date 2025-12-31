@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _classPrivateFieldSet2;
 var _assertClassBrand = require("./assertClassBrand.js");

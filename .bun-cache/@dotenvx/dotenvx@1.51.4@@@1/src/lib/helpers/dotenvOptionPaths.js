@@ -1,21 +1,21 @@
-const resolveHome = require('./resolveHome')
+const resolveHome = require("./resolveHome");
 
-function dotenvOptionPaths (options) {
-  let optionPaths = []
+function dotenvOptionPaths(options) {
+  let optionPaths = [];
 
   if (options && options.path) {
     if (!Array.isArray(options.path)) {
-      optionPaths = [resolveHome(options.path)]
+      optionPaths = [resolveHome(options.path)];
     } else {
-      optionPaths = [] // reset default
+      optionPaths = []; // reset default
 
       for (const filepath of options.path) {
-        optionPaths.push(resolveHome(filepath))
+        optionPaths.push(resolveHome(filepath));
       }
     }
   }
 
-  return optionPaths
+  return optionPaths;
 }
 
-module.exports = dotenvOptionPaths
+module.exports = dotenvOptionPaths;

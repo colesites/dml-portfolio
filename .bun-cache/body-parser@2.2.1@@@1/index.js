@@ -1,11 +1,3 @@
-/*!
- * body-parser
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict'
-
 /**
  * @typedef Parsers
  * @type {function}
@@ -20,51 +12,51 @@
  * @type {Parsers}
  */
 
-exports = module.exports = bodyParser
+exports = module.exports = bodyParser;
 
 /**
  * JSON parser.
  * @public
  */
 
-Object.defineProperty(exports, 'json', {
+Object.defineProperty(exports, "json", {
   configurable: true,
   enumerable: true,
-  get: () => require('./lib/types/json')
-})
+  get: () => require("./lib/types/json"),
+});
 
 /**
  * Raw parser.
  * @public
  */
 
-Object.defineProperty(exports, 'raw', {
+Object.defineProperty(exports, "raw", {
   configurable: true,
   enumerable: true,
-  get: () => require('./lib/types/raw')
-})
+  get: () => require("./lib/types/raw"),
+});
 
 /**
  * Text parser.
  * @public
  */
 
-Object.defineProperty(exports, 'text', {
+Object.defineProperty(exports, "text", {
   configurable: true,
   enumerable: true,
-  get: () => require('./lib/types/text')
-})
+  get: () => require("./lib/types/text"),
+});
 
 /**
  * URL-encoded parser.
  * @public
  */
 
-Object.defineProperty(exports, 'urlencoded', {
+Object.defineProperty(exports, "urlencoded", {
   configurable: true,
   enumerable: true,
-  get: () => require('./lib/types/urlencoded')
-})
+  get: () => require("./lib/types/urlencoded"),
+});
 
 /**
  * Create a middleware to parse json and urlencoded bodies.
@@ -75,6 +67,8 @@ Object.defineProperty(exports, 'urlencoded', {
  * @public
  */
 
-function bodyParser () {
-  throw new Error('The bodyParser() generic has been split into individual middleware to use instead.')
+function bodyParser() {
+  throw new Error(
+    "The bodyParser() generic has been split into individual middleware to use instead.",
+  );
 }

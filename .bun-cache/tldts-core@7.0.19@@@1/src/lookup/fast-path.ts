@@ -1,4 +1,4 @@
-import { IPublicSuffix, ISuffixLookupOptions } from './interface';
+import type { IPublicSuffix, ISuffixLookupOptions } from "./interface";
 
 export default function (
   hostname: string,
@@ -22,7 +22,7 @@ export default function (
     ) {
       out.isIcann = true;
       out.isPrivate = false;
-      out.publicSuffix = 'com';
+      out.publicSuffix = "com";
       return true;
     } else if (
       c3 === 103 /* 'g' */ &&
@@ -32,7 +32,7 @@ export default function (
     ) {
       out.isIcann = true;
       out.isPrivate = false;
-      out.publicSuffix = 'org';
+      out.publicSuffix = "org";
       return true;
     } else if (
       c3 === 117 /* 'u' */ &&
@@ -42,7 +42,7 @@ export default function (
     ) {
       out.isIcann = true;
       out.isPrivate = false;
-      out.publicSuffix = 'edu';
+      out.publicSuffix = "edu";
       return true;
     } else if (
       c3 === 118 /* 'v' */ &&
@@ -52,7 +52,7 @@ export default function (
     ) {
       out.isIcann = true;
       out.isPrivate = false;
-      out.publicSuffix = 'gov';
+      out.publicSuffix = "gov";
       return true;
     } else if (
       c3 === 116 /* 't' */ &&
@@ -62,7 +62,7 @@ export default function (
     ) {
       out.isIcann = true;
       out.isPrivate = false;
-      out.publicSuffix = 'net';
+      out.publicSuffix = "net";
       return true;
     } else if (
       c3 === 101 /* 'e' */ &&
@@ -71,7 +71,7 @@ export default function (
     ) {
       out.isIcann = true;
       out.isPrivate = false;
-      out.publicSuffix = 'de';
+      out.publicSuffix = "de";
       return true;
     }
   }

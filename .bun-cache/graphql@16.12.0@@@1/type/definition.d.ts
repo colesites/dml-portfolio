@@ -1,7 +1,7 @@
-import type { Maybe } from '../jsutils/Maybe';
-import type { ObjMap } from '../jsutils/ObjMap';
-import type { Path } from '../jsutils/Path';
-import type { PromiseOrValue } from '../jsutils/PromiseOrValue';
+import type { Maybe } from "../jsutils/Maybe";
+import type { ObjMap } from "../jsutils/ObjMap";
+import type { Path } from "../jsutils/Path";
+import type { PromiseOrValue } from "../jsutils/PromiseOrValue";
 import type {
   EnumTypeDefinitionNode,
   EnumTypeExtensionNode,
@@ -22,8 +22,8 @@ import type {
   UnionTypeDefinitionNode,
   UnionTypeExtensionNode,
   ValueNode,
-} from '../language/ast';
-import type { GraphQLSchema } from './schema';
+} from "../language/ast";
+import type { GraphQLSchema } from "./schema";
 /**
  * These are all of the possible kinds of types.
  */
@@ -923,4 +923,3 @@ export interface GraphQLInputField {
 }
 export declare function isRequiredInputField(field: GraphQLInputField): boolean;
 export declare type GraphQLInputFieldMap = ObjMap<GraphQLInputField>;
-export {};

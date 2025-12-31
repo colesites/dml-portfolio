@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var jsx_exports = {};
 __export(jsx_exports, {
   Children: () => import_children.Children,
@@ -53,7 +57,7 @@ __export(jsx_exports, {
   useSyncExternalStore: () => import_hooks2.useSyncExternalStore,
   useTransition: () => import_hooks2.useTransition,
   useViewTransition: () => import_hooks2.useViewTransition,
-  version: () => import_base.reactAPICompatVersion
+  version: () => import_base.reactAPICompatVersion,
 });
 module.exports = __toCommonJS(jsx_exports);
 var import_base = require("./base");
@@ -97,43 +101,44 @@ var jsx_default = {
   useActionState: import_hooks.useActionState,
   useOptimistic: import_hooks.useOptimistic,
   Suspense: import_streaming.Suspense,
-  Children: import_children.Children
+  Children: import_children.Children,
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  Children,
-  ErrorBoundary,
-  Fragment,
-  StrictMode,
-  Suspense,
-  cloneElement,
-  createContext,
-  createElement,
-  createRef,
-  forwardRef,
-  isValidElement,
-  jsx,
-  memo,
-  startTransition,
-  startViewTransition,
-  use,
-  useActionState,
-  useCallback,
-  useContext,
-  useDebugValue,
-  useDeferredValue,
-  useEffect,
-  useId,
-  useImperativeHandle,
-  useInsertionEffect,
-  useLayoutEffect,
-  useMemo,
-  useOptimistic,
-  useReducer,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  useTransition,
-  useViewTransition,
-  version
-});
+0 &&
+  (module.exports = {
+    Children,
+    ErrorBoundary,
+    Fragment,
+    StrictMode,
+    Suspense,
+    cloneElement,
+    createContext,
+    createElement,
+    createRef,
+    forwardRef,
+    isValidElement,
+    jsx,
+    memo,
+    startTransition,
+    startViewTransition,
+    use,
+    useActionState,
+    useCallback,
+    useContext,
+    useDebugValue,
+    useDeferredValue,
+    useEffect,
+    useId,
+    useImperativeHandle,
+    useInsertionEffect,
+    useLayoutEffect,
+    useMemo,
+    useOptimistic,
+    useReducer,
+    useRef,
+    useState,
+    useSyncExternalStore,
+    useTransition,
+    useViewTransition,
+    version,
+  });

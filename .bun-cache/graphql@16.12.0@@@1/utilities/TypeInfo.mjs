@@ -1,6 +1,6 @@
-import { isNode } from '../language/ast.mjs';
-import { Kind } from '../language/kinds.mjs';
-import { getEnterLeaveForKind } from '../language/visitor.mjs';
+import { isNode } from "../language/ast.mjs";
+import { Kind } from "../language/kinds.mjs";
+import { getEnterLeaveForKind } from "../language/visitor.mjs";
 import {
   getNamedType,
   getNullableType,
@@ -12,13 +12,13 @@ import {
   isListType,
   isObjectType,
   isOutputType,
-} from '../type/definition.mjs';
+} from "../type/definition.mjs";
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from '../type/introspection.mjs';
-import { typeFromAST } from './typeFromAST.mjs';
+} from "../type/introspection.mjs";
+import { typeFromAST } from "./typeFromAST.mjs";
 /**
  * TypeInfo is a utility class which, given a GraphQL schema, can keep track
  * of the current field and type definitions at any point in a GraphQL document
@@ -66,7 +66,7 @@ export class TypeInfo {
   }
 
   get [Symbol.toStringTag]() {
-    return 'TypeInfo';
+    return "TypeInfo";
   }
 
   getType() {

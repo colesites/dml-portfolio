@@ -1,24 +1,27 @@
-import {type Readable} from 'node:stream';
-import {type Buffer} from 'node:buffer';
+import { type Readable } from "node:stream";
+import { type Buffer } from "node:buffer";
 
 export class MaxBufferError extends Error {
-	readonly name: 'MaxBufferError';
-	constructor();
+  readonly name: "MaxBufferError";
+  constructor();
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type TextStreamItem = string | Buffer | ArrayBuffer | ArrayBufferView;
-export type AnyStream<SteamItem = TextStreamItem> = Readable | ReadableStream<SteamItem> | AsyncIterable<SteamItem>;
+export type AnyStream<SteamItem = TextStreamItem> =
+  | Readable
+  | ReadableStream<SteamItem>
+  | AsyncIterable<SteamItem>;
 
 export type Options = {
-	/**
+  /**
 	Maximum length of the stream. If exceeded, the promise will be rejected with a `MaxBufferError`.
 
 	Depending on the [method](#api), the length is measured with [`string.length`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length), [`buffer.length`](https://nodejs.org/api/buffer.html#buflength), [`arrayBuffer.byteLength`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/byteLength) or [`array.length`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length).
 
 	@default Infinity
 	*/
-	readonly maxBuffer?: number;
+  readonly maxBuffer?: number;
 };
 
 /**
@@ -72,7 +75,10 @@ const asyncIterable = await opendir(directory);
 console.log(await getStreamAsArray(asyncIterable));
 ```
 */
-export default function getStream(stream: AnyStream, options?: Options): Promise<string>;
+export default function getStream(
+  stream: AnyStream,
+  options?: Options,
+): Promise<string>;
 
 /**
 Get the given `stream` as a Node.js [`Buffer`](https://nodejs.org/api/buffer.html#class-buffer).
@@ -88,7 +94,10 @@ console.log(await getStreamAsBuffer(stream));
 ```
 */
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function getStreamAsBuffer(stream: AnyStream, options?: Options): Promise<Buffer>;
+export function getStreamAsBuffer(
+  stream: AnyStream,
+  options?: Options,
+): Promise<Buffer>;
 
 /**
 Get the given `stream` as an [`ArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer).
@@ -103,7 +112,10 @@ const {body: readableStream} = await fetch('https://example.com');
 console.log(await getStreamAsArrayBuffer(readableStream));
 ```
 */
-export function getStreamAsArrayBuffer(stream: AnyStream, options?: Options): Promise<ArrayBuffer>;
+export function getStreamAsArrayBuffer(
+  stream: AnyStream,
+  options?: Options,
+): Promise<ArrayBuffer>;
 
 /**
 Get the given `stream` as an array. Unlike [other methods](#api), this supports [streams of objects](https://nodejs.org/api/stream.html#object-mode).
@@ -118,4 +130,7 @@ const {body: readableStream} = await fetch('https://example.com');
 console.log(await getStreamAsArray(readableStream));
 ```
 */
-export function getStreamAsArray<Item>(stream: AnyStream<Item>, options?: Options): Promise<Item[]>;
+export function getStreamAsArray<Item>(
+  stream: AnyStream<Item>,
+  options?: Options,
+): Promise<Item[]>;

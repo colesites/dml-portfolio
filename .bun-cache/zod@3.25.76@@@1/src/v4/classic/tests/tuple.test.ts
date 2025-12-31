@@ -53,7 +53,10 @@ test("successful validation", () => {
 
 test("async validation", async () => {
   const testTuple = z
-    .tuple([z.string().refine(async () => true), z.number().refine(async () => true)])
+    .tuple([
+      z.string().refine(async () => true),
+      z.number().refine(async () => true),
+    ])
     .refine(async () => true);
   expectTypeOf<typeof testTuple._output>().toEqualTypeOf<[string, number]>();
 
@@ -104,10 +107,19 @@ test("async validation", async () => {
 });
 
 test("tuple with optional elements", () => {
-  const myTuple = z.tuple([z.string(), z.number().optional(), z.string().optional()]).rest(z.boolean());
-  expectTypeOf<typeof myTuple._output>().toEqualTypeOf<[string, number?, string?, ...boolean[]]>();
+  const myTuple = z
+    .tuple([z.string(), z.number().optional(), z.string().optional()])
+    .rest(z.boolean());
+  expectTypeOf<typeof myTuple._output>().toEqualTypeOf<
+    [string, number?, string?, ...boolean[]]
+  >();
 
-  const goodData = [["asdf"], ["asdf", 1234], ["asdf", 1234, "asdf"], ["asdf", 1234, "asdf", true, false, true]];
+  const goodData = [
+    ["asdf"],
+    ["asdf", 1234],
+    ["asdf", 1234, "asdf"],
+    ["asdf", 1234, "asdf", true, false, true],
+  ];
   for (const data of goodData) {
     expect(myTuple.parse(data)).toEqual(data);
   }
@@ -123,8 +135,12 @@ test("tuple with optional elements", () => {
 });
 
 test("tuple with optional elements followed by required", () => {
-  const myTuple = z.tuple([z.string(), z.number().optional(), z.string()]).rest(z.boolean());
-  expectTypeOf<typeof myTuple._output>().toEqualTypeOf<[string, number | undefined, string, ...boolean[]]>();
+  const myTuple = z
+    .tuple([z.string(), z.number().optional(), z.string()])
+    .rest(z.boolean());
+  expectTypeOf<typeof myTuple._output>().toEqualTypeOf<
+    [string, number | undefined, string, ...boolean[]]
+  >();
 
   const goodData = [
     ["asdf", 1234, "asdf"],
@@ -147,7 +163,13 @@ test("tuple with optional elements followed by required", () => {
 
 test("tuple with rest schema", () => {
   const myTuple = z.tuple([z.string(), z.number()]).rest(z.boolean());
-  expect(myTuple.parse(["asdf", 1234, true, false, true])).toEqual(["asdf", 1234, true, false, true]);
+  expect(myTuple.parse(["asdf", 1234, true, false, true])).toEqual([
+    "asdf",
+    1234,
+    true,
+    false,
+    true,
+  ]);
 
   expect(myTuple.parse(["asdf", 1234])).toEqual(["asdf", 1234]);
 

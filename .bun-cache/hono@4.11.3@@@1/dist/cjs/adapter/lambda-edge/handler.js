@@ -10,27 +10,36 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toESM = (mod, isNodeMode, target) => (
+  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+  __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule
+      ? __defProp(target, "default", { value: mod, enumerable: true })
+      : target,
+    mod,
+  )
+);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var handler_exports = {};
 __export(handler_exports, {
   createBody: () => createBody,
   handle: () => handle,
-  isContentTypeBinary: () => isContentTypeBinary
+  isContentTypeBinary: () => isContentTypeBinary,
 });
 module.exports = __toCommonJS(handler_exports);
 var import_node_crypto = __toESM(require("node:crypto"), 1);
@@ -40,8 +49,8 @@ const convertHeaders = (headers) => {
   const cfHeaders = {};
   headers.forEach((value, key) => {
     cfHeaders[key.toLowerCase()] = [
-      ...cfHeaders[key.toLowerCase()] || [],
-      { key: key.toLowerCase(), value }
+      ...(cfHeaders[key.toLowerCase()] || []),
+      { key: key.toLowerCase(), value },
     ];
   });
   return cfHeaders;
@@ -56,24 +65,30 @@ const handle = (app) => {
       },
       config: event.Records[0].cf.config,
       request: event.Records[0].cf.request,
-      response: event.Records[0].cf.response
+      response: event.Records[0].cf.response,
     });
     return createResult(res);
   };
 };
 const createResult = async (res) => {
-  const isBase64Encoded = isContentTypeBinary(res.headers.get("content-type") || "");
-  const body = isBase64Encoded ? (0, import_encode.encodeBase64)(await res.arrayBuffer()) : await res.text();
+  const isBase64Encoded = isContentTypeBinary(
+    res.headers.get("content-type") || "",
+  );
+  const body = isBase64Encoded
+    ? (0, import_encode.encodeBase64)(await res.arrayBuffer())
+    : await res.text();
   return {
     status: res.status.toString(),
     headers: convertHeaders(res.headers),
     body,
-    ...isBase64Encoded && { bodyEncoding: "base64" }
+    ...(isBase64Encoded && { bodyEncoding: "base64" }),
   };
 };
 const createRequest = (event) => {
   const queryString = event.Records[0].cf.request.querystring;
-  const host = event.Records[0].cf.request.headers?.host?.[0]?.value || event.Records[0].cf.config.distributionDomainName;
+  const host =
+    event.Records[0].cf.request.headers?.host?.[0]?.value ||
+    event.Records[0].cf.config.distributionDomainName;
   const urlPath = `https://${host}${event.Records[0].cf.request.uri}`;
   const url = queryString ? `${urlPath}?${queryString}` : urlPath;
   const headers = new Headers();
@@ -86,7 +101,7 @@ const createRequest = (event) => {
   return new Request(url, {
     headers,
     method,
-    body
+    body,
   });
 };
 const createBody = (method, requestBody) => {
@@ -103,12 +118,13 @@ const createBody = (method, requestBody) => {
 };
 const isContentTypeBinary = (contentType) => {
   return !/^(text\/(plain|html|css|javascript|csv).*|application\/(.*json|.*xml).*|image\/svg\+xml.*)$/.test(
-    contentType
+    contentType,
   );
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  createBody,
-  handle,
-  isContentTypeBinary
-});
+0 &&
+  (module.exports = {
+    createBody,
+    handle,
+    isContentTypeBinary,
+  });

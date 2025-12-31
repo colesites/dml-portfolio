@@ -1,5 +1,5 @@
-import {createParser} from './parse.ts'
-import type {EventSourceMessage, EventSourceParser} from './types.ts'
+import { createParser } from "./parse.ts";
+import type { EventSourceMessage, EventSourceParser } from "./types.ts";
 
 /**
  * Options for the EventSourceParserStream.
@@ -16,21 +16,21 @@ export interface StreamOptions {
    *
    * @defaultValue `undefined`
    */
-  onError?: ('terminate' | ((error: Error) => void)) | undefined
+  onError?: ("terminate" | ((error: Error) => void)) | undefined;
 
   /**
    * Callback for when a reconnection interval is sent from the server.
    *
    * @param retry - The number of milliseconds to wait before reconnecting.
    */
-  onRetry?: ((retry: number) => void) | undefined
+  onRetry?: ((retry: number) => void) | undefined;
 
   /**
    * Callback for when a comment is encountered in the stream.
    *
    * @param comment - The comment encountered in the stream.
    */
-  onComment?: ((comment: string) => void) | undefined
+  onComment?: ((comment: string) => void) | undefined;
 }
 
 /**
@@ -54,35 +54,38 @@ export interface StreamOptions {
  *
  * @public
  */
-export class EventSourceParserStream extends TransformStream<string, EventSourceMessage> {
-  constructor({onError, onRetry, onComment}: StreamOptions = {}) {
-    let parser!: EventSourceParser
+export class EventSourceParserStream extends TransformStream<
+  string,
+  EventSourceMessage
+> {
+  constructor({ onError, onRetry, onComment }: StreamOptions = {}) {
+    let parser!: EventSourceParser;
 
     super({
       start(controller) {
         parser = createParser({
           onEvent: (event) => {
-            controller.enqueue(event)
+            controller.enqueue(event);
           },
           onError(error) {
-            if (onError === 'terminate') {
-              controller.error(error)
-            } else if (typeof onError === 'function') {
-              onError(error)
+            if (onError === "terminate") {
+              controller.error(error);
+            } else if (typeof onError === "function") {
+              onError(error);
             }
 
             // Ignore by default
           },
           onRetry,
           onComment,
-        })
+        });
       },
       transform(chunk) {
-        parser.feed(chunk)
+        parser.feed(chunk);
       },
-    })
+    });
   }
 }
 
-export {type ErrorType, ParseError} from './errors.ts'
-export type {EventSourceMessage} from './types.ts'
+export { type ErrorType, ParseError } from "./errors.ts";
+export type { EventSourceMessage } from "./types.ts";

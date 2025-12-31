@@ -1,1 +1,4 @@
-export { asyncIterator, type ReadableStreamIteratorOptions, } from "../core/asyncIterator.js";
+export {
+  asyncIterator,
+  type ReadableStreamIteratorOptions,
+} from "../core/asyncIterator.js";

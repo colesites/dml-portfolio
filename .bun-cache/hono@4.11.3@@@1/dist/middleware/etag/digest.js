@@ -4,7 +4,7 @@ var mergeBuffers = (buffer1, buffer2) => {
     return buffer2;
   }
   const merged = new Uint8Array(
-    new ArrayBuffer(buffer1.byteLength + buffer2.byteLength)
+    new ArrayBuffer(buffer1.byteLength + buffer2.byteLength),
   );
   merged.set(new Uint8Array(buffer1), 0);
   merged.set(buffer2, buffer1.byteLength);
@@ -16,7 +16,7 @@ var generateDigest = async (stream, generator) => {
   }
   let result = void 0;
   const reader = stream.getReader();
-  for (; ; ) {
+  for (;;) {
     const { value, done } = await reader.read();
     if (done) {
       break;
@@ -26,8 +26,8 @@ var generateDigest = async (stream, generator) => {
   if (!result) {
     return null;
   }
-  return Array.prototype.map.call(new Uint8Array(result), (x) => x.toString(16).padStart(2, "0")).join("");
+  return Array.prototype.map
+    .call(new Uint8Array(result), (x) => x.toString(16).padStart(2, "0"))
+    .join("");
 };
-export {
-  generateDigest
-};
+export { generateDigest };

@@ -1,29 +1,27 @@
-'use strict';
-
-const utils = require('./utils');
+const utils = require("./utils");
 const {
-  CHAR_ASTERISK,             /* * */
-  CHAR_AT,                   /* @ */
-  CHAR_BACKWARD_SLASH,       /* \ */
-  CHAR_COMMA,                /* , */
-  CHAR_DOT,                  /* . */
-  CHAR_EXCLAMATION_MARK,     /* ! */
-  CHAR_FORWARD_SLASH,        /* / */
-  CHAR_LEFT_CURLY_BRACE,     /* { */
-  CHAR_LEFT_PARENTHESES,     /* ( */
-  CHAR_LEFT_SQUARE_BRACKET,  /* [ */
-  CHAR_PLUS,                 /* + */
-  CHAR_QUESTION_MARK,        /* ? */
-  CHAR_RIGHT_CURLY_BRACE,    /* } */
-  CHAR_RIGHT_PARENTHESES,    /* ) */
-  CHAR_RIGHT_SQUARE_BRACKET  /* ] */
-} = require('./constants');
+  CHAR_ASTERISK /* * */,
+  CHAR_AT /* @ */,
+  CHAR_BACKWARD_SLASH /* \ */,
+  CHAR_COMMA /* , */,
+  CHAR_DOT /* . */,
+  CHAR_EXCLAMATION_MARK /* ! */,
+  CHAR_FORWARD_SLASH /* / */,
+  CHAR_LEFT_CURLY_BRACE /* { */,
+  CHAR_LEFT_PARENTHESES /* ( */,
+  CHAR_LEFT_SQUARE_BRACKET /* [ */,
+  CHAR_PLUS /* + */,
+  CHAR_QUESTION_MARK /* ? */,
+  CHAR_RIGHT_CURLY_BRACE /* } */,
+  CHAR_RIGHT_PARENTHESES /* ) */,
+  CHAR_RIGHT_SQUARE_BRACKET /* ] */,
+} = require("./constants");
 
-const isPathSeparator = code => {
+const isPathSeparator = (code) => {
   return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
 };
 
-const depth = token => {
+const depth = (token) => {
   if (token.isPrefix !== true) {
     token.depth = token.isGlobstar ? Infinity : 1;
   }
@@ -72,7 +70,7 @@ const scan = (input, options) => {
   let braces = 0;
   let prev;
   let code;
-  let token = { value: '', depth: 0, isGlob: false };
+  let token = { value: "", depth: 0, isGlob: false };
 
   const eos = () => index >= length;
   const peek = () => str.charCodeAt(index + 1);
@@ -110,7 +108,11 @@ const scan = (input, options) => {
           continue;
         }
 
-        if (braceEscaped !== true && code === CHAR_DOT && (code = advance()) === CHAR_DOT) {
+        if (
+          braceEscaped !== true &&
+          code === CHAR_DOT &&
+          (code = advance()) === CHAR_DOT
+        ) {
           isBrace = token.isBrace = true;
           isGlob = token.isGlob = true;
           finished = true;
@@ -156,10 +158,10 @@ const scan = (input, options) => {
     if (code === CHAR_FORWARD_SLASH) {
       slashes.push(index);
       tokens.push(token);
-      token = { value: '', depth: 0, isGlob: false };
+      token = { value: "", depth: 0, isGlob: false };
 
       if (finished === true) continue;
-      if (prev === CHAR_DOT && index === (start + 1)) {
+      if (prev === CHAR_DOT && index === start + 1) {
         start += 2;
         continue;
       }
@@ -169,11 +171,12 @@ const scan = (input, options) => {
     }
 
     if (opts.noext !== true) {
-      const isExtglobChar = code === CHAR_PLUS
-        || code === CHAR_AT
-        || code === CHAR_ASTERISK
-        || code === CHAR_QUESTION_MARK
-        || code === CHAR_EXCLAMATION_MARK;
+      const isExtglobChar =
+        code === CHAR_PLUS ||
+        code === CHAR_AT ||
+        code === CHAR_ASTERISK ||
+        code === CHAR_QUESTION_MARK ||
+        code === CHAR_EXCLAMATION_MARK;
 
       if (isExtglobChar === true && peek() === CHAR_LEFT_PARENTHESES) {
         isGlob = token.isGlob = true;
@@ -247,7 +250,11 @@ const scan = (input, options) => {
       break;
     }
 
-    if (opts.nonegate !== true && code === CHAR_EXCLAMATION_MARK && index === start) {
+    if (
+      opts.nonegate !== true &&
+      code === CHAR_EXCLAMATION_MARK &&
+      index === start
+    ) {
       negated = token.negated = true;
       start++;
       continue;
@@ -291,8 +298,8 @@ const scan = (input, options) => {
   }
 
   let base = str;
-  let prefix = '';
-  let glob = '';
+  let prefix = "";
+  let glob = "";
 
   if (start > 0) {
     prefix = str.slice(0, start);
@@ -304,13 +311,13 @@ const scan = (input, options) => {
     base = str.slice(0, lastIndex);
     glob = str.slice(lastIndex);
   } else if (isGlob === true) {
-    base = '';
+    base = "";
     glob = str;
   } else {
     base = str;
   }
 
-  if (base && base !== '' && base !== '/' && base !== str) {
+  if (base && base !== "" && base !== "/" && base !== str) {
     if (isPathSeparator(base.charCodeAt(base.length - 1))) {
       base = base.slice(0, -1);
     }
@@ -336,7 +343,7 @@ const scan = (input, options) => {
     isExtglob,
     isGlobstar,
     negated,
-    negatedExtglob
+    negatedExtglob,
   };
 
   if (opts.tokens === true) {
@@ -364,7 +371,7 @@ const scan = (input, options) => {
         depth(tokens[idx]);
         state.maxDepth += tokens[idx].depth;
       }
-      if (idx !== 0 || value !== '') {
+      if (idx !== 0 || value !== "") {
         parts.push(value);
       }
       prevIndex = i;

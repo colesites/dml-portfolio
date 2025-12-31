@@ -29,7 +29,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -75,7 +78,8 @@ const error: () => errors.$ZodErrorMap = () => {
       case "invalid_type":
         return `Ongeldige invoer: verwacht ${issue.expected}, ontving ${parsedType(issue.input)}`;
       case "invalid_value":
-        if (issue.values.length === 1) return `Ongeldige invoer: verwacht ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `Ongeldige invoer: verwacht ${util.stringifyPrimitive(issue.values[0])}`;
         return `Ongeldige optie: verwacht één van ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
@@ -98,9 +102,12 @@ const error: () => errors.$ZodErrorMap = () => {
         if (_issue.format === "starts_with") {
           return `Ongeldige tekst: moet met "${_issue.prefix}" beginnen`;
         }
-        if (_issue.format === "ends_with") return `Ongeldige tekst: moet op "${_issue.suffix}" eindigen`;
-        if (_issue.format === "includes") return `Ongeldige tekst: moet "${_issue.includes}" bevatten`;
-        if (_issue.format === "regex") return `Ongeldige tekst: moet overeenkomen met patroon ${_issue.pattern}`;
+        if (_issue.format === "ends_with")
+          return `Ongeldige tekst: moet op "${_issue.suffix}" eindigen`;
+        if (_issue.format === "includes")
+          return `Ongeldige tekst: moet "${_issue.includes}" bevatten`;
+        if (_issue.format === "regex")
+          return `Ongeldige tekst: moet overeenkomen met patroon ${_issue.pattern}`;
         return `Ongeldig: ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

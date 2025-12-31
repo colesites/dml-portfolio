@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _renamer = require("./lib/renamer.js");
@@ -61,23 +61,41 @@ const {
   isPrivateName,
   isExportDeclaration,
   buildUndefinedNode,
-  sequenceExpression
+  sequenceExpression,
 } = _t;
 function gatherNodeParts(node, parts) {
   switch (node == null ? void 0 : node.type) {
     default:
       if (isImportDeclaration(node) || isExportDeclaration(node)) {
         var _node$specifiers;
-        if ((isExportAllDeclaration(node) || isExportNamedDeclaration(node) || isImportDeclaration(node)) && node.source) {
+        if (
+          (isExportAllDeclaration(node) ||
+            isExportNamedDeclaration(node) ||
+            isImportDeclaration(node)) &&
+          node.source
+        ) {
           gatherNodeParts(node.source, parts);
-        } else if ((isExportNamedDeclaration(node) || isImportDeclaration(node)) && (_node$specifiers = node.specifiers) != null && _node$specifiers.length) {
+        } else if (
+          (isExportNamedDeclaration(node) || isImportDeclaration(node)) &&
+          (_node$specifiers = node.specifiers) != null &&
+          _node$specifiers.length
+        ) {
           for (const e of node.specifiers) gatherNodeParts(e, parts);
-        } else if ((isExportDefaultDeclaration(node) || isExportNamedDeclaration(node)) && node.declaration) {
+        } else if (
+          (isExportDefaultDeclaration(node) ||
+            isExportNamedDeclaration(node)) &&
+          node.declaration
+        ) {
           gatherNodeParts(node.declaration, parts);
         }
       } else if (isModuleSpecifier(node)) {
         gatherNodeParts(node.local, parts);
-      } else if (isLiteral(node) && !isNullLiteral(node) && !isRegExpLiteral(node) && !isTemplateLiteral(node)) {
+      } else if (
+        isLiteral(node) &&
+        !isNullLiteral(node) &&
+        !isRegExpLiteral(node) &&
+        !isTemplateLiteral(node)
+      ) {
         parts.push(node.value);
       }
       break;
@@ -180,26 +198,23 @@ function gatherNodeParts(node, parts) {
   }
 }
 function resetScope(scope) {
-  {
-    scope.references = Object.create(null);
-    scope.uids = Object.create(null);
-  }
+  scope.references = Object.create(null);
+  scope.uids = Object.create(null);
   scope.bindings = Object.create(null);
   scope.globals = Object.create(null);
 }
 function isAnonymousFunctionExpression(path) {
-  return path.isFunctionExpression() && !path.node.id || path.isArrowFunctionExpression();
+  return (
+    (path.isFunctionExpression() && !path.node.id) ||
+    path.isArrowFunctionExpression()
+  );
 }
-{
-  var NOT_LOCAL_BINDING = Symbol.for("should not be considered a local binding");
-}
+var NOT_LOCAL_BINDING = Symbol.for("should not be considered a local binding");
 const collectorVisitor = {
   ForStatement(path) {
     const declar = path.get("init");
     if (declar.isVar()) {
-      const {
-        scope
-      } = path;
+      const { scope } = path;
       const parentScope = scope.getFunctionParent() || scope.getProgramParent();
       parentScope.registerBinding("var", declar);
     }
@@ -208,7 +223,8 @@ const collectorVisitor = {
     if (path.isBlockScoped()) return;
     if (path.isImportDeclaration()) return;
     if (path.isExportDeclaration()) return;
-    const parent = path.scope.getFunctionParent() || path.scope.getProgramParent();
+    const parent =
+      path.scope.getFunctionParent() || path.scope.getProgramParent();
     parent.registerDeclaration(path);
   },
   ImportDeclaration(path) {
@@ -231,19 +247,14 @@ const collectorVisitor = {
     if (left.isPattern() || left.isIdentifier()) {
       state.constantViolations.push(path);
     } else if (left.isVar()) {
-      const {
-        scope
-      } = path;
+      const { scope } = path;
       const parentScope = scope.getFunctionParent() || scope.getProgramParent();
       parentScope.registerBinding("var", left);
     }
   },
   ExportDeclaration: {
     exit(path) {
-      const {
-        node,
-        scope
-      } = path;
+      const { node, scope } = path;
       if (isExportAllDeclaration(node)) return;
       const declar = node.declaration;
       if (isClassDeclaration(declar) || isFunctionDeclaration(declar)) {
@@ -259,7 +270,7 @@ const collectorVisitor = {
           }
         }
       }
-    }
+    },
   },
   LabeledStatement(path) {
     path.scope.getBlockParent().registerDeclaration(path);
@@ -294,7 +305,11 @@ const collectorVisitor = {
     for (const param of params) {
       path.scope.registerBinding("param", param);
     }
-    if (path.isFunctionExpression() && path.node.id && !path.node.id[NOT_LOCAL_BINDING]) {
+    if (
+      path.isFunctionExpression() &&
+      path.node.id &&
+      !path.node.id[NOT_LOCAL_BINDING]
+    ) {
       path.scope.registerBinding("local", path.get("id"), path);
     }
   },
@@ -305,7 +320,7 @@ const collectorVisitor = {
   },
   TSTypeAnnotation(path) {
     path.skip();
-  }
+  },
 };
 let scopeVisitor;
 let uid = 0;
@@ -322,9 +337,7 @@ class Scope {
     this.uidsSet = void 0;
     this.data = void 0;
     this.crawling = void 0;
-    const {
-      node
-    } = path;
+    const { node } = path;
     const cached = _cache.scope.get(node);
     if ((cached == null ? void 0 : cached.path) === path) {
       return cached;
@@ -335,22 +348,20 @@ class Scope {
     this.path = path;
     this.labels = new Map();
     this.inited = false;
-    {
-      Object.defineProperties(this, {
-        references: {
-          enumerable: true,
-          configurable: true,
-          writable: true,
-          value: Object.create(null)
-        },
-        uids: {
-          enumerable: true,
-          configurable: true,
-          writable: true,
-          value: Object.create(null)
-        }
-      });
-    }
+    Object.defineProperties(this, {
+      references: {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: Object.create(null),
+      },
+      uids: {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value: Object.create(null),
+      },
+    });
   }
   get parent() {
     var _parent;
@@ -366,15 +377,19 @@ class Scope {
     return (_parent = parent) == null ? void 0 : _parent.scope;
   }
   get references() {
-    throw new Error("Scope#references is not available in Babel 8. Use Scope#referencesSet instead.");
+    throw new Error(
+      "Scope#references is not available in Babel 8. Use Scope#referencesSet instead.",
+    );
   }
   get uids() {
-    throw new Error("Scope#uids is not available in Babel 8. Use Scope#uidsSet instead.");
+    throw new Error(
+      "Scope#uids is not available in Babel 8. Use Scope#uidsSet instead.",
+    );
   }
   generateDeclaredUidIdentifier(name) {
     const id = this.generateUidIdentifier(name);
     this.push({
-      id
+      id,
     });
     return cloneNode(id);
   }
@@ -387,14 +402,19 @@ class Scope {
     let i = 0;
     do {
       uid = `_${name}`;
-      if (i >= 11) uid += i - 1;else if (i >= 9) uid += i - 9;else if (i >= 1) uid += i + 1;
+      if (i >= 11) uid += i - 1;
+      else if (i >= 9) uid += i - 9;
+      else if (i >= 1) uid += i + 1;
       i++;
-    } while (this.hasLabel(uid) || this.hasBinding(uid) || this.hasGlobal(uid) || this.hasReference(uid));
+    } while (
+      this.hasLabel(uid) ||
+      this.hasBinding(uid) ||
+      this.hasGlobal(uid) ||
+      this.hasReference(uid)
+    );
     const program = this.getProgramParent();
-    {
-      program.references[uid] = true;
-      program.uids[uid] = true;
-    }
+    program.references[uid] = true;
+    program.uids[uid] = true;
     return uid;
   }
   generateUidBasedOnNode(node, defaultName) {
@@ -428,7 +448,7 @@ class Scope {
       const id = this.generateUidIdentifierBasedOnNode(node);
       if (!dontPush) {
         this.push({
-          id
+          id,
         });
         return cloneNode(id);
       }
@@ -438,9 +458,18 @@ class Scope {
   checkBlockScopedCollisions(local, kind, name, id) {
     if (kind === "param") return;
     if (local.kind === "local") return;
-    const duplicate = kind === "let" || local.kind === "let" || local.kind === "const" || local.kind === "module" || local.kind === "param" && kind === "const";
+    const duplicate =
+      kind === "let" ||
+      local.kind === "let" ||
+      local.kind === "const" ||
+      local.kind === "module" ||
+      (local.kind === "param" && kind === "const");
     if (duplicate) {
-      throw this.path.hub.buildError(id, `Duplicate declaration "${name}"`, TypeError);
+      throw this.path.hub.buildError(
+        id,
+        `Duplicate declaration "${name}"`,
+        TypeError,
+      );
     }
   }
   rename(oldName, newName) {
@@ -448,9 +477,7 @@ class Scope {
     if (binding) {
       newName || (newName = this.generateUidIdentifier(oldName).name);
       const renamer = new _renamer.default(binding, oldName, newName);
-      {
-        renamer.rename(arguments[2]);
-      }
+      renamer.rename(arguments[2]);
     }
   }
   dump() {
@@ -465,10 +492,10 @@ class Scope {
           constant: binding.constant,
           references: binding.references,
           violations: binding.constantViolations.length,
-          kind: binding.kind
+          kind: binding.kind,
         });
       }
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
     console.log(sep);
   }
   hasLabel(name) {
@@ -487,25 +514,35 @@ class Scope {
       this.registerBinding("hoisted", path.get("id"), path);
     } else if (path.isVariableDeclaration()) {
       const declarations = path.get("declarations");
-      const {
-        kind
-      } = path.node;
+      const { kind } = path.node;
       for (const declar of declarations) {
-        this.registerBinding(kind === "using" || kind === "await using" ? "const" : kind, declar);
+        this.registerBinding(
+          kind === "using" || kind === "await using" ? "const" : kind,
+          declar,
+        );
       }
     } else if (path.isClassDeclaration()) {
       if (path.node.declare) return;
       this.registerBinding("let", path);
     } else if (path.isImportDeclaration()) {
-      const isTypeDeclaration = path.node.importKind === "type" || path.node.importKind === "typeof";
+      const isTypeDeclaration =
+        path.node.importKind === "type" || path.node.importKind === "typeof";
       const specifiers = path.get("specifiers");
       for (const specifier of specifiers) {
-        const isTypeSpecifier = isTypeDeclaration || specifier.isImportSpecifier() && (specifier.node.importKind === "type" || specifier.node.importKind === "typeof");
+        const isTypeSpecifier =
+          isTypeDeclaration ||
+          (specifier.isImportSpecifier() &&
+            (specifier.node.importKind === "type" ||
+              specifier.node.importKind === "typeof"));
         this.registerBinding(isTypeSpecifier ? "unknown" : "module", specifier);
       }
     } else if (path.isExportDeclaration()) {
       const declar = path.get("declaration");
-      if (declar.isClassDeclaration() || declar.isFunctionDeclaration() || declar.isVariableDeclaration()) {
+      if (
+        declar.isClassDeclaration() ||
+        declar.isFunctionDeclaration() ||
+        declar.isVariableDeclaration()
+      ) {
         this.registerDeclaration(declar);
       }
     } else {
@@ -519,7 +556,8 @@ class Scope {
     const ids = path.getAssignmentIdentifiers();
     for (const name of Object.keys(ids)) {
       var _this$getBinding;
-      (_this$getBinding = this.getBinding(name)) == null || _this$getBinding.reassign(path);
+      (_this$getBinding = this.getBinding(name)) == null ||
+        _this$getBinding.reassign(path);
     }
   }
   registerBinding(kind, path, bindingPath = path) {
@@ -534,9 +572,7 @@ class Scope {
     const parent = this.getProgramParent();
     const ids = path.getOuterBindingIdentifiers(true);
     for (const name of Object.keys(ids)) {
-      {
-        parent.references[name] = true;
-      }
+      parent.references[name] = true;
       for (const id of ids[name]) {
         const local = this.getOwnBinding(name);
         if (local) {
@@ -550,7 +586,7 @@ class Scope {
             identifier: id,
             scope: this,
             path: bindingPath,
-            kind: kind
+            kind: kind,
           });
         }
       }
@@ -564,7 +600,7 @@ class Scope {
       let scope = this;
       do {
         if (scope.uids[name]) return true;
-      } while (scope = scope.parent);
+      } while ((scope = scope.parent));
       return false;
     }
   }
@@ -572,13 +608,11 @@ class Scope {
     let scope = this;
     do {
       if (scope.globals[name]) return true;
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
     return false;
   }
   hasReference(name) {
-    {
-      return !!this.getProgramParent().references[name];
-    }
+    return !!this.getProgramParent().references[name];
   }
   isPure(node, constantsOnly) {
     if (isIdentifier(node)) {
@@ -586,14 +620,23 @@ class Scope {
       if (!binding) return false;
       if (constantsOnly) return binding.constant;
       return true;
-    } else if (isThisExpression(node) || isMetaProperty(node) || isTopicReference(node) || isPrivateName(node)) {
+    } else if (
+      isThisExpression(node) ||
+      isMetaProperty(node) ||
+      isTopicReference(node) ||
+      isPrivateName(node)
+    ) {
       return true;
     } else if (isClass(node)) {
       var _node$decorators;
       if (node.superClass && !this.isPure(node.superClass, constantsOnly)) {
         return false;
       }
-      if (((_node$decorators = node.decorators) == null ? void 0 : _node$decorators.length) > 0) {
+      if (
+        ((_node$decorators = node.decorators) == null
+          ? void 0
+          : _node$decorators.length) > 0
+      ) {
         return false;
       }
       return this.isPure(node.body, constantsOnly);
@@ -603,7 +646,10 @@ class Scope {
       }
       return true;
     } else if (isBinary(node)) {
-      return this.isPure(node.left, constantsOnly) && this.isPure(node.right, constantsOnly);
+      return (
+        this.isPure(node.left, constantsOnly) &&
+        this.isPure(node.right, constantsOnly)
+      );
     } else if (isArrayExpression(node) || isTupleExpression(node)) {
       for (const elem of node.elements) {
         if (elem !== null && !this.isPure(elem, constantsOnly)) return false;
@@ -617,14 +663,22 @@ class Scope {
     } else if (isMethod(node)) {
       var _node$decorators2;
       if (node.computed && !this.isPure(node.key, constantsOnly)) return false;
-      if (((_node$decorators2 = node.decorators) == null ? void 0 : _node$decorators2.length) > 0) {
+      if (
+        ((_node$decorators2 = node.decorators) == null
+          ? void 0
+          : _node$decorators2.length) > 0
+      ) {
         return false;
       }
       return true;
     } else if (isProperty(node)) {
       var _node$decorators3;
       if (node.computed && !this.isPure(node.key, constantsOnly)) return false;
-      if (((_node$decorators3 = node.decorators) == null ? void 0 : _node$decorators3.length) > 0) {
+      if (
+        ((_node$decorators3 = node.decorators) == null
+          ? void 0
+          : _node$decorators3.length) > 0
+      ) {
         return false;
       }
       if (isObjectProperty(node) || node.static) {
@@ -641,37 +695,53 @@ class Scope {
       }
       return true;
     } else if (isTaggedTemplateExpression(node)) {
-      return matchesPattern(node.tag, "String.raw") && !this.hasBinding("String", {
-        noGlobals: true
-      }) && this.isPure(node.quasi, constantsOnly);
+      return (
+        matchesPattern(node.tag, "String.raw") &&
+        !this.hasBinding("String", {
+          noGlobals: true,
+        }) &&
+        this.isPure(node.quasi, constantsOnly)
+      );
     } else if (isMemberExpression(node)) {
-      return !node.computed && isIdentifier(node.object) && node.object.name === "Symbol" && isIdentifier(node.property) && node.property.name !== "for" && !this.hasBinding("Symbol", {
-        noGlobals: true
-      });
+      return (
+        !node.computed &&
+        isIdentifier(node.object) &&
+        node.object.name === "Symbol" &&
+        isIdentifier(node.property) &&
+        node.property.name !== "for" &&
+        !this.hasBinding("Symbol", {
+          noGlobals: true,
+        })
+      );
     } else if (isCallExpression(node)) {
-      return matchesPattern(node.callee, "Symbol.for") && !this.hasBinding("Symbol", {
-        noGlobals: true
-      }) && node.arguments.length === 1 && t.isStringLiteral(node.arguments[0]);
+      return (
+        matchesPattern(node.callee, "Symbol.for") &&
+        !this.hasBinding("Symbol", {
+          noGlobals: true,
+        }) &&
+        node.arguments.length === 1 &&
+        t.isStringLiteral(node.arguments[0])
+      );
     } else {
       return isPureish(node);
     }
   }
   setData(key, val) {
-    return this.data[key] = val;
+    return (this.data[key] = val);
   }
   getData(key) {
     let scope = this;
     do {
       const data = scope.data[key];
       if (data != null) return data;
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
   }
   removeData(key) {
     let scope = this;
     do {
       const data = scope.data[key];
       if (data != null) scope.data[key] = null;
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
   }
   init() {
     if (!this.inited) {
@@ -681,7 +751,6 @@ class Scope {
   }
   crawl() {
     const path = this.path;
-    ;
     resetScope(this);
     this.data = Object.create(null);
     let scope = this;
@@ -690,19 +759,23 @@ class Scope {
       if (scope.path.isProgram()) {
         break;
       }
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
     const programParent = scope;
     const state = {
       references: [],
       constantViolations: [],
-      assignments: []
+      assignments: [],
     };
     this.crawling = true;
-    scopeVisitor || (scopeVisitor = _index.default.visitors.merge([{
-      Scope(path) {
-        resetScope(path.scope);
-      }
-    }, collectorVisitor]));
+    scopeVisitor ||
+      (scopeVisitor = _index.default.visitors.merge([
+        {
+          Scope(path) {
+            resetScope(path.scope);
+          },
+        },
+        collectorVisitor,
+      ]));
     if (path.type !== "Program") {
       const typeVisitors = scopeVisitor[path.type];
       if (typeVisitors) {
@@ -711,9 +784,7 @@ class Scope {
         }
       }
     }
-    {
-      path.traverse(scopeVisitor, state);
-    }
+    path.traverse(scopeVisitor, state);
     this.crawling = false;
     for (const path of state.assignments) {
       const ids = path.getAssignmentIdentifiers();
@@ -745,17 +816,23 @@ class Scope {
     if (path.isSwitchStatement()) {
       path = (this.getFunctionParent() || this.getProgramParent()).path;
     }
-    const {
-      init,
-      unique,
-      kind = "var",
-      id
-    } = opts;
-    if (!init && !unique && (kind === "var" || kind === "let") && isAnonymousFunctionExpression(path) && isCallExpression(path.parent, {
-      callee: path.node
-    }) && path.parent.arguments.length <= path.node.params.length && isIdentifier(id)) {
+    const { init, unique, kind = "var", id } = opts;
+    if (
+      !init &&
+      !unique &&
+      (kind === "var" || kind === "let") &&
+      isAnonymousFunctionExpression(path) &&
+      isCallExpression(path.parent, {
+        callee: path.node,
+      }) &&
+      path.parent.arguments.length <= path.node.params.length &&
+      isIdentifier(id)
+    ) {
       path.pushContainer("params", id);
-      path.scope.registerBinding("param", path.get("params")[path.node.params.length - 1]);
+      path.scope.registerBinding(
+        "param",
+        path.get("params")[path.node.params.length - 1],
+      );
       return;
     }
     if (path.isLoop() || path.isCatchClause() || path.isFunction()) {
@@ -781,7 +858,7 @@ class Scope {
       if (scope.path.isProgram()) {
         return scope;
       }
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
     throw new Error("Couldn't find a Program");
   }
   getFunctionParent() {
@@ -790,7 +867,7 @@ class Scope {
       if (scope.path.isFunctionParent()) {
         return scope;
       }
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
     return null;
   }
   getBlockParent() {
@@ -799,8 +876,10 @@ class Scope {
       if (scope.path.isBlockParent()) {
         return scope;
       }
-    } while (scope = scope.parent);
-    throw new Error("We couldn't find a BlockStatement, For, Switch, Function, Loop or Program...");
+    } while ((scope = scope.parent));
+    throw new Error(
+      "We couldn't find a BlockStatement, For, Switch, Function, Loop or Program...",
+    );
   }
   getPatternParent() {
     let scope = this;
@@ -808,8 +887,10 @@ class Scope {
       if (!scope.path.isPattern()) {
         return scope.getBlockParent();
       }
-    } while (scope = scope.parent.parent);
-    throw new Error("We couldn't find a BlockStatement, For, Switch, Function, Loop or Program...");
+    } while ((scope = scope.parent.parent));
+    throw new Error(
+      "We couldn't find a BlockStatement, For, Switch, Function, Loop or Program...",
+    );
   }
   getAllBindings() {
     const ids = Object.create(null);
@@ -834,21 +915,34 @@ class Scope {
       const binding = scope.getOwnBinding(name);
       if (binding) {
         var _previousPath;
-        if ((_previousPath = previousPath) != null && _previousPath.isPattern() && binding.kind !== "param" && binding.kind !== "local") {} else {
+        if (
+          (_previousPath = previousPath) != null &&
+          _previousPath.isPattern() &&
+          binding.kind !== "param" &&
+          binding.kind !== "local"
+        ) {
+        } else {
           return binding;
         }
-      } else if (!binding && name === "arguments" && scope.path.isFunction() && !scope.path.isArrowFunctionExpression()) {
+      } else if (
+        !binding &&
+        name === "arguments" &&
+        scope.path.isFunction() &&
+        !scope.path.isArrowFunctionExpression()
+      ) {
         break;
       }
       previousPath = scope.path;
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
   }
   getOwnBinding(name) {
     return this.bindings[name];
   }
   getBindingIdentifier(name) {
     var _this$getBinding2;
-    return (_this$getBinding2 = this.getBinding(name)) == null ? void 0 : _this$getBinding2.identifier;
+    return (_this$getBinding2 = this.getBinding(name)) == null
+      ? void 0
+      : _this$getBinding2.identifier;
   }
   getOwnBindingIdentifier(name) {
     const binding = this.bindings[name];
@@ -877,7 +971,7 @@ class Scope {
       if (scope.hasOwnBinding(name)) {
         return true;
       }
-    } while (scope = scope.parent);
+    } while ((scope = scope.parent));
     if (!noUids && this.hasUid(name)) return true;
     if (!noGlobals && Scope.globals.includes(name)) return true;
     if (!noGlobals && Scope.contextVariables.includes(name)) return true;
@@ -885,7 +979,9 @@ class Scope {
   }
   parentHasBinding(name, opts) {
     var _this$parent;
-    return (_this$parent = this.parent) == null ? void 0 : _this$parent.hasBinding(name, opts);
+    return (_this$parent = this.parent) == null
+      ? void 0
+      : _this$parent.hasBinding(name, opts);
   }
   moveBindingTo(name, scope) {
     const info = this.getBinding(name);
@@ -900,38 +996,37 @@ class Scope {
   }
   removeBinding(name) {
     var _this$getBinding3;
-    (_this$getBinding3 = this.getBinding(name)) == null || _this$getBinding3.scope.removeOwnBinding(name);
+    (_this$getBinding3 = this.getBinding(name)) == null ||
+      _this$getBinding3.scope.removeOwnBinding(name);
     {
       let scope = this;
       do {
         if (scope.uids[name]) {
           scope.uids[name] = false;
         }
-      } while (scope = scope.parent);
+      } while ((scope = scope.parent));
     }
   }
-  hoistVariables(emit = id => this.push({
-    id
-  })) {
+  hoistVariables(
+    emit = (id) =>
+      this.push({
+        id,
+      }),
+  ) {
     this.crawl();
     const seen = new Set();
     for (const name of Object.keys(this.bindings)) {
       const binding = this.bindings[name];
       if (!binding) continue;
-      const {
-        path
-      } = binding;
+      const { path } = binding;
       if (!path.isVariableDeclarator()) continue;
-      const {
-        parent,
-        parentPath
-      } = path;
+      const { parent, parentPath } = path;
       if (parent.kind !== "var" || seen.has(parent)) continue;
       seen.add(path.parent);
       let firstId;
       const init = [];
       for (const decl of parent.declarations) {
-        firstId != null ? firstId : firstId = decl.id;
+        firstId != null ? firstId : (firstId = decl.id);
         if (decl.init) {
           init.push(assignmentExpression("=", decl.id, decl.init));
         }
@@ -940,17 +1035,21 @@ class Scope {
           emit(identifier(name), decl.init != null);
         }
       }
-      if (parentPath.parentPath.isForXStatement({
-        left: parent
-      })) {
+      if (
+        parentPath.parentPath.isForXStatement({
+          left: parent,
+        })
+      ) {
         parentPath.replaceWith(firstId);
       } else if (init.length === 0) {
         parentPath.remove();
       } else {
         const expr = init.length === 1 ? init[0] : sequenceExpression(init);
-        if (parentPath.parentPath.isForStatement({
-          init: parent
-        })) {
+        if (
+          parentPath.parentPath.isForStatement({
+            init: parent,
+          })
+        ) {
           parentPath.replaceWith(expr);
         } else {
           parentPath.replaceWith(expressionStatement(expr));
@@ -962,82 +1061,100 @@ class Scope {
 exports.default = Scope;
 Scope.globals = [...globalsBuiltinLower, ...globalsBuiltinUpper];
 Scope.contextVariables = ["arguments", "undefined", "Infinity", "NaN"];
-{
-  Scope.prototype._renameFromMap = function _renameFromMap(map, oldName, newName, value) {
-    if (map[oldName]) {
-      map[newName] = value;
-      map[oldName] = null;
-    }
-  };
-  Scope.prototype.traverse = function (node, opts, state) {
-    (0, _index.default)(node, opts, this, state, this.path);
-  };
-  Scope.prototype._generateUid = function _generateUid(name, i) {
-    let id = name;
-    if (i > 1) id += i;
-    return `_${id}`;
-  };
-  Scope.prototype.toArray = function toArray(node, i, arrayLikeIsIterable) {
-    if (isIdentifier(node)) {
-      const binding = this.getBinding(node.name);
-      if (binding != null && binding.constant && binding.path.isGenericType("Array")) {
-        return node;
-      }
-    }
-    if (isArrayExpression(node)) {
+Scope.prototype._renameFromMap = function _renameFromMap(
+  map,
+  oldName,
+  newName,
+  value,
+) {
+  if (map[oldName]) {
+    map[newName] = value;
+    map[oldName] = null;
+  }
+};
+Scope.prototype.traverse = function (node, opts, state) {
+  (0, _index.default)(node, opts, this, state, this.path);
+};
+Scope.prototype._generateUid = function _generateUid(name, i) {
+  let id = name;
+  if (i > 1) id += i;
+  return `_${id}`;
+};
+Scope.prototype.toArray = function toArray(node, i, arrayLikeIsIterable) {
+  if (isIdentifier(node)) {
+    const binding = this.getBinding(node.name);
+    if (
+      binding != null &&
+      binding.constant &&
+      binding.path.isGenericType("Array")
+    ) {
       return node;
     }
-    if (isIdentifier(node, {
-      name: "arguments"
-    })) {
-      return callExpression(memberExpression(memberExpression(memberExpression(identifier("Array"), identifier("prototype")), identifier("slice")), identifier("call")), [node]);
-    }
-    let helperName;
-    const args = [node];
-    if (i === true) {
-      helperName = "toConsumableArray";
-    } else if (typeof i === "number") {
-      args.push(numericLiteral(i));
-      helperName = "slicedToArray";
-    } else {
-      helperName = "toArray";
-    }
-    if (arrayLikeIsIterable) {
-      args.unshift(this.path.hub.addHelper(helperName));
-      helperName = "maybeArrayLike";
-    }
-    return callExpression(this.path.hub.addHelper(helperName), args);
-  };
-  Scope.prototype.getAllBindingsOfKind = function getAllBindingsOfKind(...kinds) {
-    const ids = Object.create(null);
-    for (const kind of kinds) {
-      let scope = this;
-      do {
-        for (const name of Object.keys(scope.bindings)) {
-          const binding = scope.bindings[name];
-          if (binding.kind === kind) ids[name] = binding;
-        }
-        scope = scope.parent;
-      } while (scope);
-    }
-    return ids;
-  };
-  Object.defineProperties(Scope.prototype, {
-    parentBlock: {
-      configurable: true,
-      enumerable: true,
-      get() {
-        return this.path.parent;
+  }
+  if (isArrayExpression(node)) {
+    return node;
+  }
+  if (
+    isIdentifier(node, {
+      name: "arguments",
+    })
+  ) {
+    return callExpression(
+      memberExpression(
+        memberExpression(
+          memberExpression(identifier("Array"), identifier("prototype")),
+          identifier("slice"),
+        ),
+        identifier("call"),
+      ),
+      [node],
+    );
+  }
+  let helperName;
+  const args = [node];
+  if (i === true) {
+    helperName = "toConsumableArray";
+  } else if (typeof i === "number") {
+    args.push(numericLiteral(i));
+    helperName = "slicedToArray";
+  } else {
+    helperName = "toArray";
+  }
+  if (arrayLikeIsIterable) {
+    args.unshift(this.path.hub.addHelper(helperName));
+    helperName = "maybeArrayLike";
+  }
+  return callExpression(this.path.hub.addHelper(helperName), args);
+};
+Scope.prototype.getAllBindingsOfKind = function getAllBindingsOfKind(...kinds) {
+  const ids = Object.create(null);
+  for (const kind of kinds) {
+    let scope = this;
+    do {
+      for (const name of Object.keys(scope.bindings)) {
+        const binding = scope.bindings[name];
+        if (binding.kind === kind) ids[name] = binding;
       }
+      scope = scope.parent;
+    } while (scope);
+  }
+  return ids;
+};
+Object.defineProperties(Scope.prototype, {
+  parentBlock: {
+    configurable: true,
+    enumerable: true,
+    get() {
+      return this.path.parent;
     },
-    hub: {
-      configurable: true,
-      enumerable: true,
-      get() {
-        return this.path.hub;
-      }
-    }
-  });
-}
+  },
+  hub: {
+    configurable: true,
+    enumerable: true,
+    get() {
+      return this.path.hub;
+    },
+  },
+});
 
 //# sourceMappingURL=index.js.map

@@ -1,20 +1,18 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.KnownArgumentNamesOnDirectivesRule = KnownArgumentNamesOnDirectivesRule;
 exports.KnownArgumentNamesRule = KnownArgumentNamesRule;
 
-var _didYouMean = require('../../jsutils/didYouMean.js');
+var _didYouMean = require("../../jsutils/didYouMean.js");
 
-var _suggestionList = require('../../jsutils/suggestionList.js');
+var _suggestionList = require("../../jsutils/suggestionList.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _directives = require('../../type/directives.js');
+var _directives = require("../../type/directives.js");
 
 /**
  * Known argument names

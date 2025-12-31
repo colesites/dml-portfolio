@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.printPathArray = printPathArray;
@@ -11,7 +9,7 @@ exports.printPathArray = printPathArray;
 function printPathArray(path) {
   return path
     .map((key) =>
-      typeof key === 'number' ? '[' + key.toString() + ']' : '.' + key,
+      typeof key === "number" ? "[" + key.toString() + "]" : "." + key,
     )
-    .join('');
+    .join("");
 }

@@ -1,14 +1,21 @@
 // src/router/linear-router/router.ts
 import { METHOD_NAME_ALL, UnsupportedPathError } from "../../router.js";
 import { checkOptionalParameter } from "../../utils/url.js";
+
 var emptyParams = /* @__PURE__ */ Object.create(null);
-var splitPathRe = /\/(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/[^\/\?]+|(\?)/g;
+var splitPathRe = /\/(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/[^/?]+|(\?)/g;
 var splitByStarRe = /\*/;
 var LinearRouter = class {
   name = "LinearRouter";
   #routes = [];
   add(method, path, handler) {
-    for (let i = 0, paths = checkOptionalParameter(path) || [path], len = paths.length; i < len; i++) {
+    for (
+      let i = 0,
+        paths = checkOptionalParameter(path) || [path],
+        len = paths.length;
+      i < len;
+      i++
+    ) {
       this.#routes.push([method, paths[i], handler]);
     }
   }
@@ -28,8 +35,11 @@ var LinearRouter = class {
             handlers.push([handler, emptyParams]);
           }
         } else if (hasStar && !hasLabel) {
-          const endsWithStar = routePath.charCodeAt(routePath.length - 1) === 42;
-          const parts = (endsWithStar ? routePath.slice(0, -2) : routePath).split(splitByStarRe);
+          const endsWithStar =
+            routePath.charCodeAt(routePath.length - 1) === 42;
+          const parts = (
+            endsWithStar ? routePath.slice(0, -2) : routePath
+          ).split(splitByStarRe);
           const lastIndex = parts.length - 1;
           for (let j = 0, pos = 0, len2 = parts.length; j < len2; j++) {
             const part = parts[j];
@@ -39,7 +49,11 @@ var LinearRouter = class {
             }
             pos += part.length;
             if (j === lastIndex) {
-              if (!endsWithStar && pos !== path.length && !(pos === path.length - 1 && path.charCodeAt(pos) === 47)) {
+              if (
+                !endsWithStar &&
+                pos !== path.length &&
+                !(pos === path.length - 1 && path.charCodeAt(pos) === 47)
+              ) {
                 continue ROUTES_LOOP;
               }
             } else {
@@ -69,11 +83,18 @@ var LinearRouter = class {
               if (name.charCodeAt(name.length - 1) === 125) {
                 const openBracePos = name.indexOf("{");
                 const next = parts[j + 1];
-                const lookahead = next && next[1] !== ":" && next[1] !== "*" ? `(?=${next})` : "";
+                const lookahead =
+                  next && next[1] !== ":" && next[1] !== "*"
+                    ? `(?=${next})`
+                    : "";
                 const pattern = name.slice(openBracePos + 1, -1) + lookahead;
                 const restPath = path.slice(pos + 1);
                 const match = new RegExp(pattern, "d").exec(restPath);
-                if (!match || match.indices[0][0] !== 0 || match.indices[0][1] === 0) {
+                if (
+                  !match ||
+                  match.indices[0][0] !== 0 ||
+                  match.indices[0][1] === 0
+                ) {
                   continue ROUTES_LOOP;
                 }
                 name = name.slice(0, openBracePos);
@@ -99,7 +120,10 @@ var LinearRouter = class {
               pos += part.length;
             }
             if (j === lastIndex) {
-              if (pos !== path.length && !(pos === path.length - 1 && path.charCodeAt(pos) === 47)) {
+              if (
+                pos !== path.length &&
+                !(pos === path.length - 1 && path.charCodeAt(pos) === 47)
+              ) {
                 continue ROUTES_LOOP;
               }
             }
@@ -113,6 +137,4 @@ var LinearRouter = class {
     return [handlers];
   }
 };
-export {
-  LinearRouter
-};
+export { LinearRouter };

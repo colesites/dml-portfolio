@@ -1,7 +1,8 @@
-import * as allCookie from 'cookie'
-const cookie = (allCookie as any).default || allCookie
+import * as allCookie from "cookie";
 
-export const parse = cookie.parse as typeof import('cookie').parse
-export const serialize = cookie.serialize as typeof import('cookie').serialize
+const cookie = (allCookie as any).default || allCookie;
 
-export default cookie
+export const parse = cookie.parse as typeof import("cookie").parse;
+export const serialize = cookie.serialize as typeof import("cookie").serialize;
+
+export default cookie;

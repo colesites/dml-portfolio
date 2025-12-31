@@ -8,36 +8,36 @@ Don't use them in a new protocol. What "weak" means:
 - HMAC seems kinda ok: https://datatracker.ietf.org/doc/html/rfc6151
  * @module
  */
-import { HashMD } from './_md.ts';
-import { type CHash } from './utils.ts';
+import { HashMD } from "./_md.ts";
+import { type CHash } from "./utils.ts";
 /** SHA1 legacy hash class. */
 export declare class SHA1 extends HashMD<SHA1> {
-    private A;
-    private B;
-    private C;
-    private D;
-    private E;
-    constructor();
-    protected get(): [number, number, number, number, number];
-    protected set(A: number, B: number, C: number, D: number, E: number): void;
-    protected process(view: DataView, offset: number): void;
-    protected roundClean(): void;
-    destroy(): void;
+  private A;
+  private B;
+  private C;
+  private D;
+  private E;
+  constructor();
+  protected get(): [number, number, number, number, number];
+  protected set(A: number, B: number, C: number, D: number, E: number): void;
+  protected process(view: DataView, offset: number): void;
+  protected roundClean(): void;
+  destroy(): void;
 }
 /** SHA1 (RFC 3174) legacy hash function. It was cryptographically broken. */
 export declare const sha1: CHash;
 /** MD5 legacy hash class. */
 export declare class MD5 extends HashMD<MD5> {
-    private A;
-    private B;
-    private C;
-    private D;
-    constructor();
-    protected get(): [number, number, number, number];
-    protected set(A: number, B: number, C: number, D: number): void;
-    protected process(view: DataView, offset: number): void;
-    protected roundClean(): void;
-    destroy(): void;
+  private A;
+  private B;
+  private C;
+  private D;
+  constructor();
+  protected get(): [number, number, number, number];
+  protected set(A: number, B: number, C: number, D: number): void;
+  protected process(view: DataView, offset: number): void;
+  protected roundClean(): void;
+  destroy(): void;
 }
 /**
  * MD5 (RFC 1321) legacy hash function. It was cryptographically broken.
@@ -50,17 +50,23 @@ export declare class MD5 extends HashMD<MD5> {
  */
 export declare const md5: CHash;
 export declare class RIPEMD160 extends HashMD<RIPEMD160> {
-    private h0;
-    private h1;
-    private h2;
-    private h3;
-    private h4;
-    constructor();
-    protected get(): [number, number, number, number, number];
-    protected set(h0: number, h1: number, h2: number, h3: number, h4: number): void;
-    protected process(view: DataView, offset: number): void;
-    protected roundClean(): void;
-    destroy(): void;
+  private h0;
+  private h1;
+  private h2;
+  private h3;
+  private h4;
+  constructor();
+  protected get(): [number, number, number, number, number];
+  protected set(
+    h0: number,
+    h1: number,
+    h2: number,
+    h3: number,
+    h4: number,
+  ): void;
+  protected process(view: DataView, offset: number): void;
+  protected roundClean(): void;
+  destroy(): void;
 }
 /**
  * RIPEMD-160 - a legacy hash function from 1990s.

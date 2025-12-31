@@ -1,4 +1,3 @@
-"use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -8,29 +7,34 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/serve-static.ts
 var serve_static_exports = {};
 __export(serve_static_exports, {
-  serveStatic: () => serveStatic
+  serveStatic: () => serveStatic,
 });
 module.exports = __toCommonJS(serve_static_exports);
 var import_mime = require("hono/utils/mime");
 var import_node_fs = require("fs");
 var import_node_path = require("path");
-var COMPRESSIBLE_CONTENT_TYPE_REGEX = /^\s*(?:text\/[^;\s]+|application\/(?:javascript|json|xml|xml-dtd|ecmascript|dart|postscript|rtf|tar|toml|vnd\.dart|vnd\.ms-fontobject|vnd\.ms-opentype|wasm|x-httpd-php|x-javascript|x-ns-proxy-autoconfig|x-sh|x-tar|x-virtualbox-hdd|x-virtualbox-ova|x-virtualbox-ovf|x-virtualbox-vbox|x-virtualbox-vdi|x-virtualbox-vhd|x-virtualbox-vmdk|x-www-form-urlencoded)|font\/(?:otf|ttf)|image\/(?:bmp|vnd\.adobe\.photoshop|vnd\.microsoft\.icon|vnd\.ms-dds|x-icon|x-ms-bmp)|message\/rfc822|model\/gltf-binary|x-shader\/x-fragment|x-shader\/x-vertex|[^;\s]+?\+(?:json|text|xml|yaml))(?:[;\s]|$)/i;
+var COMPRESSIBLE_CONTENT_TYPE_REGEX =
+  /^\s*(?:text\/[^;\s]+|application\/(?:javascript|json|xml|xml-dtd|ecmascript|dart|postscript|rtf|tar|toml|vnd\.dart|vnd\.ms-fontobject|vnd\.ms-opentype|wasm|x-httpd-php|x-javascript|x-ns-proxy-autoconfig|x-sh|x-tar|x-virtualbox-hdd|x-virtualbox-ova|x-virtualbox-ovf|x-virtualbox-vbox|x-virtualbox-vdi|x-virtualbox-vhd|x-virtualbox-vmdk|x-www-form-urlencoded)|font\/(?:otf|ttf)|image\/(?:bmp|vnd\.adobe\.photoshop|vnd\.microsoft\.icon|vnd\.ms-dds|x-icon|x-ms-bmp)|message\/rfc822|model\/gltf-binary|x-shader\/x-fragment|x-shader\/x-vertex|[^;\s]+?\+(?:json|text|xml|yaml))(?:[;\s]|$)/i;
 var ENCODINGS = {
   br: ".br",
   zstd: ".zst",
-  gzip: ".gz"
+  gzip: ".gz",
 };
 var ENCODINGS_ORDERED_KEYS = Object.keys(ENCODINGS);
 var createStreamBody = (stream) => {
@@ -48,7 +52,7 @@ var createStreamBody = (stream) => {
     },
     cancel() {
       stream.destroy();
-    }
+    },
   });
   return body;
 };
@@ -56,15 +60,16 @@ var getStats = (path) => {
   let stats;
   try {
     stats = (0, import_node_fs.statSync)(path);
-  } catch {
-  }
+  } catch {}
   return stats;
 };
 var serveStatic = (options = { root: "" }) => {
   const root = options.root || "";
   const optionPath = options.path;
   if (root !== "" && !(0, import_node_fs.existsSync)(root)) {
-    console.error(`serveStatic: root path '${root}' is not found, are you sure it's correct?`);
+    console.error(
+      `serveStatic: root path '${root}' is not found, are you sure it's correct?`,
+    );
   }
   return async (c, next) => {
     if (c.finalized) {
@@ -76,7 +81,7 @@ var serveStatic = (options = { root: "" }) => {
     } else {
       try {
         filename = decodeURIComponent(c.req.path);
-        if (/(?:^|[\/\\])\.\.(?:$|[\/\\])/.test(filename)) {
+        if (/(?:^|[/\\])\.\.(?:$|[/\\])/.test(filename)) {
           throw new Error();
         }
       } catch {
@@ -86,7 +91,9 @@ var serveStatic = (options = { root: "" }) => {
     }
     let path = (0, import_node_path.join)(
       root,
-      !optionPath && options.rewriteRequestPath ? options.rewriteRequestPath(filename, c) : filename
+      !optionPath && options.rewriteRequestPath
+        ? options.rewriteRequestPath(filename, c)
+        : filename,
     );
     let stats = getStats(path);
     if (stats && stats.isDirectory()) {
@@ -100,9 +107,15 @@ var serveStatic = (options = { root: "" }) => {
     }
     const mimeType = (0, import_mime.getMimeType)(path);
     c.header("Content-Type", mimeType || "application/octet-stream");
-    if (options.precompressed && (!mimeType || COMPRESSIBLE_CONTENT_TYPE_REGEX.test(mimeType))) {
+    if (
+      options.precompressed &&
+      (!mimeType || COMPRESSIBLE_CONTENT_TYPE_REGEX.test(mimeType))
+    ) {
       const acceptEncodingSet = new Set(
-        c.req.header("Accept-Encoding")?.split(",").map((encoding) => encoding.trim())
+        c.req
+          .header("Accept-Encoding")
+          ?.split(",")
+          .map((encoding) => encoding.trim()),
       );
       for (const encoding of ENCODINGS_ORDERED_KEYS) {
         if (!acceptEncodingSet.has(encoding)) {
@@ -127,7 +140,10 @@ var serveStatic = (options = { root: "" }) => {
       result = c.body(null);
     } else if (!range) {
       c.header("Content-Length", size.toString());
-      result = c.body(createStreamBody((0, import_node_fs.createReadStream)(path)), 200);
+      result = c.body(
+        createStreamBody((0, import_node_fs.createReadStream)(path)),
+        200,
+      );
     } else {
       c.header("Accept-Ranges", "bytes");
       c.header("Date", stats.birthtime.toUTCString());
@@ -148,6 +164,7 @@ var serveStatic = (options = { root: "" }) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  serveStatic
-});
+0 &&
+  (module.exports = {
+    serveStatic,
+  });

@@ -1,17 +1,15 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.UniqueDirectivesPerLocationRule = UniqueDirectivesPerLocationRule;
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _predicates = require('../../language/predicates.js');
+var _predicates = require("../../language/predicates.js");
 
-var _directives = require('../../type/directives.js');
+var _directives = require("../../type/directives.js");
 
 /**
  * Unique directive names per location
@@ -47,7 +45,7 @@ function UniqueDirectivesPerLocationRule(context) {
     // them all, just listen for entering any node, and check to see if it
     // defines any directives.
     enter(node) {
-      if (!('directives' in node) || !node.directives) {
+      if (!("directives" in node) || !node.directives) {
         return;
       }
 

@@ -1,7 +1,7 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import process from 'node:process';
-import { INSTALL_METADATA, LOCKS, AGENTS } from './constants.mjs';
+import fs from "node:fs/promises";
+import path from "node:path";
+import process from "node:process";
+import { AGENTS, INSTALL_METADATA, LOCKS } from "./constants.mjs";
 
 async function pathExists(path2, type) {
   try {
@@ -28,14 +28,13 @@ function* lookup(cwd = process.cwd()) {
   }
 }
 async function parsePackageJson(filepath, options) {
-  if (!filepath || !await pathExists(filepath, "file"))
-    return null;
+  if (!filepath || !(await pathExists(filepath, "file"))) return null;
   return await handlePackageManager(filepath, options);
 }
 async function detect(options = {}) {
   const {
     cwd,
-    strategies = ["lockfile", "packageManager-field", "devEngines-field"]
+    strategies = ["lockfile", "packageManager-field", "devEngines-field"],
   } = options;
   let stopDir;
   if (typeof options.stopDir === "string") {
@@ -51,20 +50,23 @@ async function detect(options = {}) {
           for (const lock of Object.keys(LOCKS)) {
             if (await pathExists(path.join(directory, lock), "file")) {
               const name = LOCKS[lock];
-              const result = await parsePackageJson(path.join(directory, "package.json"), options);
-              if (result)
-                return result;
-              else
-                return { name, agent: name };
+              const result = await parsePackageJson(
+                path.join(directory, "package.json"),
+                options,
+              );
+              if (result) return result;
+              else return { name, agent: name };
             }
           }
           break;
         }
         case "packageManager-field":
         case "devEngines-field": {
-          const result = await parsePackageJson(path.join(directory, "package.json"), options);
-          if (result)
-            return result;
+          const result = await parsePackageJson(
+            path.join(directory, "package.json"),
+            options,
+          );
+          if (result) return result;
           break;
         }
         case "install-metadata": {
@@ -72,7 +74,12 @@ async function detect(options = {}) {
             const fileOrDir = metadata.endsWith("/") ? "dir" : "file";
             if (await pathExists(path.join(directory, metadata), fileOrDir)) {
               const name = INSTALL_METADATA[metadata];
-              const agent = name === "yarn" ? isMetadataYarnClassic(metadata) ? "yarn" : "yarn@berry" : name;
+              const agent =
+                name === "yarn"
+                  ? isMetadataYarnClassic(metadata)
+                    ? "yarn"
+                    : "yarn@berry"
+                  : name;
               return { name, agent };
             }
           }
@@ -80,13 +87,13 @@ async function detect(options = {}) {
         }
       }
     }
-    if (stopDir?.(directory))
-      break;
+    if (stopDir?.(directory)) break;
   }
   return null;
 }
 function getNameAndVer(pkg) {
-  const handelVer = (version) => version?.match(/\d+(\.\d+){0,2}/)?.[0] ?? version;
+  const handelVer = (version) =>
+    version?.match(/\d+(\.\d+){0,2}/)?.[0] ?? version;
   if (typeof pkg.packageManager === "string") {
     const [name, ver] = pkg.packageManager.replace(/^\^/, "").split("@");
     return { name, ver: handelVer(ver) };
@@ -94,7 +101,7 @@ function getNameAndVer(pkg) {
   if (typeof pkg.devEngines?.packageManager?.name === "string") {
     return {
       name: pkg.devEngines.packageManager.name,
-      ver: handelVer(pkg.devEngines.packageManager.version)
+      ver: handelVer(pkg.devEngines.packageManager.version),
     };
   }
   return void 0;
@@ -102,7 +109,9 @@ function getNameAndVer(pkg) {
 async function handlePackageManager(filepath, options) {
   try {
     const content = await fs.readFile(filepath, "utf8");
-    const pkg = options.packageJsonParser ? await options.packageJsonParser(content, filepath) : JSON.parse(content);
+    const pkg = options.packageJsonParser
+      ? await options.packageJsonParser(content, filepath)
+      : JSON.parse(content);
     let agent;
     const nameAndVer = getNameAndVer(pkg);
     if (nameAndVer) {
@@ -123,8 +132,7 @@ async function handlePackageManager(filepath, options) {
         return options.onUnknown?.(pkg.packageManager) ?? null;
       }
     }
-  } catch {
-  }
+  } catch {}
   return null;
 }
 function isMetadataYarnClassic(metadataPath) {

@@ -2,7 +2,7 @@ const executeHandlers = async ({
   request,
   requestId,
   handlers,
-  resolutionContext
+  resolutionContext,
 }) => {
   let matchingHandler = null;
   let result = null;
@@ -19,12 +19,10 @@ const executeHandlers = async ({
     return {
       handler: matchingHandler,
       parsedResult: result?.parsedResult,
-      response: result?.response
+      response: result?.response,
     };
   }
   return null;
 };
-export {
-  executeHandlers
-};
+export { executeHandlers };
 //# sourceMappingURL=executeHandlers.mjs.map

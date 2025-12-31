@@ -1,8 +1,8 @@
-import { syntaxError } from '../error/syntaxError.mjs';
-import { Token } from './ast.mjs';
-import { isNameStart } from './characterClasses.mjs';
-import { createToken, printCodePointAt, readName } from './lexer.mjs';
-import { TokenKind } from './tokenKind.mjs';
+import { syntaxError } from "../error/syntaxError.mjs";
+import { Token } from "./ast.mjs";
+import { isNameStart } from "./characterClasses.mjs";
+import { createToken, printCodePointAt, readName } from "./lexer.mjs";
+import { TokenKind } from "./tokenKind.mjs";
 /**
  * Given a Source schema coordinate, creates a Lexer for that source.
  * A SchemaCoordinateLexer is a stateful stream generator in that every time
@@ -41,7 +41,7 @@ export class SchemaCoordinateLexer {
   }
 
   get [Symbol.toStringTag]() {
-    return 'SchemaCoordinateLexer';
+    return "SchemaCoordinateLexer";
   }
   /**
    * Advances the token stream to the next non-ignored token.

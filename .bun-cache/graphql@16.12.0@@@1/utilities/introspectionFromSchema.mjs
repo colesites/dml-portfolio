@@ -1,7 +1,7 @@
-import { invariant } from '../jsutils/invariant.mjs';
-import { parse } from '../language/parser.mjs';
-import { executeSync } from '../execution/execute.mjs';
-import { getIntrospectionQuery } from './getIntrospectionQuery.mjs';
+import { executeSync } from "../execution/execute.mjs";
+import { invariant } from "../jsutils/invariant.mjs";
+import { parse } from "../language/parser.mjs";
+import { getIntrospectionQuery } from "./getIntrospectionQuery.mjs";
 /**
  * Build an IntrospectionQuery from a GraphQLSchema
  *

@@ -1,21 +1,23 @@
 // @ts-check
 
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import eslint from "@eslint/js";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
     ignores: [
       "**/*", // ignore everything...
-      "!src/**/", "!src/**/*.ts", // ... except our TypeScript source files...
-      "!test/**/", "!test/**/*.js", // ... and our tests
+      "!src/**/",
+      "!src/**/*.ts", // ... except our TypeScript source files...
+      "!test/**/",
+      "!test/**/*.js", // ... and our tests
     ],
   },
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
-    files: ['src/**/*.ts'],
+    files: ["src/**/*.ts"],
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -38,7 +40,7 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-call": 0,
       "@typescript-eslint/no-unsafe-member-access": 0,
       "@typescript-eslint/no-unsafe-return": 0,
-    }
+    },
   },
   {
     languageOptions: {
@@ -62,9 +64,12 @@ export default tseslint.config(
       //----------------//
       curly: 2,
       "default-case": 1,
-      "dot-notation": [2, {
-        allowKeywords: false,
-      }],
+      "dot-notation": [
+        2,
+        {
+          allowKeywords: false,
+        },
+      ],
       "guard-for-in": 1,
       "no-alert": 2,
       "no-caller": 2,
@@ -107,22 +112,32 @@ export default tseslint.config(
 
       // Stylistic //
       //-----------//
-      "brace-style": [2, "1tbs", {
-        allowSingleLine: true,
-      }],
+      "brace-style": [
+        2,
+        "1tbs",
+        {
+          allowSingleLine: true,
+        },
+      ],
       camelcase: 2,
-      "comma-spacing": [2, {
-        before: false,
-        after: true,
-      }],
+      "comma-spacing": [
+        2,
+        {
+          before: false,
+          after: true,
+        },
+      ],
       "comma-style": [2, "last"],
       "consistent-this": [1, "self"],
       "eol-last": 2,
       "func-style": [2, "declaration"],
-      "key-spacing": [2, {
-        beforeColon: false,
-        afterColon: true,
-      }],
+      "key-spacing": [
+        2,
+        {
+          beforeColon: false,
+          afterColon: true,
+        },
+      ],
       "new-cap": 2,
       "new-parens": 2,
       "no-array-constructor": 2,
@@ -132,20 +147,30 @@ export default tseslint.config(
       "no-new-object": 2,
       "no-spaced-func": 2,
       "no-trailing-spaces": 2,
-      "quote-props": [2, "as-needed", {
-        keywords: true,
-      }],
+      "quote-props": [
+        2,
+        "as-needed",
+        {
+          keywords: true,
+        },
+      ],
       quotes: [2, "single", "avoid-escape"],
       semi: 2,
-      "semi-spacing": [2, {
-        before: false,
-        after: true,
-      }],
+      "semi-spacing": [
+        2,
+        {
+          before: false,
+          after: true,
+        },
+      ],
       "space-before-blocks": [2, "always"],
-      "space-before-function-paren": [2, {
-        anonymous: "never",
-        named: "never",
-      }],
+      "space-before-function-paren": [
+        2,
+        {
+          anonymous: "never",
+          named: "never",
+        },
+      ],
       "space-in-parens": [2, "never"],
       "space-infix-ops": 2,
       "space-unary-ops": 2,
@@ -163,11 +188,14 @@ export default tseslint.config(
       // common to all diffFoo functions. Doing this allows consistency (one options interface per
       // diffFoo function) and future-proofs against the API having to change in future if we add a
       // non-common option to one of these functions.
-      "@typescript-eslint/no-empty-object-type": [2, {allowInterfaces: 'with-single-extends'}],
+      "@typescript-eslint/no-empty-object-type": [
+        2,
+        { allowInterfaces: "with-single-extends" },
+      ],
     },
   },
   {
-    files: ['test/**/*.js'],
+    files: ["test/**/*.js"],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -178,5 +206,5 @@ export default tseslint.config(
       "no-unused-expressions": 0, // Needs disabling to support Chai `.to.be.undefined` etc syntax
       "@typescript-eslint/no-unused-expressions": 0, // (as above)
     },
-  }
+  },
 );

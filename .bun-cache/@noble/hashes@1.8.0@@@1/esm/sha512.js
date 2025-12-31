@@ -6,7 +6,16 @@
  * @module
  * @deprecated
  */
-import { SHA384 as SHA384n, sha384 as sha384n, sha512_224 as sha512_224n, SHA512_224 as SHA512_224n, sha512_256 as sha512_256n, SHA512_256 as SHA512_256n, SHA512 as SHA512n, sha512 as sha512n, } from "./sha2.js";
+import {
+  SHA384 as SHA384n,
+  SHA512_224 as SHA512_224n,
+  SHA512_256 as SHA512_256n,
+  SHA512 as SHA512n,
+  sha384 as sha384n,
+  sha512_224 as sha512_224n,
+  sha512_256 as sha512_256n,
+  sha512 as sha512n,
+} from "./sha2.js";
 /** @deprecated Use import from `noble/hashes/sha2` module */
 export const SHA512 = SHA512n;
 /** @deprecated Use import from `noble/hashes/sha2` module */

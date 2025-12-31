@@ -1,18 +1,18 @@
-import { didYouMean } from '../jsutils/didYouMean.mjs';
-import { inspect } from '../jsutils/inspect.mjs';
-import { invariant } from '../jsutils/invariant.mjs';
-import { isIterableObject } from '../jsutils/isIterableObject.mjs';
-import { isObjectLike } from '../jsutils/isObjectLike.mjs';
-import { addPath, pathToArray } from '../jsutils/Path.mjs';
-import { printPathArray } from '../jsutils/printPathArray.mjs';
-import { suggestionList } from '../jsutils/suggestionList.mjs';
-import { GraphQLError } from '../error/GraphQLError.mjs';
+import { GraphQLError } from "../error/GraphQLError.mjs";
+import { didYouMean } from "../jsutils/didYouMean.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { invariant } from "../jsutils/invariant.mjs";
+import { isIterableObject } from "../jsutils/isIterableObject.mjs";
+import { isObjectLike } from "../jsutils/isObjectLike.mjs";
+import { addPath, pathToArray } from "../jsutils/Path.mjs";
+import { printPathArray } from "../jsutils/printPathArray.mjs";
+import { suggestionList } from "../jsutils/suggestionList.mjs";
 import {
   isInputObjectType,
   isLeafType,
   isListType,
   isNonNullType,
-} from '../type/definition.mjs';
+} from "../type/definition.mjs";
 
 /**
  * Coerces a JavaScript value given a GraphQL Input Type.
@@ -22,13 +22,13 @@ export function coerceInputValue(inputValue, type, onError = defaultOnError) {
 }
 
 function defaultOnError(path, invalidValue, error) {
-  let errorPrefix = 'Invalid value ' + inspect(invalidValue);
+  let errorPrefix = "Invalid value " + inspect(invalidValue);
 
   if (path.length > 0) {
     errorPrefix += ` at "value${printPathArray(path)}"`;
   }
 
-  error.message = errorPrefix + ': ' + error.message;
+  error.message = errorPrefix + ": " + error.message;
   throw error;
 }
 
@@ -188,5 +188,5 @@ function coerceInputValueImpl(inputValue, type, onError, path) {
   /* c8 ignore next 3 */
   // Not reachable, all possible types have been considered.
 
-  false || invariant(false, 'Unexpected input type: ' + inspect(type));
+  false || invariant(false, "Unexpected input type: " + inspect(type));
 }

@@ -1,10 +1,10 @@
-import { inspect } from '../../jsutils/inspect.mjs';
-import { keyMap } from '../../jsutils/keyMap.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
-import { print } from '../../language/printer.mjs';
-import { isRequiredArgument, isType } from '../../type/definition.mjs';
-import { specifiedDirectives } from '../../type/directives.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { inspect } from "../../jsutils/inspect.mjs";
+import { keyMap } from "../../jsutils/keyMap.mjs";
+import { Kind } from "../../language/kinds.mjs";
+import { print } from "../../language/printer.mjs";
+import { isRequiredArgument, isType } from "../../type/definition.mjs";
+import { specifiedDirectives } from "../../type/directives.mjs";
 
 /**
  * Provided required arguments
@@ -27,10 +27,11 @@ export function ProvidedRequiredArgumentsRule(context) {
           return false;
         }
 
-        const providedArgs = new Set( // FIXME: https://github.com/graphql/graphql-js/issues/2203
+        const providedArgs = new Set(
+          // FIXME: https://github.com/graphql/graphql-js/issues/2203
           /* c8 ignore next */
           (_fieldNode$arguments = fieldNode.arguments) === null ||
-          _fieldNode$arguments === void 0
+            _fieldNode$arguments === void 0
             ? void 0
             : _fieldNode$arguments.map((arg) => arg.name.value),
         );

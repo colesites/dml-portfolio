@@ -1,14 +1,11 @@
-/* eslint-disable no-unused-vars */
-'use strict';
+import cliui from "https://unpkg.com/cliui@7.0.1/index.mjs"; // eslint-disable-line
+import Parser from "https://unpkg.com/yargs-parser@19.0.0/browser.js"; // eslint-disable-line
+import { getProcessArgvBin } from "../../build/lib/utils/process-argv.js";
+import { YError } from "../../build/lib/yerror.js";
 
-import cliui from 'https://unpkg.com/cliui@7.0.1/index.mjs'; // eslint-disable-line
-import Parser from 'https://unpkg.com/yargs-parser@19.0.0/browser.js'; // eslint-disable-line
-import {getProcessArgvBin} from '../../build/lib/utils/process-argv.js';
-import {YError} from '../../build/lib/yerror.js';
-
-const REQUIRE_ERROR = 'require is not supported in browser';
+const REQUIRE_ERROR = "require is not supported in browser";
 const REQUIRE_DIRECTORY_ERROR =
-  'loading a directory of commands is not supported in browser';
+  "loading a directory of commands is not supported in browser";
 
 export default {
   assert: {
@@ -21,7 +18,7 @@ export default {
   },
   cliui,
   findUp: () => undefined,
-  getEnv: key => {
+  getEnv: (key) => {
     // There is no environment in browser:
     return undefined;
   },
@@ -30,29 +27,29 @@ export default {
     throw new YError(REQUIRE_DIRECTORY_ERROR);
   },
   getProcessArgvBin,
-  mainFilename: 'yargs',
+  mainFilename: "yargs",
   Parser,
   path: {
-    basename: str => str,
-    dirname: str => str,
-    extname: str => str,
-    relative: str => str,
+    basename: (str) => str,
+    dirname: (str) => str,
+    extname: (str) => str,
+    relative: (str) => str,
   },
   process: {
     argv: () => [],
-    cwd: () => '',
+    cwd: () => "",
     emitWarning: (warning, name) => {},
-    execPath: () => '',
+    execPath: () => "",
     // exit is noop browser:
     exit: () => {},
-    nextTick: cb => {
+    nextTick: (cb) => {
       // eslint-disable-next-line no-undef
       window.setTimeout(cb, 1);
     },
     stdColumns: 80,
   },
   readFileSync: () => {
-    return '';
+    return "";
   },
   require: () => {
     throw new YError(REQUIRE_ERROR);
@@ -60,13 +57,13 @@ export default {
   requireDirectory: () => {
     throw new YError(REQUIRE_DIRECTORY_ERROR);
   },
-  stringWidth: str => {
+  stringWidth: (str) => {
     return [...str].length;
   },
   // TODO: replace this with y18n once it's ported to ESM:
   y18n: {
     __: (...str) => {
-      if (str.length === 0) return '';
+      if (str.length === 0) return "";
       const args = str.slice(1);
       return sprintf(str[0], ...args);
     },
@@ -78,7 +75,7 @@ export default {
       }
     },
     getLocale: () => {
-      return 'en_US';
+      return "en_US";
     },
     setLocale: () => {},
     updateLocale: () => {},
@@ -86,10 +83,10 @@ export default {
 };
 
 function sprintf(_str, ...args) {
-  let str = '';
-  const split = _str.split('%s');
+  let str = "";
+  const split = _str.split("%s");
   split.forEach((token, i) => {
-    str += `${token}${split[i + 1] !== undefined && args[i] ? args[i] : ''}`;
+    str += `${token}${split[i + 1] !== undefined && args[i] ? args[i] : ""}`;
   });
   return str;
 }

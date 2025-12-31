@@ -1,20 +1,18 @@
 import * as path from "path";
-import * as TryPath from "./try-path";
-import * as MappingEntry from "./mapping-entry";
 import * as Filesystem from "./filesystem";
+import * as MappingEntry from "./mapping-entry";
+import * as TryPath from "./try-path";
 
 /**
  * Function that can match a path async
  */
-export interface MatchPathAsync {
-  (
-    requestedModule: string,
-    readJson: Filesystem.ReadJsonAsync | undefined,
-    fileExists: Filesystem.FileExistsAsync | undefined,
-    extensions: ReadonlyArray<string> | undefined,
-    callback: MatchPathAsyncCallback
-  ): void;
-}
+export type MatchPathAsync = (
+  requestedModule: string,
+  readJson: Filesystem.ReadJsonAsync | undefined,
+  fileExists: Filesystem.FileExistsAsync | undefined,
+  extensions: ReadonlyArray<string> | undefined,
+  callback: MatchPathAsyncCallback,
+) => void;
 
 export interface MatchPathAsyncCallback {
   // eslint-disable-next-line no-shadow
@@ -28,12 +26,12 @@ export function createMatchPathAsync(
   absoluteBaseUrl: string,
   paths: { [key: string]: Array<string> },
   mainFields: (string | string[])[] = ["main"],
-  addMatchAll: boolean = true
+  addMatchAll: boolean = true,
 ): MatchPathAsync {
   const absolutePaths = MappingEntry.getAbsoluteMappingEntries(
     absoluteBaseUrl,
     paths,
-    addMatchAll
+    addMatchAll,
   );
 
   return (
@@ -41,7 +39,7 @@ export function createMatchPathAsync(
     readJson: Filesystem.ReadJsonAsync | undefined,
     fileExists: Filesystem.FileExistsAsync | undefined,
     extensions: ReadonlyArray<string> | undefined,
-    callback: MatchPathAsyncCallback
+    callback: MatchPathAsyncCallback,
   ) =>
     matchFromAbsolutePathsAsync(
       absolutePaths,
@@ -50,7 +48,7 @@ export function createMatchPathAsync(
       fileExists,
       extensions,
       callback,
-      mainFields
+      mainFields,
     );
 }
 
@@ -64,12 +62,12 @@ export function matchFromAbsolutePathsAsync(
   fileExists: Filesystem.FileExistsAsync = Filesystem.fileExistsAsync,
   extensions: ReadonlyArray<string> = Object.keys(require.extensions),
   callback: MatchPathAsyncCallback,
-  mainFields: (string | string[])[] = ["main"]
+  mainFields: (string | string[])[] = ["main"],
 ): void {
   const tryPaths = TryPath.getPathsToTry(
     extensions,
     absolutePathMappings,
-    requestedModule
+    requestedModule,
   );
 
   if (!tryPaths) {
@@ -82,7 +80,7 @@ export function matchFromAbsolutePathsAsync(
     fileExists,
     callback,
     0,
-    mainFields
+    mainFields,
   );
 }
 
@@ -92,7 +90,7 @@ function findFirstExistingMainFieldMappedFile(
   packageJsonPath: string,
   fileExistsAsync: Filesystem.FileExistsAsync,
   doneCallback: (err?: Error, filepath?: string) => void,
-  index: number = 0
+  index: number = 0,
 ): void {
   if (index >= mainFields.length) {
     return doneCallback(undefined, undefined);
@@ -105,7 +103,7 @@ function findFirstExistingMainFieldMappedFile(
       packageJsonPath,
       fileExistsAsync,
       doneCallback,
-      index + 1
+      index + 1,
     );
 
   const mainFieldSelector = mainFields[index];
@@ -120,7 +118,7 @@ function findFirstExistingMainFieldMappedFile(
 
   const mappedFilePath = path.join(
     path.dirname(packageJsonPath),
-    mainFieldMapping
+    mainFieldMapping,
   );
   fileExistsAsync(mappedFilePath, (err?: Error, exists?: boolean) => {
     if (err) {
@@ -140,7 +138,7 @@ function findFirstExistingPath(
   fileExists: Filesystem.FileExistsAsync,
   doneCallback: MatchPathAsyncCallback,
   index: number = 0,
-  mainFields: (string | string[])[] = ["main"]
+  mainFields: (string | string[])[] = ["main"],
 ): void {
   const tryPath = tryPaths[index];
   if (
@@ -165,7 +163,7 @@ function findFirstExistingPath(
         fileExists,
         doneCallback,
         index + 1,
-        mainFields
+        mainFields,
       );
     });
   } else if (tryPath.type === "package") {
@@ -194,9 +192,9 @@ function findFirstExistingPath(
               fileExists,
               doneCallback,
               index + 1,
-              mainFields
+              mainFields,
             );
-          }
+          },
         );
       }
 
@@ -214,7 +212,7 @@ function findFirstExistingPath(
         fileExists,
         doneCallback,
         index + 1,
-        mainFields
+        mainFields,
       );
     });
   } else {

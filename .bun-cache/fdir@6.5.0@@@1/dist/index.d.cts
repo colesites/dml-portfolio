@@ -68,7 +68,10 @@ type WalkerState = {
   symlinks: Map<string, string>;
   visited: string[];
 };
-type ResultCallback<TOutput extends Output> = (error: Error | null, output: TOutput) => void;
+type ResultCallback<TOutput extends Output> = (
+  error: Error | null,
+  output: TOutput,
+) => void;
 type FilterPredicate = (path: string, isDirectory: boolean) => boolean;
 type ExcludePredicate = (dirName: string, dirPath: string) => boolean;
 type PathSeparator = "/" | "\\";
@@ -95,8 +98,16 @@ type Options<TGlobFunction = unknown> = {
   fs?: FSLike;
 };
 type GlobMatcher = (test: string) => boolean;
-type GlobFunction = (glob: string | string[], ...params: unknown[]) => GlobMatcher;
-type GlobParams<T> = T extends ((globs: string | string[], ...params: infer TParams extends unknown[]) => GlobMatcher) ? TParams : [];
+type GlobFunction = (
+  glob: string | string[],
+  ...params: unknown[]
+) => GlobMatcher;
+type GlobParams<T> = T extends (
+  globs: string | string[],
+  ...params: infer TParams extends unknown[]
+) => GlobMatcher
+  ? TParams
+  : [];
 //#endregion
 //#region src/builder/api-builder.d.ts
 declare class APIBuilder<TReturnType extends Output> {
@@ -109,7 +120,10 @@ declare class APIBuilder<TReturnType extends Output> {
 }
 //#endregion
 //#region src/builder/index.d.ts
-declare class Builder<TReturnType extends Output = PathsOutput, TGlobFunction = typeof picomatch> {
+declare class Builder<
+  TReturnType extends Output = PathsOutput,
+  TGlobFunction = typeof picomatch,
+> {
   private readonly globCache;
   private options;
   private globFunction?;
@@ -123,11 +137,7 @@ declare class Builder<TReturnType extends Output = PathsOutput, TGlobFunction = 
   withMaxFiles(limit: number): this;
   withFullPaths(): this;
   withErrors(): this;
-  withSymlinks({
-    resolvePaths
-  }?: {
-    resolvePaths?: boolean | undefined;
-  }): this;
+  withSymlinks({ resolvePaths }?: { resolvePaths?: boolean | undefined }): this;
   withAbortSignal(signal: AbortSignal): this;
   normalize(): this;
   filter(predicate: FilterPredicate): this;
@@ -143,13 +153,38 @@ declare class Builder<TReturnType extends Output = PathsOutput, TGlobFunction = 
    * ```
    * This method will be removed in v7.0
    */
-  crawlWithOptions(root: string, options: Partial<Options<TGlobFunction>>): APIBuilder<TReturnType>;
+  crawlWithOptions(
+    root: string,
+    options: Partial<Options<TGlobFunction>>,
+  ): APIBuilder<TReturnType>;
   glob(...patterns: string[]): Builder<TReturnType, TGlobFunction>;
   globWithOptions(patterns: string[]): Builder<TReturnType, TGlobFunction>;
-  globWithOptions(patterns: string[], ...options: GlobParams<TGlobFunction>): Builder<TReturnType, TGlobFunction>;
+  globWithOptions(
+    patterns: string[],
+    ...options: GlobParams<TGlobFunction>
+  ): Builder<TReturnType, TGlobFunction>;
 }
 //#endregion
 //#region src/index.d.ts
 type Fdir = typeof Builder;
 //#endregion
-export { Counts, ExcludePredicate, FSLike, Fdir, FilterPredicate, GlobFunction, GlobMatcher, GlobParams, Group, GroupOutput, OnlyCountsOutput, Options, Output, PathSeparator, PathsOutput, ResultCallback, WalkerState, Builder as fdir };
+export {
+  Counts,
+  ExcludePredicate,
+  FSLike,
+  Fdir,
+  FilterPredicate,
+  GlobFunction,
+  GlobMatcher,
+  GlobParams,
+  Group,
+  GroupOutput,
+  OnlyCountsOutput,
+  Options,
+  Output,
+  PathSeparator,
+  PathsOutput,
+  ResultCallback,
+  WalkerState,
+  Builder as fdir,
+};

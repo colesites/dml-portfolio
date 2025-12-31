@@ -1,6 +1,4 @@
-import {
-  Interceptor
-} from "./chunk-JXGB54LE.mjs";
+import { Interceptor } from "./chunk-JXGB54LE.mjs";
 
 // src/BatchInterceptor.ts
 var BatchInterceptor = class extends Interceptor {
@@ -45,7 +43,5 @@ var BatchInterceptor = class extends Interceptor {
   }
 };
 
-export {
-  BatchInterceptor
-};
+export { BatchInterceptor };
 //# sourceMappingURL=chunk-SQ6RHTJR.mjs.map

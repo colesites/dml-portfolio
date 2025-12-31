@@ -1,14 +1,12 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = mergeSourceMap;
 function _remapping() {
   const data = require("@jridgewell/remapping");
-  _remapping = function () {
-    return data;
-  };
+  _remapping = () => data;
   return data;
 }
 function mergeSourceMap(inputMap, map, sourceFileName) {
@@ -29,7 +27,7 @@ function mergeSourceMap(inputMap, map, sourceFileName) {
 }
 function rootless(map) {
   return Object.assign({}, map, {
-    sourceRoot: null
+    sourceRoot: null,
   });
 }
 0 && 0;

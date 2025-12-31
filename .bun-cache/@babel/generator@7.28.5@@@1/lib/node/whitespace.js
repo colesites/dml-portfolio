@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.nodes = void 0;
 var _t = require("@babel/types");
@@ -19,7 +19,7 @@ const {
   isObjectExpression,
   isOptionalCallExpression,
   isOptionalMemberExpression,
-  isStringLiteral
+  isStringLiteral,
 } = _t;
 function crawlInternal(node, state) {
   if (!node) return state;
@@ -35,7 +35,7 @@ function crawlInternal(node, state) {
   } else if (isFunction(node)) {
     state.hasFunction = true;
   } else if (isIdentifier(node)) {
-    state.hasHelper = state.hasHelper || node.callee && isHelper(node.callee);
+    state.hasHelper = state.hasHelper || (node.callee && isHelper(node.callee));
   }
   return state;
 }
@@ -43,7 +43,7 @@ function crawl(node) {
   return crawlInternal(node, {
     hasCall: false,
     hasFunction: false,
-    hasHelper: false
+    hasHelper: false,
   });
 }
 function isHelper(node) {
@@ -55,24 +55,37 @@ function isHelper(node) {
   } else if (isCallExpression(node)) {
     return isHelper(node.callee);
   } else if (isBinary(node) || isAssignmentExpression(node)) {
-    return isIdentifier(node.left) && isHelper(node.left) || isHelper(node.right);
+    return (
+      (isIdentifier(node.left) && isHelper(node.left)) || isHelper(node.right)
+    );
   } else {
     return false;
   }
 }
 function isType(node) {
-  return isLiteral(node) || isObjectExpression(node) || isArrayExpression(node) || isIdentifier(node) || isMemberExpression(node);
+  return (
+    isLiteral(node) ||
+    isObjectExpression(node) ||
+    isArrayExpression(node) ||
+    isIdentifier(node) ||
+    isMemberExpression(node)
+  );
 }
-const nodes = exports.nodes = {
+const nodes = (exports.nodes = {
   AssignmentExpression(node) {
     const state = crawl(node.right);
-    if (state.hasCall && state.hasHelper || state.hasFunction) {
+    if ((state.hasCall && state.hasHelper) || state.hasFunction) {
       return state.hasFunction ? 1 | 2 : 2;
     }
     return 0;
   },
   SwitchCase(node, parent) {
-    return (!!node.consequent.length || parent.cases[0] === node ? 1 : 0) | (!node.consequent.length && parent.cases[parent.cases.length - 1] === node ? 2 : 0);
+    return (
+      (!!node.consequent.length || parent.cases[0] === node ? 1 : 0) |
+      (!node.consequent.length && parent.cases[parent.cases.length - 1] === node
+        ? 2
+        : 0)
+    );
   },
   LogicalExpression(node) {
     if (isFunction(node.left) || isFunction(node.right)) {
@@ -104,7 +117,7 @@ const nodes = exports.nodes = {
       let enabled = isHelper(declar.id) && !isType(declar.init);
       if (!enabled && declar.init) {
         const state = crawl(declar.init);
-        enabled = isHelper(declar.init) && state.hasCall || state.hasFunction;
+        enabled = (isHelper(declar.init) && state.hasCall) || state.hasFunction;
       }
       if (enabled) {
         return 1 | 2;
@@ -117,37 +130,74 @@ const nodes = exports.nodes = {
       return 1 | 2;
     }
     return 0;
-  }
-};
-nodes.ObjectProperty = nodes.ObjectTypeProperty = nodes.ObjectMethod = function (node, parent) {
-  if (parent.properties[0] === node) {
-    return 1;
-  }
-  return 0;
-};
-nodes.ObjectTypeCallProperty = function (node, parent) {
+  },
+});
+nodes.ObjectProperty =
+  nodes.ObjectTypeProperty =
+  nodes.ObjectMethod =
+    (node, parent) => {
+      if (parent.properties[0] === node) {
+        return 1;
+      }
+      return 0;
+    };
+nodes.ObjectTypeCallProperty = (node, parent) => {
   var _parent$properties;
-  if (parent.callProperties[0] === node && !((_parent$properties = parent.properties) != null && _parent$properties.length)) {
+  if (
+    parent.callProperties[0] === node &&
+    !(
+      (_parent$properties = parent.properties) != null &&
+      _parent$properties.length
+    )
+  ) {
     return 1;
   }
   return 0;
 };
-nodes.ObjectTypeIndexer = function (node, parent) {
+nodes.ObjectTypeIndexer = (node, parent) => {
   var _parent$properties2, _parent$callPropertie;
-  if (parent.indexers[0] === node && !((_parent$properties2 = parent.properties) != null && _parent$properties2.length) && !((_parent$callPropertie = parent.callProperties) != null && _parent$callPropertie.length)) {
+  if (
+    parent.indexers[0] === node &&
+    !(
+      (_parent$properties2 = parent.properties) != null &&
+      _parent$properties2.length
+    ) &&
+    !(
+      (_parent$callPropertie = parent.callProperties) != null &&
+      _parent$callPropertie.length
+    )
+  ) {
     return 1;
   }
   return 0;
 };
-nodes.ObjectTypeInternalSlot = function (node, parent) {
+nodes.ObjectTypeInternalSlot = (node, parent) => {
   var _parent$properties3, _parent$callPropertie2, _parent$indexers;
-  if (parent.internalSlots[0] === node && !((_parent$properties3 = parent.properties) != null && _parent$properties3.length) && !((_parent$callPropertie2 = parent.callProperties) != null && _parent$callPropertie2.length) && !((_parent$indexers = parent.indexers) != null && _parent$indexers.length)) {
+  if (
+    parent.internalSlots[0] === node &&
+    !(
+      (_parent$properties3 = parent.properties) != null &&
+      _parent$properties3.length
+    ) &&
+    !(
+      (_parent$callPropertie2 = parent.callProperties) != null &&
+      _parent$callPropertie2.length
+    ) &&
+    !((_parent$indexers = parent.indexers) != null && _parent$indexers.length)
+  ) {
     return 1;
   }
   return 0;
 };
-[["Function", true], ["Class", true], ["Loop", true], ["LabeledStatement", true], ["SwitchStatement", true], ["TryStatement", true]].forEach(function ([type, amounts]) {
-  [type].concat(FLIPPED_ALIAS_KEYS[type] || []).forEach(function (type) {
+[
+  ["Function", true],
+  ["Class", true],
+  ["Loop", true],
+  ["LabeledStatement", true],
+  ["SwitchStatement", true],
+  ["TryStatement", true],
+].forEach(([type, amounts]) => {
+  [type].concat(FLIPPED_ALIAS_KEYS[type] || []).forEach((type) => {
     const ret = amounts ? 1 | 2 : 0;
     nodes[type] = () => ret;
   });

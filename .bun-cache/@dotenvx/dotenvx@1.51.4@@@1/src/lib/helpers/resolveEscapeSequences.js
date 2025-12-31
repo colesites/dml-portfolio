@@ -1,5 +1,5 @@
-function resolveEscapeSequences (value) {
-  return value.replace(/\\\$/g, '$')
+function resolveEscapeSequences(value) {
+  return value.replace(/\\\$/g, "$");
 }
 
-module.exports = resolveEscapeSequences
+module.exports = resolveEscapeSequences;

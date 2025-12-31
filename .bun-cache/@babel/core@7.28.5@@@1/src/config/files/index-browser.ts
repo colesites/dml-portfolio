@@ -1,15 +1,13 @@
 /* c8 ignore start */
 
 import type { Handler } from "gensync";
-
+import type { CallerMetadata } from "../validation/options.ts";
 import type {
   ConfigFile,
+  FilePackageData,
   IgnoreFile,
   RelativeConfig,
-  FilePackageData,
 } from "./types.ts";
-
-import type { CallerMetadata } from "../validation/options.ts";
 
 export type { ConfigFile, IgnoreFile, RelativeConfig, FilePackageData };
 

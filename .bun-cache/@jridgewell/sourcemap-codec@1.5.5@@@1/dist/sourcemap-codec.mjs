@@ -28,7 +28,7 @@ function decodeInteger(reader, relative) {
 }
 function encodeInteger(builder, num, relative) {
   let delta = num - relative;
-  delta = delta < 0 ? -delta << 1 | 1 : delta << 1;
+  delta = delta < 0 ? (-delta << 1) | 1 : delta << 1;
   do {
     let clamped = delta & 31;
     delta >>>= 5;
@@ -44,20 +44,25 @@ function hasMoreVlq(reader, max) {
 
 // src/strings.ts
 var bufLength = 1024 * 16;
-var td = typeof TextDecoder !== "undefined" ? /* @__PURE__ */ new TextDecoder() : typeof Buffer !== "undefined" ? {
-  decode(buf) {
-    const out = Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength);
-    return out.toString();
-  }
-} : {
-  decode(buf) {
-    let out = "";
-    for (let i = 0; i < buf.length; i++) {
-      out += String.fromCharCode(buf[i]);
-    }
-    return out;
-  }
-};
+var td =
+  typeof TextDecoder !== "undefined"
+    ? /* @__PURE__ */ new TextDecoder()
+    : typeof Buffer !== "undefined"
+      ? {
+          decode(buf) {
+            const out = Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength);
+            return out.toString();
+          },
+        }
+      : {
+          decode(buf) {
+            let out = "";
+            for (let i = 0; i < buf.length; i++) {
+              out += String.fromCharCode(buf[i]);
+            }
+            return out;
+          },
+        };
 var StringWriter = class {
   constructor() {
     this.pos = 0;
@@ -115,7 +120,9 @@ function decodeOriginalScopes(input) {
     const kind = decodeInteger(reader, 0);
     const fields = decodeInteger(reader, 0);
     const hasName = fields & 1;
-    const scope = hasName ? [line, column, 0, 0, kind, decodeInteger(reader, 0)] : [line, column, 0, 0, kind];
+    const scope = hasName
+      ? [line, column, 0, 0, kind, decodeInteger(reader, 0)]
+      : [line, column, 0, 0, kind];
     let vars = EMPTY;
     if (hasMoreVlq(reader, length)) {
       vars = [];
@@ -139,7 +146,14 @@ function encodeOriginalScopes(scopes) {
 }
 function _encodeOriginalScopes(scopes, index, writer, state) {
   const scope = scopes[index];
-  const { 0: startLine, 1: startColumn, 2: endLine, 3: endColumn, 4: kind, vars } = scope;
+  const {
+    0: startLine,
+    1: startColumn,
+    2: endLine,
+    3: endColumn,
+    4: kind,
+    vars,
+  } = scope;
   if (index > 0) writer.write(comma);
   state[0] = encodeInteger(writer, startLine, state[0]);
   encodeInteger(writer, startColumn, 0);
@@ -153,7 +167,7 @@ function _encodeOriginalScopes(scopes, index, writer, state) {
   for (index++; index < scopes.length; ) {
     const next = scopes[index];
     const { 0: l, 1: c } = next;
-    if (l > endLine || l === endLine && c >= endColumn) {
+    if (l > endLine || (l === endLine && c >= endColumn)) {
       break;
     }
     index = _encodeOriginalScopes(scopes, index, writer, state);
@@ -198,10 +212,17 @@ function decodeGeneratedRanges(input) {
         const defSourcesIndex = decodeInteger(reader, definitionSourcesIndex);
         definitionScopeIndex = decodeInteger(
           reader,
-          definitionSourcesIndex === defSourcesIndex ? definitionScopeIndex : 0
+          definitionSourcesIndex === defSourcesIndex ? definitionScopeIndex : 0,
         );
         definitionSourcesIndex = defSourcesIndex;
-        range = [genLine, genColumn, 0, 0, defSourcesIndex, definitionScopeIndex];
+        range = [
+          genLine,
+          genColumn,
+          0,
+          0,
+          defSourcesIndex,
+          definitionScopeIndex,
+        ];
       } else {
         range = [genLine, genColumn, 0, 0];
       }
@@ -214,7 +235,7 @@ function decodeGeneratedRanges(input) {
         callsiteLine = decodeInteger(reader, sameSource ? callsiteLine : 0);
         callsiteColumn = decodeInteger(
           reader,
-          sameSource && prevLine === callsiteLine ? callsiteColumn : 0
+          sameSource && prevLine === callsiteLine ? callsiteColumn : 0,
         );
         callsite = [callsiteSourcesIndex, callsiteLine, callsiteColumn];
       }
@@ -231,7 +252,10 @@ function decodeGeneratedRanges(input) {
             for (let i = -1; i > expressionsCount; i--) {
               const prevBl = bindingLine;
               bindingLine = decodeInteger(reader, bindingLine);
-              bindingColumn = decodeInteger(reader, bindingLine === prevBl ? bindingColumn : 0);
+              bindingColumn = decodeInteger(
+                reader,
+                bindingLine === prevBl ? bindingColumn : 0,
+              );
               const expression = decodeInteger(reader, 0);
               expressionRanges.push([expression, bindingLine, bindingColumn]);
             }
@@ -267,7 +291,7 @@ function _encodeGeneratedRanges(ranges, index, writer, state) {
     3: endColumn,
     isScope,
     callsite,
-    bindings
+    bindings,
   } = range;
   if (state[0] < startLine) {
     catchupLine(writer, state[0], startLine);
@@ -277,7 +301,8 @@ function _encodeGeneratedRanges(ranges, index, writer, state) {
     writer.write(comma);
   }
   state[1] = encodeInteger(writer, range[1], state[1]);
-  const fields = (range.length === 6 ? 1 : 0) | (callsite ? 2 : 0) | (isScope ? 4 : 0);
+  const fields =
+    (range.length === 6 ? 1 : 0) | (callsite ? 2 : 0) | (isScope ? 4 : 0);
   encodeInteger(writer, fields, 0);
   if (range.length === 6) {
     const { 4: sourcesIndex, 5: scopesIndex } = range;
@@ -309,7 +334,11 @@ function _encodeGeneratedRanges(ranges, index, writer, state) {
       for (let i = 1; i < binding.length; i++) {
         const expRange = binding[i];
         bindingStartLine = encodeInteger(writer, expRange[1], bindingStartLine);
-        bindingStartColumn = encodeInteger(writer, expRange[2], bindingStartColumn);
+        bindingStartColumn = encodeInteger(
+          writer,
+          expRange[2],
+          bindingStartColumn,
+        );
         encodeInteger(writer, expRange[0], 0);
       }
     }
@@ -317,7 +346,7 @@ function _encodeGeneratedRanges(ranges, index, writer, state) {
   for (index++; index < ranges.length; ) {
     const next = ranges[index];
     const { 0: l, 1: c } = next;
-    if (l > endLine || l === endLine && c >= endColumn) {
+    if (l > endLine || (l === endLine && c >= endColumn)) {
       break;
     }
     index = _encodeGeneratedRanges(ranges, index, writer, state);
@@ -418,6 +447,6 @@ export {
   decodeOriginalScopes,
   encode,
   encodeGeneratedRanges,
-  encodeOriginalScopes
+  encodeOriginalScopes,
 };
 //# sourceMappingURL=sourcemap-codec.mjs.map

@@ -1,24 +1,24 @@
-import prettyMs from 'pretty-ms';
-import {isVerbose} from './values.js';
-import {verboseLog} from './log.js';
-import {logError} from './error.js';
+import prettyMs from "pretty-ms";
+import { logError } from "./error.js";
+import { verboseLog } from "./log.js";
+import { isVerbose } from "./values.js";
 
 // When `verbose` is `short|full|custom`, print each command's completion, duration and error
 export const logResult = (result, verboseInfo) => {
-	if (!isVerbose(verboseInfo)) {
-		return;
-	}
+  if (!isVerbose(verboseInfo)) {
+    return;
+  }
 
-	logError(result, verboseInfo);
-	logDuration(result, verboseInfo);
+  logError(result, verboseInfo);
+  logDuration(result, verboseInfo);
 };
 
 const logDuration = (result, verboseInfo) => {
-	const verboseMessage = `(done in ${prettyMs(result.durationMs)})`;
-	verboseLog({
-		type: 'duration',
-		verboseMessage,
-		verboseInfo,
-		result,
-	});
+  const verboseMessage = `(done in ${prettyMs(result.durationMs)})`;
+  verboseLog({
+    type: "duration",
+    verboseMessage,
+    verboseInfo,
+    result,
+  });
 };

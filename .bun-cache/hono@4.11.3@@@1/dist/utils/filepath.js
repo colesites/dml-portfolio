@@ -9,17 +9,17 @@ var getFilePath = (options) => {
   }
   const path = getFilePathWithoutDefaultDocument({
     root: options.root,
-    filename
+    filename,
   });
   return path;
 };
 var getFilePathWithoutDefaultDocument = (options) => {
   let root = options.root || "";
   let filename = options.filename;
-  if (/(?:^|[\/\\])\.\.(?:$|[\/\\])/.test(filename)) {
+  if (/(?:^|[/\\])\.\.(?:$|[/\\])/.test(filename)) {
     return;
   }
-  filename = filename.replace(/^\.?[\/\\]/, "");
+  filename = filename.replace(/^\.?[/\\]/, "");
   filename = filename.replace(/\\/, "/");
   root = root.replace(/\/$/, "");
   let path = root ? root + "/" + filename : filename;
@@ -29,7 +29,4 @@ var getFilePathWithoutDefaultDocument = (options) => {
   }
   return path;
 };
-export {
-  getFilePath,
-  getFilePathWithoutDefaultDocument
-};
+export { getFilePath, getFilePathWithoutDefaultDocument };

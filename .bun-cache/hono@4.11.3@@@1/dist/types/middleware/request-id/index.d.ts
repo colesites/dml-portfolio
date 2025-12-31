@@ -1,7 +1,6 @@
-import type { RequestIdVariables } from './request-id';
+import type { RequestIdVariables } from "./request-id";
 export type { RequestIdVariables };
-export { requestId } from './request-id';
-declare module '../..' {
-    interface ContextVariableMap extends RequestIdVariables {
-    }
+export { requestId } from "./request-id";
+declare module "../.." {
+  interface ContextVariableMap extends RequestIdVariables {}
 }

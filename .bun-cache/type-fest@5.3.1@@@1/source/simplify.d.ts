@@ -56,6 +56,4 @@ fn(someInterface as Simplify<SomeInterface>); // Good: transform an `interface` 
 @see {@link SimplifyDeep}
 @category Object
 */
-export type Simplify<T> = {[KeyType in keyof T]: T[KeyType]} & {};
-
-export {};
+export type Simplify<T> = { [KeyType in keyof T]: T[KeyType] } & {};

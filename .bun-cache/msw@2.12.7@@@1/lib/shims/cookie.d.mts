@@ -1,4 +1,4 @@
-import * as _cookie from 'cookie';
+import * as _cookie from "cookie";
 
 declare const cookie: any;
 declare const parse: typeof _cookie.parse;

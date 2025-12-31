@@ -1,11 +1,11 @@
+import { configLoader, type ExplicitParams } from "./config-loader";
 import { createMatchPath } from "./match-path-sync";
-import { configLoader, ExplicitParams } from "./config-loader";
 
 const noOp = (): void => void 0;
 
-function getCoreModules(
-  builtinModules: string[] | undefined
-): { [key: string]: boolean } {
+function getCoreModules(builtinModules: string[] | undefined): {
+  [key: string]: boolean;
+} {
   builtinModules = builtinModules || [
     "assert",
     "buffer",
@@ -37,7 +37,7 @@ function getCoreModules(
   ];
 
   const coreModules: { [key: string]: boolean } = {};
-  for (let module of builtinModules) {
+  for (const module of builtinModules) {
     coreModules[module] = true;
   }
 
@@ -83,7 +83,7 @@ export function register(params?: RegisterParams): () => void {
 
   if (configLoaderResult.resultType === "failed") {
     console.warn(
-      `${configLoaderResult.message}. tsconfig-paths will be skipped`
+      `${configLoaderResult.message}. tsconfig-paths will be skipped`,
     );
 
     return noOp;
@@ -93,7 +93,7 @@ export function register(params?: RegisterParams): () => void {
     configLoaderResult.absoluteBaseUrl,
     configLoaderResult.paths,
     configLoaderResult.mainFields,
-    configLoaderResult.addMatchAll
+    configLoaderResult.addMatchAll,
   );
 
   // Patch node's module loading
@@ -104,7 +104,7 @@ export function register(params?: RegisterParams): () => void {
   const coreModules = getCoreModules(Module.builtinModules);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,no-underscore-dangle
   Module._resolveFilename = function (request: string, _parent: any): string {
-    const isCoreModule = coreModules.hasOwnProperty(request);
+    const isCoreModule = Object.hasOwn(coreModules, request);
     if (!isCoreModule) {
       const found = matchPath(request);
       if (found) {

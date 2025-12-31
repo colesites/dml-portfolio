@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.once = once;
 var _async = require("./async.js");
@@ -19,12 +19,12 @@ function once(fn) {
         try {
           result = {
             ok: true,
-            value: yield* fn()
+            value: yield* fn(),
           };
         } catch (error) {
           result = {
             ok: false,
-            value: error
+            value: error,
           };
         }
       } else {
@@ -36,21 +36,22 @@ function once(fn) {
         try {
           result = {
             ok: true,
-            value: yield* fn()
+            value: yield* fn(),
           };
           resultP = null;
           if (promiseReferenced) resolve(result.value);
         } catch (error) {
           result = {
             ok: false,
-            value: error
+            value: error,
           };
           resultP = null;
           if (promiseReferenced) reject(error);
         }
       }
     }
-    if (result.ok) return result.value;else throw result.value;
+    if (result.ok) return result.value;
+    else throw result.value;
   };
 }
 0 && 0;

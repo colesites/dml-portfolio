@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.valueFromASTUntyped = valueFromASTUntyped;
 
-var _keyValMap = require('../jsutils/keyValMap.js');
+var _keyValMap = require("../jsutils/keyValMap.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.

@@ -1,11 +1,9 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.getOperationRootType = getOperationRootType;
 
-var _GraphQLError = require('../error/GraphQLError.js');
+var _GraphQLError = require("../error/GraphQLError.js");
 
 /**
  * Extracts the root type of the operation from the schema.
@@ -13,12 +11,12 @@ var _GraphQLError = require('../error/GraphQLError.js');
  * @deprecated Please use `GraphQLSchema.getRootType` instead. Will be removed in v17
  */
 function getOperationRootType(schema, operation) {
-  if (operation.operation === 'query') {
+  if (operation.operation === "query") {
     const queryType = schema.getQueryType();
 
     if (!queryType) {
       throw new _GraphQLError.GraphQLError(
-        'Schema does not define the required query root type.',
+        "Schema does not define the required query root type.",
         {
           nodes: operation,
         },
@@ -28,12 +26,12 @@ function getOperationRootType(schema, operation) {
     return queryType;
   }
 
-  if (operation.operation === 'mutation') {
+  if (operation.operation === "mutation") {
     const mutationType = schema.getMutationType();
 
     if (!mutationType) {
       throw new _GraphQLError.GraphQLError(
-        'Schema is not configured for mutations.',
+        "Schema is not configured for mutations.",
         {
           nodes: operation,
         },
@@ -43,12 +41,12 @@ function getOperationRootType(schema, operation) {
     return mutationType;
   }
 
-  if (operation.operation === 'subscription') {
+  if (operation.operation === "subscription") {
     const subscriptionType = schema.getSubscriptionType();
 
     if (!subscriptionType) {
       throw new _GraphQLError.GraphQLError(
-        'Schema is not configured for subscriptions.',
+        "Schema is not configured for subscriptions.",
         {
           nodes: operation,
         },
@@ -59,7 +57,7 @@ function getOperationRootType(schema, operation) {
   }
 
   throw new _GraphQLError.GraphQLError(
-    'Can only have query, mutation and subscription operations.',
+    "Can only have query, mutation and subscription operations.",
     {
       nodes: operation,
     },

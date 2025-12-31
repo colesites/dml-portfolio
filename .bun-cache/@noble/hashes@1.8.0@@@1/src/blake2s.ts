@@ -3,9 +3,13 @@
  * @module
  * @deprecated
  */
-import { G1s as G1s_n, G2s as G2s_n } from './_blake.ts';
-import { SHA256_IV } from './_md.ts';
-import { BLAKE2s as B2S, blake2s as b2s, compress as compress_n } from './blake2.ts';
+import { G1s as G1s_n, G2s as G2s_n } from "./_blake.ts";
+import { SHA256_IV } from "./_md.ts";
+import {
+  BLAKE2s as B2S,
+  blake2s as b2s,
+  compress as compress_n,
+} from "./blake2.ts";
 /** @deprecated Use import from `noble/hashes/blake2` module */
 export const B2S_IV: Uint32Array = SHA256_IV;
 /** @deprecated Use import from `noble/hashes/blake2` module */

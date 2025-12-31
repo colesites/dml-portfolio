@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _assert = require("assert");
@@ -18,7 +18,7 @@ const {
   memberExpression,
   stringLiteral,
   variableDeclaration,
-  variableDeclarator
+  variableDeclarator,
 } = _t;
 class ImportBuilder {
   constructor(importedSource, scope, hub) {
@@ -32,15 +32,23 @@ class ImportBuilder {
   done() {
     return {
       statements: this._statements,
-      resultName: this._resultName
+      resultName: this._resultName,
     };
   }
   import() {
-    this._statements.push(importDeclaration([], stringLiteral(this._importedSource)));
+    this._statements.push(
+      importDeclaration([], stringLiteral(this._importedSource)),
+    );
     return this;
   }
   require() {
-    this._statements.push(expressionStatement(callExpression(identifier("require"), [stringLiteral(this._importedSource)])));
+    this._statements.push(
+      expressionStatement(
+        callExpression(identifier("require"), [
+          stringLiteral(this._importedSource),
+        ]),
+      ),
+    );
     return this;
   }
   namespace(name = "namespace") {
@@ -79,7 +87,9 @@ class ImportBuilder {
       statement = expressionStatement(this._resultName);
       this._statements.push(statement);
     }
-    this._statements[this._statements.length - 1] = variableDeclaration("var", [variableDeclarator(id, statement.expression)]);
+    this._statements[this._statements.length - 1] = variableDeclaration("var", [
+      variableDeclarator(id, statement.expression),
+    ]);
     this._resultName = cloneNode(id);
     return this;
   }
@@ -95,7 +105,9 @@ class ImportBuilder {
       statement.expression = callExpression(callee, [statement.expression]);
     } else if (statement.type === "VariableDeclaration") {
       _assert(statement.declarations.length === 1);
-      statement.declarations[0].init = callExpression(callee, [statement.declarations[0].init]);
+      statement.declarations[0].init = callExpression(callee, [
+        statement.declarations[0].init,
+      ]);
     } else {
       _assert.fail("Unexpected type.");
     }
@@ -104,10 +116,16 @@ class ImportBuilder {
   prop(name) {
     const statement = this._statements[this._statements.length - 1];
     if (statement.type === "ExpressionStatement") {
-      statement.expression = memberExpression(statement.expression, identifier(name));
+      statement.expression = memberExpression(
+        statement.expression,
+        identifier(name),
+      );
     } else if (statement.type === "VariableDeclaration") {
       _assert(statement.declarations.length === 1);
-      statement.declarations[0].init = memberExpression(statement.declarations[0].init, identifier(name));
+      statement.declarations[0].init = memberExpression(
+        statement.declarations[0].init,
+        identifier(name),
+      );
     } else {
       _assert.fail("Unexpected type:" + statement.type);
     }

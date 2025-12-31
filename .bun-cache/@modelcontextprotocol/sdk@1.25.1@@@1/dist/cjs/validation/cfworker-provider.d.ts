@@ -5,11 +5,15 @@
  * making it compatible with edge runtimes like Cloudflare Workers that restrict
  * eval and new Function.
  */
-import type { JsonSchemaType, JsonSchemaValidator, jsonSchemaValidator } from './types.js';
+import type {
+  JsonSchemaType,
+  JsonSchemaValidator,
+  jsonSchemaValidator,
+} from "./types.js";
 /**
  * JSON Schema draft version supported by @cfworker/json-schema
  */
-export type CfWorkerSchemaDraft = '4' | '7' | '2019-09' | '2020-12';
+export type CfWorkerSchemaDraft = "4" | "7" | "2019-09" | "2020-12";
 /**
  *
  * @example
@@ -24,28 +28,30 @@ export type CfWorkerSchemaDraft = '4' | '7' | '2019-09' | '2020-12';
  * });
  * ```
  */
-export declare class CfWorkerJsonSchemaValidator implements jsonSchemaValidator {
-    private shortcircuit;
-    private draft;
-    /**
-     * Create a validator
-     *
-     * @param options - Configuration options
-     * @param options.shortcircuit - If true, stop validation after first error (default: true)
-     * @param options.draft - JSON Schema draft version to use (default: '2020-12')
-     */
-    constructor(options?: {
-        shortcircuit?: boolean;
-        draft?: CfWorkerSchemaDraft;
-    });
-    /**
-     * Create a validator for the given JSON Schema
-     *
-     * Unlike AJV, this validator is not cached internally
-     *
-     * @param schema - Standard JSON Schema object
-     * @returns A validator function that validates input data
-     */
-    getValidator<T>(schema: JsonSchemaType): JsonSchemaValidator<T>;
+export declare class CfWorkerJsonSchemaValidator
+  implements jsonSchemaValidator
+{
+  private shortcircuit;
+  private draft;
+  /**
+   * Create a validator
+   *
+   * @param options - Configuration options
+   * @param options.shortcircuit - If true, stop validation after first error (default: true)
+   * @param options.draft - JSON Schema draft version to use (default: '2020-12')
+   */
+  constructor(options?: {
+    shortcircuit?: boolean;
+    draft?: CfWorkerSchemaDraft;
+  });
+  /**
+   * Create a validator for the given JSON Schema
+   *
+   * Unlike AJV, this validator is not cached internally
+   *
+   * @param schema - Standard JSON Schema object
+   * @returns A validator function that validates input data
+   */
+  getValidator<T>(schema: JsonSchemaType): JsonSchemaValidator<T>;
 }
 //# sourceMappingURL=cfworker-provider.d.ts.map

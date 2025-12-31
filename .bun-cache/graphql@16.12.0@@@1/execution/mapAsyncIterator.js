@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.mapAsyncIterator = mapAsyncIterator;
@@ -25,7 +23,7 @@ function mapAsyncIterator(iterable, callback) {
     } catch (error) {
       /* c8 ignore start */
       // FIXME: add test case
-      if (typeof iterator.return === 'function') {
+      if (typeof iterator.return === "function") {
         try {
           await iterator.return();
         } catch (_e) {
@@ -45,7 +43,7 @@ function mapAsyncIterator(iterable, callback) {
 
     async return() {
       // If iterator.return() does not exist, then type R must be undefined.
-      return typeof iterator.return === 'function'
+      return typeof iterator.return === "function"
         ? mapResult(await iterator.return())
         : {
             value: undefined,
@@ -54,7 +52,7 @@ function mapAsyncIterator(iterable, callback) {
     },
 
     async throw(error) {
-      if (typeof iterator.throw === 'function') {
+      if (typeof iterator.throw === "function") {
         return mapResult(await iterator.throw(error));
       }
 

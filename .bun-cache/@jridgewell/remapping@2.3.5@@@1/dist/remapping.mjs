@@ -1,10 +1,26 @@
 // src/build-source-map-tree.ts
-import { TraceMap } from "@jridgewell/trace-mapping";
 
 // src/source-map-tree.ts
-import { GenMapping, maybeAddSegment, setIgnore, setSourceContent } from "@jridgewell/gen-mapping";
-import { traceSegment, decodedMappings } from "@jridgewell/trace-mapping";
-var SOURCELESS_MAPPING = /* @__PURE__ */ SegmentObject("", -1, -1, "", null, false);
+import {
+  GenMapping,
+  maybeAddSegment,
+  setIgnore,
+  setSourceContent,
+} from "@jridgewell/gen-mapping";
+import {
+  decodedMappings,
+  TraceMap,
+  traceSegment,
+} from "@jridgewell/trace-mapping";
+
+var SOURCELESS_MAPPING = /* @__PURE__ */ SegmentObject(
+  "",
+  -1,
+  -1,
+  "",
+  null,
+  false,
+);
 var EMPTY_SOURCES = [];
 function SegmentObject(source, line, column, name, content, ignore) {
   return { source, line, column, name, content, ignore };
@@ -15,7 +31,7 @@ function Source(map, sources, source, content, ignore) {
     sources,
     source,
     content,
-    ignore
+    ignore,
   };
 }
 function MapSource(map, sources) {
@@ -41,7 +57,7 @@ function traceMappings(tree) {
           source2,
           segment[2],
           segment[3],
-          segment.length === 5 ? rootNames[segment[4]] : ""
+          segment.length === 5 ? rootNames[segment[4]] : "",
         );
         if (traced == null) continue;
       }
@@ -55,7 +71,14 @@ function traceMappings(tree) {
 }
 function originalPositionFor(source, line, column, name) {
   if (!source.map) {
-    return SegmentObject(source.source, line, column, name, source.content, source.ignore);
+    return SegmentObject(
+      source.source,
+      line,
+      column,
+      name,
+      source.content,
+      source.ignore,
+    );
   }
   const segment = traceSegment(source.map, line, column);
   if (segment == null) return null;
@@ -64,7 +87,7 @@ function originalPositionFor(source, line, column, name) {
     source.sources[segment[1]],
     segment[2],
     segment[3],
-    segment.length === 5 ? source.map.names[segment[4]] : name
+    segment.length === 5 ? source.map.names[segment[4]] : name,
   );
 }
 
@@ -80,7 +103,7 @@ function buildSourceMapTree(input, loader) {
     if (maps[i].sources.length > 1) {
       throw new Error(
         `Transformation map ${i} must have exactly one source file.
-Did you specify these with the most recent transformation maps first?`
+Did you specify these with the most recent transformation maps first?`,
       );
     }
   }
@@ -99,13 +122,16 @@ function build(map, loader, importer, importerDepth) {
       depth,
       source: sourceFile || "",
       content: void 0,
-      ignore: void 0
+      ignore: void 0,
     };
     const sourceMap = loader(ctx.source, ctx);
     const { source, content, ignore } = ctx;
-    if (sourceMap) return build(new TraceMap(sourceMap, source), loader, source, depth);
-    const sourceContent = content !== void 0 ? content : sourcesContent ? sourcesContent[i] : null;
-    const ignored = ignore !== void 0 ? ignore : ignoreList ? ignoreList.includes(i) : false;
+    if (sourceMap)
+      return build(new TraceMap(sourceMap, source), loader, source, depth);
+    const sourceContent =
+      content !== void 0 ? content : sourcesContent ? sourcesContent[i] : null;
+    const ignored =
+      ignore !== void 0 ? ignore : ignoreList ? ignoreList.includes(i) : false;
     return OriginalSource(source, sourceContent, ignored);
   });
   return MapSource(map, children);
@@ -113,6 +139,7 @@ function build(map, loader, importer, importerDepth) {
 
 // src/source-map.ts
 import { toDecodedMap, toEncodedMap } from "@jridgewell/gen-mapping";
+
 var SourceMap = class {
   constructor(map, options) {
     const out = options.decodedMappings ? toDecodedMap(map) : toEncodedMap(map);
@@ -134,11 +161,12 @@ var SourceMap = class {
 
 // src/remapping.ts
 function remapping(input, loader, options) {
-  const opts = typeof options === "object" ? options : { excludeContent: !!options, decodedMappings: false };
+  const opts =
+    typeof options === "object"
+      ? options
+      : { excludeContent: !!options, decodedMappings: false };
   const tree = buildSourceMapTree(input, loader);
   return new SourceMap(traceMappings(tree), opts);
 }
-export {
-  remapping as default
-};
+export { remapping as default };
 //# sourceMappingURL=remapping.mjs.map

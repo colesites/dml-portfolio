@@ -1,15 +1,19 @@
-const PREFIX = 'DOTENV_PRIVATE_KEY'
+const PREFIX = "DOTENV_PRIVATE_KEY";
 
-function guessPrivateKeyFilename (privateKeyName) {
+function guessPrivateKeyFilename(privateKeyName) {
   // .env
   if (privateKeyName === PREFIX) {
-    return '.env'
+    return ".env";
   }
 
-  const filenameSuffix = privateKeyName.substring(`${PREFIX}_`.length).split('_').join('.').toLowerCase()
+  const filenameSuffix = privateKeyName
+    .substring(`${PREFIX}_`.length)
+    .split("_")
+    .join(".")
+    .toLowerCase();
   // .env.ENVIRONMENT
 
-  return `.env.${filenameSuffix}`
+  return `.env.${filenameSuffix}`;
 }
 
-module.exports = guessPrivateKeyFilename
+module.exports = guessPrivateKeyFilename;

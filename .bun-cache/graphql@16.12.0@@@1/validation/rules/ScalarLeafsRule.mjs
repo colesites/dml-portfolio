@@ -1,6 +1,6 @@
-import { inspect } from '../../jsutils/inspect.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { getNamedType, isLeafType } from '../../type/definition.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { inspect } from "../../jsutils/inspect.mjs";
+import { getNamedType, isLeafType } from "../../type/definition.mjs";
 
 /**
  * Scalar leafs

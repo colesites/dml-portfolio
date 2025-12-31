@@ -3,6 +3,6 @@
  */
 export function isObject<T>(value: any, loose = false): value is T {
   return loose
-    ? Object.prototype.toString.call(value).startsWith('[object ')
-    : Object.prototype.toString.call(value) === '[object Object]'
+    ? Object.prototype.toString.call(value).startsWith("[object ")
+    : Object.prototype.toString.call(value) === "[object Object]";
 }

@@ -1,13 +1,13 @@
-import { inspect } from '../jsutils/inspect.mjs';
-import { invariant } from '../jsutils/invariant.mjs';
-import { keyMap } from '../jsutils/keyMap.mjs';
-import { Kind } from '../language/kinds.mjs';
+import { inspect } from "../jsutils/inspect.mjs";
+import { invariant } from "../jsutils/invariant.mjs";
+import { keyMap } from "../jsutils/keyMap.mjs";
+import { Kind } from "../language/kinds.mjs";
 import {
   isInputObjectType,
   isLeafType,
   isListType,
   isNonNullType,
-} from '../type/definition.mjs';
+} from "../type/definition.mjs";
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
  *
@@ -172,7 +172,7 @@ export function valueFromAST(valueNode, type, variables) {
   /* c8 ignore next 3 */
   // Not reachable, all possible input types have been considered.
 
-  false || invariant(false, 'Unexpected input type: ' + inspect(type));
+  false || invariant(false, "Unexpected input type: " + inspect(type));
 } // Returns true if the provided valueNode is a variable which is not defined
 // in the set of variables.
 

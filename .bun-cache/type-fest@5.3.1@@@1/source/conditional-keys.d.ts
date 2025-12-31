@@ -1,7 +1,7 @@
-import type {ExtendsStrict} from './extends-strict.d.ts';
-import type {IfNotAnyOrNever} from './internal/type.d.ts';
-import type {TupleToObject} from './tuple-to-object.d.ts';
-import type {UnknownArray} from './unknown-array.d.ts';
+import type { ExtendsStrict } from "./extends-strict.d.ts";
+import type { IfNotAnyOrNever } from "./internal/type.d.ts";
+import type { TupleToObject } from "./tuple-to-object.d.ts";
+import type { UnknownArray } from "./unknown-array.d.ts";
 
 /**
 Extract the keys from a type where the value type of the key extends the given `Condition`.
@@ -49,15 +49,15 @@ type NumberValueIndices = ConditionalKeys<[string, number?, string?], number | u
 
 @category Object
 */
-export type ConditionalKeys<Base, Condition> = (Base extends UnknownArray ? TupleToObject<Base> : Base) extends infer _Base // Remove non-numeric keys from arrays
-	? IfNotAnyOrNever<_Base, _ConditionalKeys<_Base, Condition>, keyof _Base>
-	: never;
+export type ConditionalKeys<Base, Condition> = (
+  Base extends UnknownArray
+    ? TupleToObject<Base>
+    : Base
+) extends infer _Base // Remove non-numeric keys from arrays
+  ? IfNotAnyOrNever<_Base, _ConditionalKeys<_Base, Condition>, keyof _Base>
+  : never;
 
 type _ConditionalKeys<Base, Condition> = keyof {
-	[
-	Key in (keyof Base & {}) as // `& {}` prevents homomorphism
-	ExtendsStrict<Base[Key], Condition> extends true ? Key : never
-	]: never
+  [Key in keyof Base & {} as // `& {}` prevents homomorphism
+  ExtendsStrict<Base[Key], Condition> extends true ? Key : never]: never;
 };
-
-export {};

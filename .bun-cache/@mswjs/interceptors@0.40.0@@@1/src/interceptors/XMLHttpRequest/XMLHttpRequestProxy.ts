@@ -1,13 +1,13 @@
-import type { Logger } from '@open-draft/logger'
-import { XMLHttpRequestEmitter } from '.'
-import { RequestController } from '../../RequestController'
-import { XMLHttpRequestController } from './XMLHttpRequestController'
-import { handleRequest } from '../../utils/handleRequest'
-import { isResponseError } from '../../utils/responseUtils'
+import type { Logger } from "@open-draft/logger";
+import { RequestController } from "../../RequestController";
+import { handleRequest } from "../../utils/handleRequest";
+import { isResponseError } from "../../utils/responseUtils";
+import type { XMLHttpRequestEmitter } from ".";
+import { XMLHttpRequestController } from "./XMLHttpRequestController";
 
 export interface XMLHttpRequestProxyOptions {
-  emitter: XMLHttpRequestEmitter
-  logger: Logger
+  emitter: XMLHttpRequestEmitter;
+  logger: Logger;
 }
 
 /**
@@ -21,13 +21,13 @@ export function createXMLHttpRequestProxy({
 }: XMLHttpRequestProxyOptions) {
   const XMLHttpRequestProxy = new Proxy(globalThis.XMLHttpRequest, {
     construct(target, args, newTarget) {
-      logger.info('constructed new XMLHttpRequest')
+      logger.info("constructed new XMLHttpRequest");
 
       const originalRequest = Reflect.construct(
         target,
         args,
-        newTarget
-      ) as XMLHttpRequest
+        newTarget,
+      ) as XMLHttpRequest;
 
       /**
        * @note Forward prototype descriptors onto the proxied object.
@@ -37,59 +37,59 @@ export function createXMLHttpRequestProxy({
        * when the user operates with the proxied request instance.
        */
       const prototypeDescriptors = Object.getOwnPropertyDescriptors(
-        target.prototype
-      )
+        target.prototype,
+      );
       for (const propertyName in prototypeDescriptors) {
         Reflect.defineProperty(
           originalRequest,
           propertyName,
-          prototypeDescriptors[propertyName]
-        )
+          prototypeDescriptors[propertyName],
+        );
       }
 
       const xhrRequestController = new XMLHttpRequestController(
         originalRequest,
-        logger
-      )
+        logger,
+      );
 
       xhrRequestController.onRequest = async function ({ request, requestId }) {
         const controller = new RequestController(request, {
           passthrough: () => {
             this.logger.info(
-              'no mocked response received, performing request as-is...'
-            )
+              "no mocked response received, performing request as-is...",
+            );
           },
           respondWith: async (response) => {
             if (isResponseError(response)) {
-              this.errorWith(new TypeError('Network error'))
-              return
+              this.errorWith(new TypeError("Network error"));
+              return;
             }
 
-            await this.respondWith(response)
+            await this.respondWith(response);
           },
           errorWith: (reason) => {
-            this.logger.info('request errored!', { error: reason })
+            this.logger.info("request errored!", { error: reason });
 
             if (reason instanceof Error) {
-              this.errorWith(reason)
+              this.errorWith(reason);
             }
           },
-        })
+        });
 
-        this.logger.info('awaiting mocked response...')
+        this.logger.info("awaiting mocked response...");
 
         this.logger.info(
           'emitting the "request" event for %s listener(s)...',
-          emitter.listenerCount('request')
-        )
+          emitter.listenerCount("request"),
+        );
 
         await handleRequest({
           request,
           requestId,
           controller,
           emitter,
-        })
-      }
+        });
+      };
 
       xhrRequestController.onResponse = async function ({
         response,
@@ -99,23 +99,23 @@ export function createXMLHttpRequestProxy({
       }) {
         this.logger.info(
           'emitting the "response" event for %s listener(s)...',
-          emitter.listenerCount('response')
-        )
+          emitter.listenerCount("response"),
+        );
 
-        emitter.emit('response', {
+        emitter.emit("response", {
           response,
           isMockedResponse,
           request,
           requestId,
-        })
-      }
+        });
+      };
 
       // Return the proxied request from the controller
       // so that the controller can react to the consumer's interactions
       // with this request (opening/sending/etc).
-      return xhrRequestController.request
+      return xhrRequestController.request;
     },
-  })
+  });
 
-  return XMLHttpRequestProxy
+  return XMLHttpRequestProxy;
 }

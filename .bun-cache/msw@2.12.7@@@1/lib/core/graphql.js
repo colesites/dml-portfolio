@@ -8,28 +8,44 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var graphql_exports = {};
 __export(graphql_exports, {
-  graphql: () => graphql
+  graphql: () => graphql,
 });
 module.exports = __toCommonJS(graphql_exports);
 var import_GraphQLHandler = require("./handlers/GraphQLHandler");
 function createScopedGraphQLHandler(operationType, url) {
   return (predicate, resolver, options = {}) => {
-    return new import_GraphQLHandler.GraphQLHandler(operationType, predicate, url, resolver, options);
+    return new import_GraphQLHandler.GraphQLHandler(
+      operationType,
+      predicate,
+      url,
+      resolver,
+      options,
+    );
   };
 }
 function createGraphQLOperationHandler(url) {
   return (resolver, options) => {
-    return new import_GraphQLHandler.GraphQLHandler("all", new RegExp(".*"), url, resolver, options);
+    return new import_GraphQLHandler.GraphQLHandler(
+      "all",
+      /.*/,
+      url,
+      resolver,
+      options,
+    );
   };
 }
 const graphql = {
@@ -80,11 +96,8 @@ const graphql = {
     return {
       operation: createGraphQLOperationHandler(url),
       query: createScopedGraphQLHandler("query", url),
-      mutation: createScopedGraphQLHandler(
-        "mutation",
-        url
-      )
+      mutation: createScopedGraphQLHandler("mutation", url),
     };
-  }
+  },
 };
 //# sourceMappingURL=graphql.js.map

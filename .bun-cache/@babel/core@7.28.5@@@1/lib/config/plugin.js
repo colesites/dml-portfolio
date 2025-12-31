@@ -1,12 +1,17 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _deepArray = require("./helpers/deep-array.js");
 class Plugin {
-  constructor(plugin, options, key, externalDependencies = (0, _deepArray.finalize)([])) {
+  constructor(
+    plugin,
+    options,
+    key,
+    externalDependencies = (0, _deepArray.finalize)([]),
+  ) {
     this.key = void 0;
     this.manipulateOptions = void 0;
     this.post = void 0;

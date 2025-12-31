@@ -1,7 +1,7 @@
-const ENCRYPTION_PATTERN = /^encrypted:.+/
+const ENCRYPTION_PATTERN = /^encrypted:.+/;
 
-function isEncrypted (value) {
-  return ENCRYPTION_PATTERN.test(value)
+function isEncrypted(value) {
+  return ENCRYPTION_PATTERN.test(value);
 }
 
-module.exports = isEncrypted
+module.exports = isEncrypted;

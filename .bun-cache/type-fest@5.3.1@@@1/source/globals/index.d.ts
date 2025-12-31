@@ -1,3 +1,1 @@
-export type * from './observable-like.d.ts';
-
-export {};
+export type * from "./observable-like.d.ts";

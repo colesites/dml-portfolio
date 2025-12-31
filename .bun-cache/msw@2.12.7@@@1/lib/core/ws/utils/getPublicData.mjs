@@ -1,5 +1,6 @@
-import { isObject } from '../../utils/internal/isObject.mjs';
-import { truncateMessage } from './truncateMessage.mjs';
+import { isObject } from "../../utils/internal/isObject.mjs";
+import { truncateMessage } from "./truncateMessage.mjs";
+
 async function getPublicData(data) {
   if (data instanceof Blob) {
     const text = await data.text();
@@ -11,7 +12,5 @@ async function getPublicData(data) {
   }
   return truncateMessage(data);
 }
-export {
-  getPublicData
-};
+export { getPublicData };
 //# sourceMappingURL=getPublicData.mjs.map

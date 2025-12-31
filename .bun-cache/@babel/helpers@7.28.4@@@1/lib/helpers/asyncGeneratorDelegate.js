@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _asyncGeneratorDelegate;
 var _OverloadYield = require("./OverloadYield.js");
@@ -10,18 +10,19 @@ function _asyncGeneratorDelegate(inner) {
     waiting = false;
   function pump(key, value) {
     waiting = true;
-    value = new Promise(function (resolve) {
+    value = new Promise((resolve) => {
       resolve(inner[key](value));
     });
     return {
       done: false,
-      value: new _OverloadYield.default(value, 1)
+      value: new _OverloadYield.default(value, 1),
     };
   }
-  iter[typeof Symbol !== "undefined" && Symbol.iterator || "@@iterator"] = function () {
-    return this;
-  };
-  iter.next = function (value) {
+  iter[(typeof Symbol !== "undefined" && Symbol.iterator) || "@@iterator"] =
+    function () {
+      return this;
+    };
+  iter.next = (value) => {
     if (waiting) {
       waiting = false;
       return value;
@@ -29,7 +30,7 @@ function _asyncGeneratorDelegate(inner) {
     return pump("next", value);
   };
   if (typeof inner["throw"] === "function") {
-    iter["throw"] = function (value) {
+    iter["throw"] = (value) => {
       if (waiting) {
         waiting = false;
         throw value;
@@ -38,7 +39,7 @@ function _asyncGeneratorDelegate(inner) {
     };
   }
   if (typeof inner["return"] === "function") {
-    iter["return"] = function (value) {
+    iter["return"] = (value) => {
       if (waiting) {
         waiting = false;
         return value;

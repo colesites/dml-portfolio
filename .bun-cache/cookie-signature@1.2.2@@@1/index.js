@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var crypto = require('crypto');
+var crypto = require("crypto");
 
 /**
  * Sign the given `val` with `secret`.
@@ -13,14 +13,19 @@ var crypto = require('crypto');
  * @api private
  */
 
-exports.sign = function(val, secret){
-  if ('string' != typeof val) throw new TypeError("Cookie value must be provided as a string.");
+exports.sign = (val, secret) => {
+  if ("string" != typeof val)
+    throw new TypeError("Cookie value must be provided as a string.");
   if (null == secret) throw new TypeError("Secret key must be provided.");
-  return val + '.' + crypto
-    .createHmac('sha256', secret)
-    .update(val)
-    .digest('base64')
-    .replace(/\=+$/, '');
+  return (
+    val +
+    "." +
+    crypto
+      .createHmac("sha256", secret)
+      .update(val)
+      .digest("base64")
+      .replace(/=+$/, "")
+  );
 };
 
 /**
@@ -33,15 +38,16 @@ exports.sign = function(val, secret){
  * @api private
  */
 
-exports.unsign = function(input, secret){
-  if ('string' != typeof input) throw new TypeError("Signed cookie string must be provided.");
+exports.unsign = (input, secret) => {
+  if ("string" != typeof input)
+    throw new TypeError("Signed cookie string must be provided.");
   if (null == secret) throw new TypeError("Secret key must be provided.");
-  var tentativeValue = input.slice(0, input.lastIndexOf('.')),
-      expectedInput = exports.sign(tentativeValue, secret),
-      expectedBuffer = Buffer.from(expectedInput),
-      inputBuffer = Buffer.from(input);
-  return (
-    expectedBuffer.length === inputBuffer.length &&
+  var tentativeValue = input.slice(0, input.lastIndexOf(".")),
+    expectedInput = exports.sign(tentativeValue, secret),
+    expectedBuffer = Buffer.from(expectedInput),
+    inputBuffer = Buffer.from(input);
+  return expectedBuffer.length === inputBuffer.length &&
     crypto.timingSafeEqual(expectedBuffer, inputBuffer)
-   ) ? tentativeValue : false;
+    ? tentativeValue
+    : false;
 };

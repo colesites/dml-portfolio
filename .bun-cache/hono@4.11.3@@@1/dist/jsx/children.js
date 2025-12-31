@@ -1,5 +1,5 @@
 // src/jsx/children.ts
-var toArray = (children) => Array.isArray(children) ? children : [children];
+var toArray = (children) => (Array.isArray(children) ? children : [children]);
 var Children = {
   map: (children, fn) => toArray(children).map(fn),
   forEach: (children, fn) => {
@@ -13,9 +13,6 @@ var Children = {
     }
     return children[0];
   },
-  toArray
+  toArray,
 };
-export {
-  Children,
-  toArray
-};
+export { Children, toArray };

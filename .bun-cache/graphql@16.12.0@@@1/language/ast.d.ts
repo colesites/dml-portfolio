@@ -1,6 +1,6 @@
-import type { Kind } from './kinds';
-import type { Source } from './source';
-import type { TokenKind } from './tokenKind';
+import type { Kind } from "./kinds";
+import type { Source } from "./source";
+import type { TokenKind } from "./tokenKind";
 /**
  * Contains a range of UTF-8 character offsets and token references that
  * identify the region of the source from which the AST derived.
@@ -144,13 +144,13 @@ export declare type ASTNode =
  * Utility type listing all nodes indexed by their kind.
  */
 export declare type ASTKindToNode = {
-  [NodeT in ASTNode as NodeT['kind']]: NodeT;
+  [NodeT in ASTNode as NodeT["kind"]]: NodeT;
 };
 /**
  * @internal
  */
 export declare const QueryDocumentKeys: {
-  [NodeT in ASTNode as NodeT['kind']]: ReadonlyArray<keyof NodeT>;
+  [NodeT in ASTNode as NodeT["kind"]]: ReadonlyArray<keyof NodeT>;
 };
 /**
  * @internal
@@ -187,9 +187,9 @@ export interface OperationDefinitionNode {
   readonly selectionSet: SelectionSetNode;
 }
 declare enum OperationTypeNode {
-  QUERY = 'query',
-  MUTATION = 'mutation',
-  SUBSCRIPTION = 'subscription',
+  QUERY = "query",
+  MUTATION = "mutation",
+  SUBSCRIPTION = "subscription",
 }
 export { OperationTypeNode };
 export interface VariableDefinitionNode {

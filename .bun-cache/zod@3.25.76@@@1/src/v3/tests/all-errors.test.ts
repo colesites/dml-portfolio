@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -10,7 +10,10 @@ const Test = z.object({
   f3: z.string().nullable(),
   f4: z.array(z.object({ t: z.union([z.string(), z.boolean()]) })),
 });
-type TestFlattenedErrors = z.inferFlattenedErrors<typeof Test, { message: string; code: number }>;
+type TestFlattenedErrors = z.inferFlattenedErrors<
+  typeof Test,
+  { message: string; code: number }
+>;
 type TestFormErrors = z.inferFlattenedErrors<typeof Test>;
 
 test("default flattened errors type inference", () => {
@@ -20,7 +23,10 @@ test("default flattened errors type inference", () => {
   };
 
   util.assertEqual<z.inferFlattenedErrors<typeof Test>, TestTypeErrors>(true);
-  util.assertEqual<z.inferFlattenedErrors<typeof Test, { message: string }>, TestTypeErrors>(false);
+  util.assertEqual<
+    z.inferFlattenedErrors<typeof Test, { message: string }>,
+    TestTypeErrors
+  >(false);
 });
 
 test("custom flattened errors type inference", () => {
@@ -33,8 +39,14 @@ test("custom flattened errors type inference", () => {
   };
 
   util.assertEqual<z.inferFlattenedErrors<typeof Test>, TestTypeErrors>(false);
-  util.assertEqual<z.inferFlattenedErrors<typeof Test, { message: string; code: number }>, TestTypeErrors>(true);
-  util.assertEqual<z.inferFlattenedErrors<typeof Test, { message: string }>, TestTypeErrors>(false);
+  util.assertEqual<
+    z.inferFlattenedErrors<typeof Test, { message: string; code: number }>,
+    TestTypeErrors
+  >(true);
+  util.assertEqual<
+    z.inferFlattenedErrors<typeof Test, { message: string }>,
+    TestTypeErrors
+  >(false);
 });
 
 test("form errors type inference", () => {
@@ -48,7 +60,9 @@ test("form errors type inference", () => {
 
 test(".flatten() type assertion", () => {
   const parsed = Test.safeParse({}) as z.SafeParseError<void>;
-  const validFlattenedErrors: TestFlattenedErrors = parsed.error.flatten(() => ({ message: "", code: 0 }));
+  const validFlattenedErrors: TestFlattenedErrors = parsed.error.flatten(
+    () => ({ message: "", code: 0 }),
+  );
   // @ts-expect-error should fail assertion between `TestFlattenedErrors` and unmapped `flatten()`.
   const invalidFlattenedErrors: TestFlattenedErrors = parsed.error.flatten();
   const validFormErrors: TestFormErrors = parsed.error.flatten();
@@ -58,7 +72,12 @@ test(".flatten() type assertion", () => {
     code: 0,
   }));
 
-  [validFlattenedErrors, invalidFlattenedErrors, validFormErrors, invalidFormErrors];
+  [
+    validFlattenedErrors,
+    invalidFlattenedErrors,
+    validFormErrors,
+    invalidFormErrors,
+  ];
 });
 
 test(".formErrors type assertion", () => {
@@ -81,7 +100,7 @@ test("all errors", () => {
       (val) => {
         return val.a === val.b;
       },
-      { message: "Must be equal" }
+      { message: "Must be equal" },
     );
 
   try {

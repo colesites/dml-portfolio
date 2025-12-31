@@ -1,4 +1,3 @@
-"use strict";
 /**
  * Audited & minimal JS implementation of hash functions, MACs and KDFs. Check out individual modules.
  * @module
@@ -29,5 +28,7 @@ import { md5, ripemd160, sha1 } from '@noble/hashes/legacy';
 import * as utils from '@noble/hashes/utils';
 ```
  */
-throw new Error('root module cannot be imported: import submodules instead. Check out README');
+throw new Error(
+  "root module cannot be imported: import submodules instead. Check out README",
+);
 //# sourceMappingURL=index.js.map

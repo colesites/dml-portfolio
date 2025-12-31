@@ -1,7 +1,6 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 
-
-var _chunkDOWWQYXZjs = require('./chunk-DOWWQYXZ.js');
+var _chunkDOWWQYXZjs = require("./chunk-DOWWQYXZ.js");
 
 // src/utils/emitAsync.ts
 async function emitAsync(emitter, eventName, ...data) {
@@ -16,7 +15,9 @@ async function emitAsync(emitter, eventName, ...data) {
 
 // src/utils/isObject.ts
 function isObject(value, loose = false) {
-  return loose ? Object.prototype.toString.call(value).startsWith("[object ") : Object.prototype.toString.call(value) === "[object Object]";
+  return loose
+    ? Object.prototype.toString.call(value).startsWith("[object ")
+    : Object.prototype.toString.call(value) === "[object Object]";
 }
 
 // src/utils/isPropertyAccessible.ts
@@ -33,31 +34,43 @@ function isPropertyAccessible(obj, key) {
 function createServerErrorResponse(body) {
   return new Response(
     JSON.stringify(
-      body instanceof Error ? {
-        name: body.name,
-        message: body.message,
-        stack: body.stack
-      } : body
+      body instanceof Error
+        ? {
+            name: body.name,
+            message: body.message,
+            stack: body.stack,
+          }
+        : body,
     ),
     {
       status: 500,
       statusText: "Unhandled Exception",
       headers: {
-        "Content-Type": "application/json"
-      }
-    }
+        "Content-Type": "application/json",
+      },
+    },
   );
 }
 function isResponseError(response) {
-  return response != null && response instanceof Response && isPropertyAccessible(response, "type") && response.type === "error";
+  return (
+    response != null &&
+    response instanceof Response &&
+    isPropertyAccessible(response, "type") &&
+    response.type === "error"
+  );
 }
 function isResponseLike(value) {
-  return isObject(value, true) && isPropertyAccessible(value, "status") && isPropertyAccessible(value, "statusText") && isPropertyAccessible(value, "bodyUsed");
+  return (
+    isObject(value, true) &&
+    isPropertyAccessible(value, "status") &&
+    isPropertyAccessible(value, "statusText") &&
+    isPropertyAccessible(value, "bodyUsed")
+  );
 }
 
 // src/utils/handleRequest.ts
-var _deferredpromise = require('@open-draft/deferred-promise');
-var _until = require('@open-draft/until');
+var _deferredpromise = require("@open-draft/deferred-promise");
+var _until = require("@open-draft/until");
 
 // src/utils/isNodeLikeError.ts
 function isNodeLikeError(error) {
@@ -115,20 +128,20 @@ async function handleRequest(options) {
       () => {
         requestAbortPromise.reject(options.request.signal.reason);
       },
-      { once: true }
+      { once: true },
     );
   }
   const result = await _until.until.call(void 0, async () => {
     const requestListenersPromise = emitAsync(options.emitter, "request", {
       requestId: options.requestId,
       request: options.request,
-      controller: options.controller
+      controller: options.controller,
     });
     await Promise.race([
       // Short-circuit the request handling promise if the request gets aborted.
       requestAbortPromise,
       requestListenersPromise,
-      options.controller.handled
+      options.controller.handled,
     ]);
   });
   if (requestAbortPromise.state === "rejected") {
@@ -140,50 +153,50 @@ async function handleRequest(options) {
       return;
     }
     if (options.emitter.listenerCount("unhandledException") > 0) {
-      const unhandledExceptionController = new (0, _chunkDOWWQYXZjs.RequestController)(
-        options.request,
-        {
-          /**
-           * @note Intentionally empty passthrough handle.
-           * This controller is created within another controller and we only need
-           * to know if `unhandledException` listeners handled the request.
-           */
-          passthrough() {
-          },
-          async respondWith(response) {
-            await handleResponse(response);
-          },
-          async errorWith(reason) {
-            await options.controller.errorWith(reason);
-          }
-        }
-      );
+      const unhandledExceptionController = new (0,
+      _chunkDOWWQYXZjs.RequestController)(options.request, {
+        /**
+         * @note Intentionally empty passthrough handle.
+         * This controller is created within another controller and we only need
+         * to know if `unhandledException` listeners handled the request.
+         */
+        passthrough() {},
+        async respondWith(response) {
+          await handleResponse(response);
+        },
+        async errorWith(reason) {
+          await options.controller.errorWith(reason);
+        },
+      });
       await emitAsync(options.emitter, "unhandledException", {
         error: result.error,
         request: options.request,
         requestId: options.requestId,
-        controller: unhandledExceptionController
+        controller: unhandledExceptionController,
       });
-      if (unhandledExceptionController.readyState !== _chunkDOWWQYXZjs.RequestController.PENDING) {
+      if (
+        unhandledExceptionController.readyState !==
+        _chunkDOWWQYXZjs.RequestController.PENDING
+      ) {
         return;
       }
     }
     await options.controller.respondWith(
-      createServerErrorResponse(result.error)
+      createServerErrorResponse(result.error),
     );
     return;
   }
-  if (options.controller.readyState === _chunkDOWWQYXZjs.RequestController.PENDING) {
+  if (
+    options.controller.readyState === _chunkDOWWQYXZjs.RequestController.PENDING
+  ) {
     return await options.controller.passthrough();
   }
   return options.controller.handled;
 }
 
-
-
-
-
-
-
-exports.isPropertyAccessible = isPropertyAccessible; exports.emitAsync = emitAsync; exports.isObject = isObject; exports.isResponseError = isResponseError; exports.handleRequest = handleRequest;
+exports.isPropertyAccessible = isPropertyAccessible;
+exports.emitAsync = emitAsync;
+exports.isObject = isObject;
+exports.isResponseError = isResponseError;
+exports.handleRequest = handleRequest;
 //# sourceMappingURL=chunk-7Q53NNPV.js.map

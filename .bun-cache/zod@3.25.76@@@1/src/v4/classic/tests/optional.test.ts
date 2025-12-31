@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, expectTypeOf, test } from "vitest";
 
 import * as z from "zod/v4";

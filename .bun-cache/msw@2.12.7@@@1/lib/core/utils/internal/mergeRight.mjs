@@ -1,4 +1,5 @@
-import { isObject } from './isObject.mjs';
+import { isObject } from "./isObject.mjs";
+
 function mergeRight(left, right) {
   return Object.entries(right).reduce(
     (result, [key, rightValue]) => {
@@ -14,10 +15,8 @@ function mergeRight(left, right) {
       result[key] = rightValue;
       return result;
     },
-    Object.assign({}, left)
+    Object.assign({}, left),
   );
 }
-export {
-  mergeRight
-};
+export { mergeRight };
 //# sourceMappingURL=mergeRight.mjs.map

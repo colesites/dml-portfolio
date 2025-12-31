@@ -9,7 +9,9 @@ var jwt = (options) => {
     throw new Error('JWT auth middleware requires options for "secret"');
   }
   if (!crypto.subtle || !crypto.subtle.importKey) {
-    throw new Error("`crypto.subtle.importKey` is undefined. JWT auth middleware requires it.");
+    throw new Error(
+      "`crypto.subtle.importKey` is undefined. JWT auth middleware requires it.",
+    );
   }
   return async function jwt2(ctx, next) {
     const headerName = options.headerName || "Authorization";
@@ -24,8 +26,8 @@ var jwt = (options) => {
           res: unauthorizedResponse({
             ctx,
             error: "invalid_request",
-            errDescription
-          })
+            errDescription,
+          }),
         });
       } else {
         token = parts[1];
@@ -39,14 +41,22 @@ var jwt = (options) => {
             ctx,
             options.cookie.secret,
             options.cookie.key,
-            options.cookie.prefixOptions
+            options.cookie.prefixOptions,
           );
         } else {
-          token = await getSignedCookie(ctx, options.cookie.secret, options.cookie.key);
+          token = await getSignedCookie(
+            ctx,
+            options.cookie.secret,
+            options.cookie.key,
+          );
         }
       } else {
         if (options.cookie.prefixOptions) {
-          token = getCookie(ctx, options.cookie.key, options.cookie.prefixOptions);
+          token = getCookie(
+            ctx,
+            options.cookie.key,
+            options.cookie.prefixOptions,
+          );
         } else {
           token = getCookie(ctx, options.cookie.key);
         }
@@ -59,8 +69,8 @@ var jwt = (options) => {
         res: unauthorizedResponse({
           ctx,
           error: "invalid_request",
-          errDescription
-        })
+          errDescription,
+        }),
       });
     }
     let payload;
@@ -68,7 +78,7 @@ var jwt = (options) => {
     try {
       payload = await Jwt.verify(token, options.secret, {
         alg: options.alg,
-        ...verifyOpts
+        ...verifyOpts,
       });
     } catch (e) {
       cause = e;
@@ -80,9 +90,9 @@ var jwt = (options) => {
           ctx,
           error: "invalid_token",
           statusText: "Unauthorized",
-          errDescription: "token verification failure"
+          errDescription: "token verification failure",
         }),
-        cause
+        cause,
       });
     }
     ctx.set("jwtPayload", payload);
@@ -94,18 +104,12 @@ function unauthorizedResponse(opts) {
     status: 401,
     statusText: opts.statusText,
     headers: {
-      "WWW-Authenticate": `Bearer realm="${opts.ctx.req.url}",error="${opts.error}",error_description="${opts.errDescription}"`
-    }
+      "WWW-Authenticate": `Bearer realm="${opts.ctx.req.url}",error="${opts.error}",error_description="${opts.errDescription}"`,
+    },
   });
 }
 var verifyWithJwks = Jwt.verifyWithJwks;
 var verify = Jwt.verify;
 var decode = Jwt.decode;
 var sign = Jwt.sign;
-export {
-  decode,
-  jwt,
-  sign,
-  verify,
-  verifyWithJwks
-};
+export { decode, jwt, sign, verify, verifyWithJwks };

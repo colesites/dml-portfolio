@@ -1,7 +1,7 @@
 "use server";
 
+import { extractMessageText, sendChatCompletion } from "@/lib/chat/gateway";
 import { CHAT_DISCLAIMER, CHAT_GREETING_FALLBACK } from "@/lib/config";
-import { sendChatCompletion, extractMessageText } from "@/lib/chat/gateway";
 import { loadPrompt } from "@/lib/prompts";
 import { serverClient } from "@/sanity/lib/serverClient";
 

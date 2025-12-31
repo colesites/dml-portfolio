@@ -1,21 +1,19 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.VariablesInAllowedPositionRule = VariablesInAllowedPositionRule;
 
-var _inspect = require('../../jsutils/inspect.js');
+var _inspect = require("../../jsutils/inspect.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _definition = require('../../type/definition.js');
+var _definition = require("../../type/definition.js");
 
-var _typeComparators = require('../../utilities/typeComparators.js');
+var _typeComparators = require("../../utilities/typeComparators.js");
 
-var _typeFromAST = require('../../utilities/typeFromAST.js');
+var _typeFromAST = require("../../utilities/typeFromAST.js");
 
 /**
  * Variables in allowed position

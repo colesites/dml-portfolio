@@ -45,7 +45,9 @@ export type Schema =
 export type _JSONSchema = boolean | JSONSchema;
 export type JSONSchema = {
   [k: string]: unknown;
-  $schema?: "https://json-schema.org/draft/2020-12/schema" | "http://json-schema.org/draft-07/schema#";
+  $schema?:
+    | "https://json-schema.org/draft/2020-12/schema"
+    | "http://json-schema.org/draft-07/schema#";
   $id?: string;
   $anchor?: string;
   $ref?: string;
@@ -54,7 +56,14 @@ export type JSONSchema = {
   $vocabulary?: Record<string, boolean>;
   $comment?: string;
   $defs?: Record<string, JSONSchema>;
-  type?: "object" | "array" | "string" | "number" | "boolean" | "null" | "integer";
+  type?:
+    | "object"
+    | "array"
+    | "string"
+    | "number"
+    | "boolean"
+    | "null"
+    | "integer";
   additionalItems?: _JSONSchema;
   unevaluatedItems?: _JSONSchema;
   prefixItems?: _JSONSchema[];

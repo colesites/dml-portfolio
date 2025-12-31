@@ -1,5 +1,5 @@
-import { Kind } from '../language/kinds.mjs';
-import { GraphQLList, GraphQLNonNull } from '../type/definition.mjs';
+import { Kind } from "../language/kinds.mjs";
+import { GraphQLList, GraphQLNonNull } from "../type/definition.mjs";
 export function typeFromAST(schema, typeNode) {
   switch (typeNode.kind) {
     case Kind.LIST_TYPE: {

@@ -1,4 +1,4 @@
-import type {OptionalKeysOf} from './optional-keys-of.d.ts';
+import type { OptionalKeysOf } from "./optional-keys-of.d.ts";
 
 /**
 Extract all required keys from the given type.
@@ -30,9 +30,6 @@ const validator3 = createValidation<User>('luckyNumber', value => value > 0);
 
 @category Utilities
 */
-export type RequiredKeysOf<Type extends object> =
-	Type extends unknown // For distributing `Type`
-		? Exclude<keyof Type, OptionalKeysOf<Type>>
-		: never; // Should never happen
-
-export {};
+export type RequiredKeysOf<Type extends object> = Type extends unknown // For distributing `Type`
+  ? Exclude<keyof Type, OptionalKeysOf<Type>>
+  : never; // Should never happen

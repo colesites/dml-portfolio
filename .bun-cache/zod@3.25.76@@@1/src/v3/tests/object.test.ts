@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -84,7 +84,13 @@ test("strip by default", () => {
 });
 
 test("unknownkeys override", () => {
-  const val = z.object({ points: z.number() }).strict().passthrough().strip().nonstrict().parse(data);
+  const val = z
+    .object({ points: z.number() })
+    .strict()
+    .passthrough()
+    .strip()
+    .nonstrict()
+    .parse(data);
 
   expect(val).toEqual(data);
 });
@@ -120,7 +126,10 @@ test("catchall inference", () => {
 });
 
 test("catchall overrides strict", () => {
-  const o1 = z.object({ first: z.string().optional() }).strict().catchall(z.number());
+  const o1 = z
+    .object({ first: z.string().optional() })
+    .strict()
+    .catchall(z.number());
 
   // should run fine
   // setting a catchall overrides the unknownKeys behavior
@@ -167,7 +176,10 @@ test("test that optional keys are unset", async () => {
 });
 
 test("test catchall parsing", async () => {
-  const result = z.object({ name: z.string() }).catchall(z.number()).parse({ name: "Foo", validExtraKey: 61 });
+  const result = z
+    .object({ name: z.string() })
+    .catchall(z.number())
+    .parse({ name: "Foo", validExtraKey: 61 });
 
   expect(result).toEqual({ name: "Foo", validExtraKey: 61 });
 
@@ -180,7 +192,10 @@ test("test catchall parsing", async () => {
 });
 
 test("test nonexistent keys", async () => {
-  const Schema = z.union([z.object({ a: z.string() }), z.object({ b: z.number() })]);
+  const Schema = z.union([
+    z.object({ a: z.string() }),
+    z.object({ b: z.number() }),
+  ]);
   const obj = { a: "A" };
   const result = await Schema.spa(obj); // Works with 1.11.10, breaks with 2.0.0-beta.21
   expect(result.success).toBe(true);
@@ -223,7 +238,10 @@ test("inferred unioned object type with optional properties", async () => {
     z.object({ a: z.string().optional(), b: z.string() }),
   ]);
   type Unioned = z.infer<typeof Unioned>;
-  util.assertEqual<Unioned, { a: string; b?: string } | { a?: string; b: string }>(true);
+  util.assertEqual<
+    Unioned,
+    { a: string; b?: string } | { a?: string; b: string }
+  >(true);
 });
 
 test("inferred enum type", async () => {
@@ -243,13 +261,17 @@ test("inferred enum type", async () => {
 });
 
 test("inferred partial object type with optional properties", async () => {
-  const Partial = z.object({ a: z.string(), b: z.string().optional() }).partial();
+  const Partial = z
+    .object({ a: z.string(), b: z.string().optional() })
+    .partial();
   type Partial = z.infer<typeof Partial>;
   util.assertEqual<Partial, { a?: string; b?: string }>(true);
 });
 
 test("inferred picked object type with optional properties", async () => {
-  const Picked = z.object({ a: z.string(), b: z.string().optional() }).pick({ b: true });
+  const Picked = z
+    .object({ a: z.string(), b: z.string().optional() })
+    .pick({ b: true });
   type Picked = z.infer<typeof Picked>;
   util.assertEqual<Picked, { b?: string }>(true);
 });
@@ -341,7 +363,7 @@ test("constructor key", () => {
     person.parse({
       name: "bob dylan",
       constructor: 61,
-    })
+    }),
   ).toThrow();
 });
 
@@ -393,8 +415,14 @@ test("extend() should return schema with new key", () => {
   const actual = PersonWithNickname.parse(expected);
 
   expect(actual).toEqual(expected);
-  util.assertEqual<keyof PersonWithNickname, "firstName" | "lastName" | "nickName">(true);
-  util.assertEqual<PersonWithNickname, { firstName: string; lastName: string; nickName: string }>(true);
+  util.assertEqual<
+    keyof PersonWithNickname,
+    "firstName" | "lastName" | "nickName"
+  >(true);
+  util.assertEqual<
+    PersonWithNickname,
+    { firstName: string; lastName: string; nickName: string }
+  >(true);
 });
 
 test("extend() should have power to override existing key", () => {
@@ -407,7 +435,10 @@ test("extend() should have power to override existing key", () => {
   const actual = PersonWithNumberAsLastName.parse(expected);
 
   expect(actual).toEqual(expected);
-  util.assertEqual<PersonWithNumberAsLastName, { firstName: string; lastName: number }>(true);
+  util.assertEqual<
+    PersonWithNumberAsLastName,
+    { firstName: string; lastName: number }
+  >(true);
 });
 
 test("passthrough index signature", () => {
@@ -421,7 +452,11 @@ test("passthrough index signature", () => {
 
 test("xor", () => {
   type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
-  type XOR<T, U> = T extends object ? (U extends object ? (Without<T, U> & U) | (Without<U, T> & T) : U) : T;
+  type XOR<T, U> = T extends object
+    ? U extends object
+      ? (Without<T, U> & U) | (Without<U, T> & T)
+      : U
+    : T;
 
   type A = { name: string; a: number };
   type B = { name: string; b: number };
@@ -429,6 +464,9 @@ test("xor", () => {
   type Outer = { data: C };
 
   const _Outer: z.ZodType<Outer> = z.object({
-    data: z.union([z.object({ name: z.string(), a: z.number() }), z.object({ name: z.string(), b: z.number() })]),
+    data: z.union([
+      z.object({ name: z.string(), a: z.number() }),
+      z.object({ name: z.string(), b: z.number() }),
+    ]),
   });
 });

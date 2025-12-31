@@ -1,9 +1,9 @@
+import { join } from "path";
 import {
   loadTsconfig,
   tsConfigLoader,
   walkForTsConfig,
 } from "../tsconfig-loader";
-import { join } from "path";
 
 describe("tsconfig-loader", () => {
   it("should find tsconfig in cwd", () => {
@@ -107,7 +107,7 @@ describe("walkForTsConfig", () => {
     };
     const res = walkForTsConfig(
       join("/root", "dir1"),
-      (path) => mockFiles[path] || []
+      (path) => mockFiles[path] || [],
     );
     expect(res).toBe(pathToTsconfig);
   });
@@ -119,7 +119,7 @@ describe("walkForTsConfig", () => {
     };
     const res = walkForTsConfig(
       join("/root", "dir1"),
-      (path) => mockFiles[path] || []
+      (path) => mockFiles[path] || [],
     );
     expect(res).toBe(pathToJsconfig);
   });
@@ -132,7 +132,7 @@ describe("walkForTsConfig", () => {
     };
     const res = walkForTsConfig(
       join("/root", "dir1"),
-      (path) => mockFiles[path] || []
+      (path) => mockFiles[path] || [],
     );
     expect(res).toBe(pathToTsconfig);
   });
@@ -144,7 +144,7 @@ describe("walkForTsConfig", () => {
     };
     const res = walkForTsConfig(
       join("/root", "dir1"),
-      (path) => mockFiles[path] || []
+      (path) => mockFiles[path] || [],
     );
     expect(res).toBe(pathToTsconfig);
   });
@@ -156,7 +156,7 @@ describe("walkForTsConfig", () => {
     };
     const res = walkForTsConfig(
       join("/root", "dir1"),
-      (path) => mockFiles[path] || []
+      (path) => mockFiles[path] || [],
     );
     expect(res).toBe(pathToTsconfig);
   });
@@ -173,7 +173,7 @@ describe("loadConfig", () => {
     const res = loadTsconfig(
       "/root/dir1/tsconfig.json",
       (path) => path === "/root/dir1/tsconfig.json",
-      (_) => JSON.stringify(config)
+      (_) => JSON.stringify(config),
     );
     expect(res).toStrictEqual(config);
   });
@@ -188,7 +188,7 @@ describe("loadConfig", () => {
           "compilerOptions": { 
             "baseUrl": "hej"
           }
-        }`
+        }`,
     );
     expect(res).toStrictEqual(config);
   });
@@ -202,7 +202,7 @@ describe("loadConfig", () => {
           "compilerOptions": { 
             "baseUrl": "hej",
           },
-        }`
+        }`,
     );
     expect(res).toStrictEqual(config);
   });
@@ -214,10 +214,10 @@ describe("loadConfig", () => {
         (path) => path === "/root/dir1/tsconfig.json",
         (_) => `{
             "compilerOptions": {
-          }`
-      )
+          }`,
+      ),
     ).toThrowError(
-      "/root/dir1/tsconfig.json is malformed JSON5: invalid end of input at 3:12"
+      "/root/dir1/tsconfig.json is malformed JSON5: invalid end of input at 3:12",
     );
   });
 
@@ -246,7 +246,7 @@ describe("loadConfig", () => {
           return JSON.stringify(baseConfig);
         }
         return "";
-      }
+      },
     );
 
     expect(res).toEqual({
@@ -277,7 +277,7 @@ describe("loadConfig", () => {
       "dir1",
       "node_modules",
       "my-package",
-      "base-config.json"
+      "base-config.json",
     );
     const res = loadTsconfig(
       join("/root", "dir1", "tsconfig.json"),
@@ -290,7 +290,7 @@ describe("loadConfig", () => {
           return JSON.stringify(baseConfig);
         }
         return "";
-      }
+      },
     );
 
     expect(res).toEqual({
@@ -327,7 +327,7 @@ describe("loadConfig", () => {
           return JSON.stringify(thirdConfig);
         }
         return "";
-      }
+      },
     );
 
     expect(res).toEqual({
@@ -379,7 +379,7 @@ describe("loadConfig", () => {
           return JSON.stringify(actualConfig);
         }
         return "";
-      }
+      },
     );
 
     expect(res).toEqual({
@@ -414,7 +414,7 @@ describe("loadConfig", () => {
           return JSON.stringify(actualConfig);
         }
         return "";
-      }
+      },
     );
 
     expect(res).toEqual({

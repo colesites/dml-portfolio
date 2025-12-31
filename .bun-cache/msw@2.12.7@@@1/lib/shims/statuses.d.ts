@@ -1,4 +1,4 @@
-import * as _statuses from 'statuses';
+import * as _statuses from "statuses";
 
 declare const statuses: any;
 declare const message: typeof _statuses.message;

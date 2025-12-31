@@ -14,9 +14,17 @@
  */
 // prettier-ignore
 import {
-  abytes, aexists, aoutput,
-  clean, copyBytes, createView, Hash, type Input, toBytes, u32,
-} from './utils.ts';
+  abytes,
+  aexists,
+  aoutput,
+  clean,
+  copyBytes,
+  createView,
+  type Hash,
+  type Input,
+  toBytes,
+  u32,
+} from "./utils.ts";
 
 const BLOCK_SIZE = 16;
 // TODO: rewrite
@@ -94,12 +102,17 @@ class GHASH implements Hash<GHASH> {
     // generate table of doubled keys (half of montgomery ladder)
     const doubles: Value[] = [];
     for (let i = 0; i < 128; i++) {
-      doubles.push({ s0: swapLE(k0), s1: swapLE(k1), s2: swapLE(k2), s3: swapLE(k3) });
+      doubles.push({
+        s0: swapLE(k0),
+        s1: swapLE(k1),
+        s2: swapLE(k2),
+        s3: swapLE(k3),
+      });
       ({ s0: k0, s1: k1, s2: k2, s3: k3 } = mul2(k0, k1, k2, k3));
     }
     const W = estimateWindow(expectedLength || 1024);
     if (![1, 2, 4, 8].includes(W))
-      throw new Error('ghash: invalid window size, expected 2, 4 or 8');
+      throw new Error("ghash: invalid window size, expected 2, 4 or 8");
     this.W = W;
     const bits = 128; // always 128 bits;
     const windows = bits / W;
@@ -110,7 +123,10 @@ class GHASH implements Hash<GHASH> {
       // truth table: 00, 01, 10, 11
       for (let byte = 0; byte < windowSize; byte++) {
         // prettier-ignore
-        let s0 = 0, s1 = 0, s2 = 0, s3 = 0;
+        let s0 = 0,
+          s1 = 0,
+          s2 = 0,
+          s3 = 0;
         for (let j = 0; j < W; j++) {
           const bit = (byte >>> (W - j - 1)) & 1;
           if (!bit) continue;
@@ -126,7 +142,10 @@ class GHASH implements Hash<GHASH> {
     (s0 ^= this.s0), (s1 ^= this.s1), (s2 ^= this.s2), (s3 ^= this.s3);
     const { W, t, windowSize } = this;
     // prettier-ignore
-    let o0 = 0, o1 = 0, o2 = 0, o3 = 0;
+    let o0 = 0,
+      o1 = 0,
+      o2 = 0,
+      o3 = 0;
     const mask = (1 << W) - 1; // 2**W will kill performance.
     let w = 0;
     for (const num of [s0, s1, s2, s3]) {
@@ -153,7 +172,12 @@ class GHASH implements Hash<GHASH> {
     const blocks = Math.floor(data.length / BLOCK_SIZE);
     const left = data.length % BLOCK_SIZE;
     for (let i = 0; i < blocks; i++) {
-      this._updateBlock(b32[i * 4 + 0], b32[i * 4 + 1], b32[i * 4 + 2], b32[i * 4 + 3]);
+      this._updateBlock(
+        b32[i * 4 + 0],
+        b32[i * 4 + 1],
+        b32[i * 4 + 2],
+        b32[i * 4 + 3],
+      );
     }
     if (left) {
       ZEROS16.set(data.subarray(blocks * BLOCK_SIZE));
@@ -208,7 +232,7 @@ class Polyval extends GHASH {
         swapLE(b32[i * 4 + 3]),
         swapLE(b32[i * 4 + 2]),
         swapLE(b32[i * 4 + 1]),
-        swapLE(b32[i * 4 + 0])
+        swapLE(b32[i * 4 + 0]),
       );
     }
     if (left) {
@@ -217,7 +241,7 @@ class Polyval extends GHASH {
         swapLE(ZEROS32[3]),
         swapLE(ZEROS32[2]),
         swapLE(ZEROS32[1]),
-        swapLE(ZEROS32[0])
+        swapLE(ZEROS32[0]),
       );
       clean(ZEROS32);
     }
@@ -240,7 +264,7 @@ class Polyval extends GHASH {
 
 export type CHashPV = ReturnType<typeof wrapConstructorWithKey>;
 function wrapConstructorWithKey<H extends Hash<H>>(
-  hashCons: (key: Input, expectedLength?: number) => Hash<H>
+  hashCons: (key: Input, expectedLength?: number) => Hash<H>,
 ): {
   (msg: Input, key: Input): Uint8Array;
   outputLen: number;
@@ -252,16 +276,17 @@ function wrapConstructorWithKey<H extends Hash<H>>(
   const tmp = hashCons(new Uint8Array(16), 0);
   hashC.outputLen = tmp.outputLen;
   hashC.blockLen = tmp.blockLen;
-  hashC.create = (key: Input, expectedLength?: number) => hashCons(key, expectedLength);
+  hashC.create = (key: Input, expectedLength?: number) =>
+    hashCons(key, expectedLength);
   return hashC;
 }
 
 /** GHash MAC for AES-GCM. */
 export const ghash: CHashPV = wrapConstructorWithKey(
-  (key, expectedLength) => new GHASH(key, expectedLength)
+  (key, expectedLength) => new GHASH(key, expectedLength),
 );
 
 /** Polyval MAC for AES-SIV. */
 export const polyval: CHashPV = wrapConstructorWithKey(
-  (key, expectedLength) => new Polyval(key, expectedLength)
+  (key, expectedLength) => new Polyval(key, expectedLength),
 );

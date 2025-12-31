@@ -1,4 +1,4 @@
-import { join, dirname } from "path";
+import { dirname, join } from "path";
 import { removeExtension } from "../../filesystem";
 
 export interface OneTest {
@@ -48,8 +48,7 @@ export const tests: ReadonlyArray<OneTest> = [
     expectedPath: dirname(join("/root", "location", "mylib", "index.ts")),
   },
   {
-    name:
-      "should locate path that matches with star and prioritize pattern with longest prefix",
+    name: "should locate path that matches with star and prioritize pattern with longest prefix",
     absoluteBaseUrl: "/root/",
     paths: {
       "*": ["location/*"],

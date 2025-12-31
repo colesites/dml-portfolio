@@ -1,9 +1,18 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
-exports.allExpandedTypes = exports.VISITOR_KEYS = exports.NODE_UNION_SHAPES__PRIVATE = exports.NODE_PARENT_VALIDATIONS = exports.NODE_FIELDS = exports.FLIPPED_ALIAS_KEYS = exports.DEPRECATED_KEYS = exports.BUILDER_KEYS = exports.ALIAS_KEYS = void 0;
+exports.allExpandedTypes =
+  exports.VISITOR_KEYS =
+  exports.NODE_UNION_SHAPES__PRIVATE =
+  exports.NODE_PARENT_VALIDATIONS =
+  exports.NODE_FIELDS =
+  exports.FLIPPED_ALIAS_KEYS =
+  exports.DEPRECATED_KEYS =
+  exports.BUILDER_KEYS =
+  exports.ALIAS_KEYS =
+    void 0;
 exports.arrayOf = arrayOf;
 exports.arrayOfType = arrayOfType;
 exports.assertEach = assertEach;
@@ -23,14 +32,14 @@ exports.validateOptionalType = validateOptionalType;
 exports.validateType = validateType;
 var _is = require("../validators/is.js");
 var _validate = require("../validators/validate.js");
-const VISITOR_KEYS = exports.VISITOR_KEYS = {};
-const ALIAS_KEYS = exports.ALIAS_KEYS = {};
-const FLIPPED_ALIAS_KEYS = exports.FLIPPED_ALIAS_KEYS = {};
-const NODE_FIELDS = exports.NODE_FIELDS = {};
-const BUILDER_KEYS = exports.BUILDER_KEYS = {};
-const DEPRECATED_KEYS = exports.DEPRECATED_KEYS = {};
-const NODE_PARENT_VALIDATIONS = exports.NODE_PARENT_VALIDATIONS = {};
-const NODE_UNION_SHAPES__PRIVATE = exports.NODE_UNION_SHAPES__PRIVATE = {};
+const VISITOR_KEYS = (exports.VISITOR_KEYS = {});
+const ALIAS_KEYS = (exports.ALIAS_KEYS = {});
+const FLIPPED_ALIAS_KEYS = (exports.FLIPPED_ALIAS_KEYS = {});
+const NODE_FIELDS = (exports.NODE_FIELDS = {});
+const BUILDER_KEYS = (exports.BUILDER_KEYS = {});
+const DEPRECATED_KEYS = (exports.DEPRECATED_KEYS = {});
+const NODE_PARENT_VALIDATIONS = (exports.NODE_PARENT_VALIDATIONS = {});
+const NODE_UNION_SHAPES__PRIVATE = (exports.NODE_UNION_SHAPES__PRIVATE = {});
 function getType(val) {
   if (Array.isArray(val)) {
     return "array";
@@ -42,7 +51,7 @@ function getType(val) {
 }
 function validate(validate) {
   return {
-    validate
+    validate,
   };
 }
 function validateType(...typeNames) {
@@ -51,13 +60,13 @@ function validateType(...typeNames) {
 function validateOptional(validate) {
   return {
     validate,
-    optional: true
+    optional: true,
   };
 }
 function validateOptionalType(...typeNames) {
   return {
     validate: assertNodeType(...typeNames),
-    optional: true
+    optional: true,
   };
 }
 function arrayOf(elementType) {
@@ -70,14 +79,16 @@ function validateArrayOfType(...typeNames) {
   return validate(arrayOfType(...typeNames));
 }
 function assertEach(callback) {
-  const childValidator = process.env.BABEL_TYPES_8_BREAKING ? _validate.validateChild : () => {};
+  const childValidator = process.env.BABEL_TYPES_8_BREAKING
+    ? _validate.validateChild
+    : () => {};
   function validator(node, key, val) {
     if (!Array.isArray(val)) return;
     let i = 0;
     const subKey = {
       toString() {
         return `${key}[${i}]`;
-      }
+      },
     };
     for (; i < val.length; i++) {
       const v = val[i];
@@ -91,18 +102,20 @@ function assertEach(callback) {
 function assertOneOf(...values) {
   function validate(node, key, val) {
     if (!values.includes(val)) {
-      throw new TypeError(`Property ${key} expected value to be one of ${JSON.stringify(values)} but got ${JSON.stringify(val)}`);
+      throw new TypeError(
+        `Property ${key} expected value to be one of ${JSON.stringify(values)} but got ${JSON.stringify(val)}`,
+      );
     }
   }
   validate.oneOf = values;
   return validate;
 }
-const allExpandedTypes = exports.allExpandedTypes = [];
+const allExpandedTypes = (exports.allExpandedTypes = []);
 function assertNodeType(...types) {
   const expandedTypes = new Set();
   allExpandedTypes.push({
     types,
-    set: expandedTypes
+    set: expandedTypes,
   });
   function validate(node, key, val) {
     const valType = val == null ? void 0 : val.type;
@@ -120,7 +133,9 @@ function assertNodeType(...types) {
         }
       }
     }
-    throw new TypeError(`Property ${key} of ${node.type} expected node to be of a type ${JSON.stringify(types)} but instead got ${JSON.stringify(valType)}`);
+    throw new TypeError(
+      `Property ${key} of ${node.type} expected node to be of a type ${JSON.stringify(types)} but instead got ${JSON.stringify(valType)}`,
+    );
   }
   validate.oneOfNodeTypes = types;
   return validate;
@@ -134,7 +149,9 @@ function assertNodeOrValueType(...types) {
         return;
       }
     }
-    throw new TypeError(`Property ${key} of ${node.type} expected node to be of a type ${JSON.stringify(types)} but instead got ${JSON.stringify(val == null ? void 0 : val.type)}`);
+    throw new TypeError(
+      `Property ${key} of ${node.type} expected node to be of a type ${JSON.stringify(types)} but instead got ${JSON.stringify(val == null ? void 0 : val.type)}`,
+    );
   }
   validate.oneOfNodeOrValueTypes = types;
   return validate;
@@ -144,7 +161,9 @@ function assertValueType(type) {
     if (getType(val) === type) {
       return;
     }
-    throw new TypeError(`Property ${key} expected type of ${type} but got ${getType(val)}`);
+    throw new TypeError(
+      `Property ${key} expected type of ${type} but got ${getType(val)}`,
+    );
   }
   validate.type = type;
   return validate;
@@ -155,7 +174,12 @@ function assertShape(shape) {
     const errors = [];
     for (const property of keys) {
       try {
-        (0, _validate.validateField)(node, property, val[property], shape[property]);
+        (0, _validate.validateField)(
+          node,
+          property,
+          val[property],
+          shape[property],
+        );
       } catch (error) {
         if (error instanceof TypeError) {
           errors.push(error.message);
@@ -165,7 +189,9 @@ function assertShape(shape) {
       }
     }
     if (errors.length) {
-      throw new TypeError(`Property ${key} of ${node.type} expected to have the following:\n${errors.join("\n")}`);
+      throw new TypeError(
+        `Property ${key} of ${node.type} expected to have the following:\n${errors.join("\n")}`,
+      );
     }
   }
   validate.shapeOf = shape;
@@ -176,9 +202,7 @@ function assertOptionalChainStart() {
     var _current;
     let current = node;
     while (node) {
-      const {
-        type
-      } = current;
+      const { type } = current;
       if (type === "OptionalCallExpression") {
         if (current.optional) return;
         current = current.callee;
@@ -191,7 +215,9 @@ function assertOptionalChainStart() {
       }
       break;
     }
-    throw new TypeError(`Non-optional ${node.type} must chain from an optional OptionalMemberExpression or OptionalCallExpression. Found chain from ${(_current = current) == null ? void 0 : _current.type}`);
+    throw new TypeError(
+      `Non-optional ${node.type} must chain from an optional OptionalMemberExpression or OptionalCallExpression. Found chain from ${((_current = current)) == null ? void 0 : _current.type}`,
+    );
   }
   return validate;
 }
@@ -202,30 +228,55 @@ function chain(...fns) {
     }
   }
   validate.chainOf = fns;
-  if (fns.length >= 2 && "type" in fns[0] && fns[0].type === "array" && !("each" in fns[1])) {
-    throw new Error(`An assertValueType("array") validator can only be followed by an assertEach(...) validator.`);
+  if (
+    fns.length >= 2 &&
+    "type" in fns[0] &&
+    fns[0].type === "array" &&
+    !("each" in fns[1])
+  ) {
+    throw new Error(
+      `An assertValueType("array") validator can only be followed by an assertEach(...) validator.`,
+    );
   }
   return validate;
 }
-const validTypeOpts = new Set(["aliases", "builder", "deprecatedAlias", "fields", "inherits", "visitor", "validate", "unionShape"]);
-const validFieldKeys = new Set(["default", "optional", "deprecated", "validate"]);
+const validTypeOpts = new Set([
+  "aliases",
+  "builder",
+  "deprecatedAlias",
+  "fields",
+  "inherits",
+  "visitor",
+  "validate",
+  "unionShape",
+]);
+const validFieldKeys = new Set([
+  "default",
+  "optional",
+  "deprecated",
+  "validate",
+]);
 const store = {};
 function defineAliasedType(...aliases) {
   return (type, opts = {}) => {
     let defined = opts.aliases;
     if (!defined) {
       var _store$opts$inherits$;
-      if (opts.inherits) defined = (_store$opts$inherits$ = store[opts.inherits].aliases) == null ? void 0 : _store$opts$inherits$.slice();
-      defined != null ? defined : defined = [];
+      if (opts.inherits)
+        defined =
+          (_store$opts$inherits$ = store[opts.inherits].aliases) == null
+            ? void 0
+            : _store$opts$inherits$.slice();
+      defined != null ? defined : (defined = []);
       opts.aliases = defined;
     }
-    const additional = aliases.filter(a => !defined.includes(a));
+    const additional = aliases.filter((a) => !defined.includes(a));
     defined.unshift(...additional);
     defineType(type, opts);
   };
 }
 function defineType(type, opts = {}) {
-  const inherits = opts.inherits && store[opts.inherits] || {};
+  const inherits = (opts.inherits && store[opts.inherits]) || {};
   let fields = opts.fields;
   if (!fields) {
     fields = {};
@@ -234,14 +285,18 @@ function defineType(type, opts = {}) {
       for (const key of keys) {
         const field = inherits.fields[key];
         const def = field.default;
-        if (Array.isArray(def) ? def.length > 0 : def && typeof def === "object") {
-          throw new Error("field defaults can only be primitives or empty arrays currently");
+        if (
+          Array.isArray(def) ? def.length > 0 : def && typeof def === "object"
+        ) {
+          throw new Error(
+            "field defaults can only be primitives or empty arrays currently",
+          );
         }
         fields[key] = {
           default: Array.isArray(def) ? [] : def,
           optional: field.optional,
           deprecated: field.deprecated,
-          validate: field.validate
+          validate: field.validate,
         };
       }
     }
@@ -280,7 +335,7 @@ function defineType(type, opts = {}) {
   BUILDER_KEYS[type] = opts.builder = builder;
   NODE_FIELDS[type] = opts.fields = fields;
   ALIAS_KEYS[type] = opts.aliases = aliases;
-  aliases.forEach(alias => {
+  aliases.forEach((alias) => {
     FLIPPED_ALIAS_KEYS[alias] = FLIPPED_ALIAS_KEYS[alias] || [];
     FLIPPED_ALIAS_KEYS[alias].push(type);
   });

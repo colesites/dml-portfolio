@@ -1,8 +1,8 @@
 import {
-	type ExecFileOptionsWithStringEncoding,
-	type ExecFileSyncOptionsWithStringEncoding,
-	type PromiseWithChild,
-} from 'node:child_process';
+  type ExecFileOptionsWithStringEncoding,
+  type ExecFileSyncOptionsWithStringEncoding,
+  type PromiseWithChild,
+} from "node:child_process";
 
 /**
 Converts a `URL` or path to a path.
@@ -91,12 +91,12 @@ console.log(await execFile('ls', ['-l']));
 __Not available in browsers.__
 */
 export function execFile(
-	file: string,
-	arguments_: readonly string[],
-	options?: ExecFileOptionsWithStringEncoding
+  file: string,
+  arguments_: readonly string[],
+  options?: ExecFileOptionsWithStringEncoding,
 ): PromiseWithChild<{
-	stdout: string;
-	stderr: string;
+  stdout: string;
+  stderr: string;
 }>;
 
 /**
@@ -117,9 +117,9 @@ console.log(execFileSync('ls', ['-l']));
 __Not available in browsers.__
 */
 export function execFileSync(
-	file: string,
-	arguments_?: readonly string[],
-	options?: ExecFileSyncOptionsWithStringEncoding
+  file: string,
+  arguments_?: readonly string[],
+  options?: ExecFileSyncOptionsWithStringEncoding,
 ): string;
 
-export * from './default.js';
+export * from "./default.js";

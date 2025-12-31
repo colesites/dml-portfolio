@@ -1,6 +1,4 @@
-'use strict';
-
-const stringify = require('./stringify');
+const stringify = require("./stringify");
 
 /**
  * Constants
@@ -8,38 +6,43 @@ const stringify = require('./stringify');
 
 const {
   MAX_LENGTH,
-  CHAR_BACKSLASH, /* \ */
-  CHAR_BACKTICK, /* ` */
-  CHAR_COMMA, /* , */
-  CHAR_DOT, /* . */
-  CHAR_LEFT_PARENTHESES, /* ( */
-  CHAR_RIGHT_PARENTHESES, /* ) */
-  CHAR_LEFT_CURLY_BRACE, /* { */
-  CHAR_RIGHT_CURLY_BRACE, /* } */
-  CHAR_LEFT_SQUARE_BRACKET, /* [ */
-  CHAR_RIGHT_SQUARE_BRACKET, /* ] */
-  CHAR_DOUBLE_QUOTE, /* " */
-  CHAR_SINGLE_QUOTE, /* ' */
+  CHAR_BACKSLASH /* \ */,
+  CHAR_BACKTICK /* ` */,
+  CHAR_COMMA /* , */,
+  CHAR_DOT /* . */,
+  CHAR_LEFT_PARENTHESES /* ( */,
+  CHAR_RIGHT_PARENTHESES /* ) */,
+  CHAR_LEFT_CURLY_BRACE /* { */,
+  CHAR_RIGHT_CURLY_BRACE /* } */,
+  CHAR_LEFT_SQUARE_BRACKET /* [ */,
+  CHAR_RIGHT_SQUARE_BRACKET /* ] */,
+  CHAR_DOUBLE_QUOTE /* " */,
+  CHAR_SINGLE_QUOTE /* ' */,
   CHAR_NO_BREAK_SPACE,
-  CHAR_ZERO_WIDTH_NOBREAK_SPACE
-} = require('./constants');
+  CHAR_ZERO_WIDTH_NOBREAK_SPACE,
+} = require("./constants");
 
 /**
  * parse
  */
 
 const parse = (input, options = {}) => {
-  if (typeof input !== 'string') {
-    throw new TypeError('Expected a string');
+  if (typeof input !== "string") {
+    throw new TypeError("Expected a string");
   }
 
   const opts = options || {};
-  const max = typeof opts.maxLength === 'number' ? Math.min(MAX_LENGTH, opts.maxLength) : MAX_LENGTH;
+  const max =
+    typeof opts.maxLength === "number"
+      ? Math.min(MAX_LENGTH, opts.maxLength)
+      : MAX_LENGTH;
   if (input.length > max) {
-    throw new SyntaxError(`Input length (${input.length}), exceeds max characters (${max})`);
+    throw new SyntaxError(
+      `Input length (${input.length}), exceeds max characters (${max})`,
+    );
   }
 
-  const ast = { type: 'root', input, nodes: [] };
+  const ast = { type: "root", input, nodes: [] };
   const stack = [ast];
   let block = ast;
   let prev = ast;
@@ -54,12 +57,12 @@ const parse = (input, options = {}) => {
    */
 
   const advance = () => input[index++];
-  const push = node => {
-    if (node.type === 'text' && prev.type === 'dot') {
-      prev.type = 'text';
+  const push = (node) => {
+    if (node.type === "text" && prev.type === "dot") {
+      prev.type = "text";
     }
 
-    if (prev && prev.type === 'text' && node.type === 'text') {
+    if (prev && prev.type === "text" && node.type === "text") {
       prev.value += node.value;
       return;
     }
@@ -71,7 +74,7 @@ const parse = (input, options = {}) => {
     return node;
   };
 
-  push({ type: 'bos' });
+  push({ type: "bos" });
 
   while (index < length) {
     block = stack[stack.length - 1];
@@ -81,7 +84,10 @@ const parse = (input, options = {}) => {
      * Invalid chars
      */
 
-    if (value === CHAR_ZERO_WIDTH_NOBREAK_SPACE || value === CHAR_NO_BREAK_SPACE) {
+    if (
+      value === CHAR_ZERO_WIDTH_NOBREAK_SPACE ||
+      value === CHAR_NO_BREAK_SPACE
+    ) {
       continue;
     }
 
@@ -90,7 +96,10 @@ const parse = (input, options = {}) => {
      */
 
     if (value === CHAR_BACKSLASH) {
-      push({ type: 'text', value: (options.keepEscaping ? value : '') + advance() });
+      push({
+        type: "text",
+        value: (options.keepEscaping ? value : "") + advance(),
+      });
       continue;
     }
 
@@ -99,7 +108,7 @@ const parse = (input, options = {}) => {
      */
 
     if (value === CHAR_RIGHT_SQUARE_BRACKET) {
-      push({ type: 'text', value: '\\' + value });
+      push({ type: "text", value: "\\" + value });
       continue;
     }
 
@@ -134,7 +143,7 @@ const parse = (input, options = {}) => {
         }
       }
 
-      push({ type: 'text', value });
+      push({ type: "text", value });
       continue;
     }
 
@@ -143,19 +152,19 @@ const parse = (input, options = {}) => {
      */
 
     if (value === CHAR_LEFT_PARENTHESES) {
-      block = push({ type: 'paren', nodes: [] });
+      block = push({ type: "paren", nodes: [] });
       stack.push(block);
-      push({ type: 'text', value });
+      push({ type: "text", value });
       continue;
     }
 
     if (value === CHAR_RIGHT_PARENTHESES) {
-      if (block.type !== 'paren') {
-        push({ type: 'text', value });
+      if (block.type !== "paren") {
+        push({ type: "text", value });
         continue;
       }
       block = stack.pop();
-      push({ type: 'text', value });
+      push({ type: "text", value });
       block = stack[stack.length - 1];
       continue;
     }
@@ -164,12 +173,16 @@ const parse = (input, options = {}) => {
      * Quotes: '|"|`
      */
 
-    if (value === CHAR_DOUBLE_QUOTE || value === CHAR_SINGLE_QUOTE || value === CHAR_BACKTICK) {
+    if (
+      value === CHAR_DOUBLE_QUOTE ||
+      value === CHAR_SINGLE_QUOTE ||
+      value === CHAR_BACKTICK
+    ) {
       const open = value;
       let next;
 
       if (options.keepQuotes !== true) {
-        value = '';
+        value = "";
       }
 
       while (index < length && (next = advance())) {
@@ -186,7 +199,7 @@ const parse = (input, options = {}) => {
         value += next;
       }
 
-      push({ type: 'text', value });
+      push({ type: "text", value });
       continue;
     }
 
@@ -197,21 +210,22 @@ const parse = (input, options = {}) => {
     if (value === CHAR_LEFT_CURLY_BRACE) {
       depth++;
 
-      const dollar = prev.value && prev.value.slice(-1) === '$' || block.dollar === true;
+      const dollar =
+        (prev.value && prev.value.slice(-1) === "$") || block.dollar === true;
       const brace = {
-        type: 'brace',
+        type: "brace",
         open: true,
         close: false,
         dollar,
         depth,
         commas: 0,
         ranges: 0,
-        nodes: []
+        nodes: [],
       };
 
       block = push(brace);
       stack.push(block);
-      push({ type: 'open', value });
+      push({ type: "open", value });
       continue;
     }
 
@@ -220,12 +234,12 @@ const parse = (input, options = {}) => {
      */
 
     if (value === CHAR_RIGHT_CURLY_BRACE) {
-      if (block.type !== 'brace') {
-        push({ type: 'text', value });
+      if (block.type !== "brace") {
+        push({ type: "text", value });
         continue;
       }
 
-      const type = 'close';
+      const type = "close";
       block = stack.pop();
       block.close = true;
 
@@ -244,10 +258,10 @@ const parse = (input, options = {}) => {
       if (block.ranges > 0) {
         block.ranges = 0;
         const open = block.nodes.shift();
-        block.nodes = [open, { type: 'text', value: stringify(block) }];
+        block.nodes = [open, { type: "text", value: stringify(block) }];
       }
 
-      push({ type: 'comma', value });
+      push({ type: "comma", value });
       block.commas++;
       continue;
     }
@@ -260,19 +274,19 @@ const parse = (input, options = {}) => {
       const siblings = block.nodes;
 
       if (depth === 0 || siblings.length === 0) {
-        push({ type: 'text', value });
+        push({ type: "text", value });
         continue;
       }
 
-      if (prev.type === 'dot') {
+      if (prev.type === "dot") {
         block.range = [];
         prev.value += value;
-        prev.type = 'range';
+        prev.type = "range";
 
         if (block.nodes.length !== 3 && block.nodes.length !== 5) {
           block.invalid = true;
           block.ranges = 0;
-          prev.type = 'text';
+          prev.type = "text";
           continue;
         }
 
@@ -281,7 +295,7 @@ const parse = (input, options = {}) => {
         continue;
       }
 
-      if (prev.type === 'range') {
+      if (prev.type === "range") {
         siblings.pop();
 
         const before = siblings[siblings.length - 1];
@@ -291,7 +305,7 @@ const parse = (input, options = {}) => {
         continue;
       }
 
-      push({ type: 'dot', value });
+      push({ type: "dot", value });
       continue;
     }
 
@@ -299,19 +313,19 @@ const parse = (input, options = {}) => {
      * Text
      */
 
-    push({ type: 'text', value });
+    push({ type: "text", value });
   }
 
   // Mark imbalanced braces and brackets as invalid
   do {
     block = stack.pop();
 
-    if (block.type !== 'root') {
-      block.nodes.forEach(node => {
+    if (block.type !== "root") {
+      block.nodes.forEach((node) => {
         if (!node.nodes) {
-          if (node.type === 'open') node.isOpen = true;
-          if (node.type === 'close') node.isClose = true;
-          if (!node.nodes) node.type = 'text';
+          if (node.type === "open") node.isOpen = true;
+          if (node.type === "close") node.isClose = true;
+          if (!node.nodes) node.type = "text";
           node.invalid = true;
         }
       });
@@ -324,7 +338,7 @@ const parse = (input, options = {}) => {
     }
   } while (stack.length > 0);
 
-  push({ type: 'eos' });
+  push({ type: "eos" });
   return ast;
 };
 

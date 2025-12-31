@@ -1,5 +1,5 @@
-import { keyValMap } from '../jsutils/keyValMap.mjs';
-import { Kind } from '../language/kinds.mjs';
+import { keyValMap } from "../jsutils/keyValMap.mjs";
+import { Kind } from "../language/kinds.mjs";
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
  *

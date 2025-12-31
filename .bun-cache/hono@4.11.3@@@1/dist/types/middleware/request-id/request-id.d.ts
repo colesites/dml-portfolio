@@ -2,15 +2,15 @@
  * @module
  * Request ID Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
 export type RequestIdVariables = {
-    requestId: string;
+  requestId: string;
 };
 export type RequestIdOptions = {
-    limitLength?: number;
-    headerName?: string;
-    generator?: (c: Context) => string;
+  limitLength?: number;
+  headerName?: string;
+  generator?: (c: Context) => string;
 };
 /**
  * Request ID Middleware for Hono.
@@ -34,4 +34,8 @@ export type RequestIdOptions = {
  * })
  * ```
  */
-export declare const requestId: ({ limitLength, headerName, generator, }?: RequestIdOptions) => MiddlewareHandler;
+export declare const requestId: ({
+  limitLength,
+  headerName,
+  generator,
+}?: RequestIdOptions) => MiddlewareHandler;

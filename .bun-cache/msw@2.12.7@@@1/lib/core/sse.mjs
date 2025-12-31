@@ -1,13 +1,12 @@
 import { invariant } from "outvariant";
 import { Emitter } from "strict-event-emitter";
-import {
-  HttpHandler
-} from './handlers/HttpHandler.mjs';
-import { delay } from './delay.mjs';
-import { getTimestamp } from './utils/logging/getTimestamp.mjs';
-import { devUtils } from './utils/internal/devUtils.mjs';
-import { colors } from './ws/utils/attachWebSocketLogger.mjs';
-import { toPublicUrl } from './utils/request/toPublicUrl.mjs';
+import { delay } from "./delay.mjs";
+import { HttpHandler } from "./handlers/HttpHandler.mjs";
+import { devUtils } from "./utils/internal/devUtils.mjs";
+import { getTimestamp } from "./utils/logging/getTimestamp.mjs";
+import { toPublicUrl } from "./utils/request/toPublicUrl.mjs";
+import { colors } from "./ws/utils/attachWebSocketLogger.mjs";
+
 const sse = (path, resolver) => {
   return new ServerSentEventHandler(path, resolver);
 };
@@ -15,8 +14,8 @@ const SSE_RESPONSE_INIT = {
   headers: {
     "content-type": "text/event-stream",
     "cache-control": "no-cache",
-    connection: "keep-alive"
-  }
+    connection: "keep-alive",
+  },
 };
 class ServerSentEventHandler extends HttpHandler {
   #emitter;
@@ -24,25 +23,25 @@ class ServerSentEventHandler extends HttpHandler {
     invariant(
       typeof EventSource !== "undefined",
       'Failed to construct a Server-Sent Event handler for path "%s": the EventSource API is not supported in this environment',
-      path
+      path,
     );
     super("GET", path, async (info) => {
       const stream = new ReadableStream({
         start: async (controller) => {
           const client = new ServerSentEventClient({
             controller,
-            emitter: this.#emitter
+            emitter: this.#emitter,
           });
           const server = new ServerSentEventServer({
             request: info.request,
-            client
+            client,
           });
           await resolver({
             ...info,
             client,
-            server
+            server,
           });
-        }
+        },
       });
       return new Response(stream, SSE_RESPONSE_INIT);
     });
@@ -60,7 +59,7 @@ class ServerSentEventHandler extends HttpHandler {
          * @note Construct a placeholder response since SSE response
          * is being streamed and cannot be cloned/consumed for logging.
          */
-        response: new Response("[streaming]", SSE_RESPONSE_INIT)
+        response: new Response("[streaming]", SSE_RESPONSE_INIT),
       });
       this.#attachClientLogger(args.request, this.#emitter);
     }
@@ -74,11 +73,11 @@ class ServerSentEventHandler extends HttpHandler {
     emitter.on("message", (payload) => {
       console.groupCollapsed(
         devUtils.formatMessage(
-          `${getTimestamp()} SSE %s %c\u21E3%c ${payload.event}`
+          `${getTimestamp()} SSE %s %c\u21E3%c ${payload.event}`,
         ),
         publicUrl,
         `color:${colors.mocked}`,
-        "color:inherit"
+        "color:inherit",
       );
       console.log(payload.frames);
       console.groupEnd();
@@ -88,7 +87,7 @@ class ServerSentEventHandler extends HttpHandler {
         devUtils.formatMessage(`${getTimestamp()} SSE %s %c\xD7%c error`),
         publicUrl,
         `color: ${colors.system}`,
-        "color:inherit"
+        "color:inherit",
       );
       console.log("Handler:", this);
       console.groupEnd();
@@ -98,7 +97,7 @@ class ServerSentEventHandler extends HttpHandler {
         devUtils.formatMessage(`${getTimestamp()} SSE %s %c\u25A0%c close`),
         publicUrl,
         `colors:${colors.system}`,
-        "color:inherit"
+        "color:inherit",
       );
       console.log("Handler:", this);
       console.groupEnd();
@@ -125,7 +124,10 @@ class ServerSentEventClient {
     this.#sendMessage({
       id: payload.id,
       event: payload.event,
-      data: typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data
+      data:
+        typeof payload.data === "object"
+          ? JSON.stringify(payload.data)
+          : payload.data,
     });
   }
   /**
@@ -136,7 +138,7 @@ class ServerSentEventClient {
       this.#sendMessage({
         id: event.lastEventId || void 0,
         event: event.type === "message" ? void 0 : event.type,
-        data: event.data
+        data: event.data,
       });
       return;
     }
@@ -167,9 +169,11 @@ class ServerSentEventClient {
   }
   #sendRetry(retry) {
     if (typeof retry === "number") {
-      this.#controller.enqueue(this.#encoder.encode(`retry:${retry}
+      this.#controller.enqueue(
+        this.#encoder.encode(`retry:${retry}
 
-`));
+`),
+      );
     }
   }
   #sendMessage(message) {
@@ -191,7 +195,7 @@ class ServerSentEventClient {
       id: message.id,
       event: message.event?.toString() || "message",
       data: message.data,
-      frames
+      frames,
     });
   }
 }
@@ -214,8 +218,8 @@ class ServerSentEventServer {
          * @note Mark this request as passthrough so it doesn't trigger
          * an infinite loop matching against the existing request handler.
          */
-        accept: "msw/passthrough"
-      }
+        accept: "msw/passthrough",
+      },
     });
     source[kOnAnyMessage] = (event) => {
       Object.defineProperties(event, {
@@ -223,8 +227,8 @@ class ServerSentEventServer {
           value: this,
           enumerable: true,
           writable: true,
-          configurable: true
-        }
+          configurable: true,
+        },
       });
       queueMicrotask(() => {
         if (!event.defaultPrevented) {
@@ -238,8 +242,8 @@ class ServerSentEventServer {
           value: this,
           enumerable: true,
           writable: true,
-          configurable: true
-        }
+          configurable: true,
+        },
       });
       queueMicrotask(() => {
         if (!event.defaultPrevented) {
@@ -290,7 +294,7 @@ class ObservableEventSource extends EventTarget {
       method: "GET",
       headers,
       credentials: this.withCredentials ? "include" : "omit",
-      signal: this[kAbortController].signal
+      signal: this[kAbortController].signal,
     });
     this.connect();
   }
@@ -325,18 +329,10 @@ class ObservableEventSource extends EventTarget {
     this.addEventListener("error", { handleEvent: this[kOnError] });
   }
   addEventListener(type, listener, options) {
-    super.addEventListener(
-      type,
-      listener,
-      options
-    );
+    super.addEventListener(type, listener, options);
   }
   removeEventListener(type, listener, options) {
-    super.removeEventListener(
-      type,
-      listener,
-      options
-    );
+    super.removeEventListener(type, listener, options);
   }
   dispatchEvent(event) {
     return super.dispatchEvent(event);
@@ -346,11 +342,13 @@ class ObservableEventSource extends EventTarget {
     this.readyState = this.CLOSED;
   }
   async connect() {
-    await fetch(this[kRequest]).then((response) => {
-      this.processResponse(response);
-    }).catch(() => {
-      this.failConnection();
-    });
+    await fetch(this[kRequest])
+      .then((response) => {
+        this.processResponse(response);
+      })
+      .catch(() => {
+        this.failConnection();
+      });
   }
   processResponse(response) {
     if (!response.body) {
@@ -361,7 +359,10 @@ class ObservableEventSource extends EventTarget {
       this.reestablishConnection();
       return;
     }
-    if (response.status !== 200 || response.headers.get("content-type") !== "text/event-stream") {
+    if (
+      response.status !== 200 ||
+      response.headers.get("content-type") !== "text/event-stream"
+    ) {
       this.failConnection();
       return;
     }
@@ -391,8 +392,8 @@ class ObservableEventSource extends EventTarget {
             data: message.data,
             origin: this[kRequest].url,
             lastEventId: this[kLastEventId],
-            cancelable: true
-          }
+            cancelable: true,
+          },
         );
         this[kOnAnyMessage]?.(messageEvent);
         this.dispatchEvent(messageEvent);
@@ -402,13 +403,16 @@ class ObservableEventSource extends EventTarget {
       },
       close: () => {
         this.failConnection();
-      }
+      },
     });
-    response.body.pipeTo(parsingStream).then(() => {
-      this.processResponseEndOfBody(response);
-    }).catch(() => {
-      this.failConnection();
-    });
+    response.body
+      .pipeTo(parsingStream)
+      .then(() => {
+        this.processResponseEndOfBody(response);
+      })
+      .catch(() => {
+        this.failConnection();
+      });
   }
   processResponseEndOfBody(response) {
     if (!isNetworkError(response)) {
@@ -444,13 +448,20 @@ class ObservableEventSource extends EventTarget {
   }
 }
 function isNetworkError(response) {
-  return response.type === "error" && response.status === 0 && response.statusText === "" && Array.from(response.headers.entries()).length === 0 && response.body === null;
+  return (
+    response.type === "error" &&
+    response.status === 0 &&
+    response.statusText === "" &&
+    Array.from(response.headers.entries()).length === 0 &&
+    response.body === null
+  );
 }
 var ControlCharacters = /* @__PURE__ */ ((ControlCharacters2) => {
-  ControlCharacters2[ControlCharacters2["NewLine"] = 10] = "NewLine";
-  ControlCharacters2[ControlCharacters2["CarriageReturn"] = 13] = "CarriageReturn";
-  ControlCharacters2[ControlCharacters2["Space"] = 32] = "Space";
-  ControlCharacters2[ControlCharacters2["Colon"] = 58] = "Colon";
+  ControlCharacters2[(ControlCharacters2["NewLine"] = 10)] = "NewLine";
+  ControlCharacters2[(ControlCharacters2["CarriageReturn"] = 13)] =
+    "CarriageReturn";
+  ControlCharacters2[(ControlCharacters2["Space"] = 32)] = "Space";
+  ControlCharacters2[(ControlCharacters2["Colon"] = 58)] = "Colon";
   return ControlCharacters2;
 })(ControlCharacters || {});
 class EventSourceParsingStream extends WritableStream {
@@ -464,7 +475,7 @@ class EventSourceParsingStream extends WritableStream {
       },
       close: () => {
         this.underlyingSink.close?.();
-      }
+      },
     });
     this.underlyingSink = underlyingSink;
     this.decoder = new TextDecoder();
@@ -479,14 +490,14 @@ class EventSourceParsingStream extends WritableStream {
     id: void 0,
     event: void 0,
     data: void 0,
-    retry: void 0
+    retry: void 0,
   };
   resetMessage() {
     this.message = {
       id: void 0,
       event: void 0,
       data: void 0,
-      retry: void 0
+      retry: void 0,
     };
   }
   processResponseBodyChunk(chunk) {
@@ -533,7 +544,7 @@ class EventSourceParsingStream extends WritableStream {
       }
       this.processLine(
         this.buffer.subarray(lineStart, lineEnd),
-        this.fieldLength
+        this.fieldLength,
       );
       lineStart = this.position;
       this.fieldLength = -1;
@@ -557,11 +568,14 @@ class EventSourceParsingStream extends WritableStream {
     }
     if (fieldLength > 0) {
       const field = this.decoder.decode(line.subarray(0, fieldLength));
-      const valueOffset = fieldLength + (line[fieldLength + 1] === 32 /* Space */ ? 2 : 1);
+      const valueOffset =
+        fieldLength + (line[fieldLength + 1] === 32 /* Space */ ? 2 : 1);
       const value = this.decoder.decode(line.subarray(valueOffset));
       switch (field) {
         case "data": {
-          this.message.data = this.message.data ? this.message.data + "\n" + value : value;
+          this.message.data = this.message.data
+            ? this.message.data + "\n" + value
+            : value;
           break;
         }
         case "event": {
@@ -583,7 +597,5 @@ class EventSourceParsingStream extends WritableStream {
     }
   }
 }
-export {
-  sse
-};
+export { sse };
 //# sourceMappingURL=sse.mjs.map

@@ -1,29 +1,21 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 
-var _chunkJ5MULIHTjs = require('./chunk-J5MULIHT.js');
+var _chunkJ5MULIHTjs = require("./chunk-J5MULIHT.js");
 
+var _chunkVYO5XDY2js = require("./chunk-VYO5XDY2.js");
+require("./chunk-T3TW4P64.js");
 
-var _chunkVYO5XDY2js = require('./chunk-VYO5XDY2.js');
-require('./chunk-T3TW4P64.js');
+var _chunk6B3ZQOO2js = require("./chunk-6B3ZQOO2.js");
+require("./chunk-LK6DILFK.js");
 
+var _chunkFRZQJNBOjs = require("./chunk-FRZQJNBO.js");
+require("./chunk-PFGO5BSM.js");
+require("./chunk-73NOP3T5.js");
 
-var _chunk6B3ZQOO2js = require('./chunk-6B3ZQOO2.js');
-require('./chunk-LK6DILFK.js');
+var _chunk7Q53NNPVjs = require("./chunk-7Q53NNPV.js");
 
-
-var _chunkFRZQJNBOjs = require('./chunk-FRZQJNBO.js');
-require('./chunk-PFGO5BSM.js');
-require('./chunk-73NOP3T5.js');
-
-
-
-var _chunk7Q53NNPVjs = require('./chunk-7Q53NNPV.js');
-
-
-
-
-var _chunkDOWWQYXZjs = require('./chunk-DOWWQYXZ.js');
-require('./chunk-SRMAQGPM.js');
+var _chunkDOWWQYXZjs = require("./chunk-DOWWQYXZ.js");
+require("./chunk-SRMAQGPM.js");
 
 // src/RemoteHttpInterceptor.ts
 var RemoteHttpInterceptor = class extends _chunkJ5MULIHTjs.BatchInterceptor {
@@ -33,8 +25,8 @@ var RemoteHttpInterceptor = class extends _chunkJ5MULIHTjs.BatchInterceptor {
       interceptors: [
         new (0, _chunkVYO5XDY2js.ClientRequestInterceptor)(),
         new (0, _chunk6B3ZQOO2js.XMLHttpRequestInterceptor)(),
-        new (0, _chunkFRZQJNBOjs.FetchInterceptor)()
-      ]
+        new (0, _chunkFRZQJNBOjs.FetchInterceptor)(),
+      ],
     });
   }
   setup() {
@@ -48,32 +40,38 @@ var RemoteHttpInterceptor = class extends _chunkJ5MULIHTjs.BatchInterceptor {
         url: request.url,
         headers: Array.from(request.headers.entries()),
         credentials: request.credentials,
-        body: ["GET", "HEAD"].includes(request.method) ? null : await request.text()
+        body: ["GET", "HEAD"].includes(request.method)
+          ? null
+          : await request.text(),
       });
       this.logger.info(
         "sent serialized request to the child:",
-        serializedRequest
+        serializedRequest,
       );
-      (_a = process.send) == null ? void 0 : _a.call(process, `request:${serializedRequest}`);
+      (_a = process.send) == null
+        ? void 0
+        : _a.call(process, `request:${serializedRequest}`);
       const responsePromise = new Promise((resolve) => {
         handleParentMessage = (message) => {
           if (typeof message !== "string") {
             return resolve();
           }
           if (message.startsWith(`response:${requestId}`)) {
-            const [, serializedResponse] = message.match(/^response:.+?:(.+)$/) || [];
+            const [, serializedResponse] =
+              message.match(/^response:.+?:(.+)$/) || [];
             if (!serializedResponse) {
               return resolve();
             }
-            const responseInit = JSON.parse(
-              serializedResponse
+            const responseInit = JSON.parse(serializedResponse);
+            const mockedResponse = new (0, _chunkDOWWQYXZjs.FetchResponse)(
+              responseInit.body,
+              {
+                url: request.url,
+                status: responseInit.status,
+                statusText: responseInit.statusText,
+                headers: responseInit.headers,
+              },
             );
-            const mockedResponse = new (0, _chunkDOWWQYXZjs.FetchResponse)(responseInit.body, {
-              url: request.url,
-              status: responseInit.status,
-              statusText: responseInit.statusText,
-              headers: responseInit.headers
-            });
             controller.respondWith(mockedResponse);
             return resolve();
           }
@@ -81,7 +79,7 @@ var RemoteHttpInterceptor = class extends _chunkJ5MULIHTjs.BatchInterceptor {
       });
       this.logger.info(
         'add "message" listener to the parent process',
-        handleParentMessage
+        handleParentMessage,
       );
       process.addListener("message", handleParentMessage);
       return responsePromise;
@@ -118,20 +116,16 @@ var _RemoteHttpResolver = class extends _chunkDOWWQYXZjs.Interceptor {
       if (!serializedRequest) {
         return;
       }
-      const requestJson = JSON.parse(
-        serializedRequest,
-        requestReviver
-      );
+      const requestJson = JSON.parse(serializedRequest, requestReviver);
       logger.info("parsed intercepted request", requestJson);
       const request = new Request(requestJson.url, {
         method: requestJson.method,
         headers: new Headers(requestJson.headers),
         credentials: requestJson.credentials,
-        body: requestJson.body
+        body: requestJson.body,
       });
       const controller = new (0, _chunkDOWWQYXZjs.RequestController)(request, {
-        passthrough: () => {
-        },
+        passthrough: () => {},
         respondWith: async (response) => {
           if (_chunk7Q53NNPVjs.isResponseError.call(void 0, response)) {
             this.logger.info("received a network error!", { response });
@@ -144,7 +138,7 @@ var _RemoteHttpResolver = class extends _chunkDOWWQYXZjs.Interceptor {
             status: response.status,
             statusText: response.statusText,
             headers: Array.from(response.headers.entries()),
-            body: responseText
+            body: responseText,
           });
           this.process.send(
             `response:${requestJson.id}:${serializedResponse}`,
@@ -156,25 +150,25 @@ var _RemoteHttpResolver = class extends _chunkDOWWQYXZjs.Interceptor {
                 request,
                 requestId: requestJson.id,
                 response: responseClone,
-                isMockedResponse: true
+                isMockedResponse: true,
               });
-            }
+            },
           );
           logger.info(
             "sent serialized mocked response to the parent:",
-            serializedResponse
+            serializedResponse,
           );
         },
         errorWith: (reason) => {
           this.logger.info("request has errored!", { error: reason });
           throw new Error("Not implemented");
-        }
+        },
       });
       await _chunk7Q53NNPVjs.handleRequest.call(void 0, {
         request,
         requestId: requestJson.id,
         controller,
-        emitter: this.emitter
+        emitter: this.emitter,
       });
     };
     this.subscriptions.push(() => {
@@ -190,8 +184,7 @@ var _RemoteHttpResolver = class extends _chunkDOWWQYXZjs.Interceptor {
 var RemoteHttpResolver = _RemoteHttpResolver;
 RemoteHttpResolver.symbol = Symbol("remote-resolver");
 
-
-
-
-exports.RemoteHttpInterceptor = RemoteHttpInterceptor; exports.RemoteHttpResolver = RemoteHttpResolver; exports.requestReviver = requestReviver;
+exports.RemoteHttpInterceptor = RemoteHttpInterceptor;
+exports.RemoteHttpResolver = RemoteHttpResolver;
+exports.requestReviver = requestReviver;
 //# sourceMappingURL=RemoteHttpInterceptor.js.map

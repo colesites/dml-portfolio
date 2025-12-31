@@ -1,4 +1,4 @@
-import { GetConnInfo } from 'hono/conninfo';
+import { GetConnInfo } from "hono/conninfo";
 
 /**
  * ConnInfo Helper for Node.js

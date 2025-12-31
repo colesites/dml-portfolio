@@ -1,11 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _iterableToArray;
 function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) {
+  if (
+    (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null) ||
+    iter["@@iterator"] != null
+  ) {
     return Array.from(iter);
   }
 }

@@ -8,21 +8,25 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var hooks_exports = {};
 __export(hooks_exports, {
   FormContext: () => FormContext,
   registerAction: () => registerAction,
   useActionState: () => useActionState,
   useFormStatus: () => useFormStatus,
-  useOptimistic: () => useOptimistic
+  useOptimistic: () => useOptimistic,
 });
 module.exports = __toCommonJS(hooks_exports);
 var import_constants = require("../../constants");
@@ -33,7 +37,7 @@ const FormContext = (0, import_context2.createContext)({
   pending: false,
   data: null,
   method: null,
-  action: null
+  action: null,
 });
 const actions = /* @__PURE__ */ new Set();
 const registerAction = (action) => {
@@ -44,7 +48,9 @@ const useFormStatus = () => {
   return (0, import_context.useContext)(FormContext);
 };
 const useOptimistic = (state, updateState) => {
-  const [optimisticState, setOptimisticState] = (0, import_hooks.useState)(state);
+  const [optimisticState, setOptimisticState] = (0, import_hooks.useState)(
+    state,
+  );
   if (actions.size > 0) {
     Promise.all(actions).finally(() => {
       setOptimisticState(state);
@@ -66,10 +72,11 @@ const useActionState = (fn, initialState, permalink) => {
   return [state, actionState];
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  FormContext,
-  registerAction,
-  useActionState,
-  useFormStatus,
-  useOptimistic
-});
+0 &&
+  (module.exports = {
+    FormContext,
+    registerAction,
+    useActionState,
+    useFormStatus,
+    useOptimistic,
+  });

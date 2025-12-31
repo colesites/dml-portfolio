@@ -1,1 +1,4 @@
-export declare function useMemo<Value>(fn: () => Value, dependencies: ReadonlyArray<unknown>): Value;
+export declare function useMemo<Value>(
+  fn: () => Value,
+  dependencies: ReadonlyArray<unknown>,
+): Value;

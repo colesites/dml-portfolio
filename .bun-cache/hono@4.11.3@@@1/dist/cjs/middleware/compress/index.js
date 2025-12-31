@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var compress_exports = {};
 __export(compress_exports, {
-  compress: () => compress
+  compress: () => compress,
 });
 module.exports = __toCommonJS(compress_exports);
 var import_compress = require("../../utils/compress");
@@ -29,16 +33,20 @@ const compress = (options) => {
   return async function compress2(ctx, next) {
     await next();
     const contentLength = ctx.res.headers.get("Content-Length");
-    if (ctx.res.headers.has("Content-Encoding") || // already encoded
-    ctx.res.headers.has("Transfer-Encoding") || // already encoded or chunked
-    ctx.req.method === "HEAD" || // HEAD request
-    contentLength && Number(contentLength) < threshold || // content-length below threshold
-    !shouldCompress(ctx.res) || // not compressible type
-    !shouldTransform(ctx.res)) {
+    if (
+      ctx.res.headers.has("Content-Encoding") || // already encoded
+      ctx.res.headers.has("Transfer-Encoding") || // already encoded or chunked
+      ctx.req.method === "HEAD" || // HEAD request
+      (contentLength && Number(contentLength) < threshold) || // content-length below threshold
+      !shouldCompress(ctx.res) || // not compressible type
+      !shouldTransform(ctx.res)
+    ) {
       return;
     }
     const accepted = ctx.req.header("Accept-Encoding");
-    const encoding = options?.encoding ?? ENCODING_TYPES.find((encoding2) => accepted?.includes(encoding2));
+    const encoding =
+      options?.encoding ??
+      ENCODING_TYPES.find((encoding2) => accepted?.includes(encoding2));
     if (!encoding || !ctx.res.body) {
       return;
     }
@@ -57,6 +65,7 @@ const shouldTransform = (res) => {
   return !cacheControl || !cacheControlNoTransformRegExp.test(cacheControl);
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  compress
-});
+0 &&
+  (module.exports = {
+    compress,
+  });

@@ -1,26 +1,17 @@
+import { decodeBuffer, encodeBuffer } from "./chunk-6HYIRFX2.mjs";
+import { IS_PATCHED_MODULE } from "./chunk-6YM4PLBI.mjs";
 import {
-  BatchInterceptor
-} from "./chunk-SQ6RHTJR.mjs";
-import {
-  decodeBuffer,
-  encodeBuffer
-} from "./chunk-6HYIRFX2.mjs";
-import {
-  IS_PATCHED_MODULE
-} from "./chunk-6YM4PLBI.mjs";
-import {
+  createRequestId,
+  deleteGlobalSymbol,
   FetchResponse,
+  getGlobalSymbol,
   INTERNAL_REQUEST_ID_HEADER_NAME,
   Interceptor,
   InterceptorReadyState,
   RequestController,
-  createRequestId,
-  deleteGlobalSymbol,
-  getGlobalSymbol
 } from "./chunk-JXGB54LE.mjs";
-import {
-  getRawRequest
-} from "./chunk-YWNGXXUQ.mjs";
+import { BatchInterceptor } from "./chunk-SQ6RHTJR.mjs";
+import { getRawRequest } from "./chunk-YWNGXXUQ.mjs";
 
 // src/utils/getCleanUrl.ts
 function getCleanUrl(url, isAbsolute = true) {
@@ -40,6 +31,6 @@ export {
   encodeBuffer,
   getCleanUrl,
   getGlobalSymbol,
-  getRawRequest
+  getRawRequest,
 };
 //# sourceMappingURL=index.mjs.map

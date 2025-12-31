@@ -5,11 +5,11 @@
  * See utils.ts for details.
  * @module
  */
-// @ts-ignore
-import * as nc from 'node:crypto';
+// @ts-expect-error
+import * as nc from "node:crypto";
 export const crypto: any =
-  nc && typeof nc === 'object' && 'webcrypto' in nc
+  nc && typeof nc === "object" && "webcrypto" in nc
     ? (nc.webcrypto as any)
-    : nc && typeof nc === 'object' && 'randomBytes' in nc
+    : nc && typeof nc === "object" && "randomBytes" in nc
       ? nc
       : undefined;

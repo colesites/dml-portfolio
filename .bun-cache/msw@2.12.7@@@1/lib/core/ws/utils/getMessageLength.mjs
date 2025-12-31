@@ -1,4 +1,5 @@
-import { isObject } from '../../utils/internal/isObject.mjs';
+import { isObject } from "../../utils/internal/isObject.mjs";
+
 function getMessageLength(data) {
   if (data instanceof Blob) {
     return data.size;
@@ -8,7 +9,5 @@ function getMessageLength(data) {
   }
   return new Blob([data]).size;
 }
-export {
-  getMessageLength
-};
+export { getMessageLength };
 //# sourceMappingURL=getMessageLength.mjs.map

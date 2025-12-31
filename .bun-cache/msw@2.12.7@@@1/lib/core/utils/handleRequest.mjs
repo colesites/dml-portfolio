@@ -1,10 +1,16 @@
 import { until } from "until-async";
-import {
-  executeHandlers
-} from './executeHandlers.mjs';
-import { onUnhandledRequest } from './request/onUnhandledRequest.mjs';
-import { storeResponseCookies } from './request/storeResponseCookies.mjs';
-async function handleRequest(request, requestId, handlers, options, emitter, handleRequestOptions) {
+import { executeHandlers } from "./executeHandlers.mjs";
+import { onUnhandledRequest } from "./request/onUnhandledRequest.mjs";
+import { storeResponseCookies } from "./request/storeResponseCookies.mjs";
+
+async function handleRequest(
+  request,
+  requestId,
+  handlers,
+  options,
+  emitter,
+  handleRequestOptions,
+) {
   emitter.emit("request:start", { request, requestId });
   if (request.headers.get("accept")?.includes("msw/passthrough")) {
     emitter.emit("request:end", { request, requestId });
@@ -16,14 +22,14 @@ async function handleRequest(request, requestId, handlers, options, emitter, han
       request,
       requestId,
       handlers,
-      resolutionContext: handleRequestOptions?.resolutionContext
+      resolutionContext: handleRequestOptions?.resolutionContext,
     });
   });
   if (lookupError) {
     emitter.emit("unhandledException", {
       error: lookupError,
       request,
-      requestId
+      requestId,
     });
     throw lookupError;
   }
@@ -40,7 +46,10 @@ async function handleRequest(request, requestId, handlers, options, emitter, han
     handleRequestOptions?.onPassthroughResponse?.(request);
     return;
   }
-  if (response.status === 302 && response.headers.get("x-msw-intention") === "passthrough") {
+  if (
+    response.status === 302 &&
+    response.headers.get("x-msw-intention") === "passthrough"
+  ) {
     emitter.emit("request:end", { request, requestId });
     handleRequestOptions?.onPassthroughResponse?.(request);
     return;
@@ -52,7 +61,5 @@ async function handleRequest(request, requestId, handlers, options, emitter, han
   emitter.emit("request:end", { request, requestId });
   return response;
 }
-export {
-  handleRequest
-};
+export { handleRequest };
 //# sourceMappingURL=handleRequest.mjs.map

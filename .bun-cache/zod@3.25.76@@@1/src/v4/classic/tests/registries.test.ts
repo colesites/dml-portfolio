@@ -43,7 +43,10 @@ test("z.registry no metadata", () => {
 });
 
 test("z.registry with schema constraints", () => {
-  const fieldRegistry = z.registry<{ name: string; description: string }, z.ZodString>();
+  const fieldRegistry = z.registry<
+    { name: string; description: string },
+    z.ZodString
+  >();
 
   const a = z.string();
   fieldRegistry.add(a, { name: "hello", description: "world" });
@@ -102,7 +105,9 @@ test("output type in registry meta - objects and arrays", () => {
 
   // @ts-expect-error
   reg.add(a, { name: "hello", examples: "world" });
-  expectTypeOf(reg.get(a)).toEqualTypeOf<{ name: string; examples: string[] } | undefined>();
+  expectTypeOf(reg.get(a)).toEqualTypeOf<
+    { name: string; examples: string[] } | undefined
+  >();
 });
 
 test("input type in registry meta", () => {
@@ -121,7 +126,9 @@ test("input type in registry meta - objects and arrays", () => {
 
   // @ts-expect-error
   reg.add(a, { name: "hello", examples: "world" });
-  expectTypeOf(reg.get(a)).toEqualTypeOf<{ name: string; examples: number[] } | undefined>();
+  expectTypeOf(reg.get(a)).toEqualTypeOf<
+    { name: string; examples: number[] } | undefined
+  >();
 });
 
 test(".meta method", () => {

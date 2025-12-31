@@ -1,15 +1,13 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _index = require("./path/index.js");
 var _t = require("@babel/types");
 var _context = require("./path/context.js");
-const {
-  VISITOR_KEYS
-} = _t;
+const { VISITOR_KEYS } = _t;
 class TraversalContext {
   constructor(scope, opts, state, parentPath) {
     this.queue = null;
@@ -38,7 +36,7 @@ class TraversalContext {
       parent: node,
       container,
       key: key,
-      listKey
+      listKey,
     });
   }
   maybeQueue(path, notPriority) {
@@ -74,18 +72,18 @@ class TraversalContext {
     const visited = new WeakSet();
     let stop = false;
     let visitIndex = 0;
-    for (; visitIndex < queue.length;) {
+    for (; visitIndex < queue.length; ) {
       const path = queue[visitIndex];
       visitIndex++;
       _context.resync.call(path);
-      ;
-      if (path.contexts.length === 0 || path.contexts[path.contexts.length - 1] !== this) {
+      if (
+        path.contexts.length === 0 ||
+        path.contexts[path.contexts.length - 1] !== this
+      ) {
         _context.pushContext.call(path, this);
       }
       if (path.key === null) continue;
-      const {
-        node
-      } = path;
+      const { node } = path;
       if (visited.has(node)) continue;
       if (node) visited.add(node);
       if (path.visit()) {
@@ -100,7 +98,6 @@ class TraversalContext {
       }
     }
     for (let i = 0; i < visitIndex; i++) {
-      ;
       _context.popContext.call(queue[i]);
     }
     this.queue = null;

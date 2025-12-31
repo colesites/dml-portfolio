@@ -1,33 +1,33 @@
-import { invariant } from 'outvariant'
 import type {
-  WebSocketData,
   WebSocketClientConnectionProtocol,
-} from '@mswjs/interceptors/WebSocket'
+  WebSocketData,
+} from "@mswjs/interceptors/WebSocket";
+import { invariant } from "outvariant";
 import {
-  WebSocketHandler,
   kEmitter,
+  WebSocketHandler,
   type WebSocketHandlerEventMap,
-} from './handlers/WebSocketHandler'
-import { Path, isPath } from './utils/matching/matchRequestUrl'
-import { WebSocketClientManager } from './ws/WebSocketClientManager'
+} from "./handlers/WebSocketHandler";
+import { isPath, type Path } from "./utils/matching/matchRequestUrl";
+import { WebSocketClientManager } from "./ws/WebSocketClientManager";
 
 function isBroadcastChannelWithUnref(
   channel: BroadcastChannel,
 ): channel is BroadcastChannel & NodeJS.RefCounted {
-  return typeof Reflect.get(channel, 'unref') !== 'undefined'
+  return typeof Reflect.get(channel, "unref") !== "undefined";
 }
 
-const webSocketChannel = new BroadcastChannel('msw:websocket-client-manager')
+const webSocketChannel = new BroadcastChannel("msw:websocket-client-manager");
 
 if (isBroadcastChannelWithUnref(webSocketChannel)) {
   // Allows the Node.js thread to exit if it is the only active handle in the event system.
   // https://nodejs.org/api/worker_threads.html#broadcastchannelunref
-  webSocketChannel.unref()
+  webSocketChannel.unref();
 }
 
 export type WebSocketEventListener<
   EventType extends keyof WebSocketHandlerEventMap,
-> = (...args: WebSocketHandlerEventMap[EventType]) => void
+> = (...args: WebSocketHandlerEventMap[EventType]) => void;
 
 export type WebSocketLink = {
   /**
@@ -36,7 +36,7 @@ export type WebSocketLink = {
    *
    * @see {@link https://mswjs.io/docs/api/ws#clients `clients` API reference}
    */
-  clients: Set<WebSocketClientConnectionProtocol>
+  clients: Set<WebSocketClientConnectionProtocol>;
 
   /**
    * Adds an event listener to this WebSocket link.
@@ -50,7 +50,7 @@ export type WebSocketLink = {
   addEventListener<EventType extends keyof WebSocketHandlerEventMap>(
     event: EventType,
     listener: WebSocketEventListener<EventType>,
-  ): WebSocketHandler
+  ): WebSocketHandler;
 
   /**
    * Broadcasts the given data to all WebSocket clients.
@@ -63,7 +63,7 @@ export type WebSocketLink = {
    *
    * @see {@link https://mswjs.io/docs/api/ws#broadcastdata `broadcast()` API reference}
    */
-  broadcast(data: WebSocketData): void
+  broadcast(data: WebSocketData): void;
 
   /**
    * Broadcasts the given data to all WebSocket clients
@@ -82,8 +82,8 @@ export type WebSocketLink = {
       | WebSocketClientConnectionProtocol
       | Array<WebSocketClientConnectionProtocol>,
     data: WebSocketData,
-  ): void
-}
+  ): void;
+};
 
 /**
  * Intercepts outgoing WebSocket connections to the given URL.
@@ -95,59 +95,59 @@ export type WebSocketLink = {
  * })
  */
 function createWebSocketLinkHandler(url: Path): WebSocketLink {
-  invariant(url, 'Expected a WebSocket server URL but got undefined')
+  invariant(url, "Expected a WebSocket server URL but got undefined");
 
   invariant(
     isPath(url),
-    'Expected a WebSocket server URL to be a valid path but got %s',
+    "Expected a WebSocket server URL to be a valid path but got %s",
     typeof url,
-  )
+  );
 
-  const clientManager = new WebSocketClientManager(webSocketChannel)
+  const clientManager = new WebSocketClientManager(webSocketChannel);
 
   return {
     get clients() {
-      return clientManager.clients
+      return clientManager.clients;
     },
     addEventListener(event, listener) {
-      const handler = new WebSocketHandler(url)
+      const handler = new WebSocketHandler(url);
 
       // Add the connection event listener for when the
       // handler matches and emits a connection event.
       // When that happens, store that connection in the
       // set of all connections for reference.
-      handler[kEmitter].on('connection', async ({ client }) => {
-        await clientManager.addConnection(client)
-      })
+      handler[kEmitter].on("connection", async ({ client }) => {
+        await clientManager.addConnection(client);
+      });
 
       // The "handleWebSocketEvent" function will invoke
       // the "run()" method on the WebSocketHandler.
       // If the handler matches, it will emit the "connection"
       // event. Attach the user-defined listener to that event.
-      handler[kEmitter].on(event, listener)
+      handler[kEmitter].on(event, listener);
 
-      return handler
+      return handler;
     },
 
     broadcast(data) {
       // This will invoke "send()" on the immediate clients
       // in this runtime and post a message to the broadcast channel
       // to trigger send for the clients in other runtimes.
-      this.broadcastExcept([], data)
+      this.broadcastExcept([], data);
     },
 
     broadcastExcept(clients, data) {
       const ignoreClients = Array.prototype
         .concat(clients)
-        .map((client) => client.id)
+        .map((client) => client.id);
 
       clientManager.clients.forEach((otherClient) => {
         if (!ignoreClients.includes(otherClient.id)) {
-          otherClient.send(data)
+          otherClient.send(data);
         }
-      })
+      });
     },
-  }
+  };
 }
 
 /**
@@ -161,6 +161,6 @@ function createWebSocketLinkHandler(url: Path): WebSocketLink {
  */
 export const ws = {
   link: createWebSocketLinkHandler,
-}
+};
 
-export { WebSocketData }
+export type { WebSocketData };

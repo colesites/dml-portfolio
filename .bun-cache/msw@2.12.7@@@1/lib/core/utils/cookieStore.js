@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var cookieStore_exports = {};
 __export(cookieStore_exports, {
-  cookieStore: () => cookieStore
+  cookieStore: () => cookieStore,
 });
 module.exports = __toCommonJS(cookieStore_exports);
 var import_is_node_process = require("is-node-process");
@@ -33,7 +37,7 @@ class CookieStore {
     if (!(0, import_is_node_process.isNodeProcess)()) {
       (0, import_outvariant.invariant)(
         typeof localStorage !== "undefined",
-        "Failed to create a CookieStore: `localStorage` is not available in this environment. This is likely an issue with your environment, which has been detected as browser (or browser-like) environment and must implement global browser APIs correctly."
+        "Failed to create a CookieStore: `localStorage` is not available in this environment. This is likely an issue with your environment, which has been detected as browser (or browser-like) environment and must implement global browser APIs correctly.",
       );
     }
     this.#memoryStore = new import_tough_cookie.MemoryCookieStore();
@@ -48,7 +52,10 @@ class CookieStore {
     this.persist();
   }
   getCookieStoreIndex() {
-    if (typeof localStorage === "undefined" || typeof localStorage.getItem !== "function") {
+    if (
+      typeof localStorage === "undefined" ||
+      typeof localStorage.getItem !== "function"
+    ) {
       return {};
     }
     const cookiesString = localStorage.getItem(this.#storageKey);
@@ -71,7 +78,10 @@ class CookieStore {
     return cookies;
   }
   persist() {
-    if (typeof localStorage === "undefined" || typeof localStorage.setItem !== "function") {
+    if (
+      typeof localStorage === "undefined" ||
+      typeof localStorage.setItem !== "function"
+    ) {
       return;
     }
     const data = [];

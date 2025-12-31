@@ -1,7 +1,9 @@
-"use strict";
-
 exports.__esModule = true;
-exports.isComment = exports.isCombinator = exports.isClassName = exports.isAttribute = void 0;
+exports.isComment =
+  exports.isCombinator =
+  exports.isClassName =
+  exports.isAttribute =
+    void 0;
 exports.isContainer = isContainer;
 exports.isIdentifier = void 0;
 exports.isNamespace = isNamespace;
@@ -10,10 +12,29 @@ exports.isNode = isNode;
 exports.isPseudo = void 0;
 exports.isPseudoClass = isPseudoClass;
 exports.isPseudoElement = isPseudoElement;
-exports.isUniversal = exports.isTag = exports.isString = exports.isSelector = exports.isRoot = void 0;
+exports.isUniversal =
+  exports.isTag =
+  exports.isString =
+  exports.isSelector =
+  exports.isRoot =
+    void 0;
 var _types = require("./types");
 var _IS_TYPE;
-var IS_TYPE = (_IS_TYPE = {}, _IS_TYPE[_types.ATTRIBUTE] = true, _IS_TYPE[_types.CLASS] = true, _IS_TYPE[_types.COMBINATOR] = true, _IS_TYPE[_types.COMMENT] = true, _IS_TYPE[_types.ID] = true, _IS_TYPE[_types.NESTING] = true, _IS_TYPE[_types.PSEUDO] = true, _IS_TYPE[_types.ROOT] = true, _IS_TYPE[_types.SELECTOR] = true, _IS_TYPE[_types.STRING] = true, _IS_TYPE[_types.TAG] = true, _IS_TYPE[_types.UNIVERSAL] = true, _IS_TYPE);
+var IS_TYPE =
+  ((_IS_TYPE = {}),
+  (_IS_TYPE[_types.ATTRIBUTE] = true),
+  (_IS_TYPE[_types.CLASS] = true),
+  (_IS_TYPE[_types.COMBINATOR] = true),
+  (_IS_TYPE[_types.COMMENT] = true),
+  (_IS_TYPE[_types.ID] = true),
+  (_IS_TYPE[_types.NESTING] = true),
+  (_IS_TYPE[_types.PSEUDO] = true),
+  (_IS_TYPE[_types.ROOT] = true),
+  (_IS_TYPE[_types.SELECTOR] = true),
+  (_IS_TYPE[_types.STRING] = true),
+  (_IS_TYPE[_types.TAG] = true),
+  (_IS_TYPE[_types.UNIVERSAL] = true),
+  _IS_TYPE);
 function isNode(node) {
   return typeof node === "object" && IS_TYPE[node.type];
 }
@@ -45,7 +66,15 @@ exports.isTag = isTag;
 var isUniversal = isNodeType.bind(null, _types.UNIVERSAL);
 exports.isUniversal = isUniversal;
 function isPseudoElement(node) {
-  return isPseudo(node) && node.value && (node.value.startsWith("::") || node.value.toLowerCase() === ":before" || node.value.toLowerCase() === ":after" || node.value.toLowerCase() === ":first-letter" || node.value.toLowerCase() === ":first-line");
+  return (
+    isPseudo(node) &&
+    node.value &&
+    (node.value.startsWith("::") ||
+      node.value.toLowerCase() === ":before" ||
+      node.value.toLowerCase() === ":after" ||
+      node.value.toLowerCase() === ":first-letter" ||
+      node.value.toLowerCase() === ":first-line")
+  );
 }
 function isPseudoClass(node) {
   return isPseudo(node) && !isPseudoElement(node);

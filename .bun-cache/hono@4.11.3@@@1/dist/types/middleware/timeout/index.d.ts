@@ -2,9 +2,9 @@
  * @module
  * Timeout Middleware for Hono.
  */
-import type { Context } from '../../context';
-import { HTTPException } from '../../http-exception';
-import type { MiddlewareHandler } from '../../types';
+import type { Context } from "../../context";
+import { HTTPException } from "../../http-exception";
+import type { MiddlewareHandler } from "../../types";
 export type HTTPExceptionFunction = (context: Context) => HTTPException;
 /**
  * Timeout Middleware for Hono.
@@ -28,4 +28,7 @@ export type HTTPExceptionFunction = (context: Context) => HTTPException;
  * })
  * ```
  */
-export declare const timeout: (duration: number, exception?: HTTPExceptionFunction | HTTPException) => MiddlewareHandler;
+export declare const timeout: (
+  duration: number,
+  exception?: HTTPExceptionFunction | HTTPException,
+) => MiddlewareHandler;

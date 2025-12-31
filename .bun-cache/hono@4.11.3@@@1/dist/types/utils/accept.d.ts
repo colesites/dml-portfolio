@@ -1,7 +1,7 @@
 export interface Accept {
-    type: string;
-    params: Record<string, string>;
-    q: number;
+  type: string;
+  params: Record<string, string>;
+  q: number;
 }
 /**
  * Parse an Accept header into an array of objects with type, parameters, and quality score.

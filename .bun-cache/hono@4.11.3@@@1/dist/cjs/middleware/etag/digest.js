@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var digest_exports = {};
 __export(digest_exports, {
-  generateDigest: () => generateDigest
+  generateDigest: () => generateDigest,
 });
 module.exports = __toCommonJS(digest_exports);
 const mergeBuffers = (buffer1, buffer2) => {
@@ -26,7 +30,7 @@ const mergeBuffers = (buffer1, buffer2) => {
     return buffer2;
   }
   const merged = new Uint8Array(
-    new ArrayBuffer(buffer1.byteLength + buffer2.byteLength)
+    new ArrayBuffer(buffer1.byteLength + buffer2.byteLength),
   );
   merged.set(new Uint8Array(buffer1), 0);
   merged.set(buffer2, buffer1.byteLength);
@@ -38,7 +42,7 @@ const generateDigest = async (stream, generator) => {
   }
   let result = void 0;
   const reader = stream.getReader();
-  for (; ; ) {
+  for (;;) {
     const { value, done } = await reader.read();
     if (done) {
       break;
@@ -48,9 +52,12 @@ const generateDigest = async (stream, generator) => {
   if (!result) {
     return null;
   }
-  return Array.prototype.map.call(new Uint8Array(result), (x) => x.toString(16).padStart(2, "0")).join("");
+  return Array.prototype.map
+    .call(new Uint8Array(result), (x) => x.toString(16).padStart(2, "0"))
+    .join("");
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  generateDigest
-});
+0 &&
+  (module.exports = {
+    generateDigest,
+  });

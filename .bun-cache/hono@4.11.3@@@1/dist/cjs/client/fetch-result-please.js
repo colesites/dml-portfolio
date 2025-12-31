@@ -8,24 +8,30 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var fetch_result_please_exports = {};
 __export(fetch_result_please_exports, {
   DetailedError: () => DetailedError,
-  fetchRP: () => fetchRP
+  fetchRP: () => fetchRP,
 });
 module.exports = __toCommonJS(fetch_result_please_exports);
 const nullBodyResponses = /* @__PURE__ */ new Set([101, 204, 205, 304]);
 async function fetchRP(fetchRes) {
   const _fetchRes = await fetchRes;
-  const hasBody = (_fetchRes.body || _fetchRes._bodyInit) && !nullBodyResponses.has(_fetchRes.status);
+  const hasBody =
+    (_fetchRes.body || _fetchRes._bodyInit) &&
+    !nullBodyResponses.has(_fetchRes.status);
   if (hasBody) {
     const responseType = detectResponseType(_fetchRes);
     _fetchRes._data = await _fetchRes[responseType]();
@@ -35,8 +41,8 @@ async function fetchRP(fetchRes) {
       statusCode: _fetchRes?.status,
       detail: {
         data: _fetchRes?._data,
-        statusText: _fetchRes?.statusText
-      }
+        statusText: _fetchRes?.statusText,
+      },
     });
   }
   return _fetchRes._data;
@@ -80,7 +86,8 @@ function detectResponseType(response) {
   return "text";
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  DetailedError,
-  fetchRP
-});
+0 &&
+  (module.exports = {
+    DetailedError,
+    fetchRP,
+  });

@@ -1,6 +1,4 @@
-'use strict';
-
-const DatePart = require('./datepart');
+const DatePart = require("./datepart");
 
 class Meridiem extends DatePart {
   constructor(opts = {}) {
@@ -16,10 +14,9 @@ class Meridiem extends DatePart {
   }
 
   toString() {
-    let meridiem = this.date.getHours() > 12 ? 'pm' : 'am';
-    return /\A/.test(this.token) ? meridiem.toUpperCase() : meridiem;
+    const meridiem = this.date.getHours() > 12 ? "pm" : "am";
+    return /A/.test(this.token) ? meridiem.toUpperCase() : meridiem;
   }
-
 }
 
 module.exports = Meridiem;

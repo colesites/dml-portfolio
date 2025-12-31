@@ -1,26 +1,26 @@
-import { printStopMessage } from './printStopMessage'
+import { printStopMessage } from "./printStopMessage";
 
 beforeAll(() => {
-  vi.spyOn(global.console, 'log').mockImplementation(() => void 0)
-})
+  vi.spyOn(global.console, "log").mockImplementation(() => void 0);
+});
 
 afterEach(() => {
-  vi.resetAllMocks()
-})
+  vi.resetAllMocks();
+});
 
 afterAll(() => {
-  vi.restoreAllMocks()
-})
+  vi.restoreAllMocks();
+});
 
-test('prints a stop message to the console', () => {
-  printStopMessage()
+test("prints a stop message to the console", () => {
+  printStopMessage();
   expect(console.log).toHaveBeenCalledWith(
-    '%c[MSW] Mocking disabled.',
-    'color:orangered;font-weight:bold;',
-  )
-})
+    "%c[MSW] Mocking disabled.",
+    "color:orangered;font-weight:bold;",
+  );
+});
 
-test('does not print any message when log level is quiet', () => {
-  printStopMessage({ quiet: true })
-  expect(console.log).not.toHaveBeenCalled()
-})
+test("does not print any message when log level is quiet", () => {
+  printStopMessage({ quiet: true });
+  expect(console.log).not.toHaveBeenCalled();
+});

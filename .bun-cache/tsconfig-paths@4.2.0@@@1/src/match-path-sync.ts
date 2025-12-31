@@ -6,14 +6,12 @@ import * as TryPath from "./try-path";
 /**
  * Function that can match a path
  */
-export interface MatchPath {
-  (
-    requestedModule: string,
-    readJson?: Filesystem.ReadJsonSync,
-    fileExists?: (name: string) => boolean,
-    extensions?: ReadonlyArray<string>
-  ): string | undefined;
-}
+export type MatchPath = (
+  requestedModule: string,
+  readJson?: Filesystem.ReadJsonSync,
+  fileExists?: (name: string) => boolean,
+  extensions?: ReadonlyArray<string>,
+) => string | undefined;
 
 /**
  * Creates a function that can resolve paths according to tsconfig paths property.
@@ -28,19 +26,19 @@ export function createMatchPath(
   absoluteBaseUrl: string,
   paths: { [key: string]: Array<string> },
   mainFields: (string | string[])[] = ["main"],
-  addMatchAll: boolean = true
+  addMatchAll: boolean = true,
 ): MatchPath {
   const absolutePaths = MappingEntry.getAbsoluteMappingEntries(
     absoluteBaseUrl,
     paths,
-    addMatchAll
+    addMatchAll,
   );
 
   return (
     requestedModule: string,
     readJson?: Filesystem.ReadJsonSync,
     fileExists?: Filesystem.FileExistsSync,
-    extensions?: Array<string>
+    extensions?: Array<string>,
   ) =>
     matchFromAbsolutePaths(
       absolutePaths,
@@ -48,7 +46,7 @@ export function createMatchPath(
       readJson,
       fileExists,
       extensions,
-      mainFields
+      mainFields,
     );
 }
 
@@ -69,12 +67,12 @@ export function matchFromAbsolutePaths(
   readJson: Filesystem.ReadJsonSync = Filesystem.readJsonFromDiskSync,
   fileExists: Filesystem.FileExistsSync = Filesystem.fileExistsSync,
   extensions: Array<string> = Object.keys(require.extensions),
-  mainFields: (string | string[])[] = ["main"]
+  mainFields: (string | string[])[] = ["main"],
 ): string | undefined {
   const tryPaths = TryPath.getPathsToTry(
     extensions,
     absolutePathMappings,
-    requestedModule
+    requestedModule,
   );
 
   if (!tryPaths) {
@@ -88,7 +86,7 @@ function findFirstExistingMainFieldMappedFile(
   packageJson: Filesystem.PackageJson,
   mainFields: (string | string[])[],
   packageJsonPath: string,
-  fileExists: Filesystem.FileExistsSync
+  fileExists: Filesystem.FileExistsSync,
 ): string | undefined {
   for (let index = 0; index < mainFields.length; index++) {
     const mainFieldSelector = mainFields[index];
@@ -99,7 +97,7 @@ function findFirstExistingMainFieldMappedFile(
     if (candidateMapping && typeof candidateMapping === "string") {
       const candidateFilePath = path.join(
         path.dirname(packageJsonPath),
-        candidateMapping
+        candidateMapping,
       );
       if (fileExists(candidateFilePath)) {
         return candidateFilePath;
@@ -114,7 +112,7 @@ function findFirstExistingPath(
   tryPaths: ReadonlyArray<TryPath.TryPath>,
   readJson: Filesystem.ReadJsonSync = Filesystem.readJsonFromDiskSync,
   fileExists: Filesystem.FileExistsSync,
-  mainFields: (string | string[])[] = ["main"]
+  mainFields: (string | string[])[] = ["main"],
 ): string | undefined {
   for (const tryPath of tryPaths) {
     if (
@@ -132,7 +130,7 @@ function findFirstExistingPath(
           packageJson,
           mainFields,
           tryPath.path,
-          fileExists
+          fileExists,
         );
         if (mainFieldMappedFile) {
           return mainFieldMappedFile;

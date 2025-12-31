@@ -1,8 +1,11 @@
 // src/utils/encode.ts
 var decodeBase64Url = (str) => {
-  return decodeBase64(str.replace(/_|-/g, (m) => ({ _: "/", "-": "+" })[m] ?? m));
+  return decodeBase64(
+    str.replace(/_|-/g, (m) => ({ _: "/", "-": "+" })[m] ?? m),
+  );
 };
-var encodeBase64Url = (buf) => encodeBase64(buf).replace(/\/|\+/g, (m) => ({ "/": "_", "+": "-" })[m] ?? m);
+var encodeBase64Url = (buf) =>
+  encodeBase64(buf).replace(/\/|\+/g, (m) => ({ "/": "_", "+": "-" })[m] ?? m);
 var encodeBase64 = (buf) => {
   let binary = "";
   const bytes = new Uint8Array(buf);
@@ -21,9 +24,4 @@ var decodeBase64 = (str) => {
   }
   return bytes;
 };
-export {
-  decodeBase64,
-  decodeBase64Url,
-  encodeBase64,
-  encodeBase64Url
-};
+export { decodeBase64, decodeBase64Url, encodeBase64, encodeBase64Url };

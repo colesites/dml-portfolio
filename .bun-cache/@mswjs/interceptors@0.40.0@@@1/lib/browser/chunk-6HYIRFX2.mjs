@@ -10,13 +10,9 @@ function decodeBuffer(buffer, encoding) {
 function toArrayBuffer(array) {
   return array.buffer.slice(
     array.byteOffset,
-    array.byteOffset + array.byteLength
+    array.byteOffset + array.byteLength,
   );
 }
 
-export {
-  encodeBuffer,
-  decodeBuffer,
-  toArrayBuffer
-};
+export { encodeBuffer, decodeBuffer, toArrayBuffer };
 //# sourceMappingURL=chunk-6HYIRFX2.mjs.map

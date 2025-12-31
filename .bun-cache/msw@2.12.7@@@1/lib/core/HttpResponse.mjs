@@ -1,8 +1,9 @@
 import { FetchResponse } from "@mswjs/interceptors";
 import {
   decorateResponse,
-  normalizeResponseInit
-} from './utils/HttpResponse/decorators.mjs';
+  normalizeResponseInit,
+} from "./utils/HttpResponse/decorators.mjs";
+
 const bodyType = Symbol("bodyType");
 class HttpResponse extends FetchResponse {
   [bodyType] = null;
@@ -12,7 +13,7 @@ class HttpResponse extends FetchResponse {
     decorateResponse(this, responseInit);
   }
   static error() {
-    return super.error();
+    return FetchResponse.error();
   }
   /**
    * Create a `Response` with a `Content-Type: "text/plain"` body.
@@ -28,7 +29,7 @@ class HttpResponse extends FetchResponse {
     if (!responseInit.headers.has("Content-Length")) {
       responseInit.headers.set(
         "Content-Length",
-        body ? new Blob([body]).size.toString() : "0"
+        body ? new Blob([body]).size.toString() : "0",
       );
     }
     return new HttpResponse(body, responseInit);
@@ -48,7 +49,7 @@ class HttpResponse extends FetchResponse {
     if (!responseInit.headers.has("Content-Length")) {
       responseInit.headers.set(
         "Content-Length",
-        responseText ? new Blob([responseText]).size.toString() : "0"
+        responseText ? new Blob([responseText]).size.toString() : "0",
       );
     }
     return new HttpResponse(responseText, responseInit);
@@ -110,8 +111,5 @@ class HttpResponse extends FetchResponse {
     return new HttpResponse(body, normalizeResponseInit(init));
   }
 }
-export {
-  HttpResponse,
-  bodyType
-};
+export { HttpResponse, bodyType };
 //# sourceMappingURL=HttpResponse.mjs.map

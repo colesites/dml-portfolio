@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports._getTypeAnnotation = _getTypeAnnotation;
 exports.baseTypeStrictlyMatches = baseTypeStrictlyMatches;
@@ -31,7 +31,7 @@ const {
   isUnionTypeAnnotation,
   isVoidTypeAnnotation,
   stringTypeAnnotation,
-  voidTypeAnnotation
+  voidTypeAnnotation,
 } = _t;
 function getTypeAnnotation() {
   let type = this.getData("typeAnnotation");
@@ -135,15 +135,24 @@ function baseTypeStrictlyMatches(rightArg) {
 function isGenericType(genericName) {
   const type = this.getTypeAnnotation();
   if (genericName === "Array") {
-    if (isTSArrayType(type) || isArrayTypeAnnotation(type) || isTupleTypeAnnotation(type)) {
+    if (
+      isTSArrayType(type) ||
+      isArrayTypeAnnotation(type) ||
+      isTupleTypeAnnotation(type)
+    ) {
       return true;
     }
   }
-  return isGenericTypeAnnotation(type) && isIdentifier(type.id, {
-    name: genericName
-  }) || isTSTypeReference(type) && isIdentifier(type.typeName, {
-    name: genericName
-  });
+  return (
+    (isGenericTypeAnnotation(type) &&
+      isIdentifier(type.id, {
+        name: genericName,
+      })) ||
+    (isTSTypeReference(type) &&
+      isIdentifier(type.typeName, {
+        name: genericName,
+      }))
+  );
 }
 
 //# sourceMappingURL=index.js.map

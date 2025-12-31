@@ -1,27 +1,27 @@
-import { WebSocketClientConnectionProtocol } from '@mswjs/interceptors/WebSocket'
-import {
+import type { WebSocketClientConnectionProtocol } from "@mswjs/interceptors/WebSocket";
+import type {
   SerializedWebSocketClient,
   WebSocketClientStore,
-} from './WebSocketClientStore'
+} from "./WebSocketClientStore";
 
 export class WebSocketMemoryClientStore implements WebSocketClientStore {
-  private store: Map<string, SerializedWebSocketClient>
+  private store: Map<string, SerializedWebSocketClient>;
 
   constructor() {
-    this.store = new Map()
+    this.store = new Map();
   }
 
   public async add(client: WebSocketClientConnectionProtocol): Promise<void> {
-    this.store.set(client.id, { id: client.id, url: client.url.href })
+    this.store.set(client.id, { id: client.id, url: client.url.href });
   }
 
   public getAll(): Promise<Array<SerializedWebSocketClient>> {
-    return Promise.resolve(Array.from(this.store.values()))
+    return Promise.resolve(Array.from(this.store.values()));
   }
 
   public async deleteMany(clientIds: Array<string>): Promise<void> {
     for (const clientId of clientIds) {
-      this.store.delete(clientId)
+      this.store.delete(clientId);
     }
   }
 }

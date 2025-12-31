@@ -1,32 +1,30 @@
-import { SetArray, put, remove } from './set-array';
 import {
   encode,
   // encodeGeneratedRanges,
   // encodeOriginalScopes
-} from '@jridgewell/sourcemap-codec';
-import { TraceMap, decodedMappings } from '@jridgewell/trace-mapping';
-
+} from "@jridgewell/sourcemap-codec";
+import type { SourceMapInput } from "@jridgewell/trace-mapping";
+import { decodedMappings, TraceMap } from "@jridgewell/trace-mapping";
+import { put, remove, SetArray } from "./set-array";
+// import type { OriginalScope, GeneratedRange } from '@jridgewell/sourcemap-codec';
+import type { SourceMapSegment } from "./sourcemap-segment";
 import {
   COLUMN,
-  SOURCES_INDEX,
-  SOURCE_LINE,
-  SOURCE_COLUMN,
   NAMES_INDEX,
-} from './sourcemap-segment';
-
-import type { SourceMapInput } from '@jridgewell/trace-mapping';
-// import type { OriginalScope, GeneratedRange } from '@jridgewell/sourcemap-codec';
-import type { SourceMapSegment } from './sourcemap-segment';
+  SOURCE_COLUMN,
+  SOURCE_LINE,
+  SOURCES_INDEX,
+} from "./sourcemap-segment";
 import type {
   DecodedSourceMap,
   EncodedSourceMap,
-  Pos,
   Mapping,
+  Pos,
   // BindingExpressionRange,
   // OriginalPos,
   // OriginalScopeInfo,
   // GeneratedRangeInfo,
-} from './types';
+} from "./types";
 
 export type { DecodedSourceMap, EncodedSourceMap, Mapping };
 
@@ -41,13 +39,13 @@ const NO_NAME = -1;
  * Provides the state to generate a sourcemap.
  */
 export class GenMapping {
-  declare private _names: SetArray<string>;
-  declare private _sources: SetArray<string>;
-  declare private _sourcesContent: (string | null)[];
-  declare private _mappings: SourceMapSegment[][];
+  private declare _names: SetArray<string>;
+  private declare _sources: SetArray<string>;
+  private declare _sourcesContent: (string | null)[];
+  private declare _mappings: SourceMapSegment[][];
   // private declare _originalScopes: OriginalScope[][];
   // private declare _generatedRanges: GeneratedRange[];
-  declare private _ignoreList: SetArray<number>;
+  private declare _ignoreList: SetArray<number>;
   declare file: string | null | undefined;
   declare sourceRoot: string | null | undefined;
 
@@ -65,13 +63,13 @@ export class GenMapping {
 }
 
 interface PublicMap {
-  _names: GenMapping['_names'];
-  _sources: GenMapping['_sources'];
-  _sourcesContent: GenMapping['_sourcesContent'];
-  _mappings: GenMapping['_mappings'];
+  _names: GenMapping["_names"];
+  _sources: GenMapping["_sources"];
+  _sourcesContent: GenMapping["_sourcesContent"];
+  _mappings: GenMapping["_mappings"];
   // _originalScopes: GenMapping['_originalScopes'];
   // _generatedRanges: GenMapping['_generatedRanges'];
-  _ignoreList: GenMapping['_ignoreList'];
+  _ignoreList: GenMapping["_ignoreList"];
 }
 
 /**
@@ -183,7 +181,11 @@ export function addMapping(
     content?: string | null;
   },
 ): void {
-  return addMappingInternal(false, map, mapping as Parameters<typeof addMappingInternal>[2]);
+  return addMappingInternal(
+    false,
+    map,
+    mapping as Parameters<typeof addMappingInternal>[2],
+  );
 }
 
 /**
@@ -220,13 +222,21 @@ export const maybeAddSegment: typeof addSegment = (
  * not add a mapping with a lower generated line/column than one that came before.
  */
 export const maybeAddMapping: typeof addMapping = (map, mapping) => {
-  return addMappingInternal(true, map, mapping as Parameters<typeof addMappingInternal>[2]);
+  return addMappingInternal(
+    true,
+    map,
+    mapping as Parameters<typeof addMappingInternal>[2],
+  );
 };
 
 /**
  * Adds/removes the content of the source file to the source map.
  */
-export function setSourceContent(map: GenMapping, source: string, content: string | null): void {
+export function setSourceContent(
+  map: GenMapping,
+  source: string,
+  content: string | null,
+): void {
   const {
     _sources: sources,
     _sourcesContent: sourcesContent,
@@ -304,7 +314,7 @@ export function fromMap(input: SourceMapInput): GenMapping {
   putAll(cast(gen)._names, map.names);
   putAll(cast(gen)._sources, map.sources as string[]);
   cast(gen)._sourcesContent = map.sourcesContent || map.sources.map(() => null);
-  cast(gen)._mappings = decodedMappings(map) as GenMapping['_mappings'];
+  cast(gen)._mappings = decodedMappings(map) as GenMapping["_mappings"];
   // TODO: implement originalScopes/generatedRanges
   if (map.ignoreList) putAll(cast(gen)._ignoreList, map.ignoreList);
 
@@ -325,9 +335,9 @@ export function allMappings(map: GenMapping): Mapping[] {
       const seg = line[j];
 
       const generated = { line: i + 1, column: seg[COLUMN] };
-      let source: string | undefined = undefined;
-      let original: Pos | undefined = undefined;
-      let name: string | undefined = undefined;
+      let source: string | undefined;
+      let original: Pos | undefined;
+      let name: string | undefined;
 
       if (seg.length !== 1) {
         source = sources.array[seg[SOURCES_INDEX]];
@@ -377,10 +387,14 @@ function addSegmentInternal<S extends string | null | undefined>(
 
   const sourcesIndex = put(sources, source);
   const namesIndex = name ? put(names, name) : NO_NAME;
-  if (sourcesIndex === sourcesContent.length) sourcesContent[sourcesIndex] = content ?? null;
+  if (sourcesIndex === sourcesContent.length)
+    sourcesContent[sourcesIndex] = content ?? null;
   // if (sourcesIndex === originalScopes.length) originalScopes[sourcesIndex] = [];
 
-  if (skipable && skipSource(line, index, sourcesIndex, sourceLine, sourceColumn, namesIndex)) {
+  if (
+    skipable &&
+    skipSource(line, index, sourcesIndex, sourceLine, sourceColumn, namesIndex)
+  ) {
     return;
   }
 

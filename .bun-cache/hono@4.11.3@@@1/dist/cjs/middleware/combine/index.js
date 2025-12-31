@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except2, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except2)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var combine_exports = {};
 __export(combine_exports, {
   every: () => every,
   except: () => except,
-  some: () => some
+  some: () => some,
 });
 module.exports = __toCommonJS(combine_exports);
 var import_compose = require("../../compose");
@@ -70,33 +74,45 @@ const every = (...middleware) => {
               throw new Error("Unmet condition");
             }
             return res;
-          }
-        ]
-      ])
+          },
+        ],
+      ]),
     )(c, next);
   };
 };
 const except = (condition, ...middleware) => {
   let router = void 0;
-  const conditions = (Array.isArray(condition) ? condition : [condition]).map((condition2) => {
-    if (typeof condition2 === "string") {
-      router ||= new import_trie_router.TrieRouter();
-      router.add(import_router.METHOD_NAME_ALL, condition2, true);
-    } else {
-      return condition2;
-    }
-  }).filter(Boolean);
+  const conditions = (Array.isArray(condition) ? condition : [condition])
+    .map((condition2) => {
+      if (typeof condition2 === "string") {
+        router ||= new import_trie_router.TrieRouter();
+        router.add(import_router.METHOD_NAME_ALL, condition2, true);
+      } else {
+        return condition2;
+      }
+    })
+    .filter(Boolean);
   if (router) {
-    conditions.unshift((c) => !!router?.match(import_router.METHOD_NAME_ALL, c.req.path)?.[0]?.[0]?.[0]);
+    conditions.unshift(
+      (c) =>
+        !!router?.match(
+          import_router.METHOD_NAME_ALL,
+          c.req.path,
+        )?.[0]?.[0]?.[0],
+    );
   }
-  const handler = some((c) => conditions.some((cond) => cond(c)), every(...middleware));
+  const handler = some(
+    (c) => conditions.some((cond) => cond(c)),
+    every(...middleware),
+  );
   return async function except2(c, next) {
     await handler(c, next);
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  every,
-  except,
-  some
-});
+0 &&
+  (module.exports = {
+    every,
+    except,
+    some,
+  });

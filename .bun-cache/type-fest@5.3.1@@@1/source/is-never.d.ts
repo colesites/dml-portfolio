@@ -52,5 +52,3 @@ type B = IsTrueFixed<never>;
 @category Utilities
 */
 export type IsNever<T> = [T] extends [never] ? true : false;
-
-export {};

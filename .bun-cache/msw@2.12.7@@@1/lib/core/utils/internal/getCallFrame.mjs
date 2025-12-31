@@ -1,5 +1,6 @@
 const SOURCE_FRAME = /[/\\]msw[/\\]src[/\\](.+)/;
-const BUILD_FRAME = /(node_modules)?[/\\]lib[/\\](core|browser|node|native|iife)[/\\]|^[^/\\]*$/;
+const BUILD_FRAME =
+  /(node_modules)?[/\\]lib[/\\](core|browser|node|native|iife)[/\\]|^[^/\\]*$/;
 function getCallFrame(error) {
   const stack = error.stack;
   if (!stack) {
@@ -12,10 +13,10 @@ function getCallFrame(error) {
   if (!declarationFrame) {
     return;
   }
-  const declarationPath = declarationFrame.replace(/\s*at [^()]*\(([^)]+)\)/, "$1").replace(/^@/, "");
+  const declarationPath = declarationFrame
+    .replace(/\s*at [^()]*\(([^)]+)\)/, "$1")
+    .replace(/^@/, "");
   return declarationPath;
 }
-export {
-  getCallFrame
-};
+export { getCallFrame };
 //# sourceMappingURL=getCallFrame.mjs.map

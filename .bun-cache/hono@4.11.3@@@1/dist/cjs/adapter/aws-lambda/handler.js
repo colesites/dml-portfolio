@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var handler_exports = {};
 __export(handler_exports, {
   ALBProcessor: () => ALBProcessor,
@@ -27,7 +31,7 @@ __export(handler_exports, {
   getProcessor: () => getProcessor,
   handle: () => handle,
   isContentEncodingBinary: () => isContentEncodingBinary,
-  streamHandle: () => streamHandle
+  streamHandle: () => streamHandle,
 });
 module.exports = __toCommonJS(handler_exports);
 var import_encode = require("../../utils/encode");
@@ -50,47 +54,51 @@ const streamToNodeStream = async (reader, writer) => {
   writer.end();
 };
 const streamHandle = (app) => {
-  return awslambda.streamifyResponse(
-    async (event, responseStream, context) => {
-      const processor = getProcessor(event);
-      try {
-        const req = processor.createRequest(event);
-        const requestContext = getRequestContext(event);
-        const res = await app.fetch(req, {
-          event,
-          requestContext,
-          context
-        });
-        const headers = {};
-        const cookies = [];
-        res.headers.forEach((value, name) => {
-          if (name === "set-cookie") {
-            cookies.push(value);
-          } else {
-            headers[name] = value;
-          }
-        });
-        const httpResponseMetadata = {
-          statusCode: res.status,
-          headers,
-          cookies
-        };
-        responseStream = awslambda.HttpResponseStream.from(responseStream, httpResponseMetadata);
-        if (res.body) {
-          await streamToNodeStream(res.body.getReader(), responseStream);
+  return awslambda.streamifyResponse(async (event, responseStream, context) => {
+    const processor = getProcessor(event);
+    try {
+      const req = processor.createRequest(event);
+      const requestContext = getRequestContext(event);
+      const res = await app.fetch(req, {
+        event,
+        requestContext,
+        context,
+      });
+      const headers = {};
+      const cookies = [];
+      res.headers.forEach((value, name) => {
+        if (name === "set-cookie") {
+          cookies.push(value);
         } else {
-          responseStream.write("");
+          headers[name] = value;
         }
-      } catch (error) {
-        console.error("Error processing request:", error);
-        responseStream.write("Internal Server Error");
-      } finally {
-        responseStream.end();
+      });
+      const httpResponseMetadata = {
+        statusCode: res.status,
+        headers,
+        cookies,
+      };
+      responseStream = awslambda.HttpResponseStream.from(
+        responseStream,
+        httpResponseMetadata,
+      );
+      if (res.body) {
+        await streamToNodeStream(res.body.getReader(), responseStream);
+      } else {
+        responseStream.write("");
       }
+    } catch (error) {
+      console.error("Error processing request:", error);
+      responseStream.write("Internal Server Error");
+    } finally {
+      responseStream.end();
     }
-  );
+  });
 };
-const handle = (app, { isContentTypeBinary } = { isContentTypeBinary: void 0 }) => {
+const handle = (
+  app,
+  { isContentTypeBinary } = { isContentTypeBinary: void 0 },
+) => {
   return async (event, lambdaContext) => {
     const processor = getProcessor(event);
     const req = processor.createRequest(event);
@@ -98,14 +106,18 @@ const handle = (app, { isContentTypeBinary } = { isContentTypeBinary: void 0 }) 
     const res = await app.fetch(req, {
       event,
       requestContext,
-      lambdaContext
+      lambdaContext,
     });
     return processor.createResult(event, res, { isContentTypeBinary });
   };
 };
 class EventProcessor {
   getHeaderValue(headers, key) {
-    const value = headers ? Array.isArray(headers[key]) ? headers[key][0] : headers[key] : void 0;
+    const value = headers
+      ? Array.isArray(headers[key])
+        ? headers[key][0]
+        : headers[key]
+      : void 0;
     return value;
   }
   getDomainName(event) {
@@ -116,8 +128,12 @@ class EventProcessor {
     if (hostFromHeaders) {
       return hostFromHeaders;
     }
-    const multiValueHeaders = "multiValueHeaders" in event ? event.multiValueHeaders : {};
-    const hostFromMultiValueHeaders = this.getHeaderValue(multiValueHeaders, "host");
+    const multiValueHeaders =
+      "multiValueHeaders" in event ? event.multiValueHeaders : {};
+    const hostFromMultiValueHeaders = this.getHeaderValue(
+      multiValueHeaders,
+      "host",
+    );
     return hostFromMultiValueHeaders;
   }
   createRequest(event) {
@@ -130,31 +146,39 @@ class EventProcessor {
     const method = this.getMethod(event);
     const requestInit = {
       headers,
-      method
+      method,
     };
     if (event.body) {
-      requestInit.body = event.isBase64Encoded ? (0, import_encode.decodeBase64)(event.body) : event.body;
+      requestInit.body = event.isBase64Encoded
+        ? (0, import_encode.decodeBase64)(event.body)
+        : event.body;
     }
     return new Request(url, requestInit);
   }
   async createResult(event, res, options) {
     const contentType = res.headers.get("content-type");
-    const isContentTypeBinary = options.isContentTypeBinary ?? defaultIsContentTypeBinary;
-    let isBase64Encoded = contentType && isContentTypeBinary(contentType) ? true : false;
+    const isContentTypeBinary =
+      options.isContentTypeBinary ?? defaultIsContentTypeBinary;
+    let isBase64Encoded =
+      contentType && isContentTypeBinary(contentType) ? true : false;
     if (!isBase64Encoded) {
       const contentEncoding = res.headers.get("content-encoding");
       isBase64Encoded = isContentEncodingBinary(contentEncoding);
     }
-    const body = isBase64Encoded ? (0, import_encode.encodeBase64)(await res.arrayBuffer()) : await res.text();
+    const body = isBase64Encoded
+      ? (0, import_encode.encodeBase64)(await res.arrayBuffer())
+      : await res.text();
     const result = {
       body,
       statusCode: res.status,
       isBase64Encoded,
-      ..."multiValueHeaders" in event && event.multiValueHeaders ? {
-        multiValueHeaders: {}
-      } : {
-        headers: {}
-      }
+      ...("multiValueHeaders" in event && event.multiValueHeaders
+        ? {
+            multiValueHeaders: {},
+          }
+        : {
+            headers: {},
+          }),
     };
     this.setCookies(event, res, result);
     if (result.multiValueHeaders) {
@@ -170,7 +194,11 @@ class EventProcessor {
   }
   setCookies(event, res, result) {
     if (res.headers.has("set-cookie")) {
-      const cookies = res.headers.getSetCookie ? res.headers.getSetCookie() : Array.from(res.headers.entries()).filter(([k]) => k === "set-cookie").map(([, v]) => v);
+      const cookies = res.headers.getSetCookie
+        ? res.headers.getSetCookie()
+        : Array.from(res.headers.entries())
+            .filter(([k]) => k === "set-cookie")
+            .map(([, v]) => v);
       if (Array.isArray(cookies)) {
         this.setCookiesToResult(result, cookies);
         res.headers.delete("set-cookie");
@@ -219,15 +247,28 @@ class EventV1Processor extends EventProcessor {
   }
   getQueryString(event) {
     if (event.multiValueQueryStringParameters) {
-      return Object.entries(event.multiValueQueryStringParameters || {}).filter(([, value]) => value).map(
-        ([key, values]) => values.map((value) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join("&")
-      ).join("&");
+      return Object.entries(event.multiValueQueryStringParameters || {})
+        .filter(([, value]) => value)
+        .map(([key, values]) =>
+          values
+            .map(
+              (value) =>
+                `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+            )
+            .join("&"),
+        )
+        .join("&");
     } else {
-      return Object.entries(event.queryStringParameters || {}).filter(([, value]) => value).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value || "")}`).join("&");
+      return Object.entries(event.queryStringParameters || {})
+        .filter(([, value]) => value)
+        .map(
+          ([key, value]) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(value || "")}`,
+        )
+        .join("&");
     }
   }
-  getCookies(event, headers) {
-  }
+  getCookies(event, headers) {}
   getHeaders(event) {
     const headers = new Headers();
     this.getCookies(event, headers);
@@ -244,7 +285,10 @@ class EventV1Processor extends EventProcessor {
           const foundK = headers.get(k);
           values.forEach((v) => {
             const sanitizedValue = sanitizeHeaderValue(v);
-            return (!foundK || !foundK.includes(sanitizedValue)) && headers.append(k, sanitizedValue);
+            return (
+              (!foundK || !foundK.includes(sanitizedValue)) &&
+              headers.append(k, sanitizedValue)
+            );
           });
         }
       }
@@ -253,7 +297,7 @@ class EventV1Processor extends EventProcessor {
   }
   setCookiesToResult(result, cookies) {
     result.multiValueHeaders = {
-      "set-cookie": cookies
+      "set-cookie": cookies,
     };
   }
 }
@@ -285,9 +329,15 @@ class ALBProcessor extends EventProcessor {
   }
   getQueryString(event) {
     if (event.multiValueQueryStringParameters) {
-      return Object.entries(event.multiValueQueryStringParameters || {}).filter(([, value]) => value).map(([key, value]) => `${key}=${value.join(`&${key}=`)}`).join("&");
+      return Object.entries(event.multiValueQueryStringParameters || {})
+        .filter(([, value]) => value)
+        .map(([key, value]) => `${key}=${value.join(`&${key}=`)}`)
+        .join("&");
     } else {
-      return Object.entries(event.queryStringParameters || {}).filter(([, value]) => value).map(([key, value]) => `${key}=${value}`).join("&");
+      return Object.entries(event.queryStringParameters || {})
+        .filter(([, value]) => value)
+        .map(([key, value]) => `${key}=${value}`)
+        .join("&");
     }
   }
   getCookies(event, headers) {
@@ -328,19 +378,21 @@ class LatticeV2Processor extends EventProcessor {
           const foundK = headers.get(k);
           values.forEach((v) => {
             const sanitizedValue = sanitizeHeaderValue(v);
-            return (!foundK || !foundK.includes(sanitizedValue)) && headers.append(k, sanitizedValue);
+            return (
+              (!foundK || !foundK.includes(sanitizedValue)) &&
+              headers.append(k, sanitizedValue)
+            );
           });
         }
       }
     }
     return headers;
   }
-  getCookies() {
-  }
+  getCookies() {}
   setCookiesToResult(result, cookies) {
     result.headers = {
       ...result.headers,
-      "set-cookie": cookies.join(", ")
+      "set-cookie": cookies.join(", "),
     };
   }
 }
@@ -374,7 +426,7 @@ const isLatticeEventV2 = (event) => {
 };
 const defaultIsContentTypeBinary = (contentType) => {
   return !/^text\/(?:plain|html|css|javascript|csv)|(?:\/|\+)(?:json|xml)\s*(?:;|$)/.test(
-    contentType
+    contentType,
   );
 };
 const isContentEncodingBinary = (contentEncoding) => {
@@ -384,15 +436,16 @@ const isContentEncodingBinary = (contentEncoding) => {
   return /^(gzip|deflate|compress|br)/.test(contentEncoding);
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  ALBProcessor,
-  EventProcessor,
-  EventV1Processor,
-  EventV2Processor,
-  LatticeV2Processor,
-  defaultIsContentTypeBinary,
-  getProcessor,
-  handle,
-  isContentEncodingBinary,
-  streamHandle
-});
+0 &&
+  (module.exports = {
+    ALBProcessor,
+    EventProcessor,
+    EventV1Processor,
+    EventV2Processor,
+    LatticeV2Processor,
+    defaultIsContentTypeBinary,
+    getProcessor,
+    handle,
+    isContentEncodingBinary,
+    streamHandle,
+  });

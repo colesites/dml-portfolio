@@ -15,31 +15,37 @@ import {
   concatBytes,
   copyBytes,
   ensureBytes,
+  type FHash,
+  type Hex,
   isBytes,
   memoized,
   notImplemented,
   randomBytes as randomBytesWeb,
-  type FHash,
-  type Hex,
-} from '../utils.ts';
+} from "../utils.ts";
 import {
   _createCurveFields,
-  normalizeZ,
-  pippenger,
-  wNAF,
   type AffinePoint,
   type BasicCurve,
   type CurveLengths,
   type CurvePoint,
   type CurvePointCons,
-} from './curve.ts';
-import { Field, type IField, type NLength } from './modular.ts';
+  normalizeZ,
+  pippenger,
+  wNAF,
+} from "./curve.ts";
+import { Field, type IField, type NLength } from "./modular.ts";
 
 // Be friendly to bad ECMAScript parsers by not using bigint literals
 // prettier-ignore
-const _0n = BigInt(0), _1n = BigInt(1), _2n = BigInt(2), _8n = BigInt(8);
+const _0n = BigInt(0),
+  _1n = BigInt(1),
+  _2n = BigInt(2),
+  _8n = BigInt(8);
 
-export type UVRatio = (u: bigint, v: bigint) => { isValid: boolean; value: bigint };
+export type UVRatio = (
+  u: bigint,
+  v: bigint,
+) => { isValid: boolean; value: bigint };
 
 /** Instance of Extended Point with coordinates in X, Y, Z, T. */
 export interface EdwardsPoint extends CurvePoint<bigint, EdwardsPoint> {
@@ -138,14 +144,21 @@ export type EdDSAOpts = Partial<{
  * Allows to create and verify signatures, create public and secret keys.
  */
 export interface EdDSA {
-  keygen: (seed?: Uint8Array) => { secretKey: Uint8Array; publicKey: Uint8Array };
+  keygen: (seed?: Uint8Array) => {
+    secretKey: Uint8Array;
+    publicKey: Uint8Array;
+  };
   getPublicKey: (secretKey: Hex) => Uint8Array;
-  sign: (message: Hex, secretKey: Hex, options?: { context?: Hex }) => Uint8Array;
+  sign: (
+    message: Hex,
+    secretKey: Hex,
+    options?: { context?: Hex },
+  ) => Uint8Array;
   verify: (
     sig: Hex,
     message: Hex,
     publicKey: Hex,
-    options?: { context?: Hex; zip215: boolean }
+    options?: { context?: Hex; zip215: boolean },
   ) => boolean;
   Point: EdwardsPointCons;
   utils: {
@@ -195,7 +208,12 @@ export interface EdDSA {
   lengths: CurveLengths;
 }
 
-function isEdValidXY(Fp: IField<bigint>, CURVE: EdwardsOpts, x: bigint, y: bigint): boolean {
+function isEdValidXY(
+  Fp: IField<bigint>,
+  CURVE: EdwardsOpts,
+  x: bigint,
+  y: bigint,
+): boolean {
   const x2 = Fp.sqr(x);
   const y2 = Fp.sqr(y);
   const left = Fp.add(Fp.mul(CURVE.a, x2), y2);
@@ -203,12 +221,20 @@ function isEdValidXY(Fp: IField<bigint>, CURVE: EdwardsOpts, x: bigint, y: bigin
   return Fp.eql(left, right);
 }
 
-export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): EdwardsPointCons {
-  const validated = _createCurveFields('edwards', params, extraOpts, extraOpts.FpFnLE);
+export function edwards(
+  params: EdwardsOpts,
+  extraOpts: EdwardsExtraOpts = {},
+): EdwardsPointCons {
+  const validated = _createCurveFields(
+    "edwards",
+    params,
+    extraOpts,
+    extraOpts.FpFnLE,
+  );
   const { Fp, Fn } = validated;
-  let CURVE = validated.CURVE as EdwardsOpts;
+  const CURVE = validated.CURVE as EdwardsOpts;
   const { h: cofactor } = CURVE;
-  _validateObject(extraOpts, {}, { uvRatio: 'function' });
+  _validateObject(extraOpts, {}, { uvRatio: "function" });
 
   // Important:
   // There are some places where Fp.BYTES is used instead of nByteLength.
@@ -231,7 +257,7 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
   // Validate whether the passed curve params are valid.
   // equation ax² + y² = 1 + dx²y² should work for generator point.
   if (!isEdValidXY(Fp, CURVE, CURVE.Gx, CURVE.Gy))
-    throw new Error('bad curve params: generator point');
+    throw new Error("bad curve params: generator point");
 
   /**
    * Asserts coordinate is valid: 0 <= n < MASK.
@@ -239,29 +265,31 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
    */
   function acoord(title: string, n: bigint, banZero = false) {
     const min = banZero ? _1n : _0n;
-    aInRange('coordinate ' + title, n, min, MASK);
+    aInRange("coordinate " + title, n, min, MASK);
     return n;
   }
 
   function aextpoint(other: unknown) {
-    if (!(other instanceof Point)) throw new Error('ExtendedPoint expected');
+    if (!(other instanceof Point)) throw new Error("ExtendedPoint expected");
   }
   // Converts Extended point to default (x, y) coordinates.
   // Can accept precomputed Z^-1 - for example, from invertBatch.
-  const toAffineMemo = memoized((p: Point, iz?: bigint): AffinePoint<bigint> => {
-    const { X, Y, Z } = p;
-    const is0 = p.is0();
-    if (iz == null) iz = is0 ? _8n : (Fp.inv(Z) as bigint); // 8 was chosen arbitrarily
-    const x = modP(X * iz);
-    const y = modP(Y * iz);
-    const zz = Fp.mul(Z, iz);
-    if (is0) return { x: _0n, y: _1n };
-    if (zz !== _1n) throw new Error('invZ was invalid');
-    return { x, y };
-  });
+  const toAffineMemo = memoized(
+    (p: Point, iz?: bigint): AffinePoint<bigint> => {
+      const { X, Y, Z } = p;
+      const is0 = p.is0();
+      if (iz == null) iz = is0 ? _8n : (Fp.inv(Z) as bigint); // 8 was chosen arbitrarily
+      const x = modP(X * iz);
+      const y = modP(Y * iz);
+      const zz = Fp.mul(Z, iz);
+      if (is0) return { x: _0n, y: _1n };
+      if (zz !== _1n) throw new Error("invZ was invalid");
+      return { x, y };
+    },
+  );
   const assertValidMemo = memoized((p: Point) => {
     const { a, d } = CURVE;
-    if (p.is0()) throw new Error('bad point: ZERO'); // TODO: optimize, with vars below?
+    if (p.is0()) throw new Error("bad point: ZERO"); // TODO: optimize, with vars below?
     // Equation in affine coordinates: ax² + y² = 1 + dx²y²
     // Equation in projective coordinates (X/Z, Y/Z, Z):  (aX² + Y²)Z² = Z⁴ + dX²Y²
     const { X, Y, Z, T } = p;
@@ -272,11 +300,12 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
     const aX2 = modP(X2 * a); // aX²
     const left = modP(Z2 * modP(aX2 + Y2)); // (aX² + Y²)Z²
     const right = modP(Z4 + modP(d * modP(X2 * Y2))); // Z⁴ + dX²Y²
-    if (left !== right) throw new Error('bad point: equation left != right (1)');
+    if (left !== right)
+      throw new Error("bad point: equation left != right (1)");
     // In Extended coordinates we also have T, which is x*y=T/Z: check X*Y == Z*T
     const XY = modP(X * Y);
     const ZT = modP(Z * T);
-    if (XY !== ZT) throw new Error('bad point: equation left != right (2)');
+    if (XY !== ZT) throw new Error("bad point: equation left != right (2)");
     return true;
   });
 
@@ -284,7 +313,12 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
   // https://en.wikipedia.org/wiki/Twisted_Edwards_curve#Extended_coordinates
   class Point implements EdwardsPoint {
     // base / generator point
-    static readonly BASE = new Point(CURVE.Gx, CURVE.Gy, _1n, modP(CURVE.Gx * CURVE.Gy));
+    static readonly BASE = new Point(
+      CURVE.Gx,
+      CURVE.Gy,
+      _1n,
+      modP(CURVE.Gx * CURVE.Gy),
+    );
     // zero / infinity / identity point
     static readonly ZERO = new Point(_0n, _1n, _1n, _0n); // 0, 1, 1, 0
     // math field
@@ -298,10 +332,10 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
     readonly T: bigint;
 
     constructor(X: bigint, Y: bigint, Z: bigint, T: bigint) {
-      this.X = acoord('x', X);
-      this.Y = acoord('y', Y);
-      this.Z = acoord('z', Z, true);
-      this.T = acoord('t', T);
+      this.X = acoord("x", X);
+      this.Y = acoord("y", Y);
+      this.Z = acoord("z", Z, true);
+      this.T = acoord("t", T);
       Object.freeze(this);
     }
 
@@ -310,10 +344,10 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
     }
 
     static fromAffine(p: AffinePoint<bigint>): Point {
-      if (p instanceof Point) throw new Error('extended point not allowed');
+      if (p instanceof Point) throw new Error("extended point not allowed");
       const { x, y } = p || {};
-      acoord('x', x);
-      acoord('y', y);
+      acoord("x", x);
+      acoord("y", y);
       return new Point(x, y, _1n, modP(x * y));
     }
 
@@ -321,8 +355,8 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
     static fromBytes(bytes: Uint8Array, zip215 = false): Point {
       const len = Fp.BYTES;
       const { a, d } = CURVE;
-      bytes = copyBytes(abytes(bytes, len, 'point'));
-      abool(zip215, 'zip215');
+      bytes = copyBytes(abytes(bytes, len, "point"));
+      abool(zip215, "zip215");
       const normed = copyBytes(bytes); // copy again, we'll manipulate it
       const lastByte = bytes[len - 1]; // select last byte
       normed[len - 1] = lastByte & ~0x80; // clear last bit
@@ -333,7 +367,7 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
       // zip215=true:  0 <= y < MASK (2^256 for ed25519)
       // zip215=false: 0 <= y < P (2^255-19 for ed25519)
       const max = zip215 ? MASK : Fp.ORDER;
-      aInRange('point.y', y, _0n, max);
+      aInRange("point.y", y, _0n, max);
 
       // Ed25519: x² = (y²-1)/(dy²+1) mod p. Ed448: x² = (y²-1)/(dy²-1) mod p. Generic case:
       // ax²+y²=1+dx²y² => y²-1=dx²y²-ax² => y²-1=x²(dy²-a) => x²=(y²-1)/(dy²-a)
@@ -341,17 +375,17 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
       const u = modP(y2 - _1n); // u = y² - 1
       const v = modP(d * y2 - a); // v = d y² + 1.
       let { isValid, value: x } = uvRatio(u, v); // √(u/v)
-      if (!isValid) throw new Error('bad point: invalid y coordinate');
+      if (!isValid) throw new Error("bad point: invalid y coordinate");
       const isXOdd = (x & _1n) === _1n; // There are 2 square roots. Use x_0 bit to select proper
       const isLastByteOdd = (lastByte & 0x80) !== 0; // x_0, last bit
       if (!zip215 && x === _0n && isLastByteOdd)
         // if x=0 and x_0 = 1, fail
-        throw new Error('bad point: x=0 and x_0=1');
+        throw new Error("bad point: x=0 and x_0=1");
       if (isLastByteOdd !== isXOdd) x = modP(-x); // if x_0 != x mod 2, set x = p-x
       return Point.fromAffine({ x, y });
     }
     static fromHex(bytes: Uint8Array, zip215 = false): Point {
-      return Point.fromBytes(ensureBytes('point', bytes), zip215);
+      return Point.fromBytes(ensureBytes("point", bytes), zip215);
     }
 
     get x(): bigint {
@@ -445,7 +479,8 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
     // Constant-time multiplication.
     multiply(scalar: bigint): Point {
       // 1 <= scalar < L
-      if (!Fn.isValidNot0(scalar)) throw new Error('invalid scalar: expected 1 <= sc < curve.n');
+      if (!Fn.isValidNot0(scalar))
+        throw new Error("invalid scalar: expected 1 <= sc < curve.n");
       const { p, f } = wnaf.cached(this, scalar, (p) => normalizeZ(Point, p));
       return normalizeZ(Point, [p, f])[0];
     }
@@ -457,7 +492,8 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
     // Accepts optional accumulator to merge with multiply (important for sparse scalars)
     multiplyUnsafe(scalar: bigint, acc = Point.ZERO): Point {
       // 0 <= scalar < L
-      if (!Fn.isValid(scalar)) throw new Error('invalid scalar: expected 0 <= sc < curve.n');
+      if (!Fn.isValid(scalar))
+        throw new Error("invalid scalar: expected 0 <= sc < curve.n");
       if (scalar === _0n) return Point.ZERO;
       if (this.is0() || scalar === _1n) return this;
       return wnaf.unsafe(this, scalar, (p) => normalizeZ(Point, p), acc);
@@ -502,7 +538,7 @@ export function edwards(params: EdwardsOpts, extraOpts: EdwardsExtraOpts = {}): 
     }
 
     toString() {
-      return `<Point ${this.is0() ? 'ZERO' : this.toHex()}>`;
+      return `<Point ${this.is0() ? "ZERO" : this.toHex()}>`;
     }
 
     // TODO: remove
@@ -649,30 +685,37 @@ export abstract class PrimeEdwardsPoint<T extends PrimeEdwardsPoint<T>>
 /**
  * Initializes EdDSA signatures over given Edwards curve.
  */
-export function eddsa(Point: EdwardsPointCons, cHash: FHash, eddsaOpts: EdDSAOpts = {}): EdDSA {
-  if (typeof cHash !== 'function') throw new Error('"hash" function param is required');
+export function eddsa(
+  Point: EdwardsPointCons,
+  cHash: FHash,
+  eddsaOpts: EdDSAOpts = {},
+): EdDSA {
+  if (typeof cHash !== "function")
+    throw new Error('"hash" function param is required');
   _validateObject(
     eddsaOpts,
     {},
     {
-      adjustScalarBytes: 'function',
-      randomBytes: 'function',
-      domain: 'function',
-      prehash: 'function',
-      mapToCurve: 'function',
-    }
+      adjustScalarBytes: "function",
+      randomBytes: "function",
+      domain: "function",
+      prehash: "function",
+      mapToCurve: "function",
+    },
   );
 
   const { prehash } = eddsaOpts;
   const { BASE, Fp, Fn } = Point;
 
   const randomBytes = eddsaOpts.randomBytes || randomBytesWeb;
-  const adjustScalarBytes = eddsaOpts.adjustScalarBytes || ((bytes: Uint8Array) => bytes);
+  const adjustScalarBytes =
+    eddsaOpts.adjustScalarBytes || ((bytes: Uint8Array) => bytes);
   const domain =
     eddsaOpts.domain ||
     ((data: Uint8Array, ctx: Uint8Array, phflag: boolean) => {
-      abool(phflag, 'phflag');
-      if (ctx.length || phflag) throw new Error('Contexts/pre-hash are not supported');
+      abool(phflag, "phflag");
+      if (ctx.length || phflag)
+        throw new Error("Contexts/pre-hash are not supported");
       return data;
     }); // NOOP
 
@@ -684,10 +727,10 @@ export function eddsa(Point: EdwardsPointCons, cHash: FHash, eddsaOpts: EdDSAOpt
   // Get the hashed private scalar per RFC8032 5.1.5
   function getPrivateScalar(key: Hex) {
     const len = lengths.secretKey;
-    key = ensureBytes('private key', key, len);
+    key = ensureBytes("private key", key, len);
     // Hash private key with curve's hash function to produce uniformingly random input
     // Check byte lengths: ensure(64, h(ensure(32, key)))
-    const hashed = ensureBytes('hashed private key', cHash(key), 2 * len);
+    const hashed = ensureBytes("hashed private key", cHash(key), 2 * len);
     const head = adjustScalarBytes(hashed.slice(0, len)); // clear first half bits, produce FE
     const prefix = hashed.slice(len, 2 * len); // second half is called key prefix (5.1.6)
     const scalar = modN_LE(head); // The actual private scalar
@@ -708,23 +751,32 @@ export function eddsa(Point: EdwardsPointCons, cHash: FHash, eddsaOpts: EdDSAOpt
   }
 
   // int('LE', SHA512(dom2(F, C) || msgs)) mod N
-  function hashDomainToScalar(context: Hex = Uint8Array.of(), ...msgs: Uint8Array[]) {
+  function hashDomainToScalar(
+    context: Hex = Uint8Array.of(),
+    ...msgs: Uint8Array[]
+  ) {
     const msg = concatBytes(...msgs);
-    return modN_LE(cHash(domain(msg, ensureBytes('context', context), !!prehash)));
+    return modN_LE(
+      cHash(domain(msg, ensureBytes("context", context), !!prehash)),
+    );
   }
 
   /** Signs message with privateKey. RFC8032 5.1.6 */
-  function sign(msg: Hex, secretKey: Hex, options: { context?: Hex } = {}): Uint8Array {
-    msg = ensureBytes('message', msg);
+  function sign(
+    msg: Hex,
+    secretKey: Hex,
+    options: { context?: Hex } = {},
+  ): Uint8Array {
+    msg = ensureBytes("message", msg);
     if (prehash) msg = prehash(msg); // for ed25519ph etc.
     const { prefix, scalar, pointBytes } = getExtendedPublicKey(secretKey);
     const r = hashDomainToScalar(options.context, prefix, msg); // r = dom2(F, C) || prefix || PH(M)
     const R = BASE.multiply(r).toBytes(); // R = rG
     const k = hashDomainToScalar(options.context, R, pointBytes, msg); // R || A || PH(M)
     const s = Fn.create(r + k * scalar); // S = (r + k * s) mod L
-    if (!Fn.isValid(s)) throw new Error('sign failed: invalid s'); // 0 <= s < L
+    if (!Fn.isValid(s)) throw new Error("sign failed: invalid s"); // 0 <= s < L
     const rs = concatBytes(R, Fn.toBytes(s));
-    return abytes(rs, lengths.signature, 'result');
+    return abytes(rs, lengths.signature, "result");
   }
 
   // verification rule is either zip215 or rfc8032 / nist186-5. Consult fromHex:
@@ -734,13 +786,18 @@ export function eddsa(Point: EdwardsPointCons, cHash: FHash, eddsaOpts: EdDSAOpt
    * Verifies EdDSA signature against message and public key. RFC8032 5.1.7.
    * An extended group equation is checked.
    */
-  function verify(sig: Hex, msg: Hex, publicKey: Hex, options = verifyOpts): boolean {
+  function verify(
+    sig: Hex,
+    msg: Hex,
+    publicKey: Hex,
+    options = verifyOpts,
+  ): boolean {
     const { context, zip215 } = options;
     const len = lengths.signature;
-    sig = ensureBytes('signature', sig, len);
-    msg = ensureBytes('message', msg);
-    publicKey = ensureBytes('publicKey', publicKey, lengths.publicKey);
-    if (zip215 !== undefined) abool(zip215, 'zip215');
+    sig = ensureBytes("signature", sig, len);
+    msg = ensureBytes("message", msg);
+    publicKey = ensureBytes("publicKey", publicKey, lengths.publicKey);
+    if (zip215 !== undefined) abool(zip215, "zip215");
     if (prehash) msg = prehash(msg); // for ed25519ph, etc
 
     const mid = len / 2;
@@ -774,7 +831,7 @@ export function eddsa(Point: EdwardsPointCons, cHash: FHash, eddsaOpts: EdDSAOpt
     seed: _size,
   };
   function randomSecretKey(seed = randomBytes(lengths.seed)): Uint8Array {
-    return abytes(seed, lengths.seed, 'seed');
+    return abytes(seed, lengths.seed, "seed");
   }
   function keygen(seed?: Uint8Array) {
     const secretKey = utils.randomSecretKey(seed);
@@ -809,7 +866,8 @@ export function eddsa(Point: EdwardsPointCons, cHash: FHash, eddsaOpts: EdDSAOpt
       const { y } = Point.fromBytes(publicKey);
       const size = lengths.publicKey;
       const is25519 = size === 32;
-      if (!is25519 && size !== 57) throw new Error('only defined for 25519 and 448');
+      if (!is25519 && size !== 57)
+        throw new Error("only defined for 25519 and 448");
       const u = is25519 ? Fp.div(_1n + y, _1n - y) : Fp.div(y - _1n, y + _1n);
       return Fp.toBytes(u);
     },
@@ -857,14 +915,14 @@ export type CurveTypeWithLength = Readonly<CurveType & Partial<NLength>>;
 export type CurveFn = {
   /** @deprecated the property will be removed in next release */
   CURVE: CurveType;
-  keygen: EdDSA['keygen'];
-  getPublicKey: EdDSA['getPublicKey'];
-  sign: EdDSA['sign'];
-  verify: EdDSA['verify'];
+  keygen: EdDSA["keygen"];
+  getPublicKey: EdDSA["getPublicKey"];
+  sign: EdDSA["sign"];
+  verify: EdDSA["verify"];
   Point: EdwardsPointCons;
   /** @deprecated use `Point` */
   ExtendedPoint: EdwardsPointCons;
-  utils: EdDSA['utils'];
+  utils: EdDSA["utils"];
   lengths: CurveLengths;
 };
 export type EdComposed = {
@@ -895,7 +953,10 @@ function _eddsa_legacy_opts_to_new(c: CurveTypeWithLength): EdComposed {
   };
   return { CURVE, curveOpts, hash: c.hash, eddsaOpts };
 }
-function _eddsa_new_output_to_legacy(c: CurveTypeWithLength, eddsa: EdDSA): CurveFn {
+function _eddsa_new_output_to_legacy(
+  c: CurveTypeWithLength,
+  eddsa: EdDSA,
+): CurveFn {
   const Point = eddsa.Point;
   const legacy = Object.assign({}, eddsa, {
     ExtendedPoint: Point,

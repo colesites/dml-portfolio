@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _asyncIterator;
 function _asyncIterator(iterable) {
@@ -41,7 +41,7 @@ function AsyncFromSyncIterator(s) {
       if (ret === undefined) {
         return Promise.resolve({
           value: value,
-          done: true
+          done: true,
         });
       }
       return AsyncFromSyncIteratorContinuation(ret.apply(this.s, arguments));
@@ -52,19 +52,17 @@ function AsyncFromSyncIterator(s) {
         return Promise.reject(maybeError);
       }
       return AsyncFromSyncIteratorContinuation(thr.apply(this.s, arguments));
-    }
+    },
   };
   function AsyncFromSyncIteratorContinuation(r) {
     if (Object(r) !== r) {
       return Promise.reject(new TypeError(r + " is not an object."));
     }
     var done = r.done;
-    return Promise.resolve(r.value).then(function (value) {
-      return {
-        value: value,
-        done: done
-      };
-    });
+    return Promise.resolve(r.value).then((value) => ({
+      value: value,
+      done: done,
+    }));
   }
   return new AsyncFromSyncIterator(s);
 }

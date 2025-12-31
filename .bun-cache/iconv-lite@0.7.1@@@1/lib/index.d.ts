@@ -9,7 +9,7 @@
  * This file provides detailed typings for the public API of iconv-lite
  *-------------------------------------------------------------------------------------------- */
 
-import type { Encoding } from "../types/encodings"
+import type { Encoding } from "../types/encodings";
 
 // --- Options ---
 
@@ -50,10 +50,18 @@ declare namespace iconv {
     // --- Basic API ---
 
     /** Encodes a `string` into a `Buffer`, using the provided `encoding`. */
-    encode(content: string, encoding: Encoding, options?: EncodeOptions): Buffer;
+    encode(
+      content: string,
+      encoding: Encoding,
+      options?: EncodeOptions,
+    ): Buffer;
 
     /** Decodes a `Buffer` into a `string`, using the provided `encoding`. */
-    decode(buffer: Buffer | Uint8Array, encoding: Encoding, options?: DecodeOptions): string;
+    decode(
+      buffer: Buffer | Uint8Array,
+      encoding: Encoding,
+      options?: DecodeOptions,
+    ): string;
 
     /** Checks if a given encoding is supported by `iconv-lite`. */
     encodingExists(encoding: string): encoding is Encoding;
@@ -69,10 +77,16 @@ declare namespace iconv {
     // --- Stream API ---
 
     /** Creates a stream that decodes binary data from a given `encoding` into strings. */
-    decodeStream(encoding: Encoding, options?: DecodeOptions): NodeJS.ReadWriteStream;
+    decodeStream(
+      encoding: Encoding,
+      options?: DecodeOptions,
+    ): NodeJS.ReadWriteStream;
 
     /** Creates a stream that encodes strings into binary data in a given `encoding`. */
-    encodeStream(encoding: Encoding, options?: EncodeOptions): NodeJS.ReadWriteStream;
+    encodeStream(
+      encoding: Encoding,
+      options?: EncodeOptions,
+    ): NodeJS.ReadWriteStream;
 
     /**
      * Explicitly enable Streaming API in browser environments by passing in:
@@ -107,9 +121,9 @@ declare namespace iconv {
       Encoding,
       | string
       | {
-        type: string;
-        [key: string]: any;
-      }
+          type: string;
+          [key: string]: any;
+        }
     > | null;
 
     /** A cache of initialized codec objects. */
@@ -123,9 +137,9 @@ declare namespace iconv {
 
     /** @readonly Whether or not, Streaming API is enabled. */
     readonly supportsStreams: boolean;
-  }
+  };
 
-  export type { iconv as Iconv, Encoding }
-  export { iconv as default }
+  export type { iconv as Iconv, Encoding };
+  export { iconv as default };
 }
-export = iconv
+export = iconv;

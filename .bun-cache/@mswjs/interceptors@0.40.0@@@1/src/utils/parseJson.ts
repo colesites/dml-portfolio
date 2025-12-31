@@ -4,9 +4,9 @@
  */
 export function parseJson(data: string): Record<string, unknown> | null {
   try {
-    const json = JSON.parse(data)
-    return json
+    const json = JSON.parse(data);
+    return json;
   } catch (_) {
-    return null
+    return null;
   }
 }

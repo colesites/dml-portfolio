@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.ValidationContext =
@@ -8,11 +6,11 @@ exports.ValidationContext =
   exports.ASTValidationContext =
     void 0;
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _visitor = require('../language/visitor.js');
+var _visitor = require("../language/visitor.js");
 
-var _TypeInfo = require('../utilities/TypeInfo.js');
+var _TypeInfo = require("../utilities/TypeInfo.js");
 
 /**
  * An instance of this class is passed as the "this" context to all validators,
@@ -29,7 +27,7 @@ class ASTValidationContext {
   }
 
   get [Symbol.toStringTag]() {
-    return 'ASTValidationContext';
+    return "ASTValidationContext";
   }
 
   reportError(error) {
@@ -125,7 +123,7 @@ class SDLValidationContext extends ASTValidationContext {
   }
 
   get [Symbol.toStringTag]() {
-    return 'SDLValidationContext';
+    return "SDLValidationContext";
   }
 
   getSchema() {
@@ -145,7 +143,7 @@ class ValidationContext extends ASTValidationContext {
   }
 
   get [Symbol.toStringTag]() {
-    return 'ValidationContext';
+    return "ValidationContext";
   }
 
   getSchema() {

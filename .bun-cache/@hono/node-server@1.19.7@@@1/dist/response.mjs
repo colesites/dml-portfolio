@@ -8,7 +8,7 @@ var Response = class _Response {
   #init;
   [getResponseCache]() {
     delete this[cacheKey];
-    return this[responseCache] ||= new GlobalResponse(this.#body, this.#init);
+    return (this[responseCache] ||= new GlobalResponse(this.#body, this.#init));
   }
   constructor(body, init) {
     let headers;
@@ -26,8 +26,15 @@ var Response = class _Response {
     } else {
       this.#init = init;
     }
-    if (typeof body === "string" || typeof body?.getReader !== "undefined" || body instanceof Blob || body instanceof Uint8Array) {
-      headers ||= init?.headers || { "content-type": "text/plain; charset=UTF-8" };
+    if (
+      typeof body === "string" ||
+      typeof body?.getReader !== "undefined" ||
+      body instanceof Blob ||
+      body instanceof Uint8Array
+    ) {
+      headers ||= init?.headers || {
+        "content-type": "text/plain; charset=UTF-8",
+      };
       this[cacheKey] = [init?.status || 200, body, headers];
     }
   }
@@ -49,24 +56,28 @@ var Response = class _Response {
     return status >= 200 && status < 300;
   }
 };
-["body", "bodyUsed", "redirected", "statusText", "trailers", "type", "url"].forEach((k) => {
+[
+  "body",
+  "bodyUsed",
+  "redirected",
+  "statusText",
+  "trailers",
+  "type",
+  "url",
+].forEach((k) => {
   Object.defineProperty(Response.prototype, k, {
     get() {
       return this[getResponseCache]()[k];
-    }
+    },
   });
 });
 ["arrayBuffer", "blob", "clone", "formData", "json", "text"].forEach((k) => {
   Object.defineProperty(Response.prototype, k, {
-    value: function() {
+    value: function () {
       return this[getResponseCache]()[k]();
-    }
+    },
   });
 });
 Object.setPrototypeOf(Response, GlobalResponse);
 Object.setPrototypeOf(Response.prototype, GlobalResponse.prototype);
-export {
-  GlobalResponse,
-  Response,
-  cacheKey
-};
+export { GlobalResponse, Response, cacheKey };

@@ -1,57 +1,57 @@
-const { fdir: Fdir } = require('fdir')
-const path = require('path')
-const picomatch = require('picomatch')
+const { fdir: Fdir } = require("fdir");
+const path = require("path");
+const picomatch = require("picomatch");
 
 class Ls {
-  constructor (directory = './', envFile = ['.env*'], excludeEnvFile = []) {
-    this.ignore = ['node_modules/**', '.git/**']
+  constructor(directory = "./", envFile = [".env*"], excludeEnvFile = []) {
+    this.ignore = ["node_modules/**", ".git/**"];
 
-    this.cwd = path.resolve(directory)
-    this.envFile = envFile
-    this.excludeEnvFile = excludeEnvFile
+    this.cwd = path.resolve(directory);
+    this.envFile = envFile;
+    this.excludeEnvFile = excludeEnvFile;
   }
 
-  run () {
-    return this._filepaths()
+  run() {
+    return this._filepaths();
   }
 
-  _filepaths () {
-    const exclude = picomatch(this._exclude())
+  _filepaths() {
+    const exclude = picomatch(this._exclude());
     const include = picomatch(this._patterns(), {
-      ignore: this._exclude()
-    })
+      ignore: this._exclude(),
+    });
 
     return new Fdir()
       .withRelativePaths()
       .exclude((dir, path) => exclude(path))
       .filter((path) => include(path))
       .crawl(this.cwd)
-      .sync()
+      .sync();
   }
 
-  _patterns () {
+  _patterns() {
     if (!Array.isArray(this.envFile)) {
-      return [`**/${this.envFile}`]
+      return [`**/${this.envFile}`];
     }
 
-    return this.envFile.map(part => `**/${part}`)
+    return this.envFile.map((part) => `**/${part}`);
   }
 
-  _excludePatterns () {
+  _excludePatterns() {
     if (!Array.isArray(this.excludeEnvFile)) {
-      return [`**/${this.excludeEnvFile}`]
+      return [`**/${this.excludeEnvFile}`];
     }
 
-    return this.excludeEnvFile.map(part => `**/${part}`)
+    return this.excludeEnvFile.map((part) => `**/${part}`);
   }
 
-  _exclude () {
+  _exclude() {
     if (this._excludePatterns().length > 0) {
-      return this.ignore.concat(this._excludePatterns())
+      return this.ignore.concat(this._excludePatterns());
     } else {
-      return this.ignore
+      return this.ignore;
     }
   }
 }
 
-module.exports = Ls
+module.exports = Ls;

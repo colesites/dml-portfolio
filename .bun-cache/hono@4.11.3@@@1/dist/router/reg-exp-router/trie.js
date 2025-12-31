@@ -1,5 +1,6 @@
 // src/router/reg-exp-router/trie.ts
 import { Node } from "./node.js";
+
 var Trie = class {
   #context = { varIndex: 0 };
   #root = new Node();
@@ -19,7 +20,7 @@ var Trie = class {
         break;
       }
     }
-    const tokens = path.match(/(?::[^\/]+)|(?:\/\*$)|./g) || [];
+    const tokens = path.match(/(?::[^/]+)|(?:\/\*$)|./g) || [];
     for (let i = groups.length - 1; i >= 0; i--) {
       const [mark] = groups[i];
       for (let j = tokens.length - 1; j >= 0; j--) {
@@ -29,7 +30,13 @@ var Trie = class {
         }
       }
     }
-    this.#root.insert(tokens, index, paramAssoc, this.#context, pathErrorCheckOnly);
+    this.#root.insert(
+      tokens,
+      index,
+      paramAssoc,
+      this.#context,
+      pathErrorCheckOnly,
+    );
     return paramAssoc;
   }
   buildRegExp() {
@@ -40,20 +47,21 @@ var Trie = class {
     let captureIndex = 0;
     const indexReplacementMap = [];
     const paramReplacementMap = [];
-    regexp = regexp.replace(/#(\d+)|@(\d+)|\.\*\$/g, (_, handlerIndex, paramIndex) => {
-      if (handlerIndex !== void 0) {
-        indexReplacementMap[++captureIndex] = Number(handlerIndex);
-        return "$()";
-      }
-      if (paramIndex !== void 0) {
-        paramReplacementMap[Number(paramIndex)] = ++captureIndex;
+    regexp = regexp.replace(
+      /#(\d+)|@(\d+)|\.\*\$/g,
+      (_, handlerIndex, paramIndex) => {
+        if (handlerIndex !== void 0) {
+          indexReplacementMap[++captureIndex] = Number(handlerIndex);
+          return "$()";
+        }
+        if (paramIndex !== void 0) {
+          paramReplacementMap[Number(paramIndex)] = ++captureIndex;
+          return "";
+        }
         return "";
-      }
-      return "";
-    });
+      },
+    );
     return [new RegExp(`^${regexp}`), indexReplacementMap, paramReplacementMap];
   }
 };
-export {
-  Trie
-};
+export { Trie };

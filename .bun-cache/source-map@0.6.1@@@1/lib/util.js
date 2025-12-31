@@ -26,8 +26,9 @@ function getArg(aArgs, aName, aDefaultValue) {
 }
 exports.getArg = getArg;
 
-var urlRegexp = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
-var dataUrlRegexp = /^data:.+\,.+$/;
+var urlRegexp =
+  /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/;
+var dataUrlRegexp = /^data:.+,.+$/;
 
 function urlParse(aUrl) {
   var match = aUrl.match(urlRegexp);
@@ -39,25 +40,25 @@ function urlParse(aUrl) {
     auth: match[2],
     host: match[3],
     port: match[4],
-    path: match[5]
+    path: match[5],
   };
 }
 exports.urlParse = urlParse;
 
 function urlGenerate(aParsedUrl) {
-  var url = '';
+  var url = "";
   if (aParsedUrl.scheme) {
-    url += aParsedUrl.scheme + ':';
+    url += aParsedUrl.scheme + ":";
   }
-  url += '//';
+  url += "//";
   if (aParsedUrl.auth) {
-    url += aParsedUrl.auth + '@';
+    url += aParsedUrl.auth + "@";
   }
   if (aParsedUrl.host) {
     url += aParsedUrl.host;
   }
   if (aParsedUrl.port) {
-    url += ":" + aParsedUrl.port
+    url += ":" + aParsedUrl.port;
   }
   if (aParsedUrl.path) {
     url += aParsedUrl.path;
@@ -91,12 +92,12 @@ function normalize(aPath) {
   var parts = path.split(/\/+/);
   for (var part, up = 0, i = parts.length - 1; i >= 0; i--) {
     part = parts[i];
-    if (part === '.') {
+    if (part === ".") {
       parts.splice(i, 1);
-    } else if (part === '..') {
+    } else if (part === "..") {
       up++;
     } else if (up > 0) {
-      if (part === '') {
+      if (part === "") {
         // The first part is blank if the path is absolute. Trying to go
         // above the root is a no-op. Therefore we can remove all '..' parts
         // directly after the root.
@@ -108,10 +109,10 @@ function normalize(aPath) {
       }
     }
   }
-  path = parts.join('/');
+  path = parts.join("/");
 
-  if (path === '') {
-    path = isAbsolute ? '/' : '.';
+  if (path === "") {
+    path = isAbsolute ? "/" : ".";
   }
 
   if (url) {
@@ -148,7 +149,7 @@ function join(aRoot, aPath) {
   var aPathUrl = urlParse(aPath);
   var aRootUrl = urlParse(aRoot);
   if (aRootUrl) {
-    aRoot = aRootUrl.path || '/';
+    aRoot = aRootUrl.path || "/";
   }
 
   // `join(foo, '//www.example.org')`
@@ -169,9 +170,10 @@ function join(aRoot, aPath) {
     return urlGenerate(aRootUrl);
   }
 
-  var joined = aPath.charAt(0) === '/'
-    ? aPath
-    : normalize(aRoot.replace(/\/+$/, '') + '/' + aPath);
+  var joined =
+    aPath.charAt(0) === "/"
+      ? aPath
+      : normalize(aRoot.replace(/\/+$/, "") + "/" + aPath);
 
   if (aRootUrl) {
     aRootUrl.path = joined;
@@ -181,9 +183,8 @@ function join(aRoot, aPath) {
 }
 exports.join = join;
 
-exports.isAbsolute = function (aPath) {
-  return aPath.charAt(0) === '/' || urlRegexp.test(aPath);
-};
+exports.isAbsolute = (aPath) =>
+  aPath.charAt(0) === "/" || urlRegexp.test(aPath);
 
 /**
  * Make a path relative to a URL or another path.
@@ -196,14 +197,14 @@ function relative(aRoot, aPath) {
     aRoot = ".";
   }
 
-  aRoot = aRoot.replace(/\/$/, '');
+  aRoot = aRoot.replace(/\/$/, "");
 
   // It is possible for the path to be above the root. In this case, simply
   // checking whether the root is a prefix of the path won't work. Instead, we
   // need to remove components from the root one by one, until either we find
   // a prefix that fits, or we run out of components to remove.
   var level = 0;
-  while (aPath.indexOf(aRoot + '/') !== 0) {
+  while (aPath.indexOf(aRoot + "/") !== 0) {
     var index = aRoot.lastIndexOf("/");
     if (index < 0) {
       return aPath;
@@ -213,7 +214,7 @@ function relative(aRoot, aPath) {
     // file:///, etc.), one or more slashes (/), or simply nothing at all, we
     // have exhausted all components, so the path is not relative to the root.
     aRoot = aRoot.slice(0, index);
-    if (aRoot.match(/^([^\/]+:\/)?\/*$/)) {
+    if (aRoot.match(/^([^/]+:\/)?\/*$/)) {
       return aPath;
     }
 
@@ -225,12 +226,12 @@ function relative(aRoot, aPath) {
 }
 exports.relative = relative;
 
-var supportsNullProto = (function () {
+var supportsNullProto = (() => {
   var obj = Object.create(null);
-  return !('__proto__' in obj);
-}());
+  return !("__proto__" in obj);
+})();
 
-function identity (s) {
+function identity(s) {
   return s;
 }
 
@@ -245,7 +246,7 @@ function identity (s) {
  */
 function toSetString(aStr) {
   if (isProtoString(aStr)) {
-    return '$' + aStr;
+    return "$" + aStr;
   }
 
   return aStr;
@@ -272,15 +273,17 @@ function isProtoString(s) {
     return false;
   }
 
-  if (s.charCodeAt(length - 1) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 2) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
-      s.charCodeAt(length - 4) !== 116 /* 't' */ ||
-      s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
-      s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
-      s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
-      s.charCodeAt(length - 8) !== 95  /* '_' */ ||
-      s.charCodeAt(length - 9) !== 95  /* '_' */) {
+  if (
+    s.charCodeAt(length - 1) !== 95 /* '_' */ ||
+    s.charCodeAt(length - 2) !== 95 /* '_' */ ||
+    s.charCodeAt(length - 3) !== 111 /* 'o' */ ||
+    s.charCodeAt(length - 4) !== 116 /* 't' */ ||
+    s.charCodeAt(length - 5) !== 111 /* 'o' */ ||
+    s.charCodeAt(length - 6) !== 114 /* 'r' */ ||
+    s.charCodeAt(length - 7) !== 112 /* 'p' */ ||
+    s.charCodeAt(length - 8) !== 95 /* '_' */ ||
+    s.charCodeAt(length - 9) !== 95 /* '_' */
+  ) {
     return false;
   }
 
@@ -340,7 +343,11 @@ exports.compareByOriginalPositions = compareByOriginalPositions;
  * source/name/original line and column the same. Useful when searching for a
  * mapping with a stubbed out mapping.
  */
-function compareByGeneratedPositionsDeflated(mappingA, mappingB, onlyCompareGenerated) {
+function compareByGeneratedPositionsDeflated(
+  mappingA,
+  mappingB,
+  onlyCompareGenerated,
+) {
   var cmp = mappingA.generatedLine - mappingB.generatedLine;
   if (cmp !== 0) {
     return cmp;
@@ -368,7 +375,8 @@ function compareByGeneratedPositionsDeflated(mappingA, mappingB, onlyCompareGene
 
   return strcmp(mappingA.name, mappingB.name);
 }
-exports.compareByGeneratedPositionsDeflated = compareByGeneratedPositionsDeflated;
+exports.compareByGeneratedPositionsDeflated =
+  compareByGeneratedPositionsDeflated;
 
 function strcmp(aStr1, aStr2) {
   if (aStr1 === aStr2) {
@@ -422,7 +430,8 @@ function compareByGeneratedPositionsInflated(mappingA, mappingB) {
 
   return strcmp(mappingA.name, mappingB.name);
 }
-exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflated;
+exports.compareByGeneratedPositionsInflated =
+  compareByGeneratedPositionsInflated;
 
 /**
  * Strip any JSON XSSI avoidance prefix from the string (as documented
@@ -430,7 +439,7 @@ exports.compareByGeneratedPositionsInflated = compareByGeneratedPositionsInflate
  * JSON.
  */
 function parseSourceMapInput(str) {
-  return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ''));
+  return JSON.parse(str.replace(/^\)]}'[^\n]*\n/, ""));
 }
 exports.parseSourceMapInput = parseSourceMapInput;
 
@@ -439,12 +448,12 @@ exports.parseSourceMapInput = parseSourceMapInput;
  * URL, and the source map's URL.
  */
 function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
-  sourceURL = sourceURL || '';
+  sourceURL = sourceURL || "";
 
   if (sourceRoot) {
     // This follows what Chrome does.
-    if (sourceRoot[sourceRoot.length - 1] !== '/' && sourceURL[0] !== '/') {
-      sourceRoot += '/';
+    if (sourceRoot[sourceRoot.length - 1] !== "/" && sourceURL[0] !== "/") {
+      sourceRoot += "/";
     }
     // The spec says:
     //   Line 4: An optional source root, useful for relocating source
@@ -475,7 +484,7 @@ function computeSourceURL(sourceRoot, sourceURL, sourceMapURL) {
     }
     if (parsed.path) {
       // Strip the last path component, but keep the "/".
-      var index = parsed.path.lastIndexOf('/');
+      var index = parsed.path.lastIndexOf("/");
       if (index >= 0) {
         parsed.path = parsed.path.substring(0, index + 1);
       }

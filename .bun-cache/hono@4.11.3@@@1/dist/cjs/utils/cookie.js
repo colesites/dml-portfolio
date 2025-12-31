@@ -8,31 +8,43 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var cookie_exports = {};
 __export(cookie_exports, {
   parse: () => parse,
   parseSigned: () => parseSigned,
   serialize: () => serialize,
-  serializeSigned: () => serializeSigned
+  serializeSigned: () => serializeSigned,
 });
 module.exports = __toCommonJS(cookie_exports);
 var import_url = require("./url");
 const algorithm = { name: "HMAC", hash: "SHA-256" };
 const getCryptoKey = async (secret) => {
-  const secretBuf = typeof secret === "string" ? new TextEncoder().encode(secret) : secret;
-  return await crypto.subtle.importKey("raw", secretBuf, algorithm, false, ["sign", "verify"]);
+  const secretBuf =
+    typeof secret === "string" ? new TextEncoder().encode(secret) : secret;
+  return await crypto.subtle.importKey("raw", secretBuf, algorithm, false, [
+    "sign",
+    "verify",
+  ]);
 };
 const makeSignature = async (value, secret) => {
   const key = await getCryptoKey(secret);
-  const signature = await crypto.subtle.sign(algorithm.name, key, new TextEncoder().encode(value));
+  const signature = await crypto.subtle.sign(
+    algorithm.name,
+    key,
+    new TextEncoder().encode(value),
+  );
   return btoa(String.fromCharCode(...new Uint8Array(signature)));
 };
 const verifySignature = async (base64Signature, value, secret) => {
@@ -42,7 +54,12 @@ const verifySignature = async (base64Signature, value, secret) => {
     for (let i = 0, len = signatureBinStr.length; i < len; i++) {
       signature[i] = signatureBinStr.charCodeAt(i);
     }
-    return await crypto.subtle.verify(algorithm, secret, signature, new TextEncoder().encode(value));
+    return await crypto.subtle.verify(
+      algorithm,
+      secret,
+      signature,
+      new TextEncoder().encode(value),
+    );
   } catch {
     return false;
   }
@@ -62,7 +79,10 @@ const parse = (cookie, name) => {
       continue;
     }
     const cookieName = pairStr.substring(0, valueStartPos).trim();
-    if (name && name !== cookieName || !validCookieNameRegEx.test(cookieName)) {
+    if (
+      (name && name !== cookieName) ||
+      !validCookieNameRegEx.test(cookieName)
+    ) {
       continue;
     }
     let cookieValue = pairStr.substring(valueStartPos + 1).trim();
@@ -70,7 +90,13 @@ const parse = (cookie, name) => {
       cookieValue = cookieValue.slice(1, -1);
     }
     if (validCookieValueRegEx.test(cookieValue)) {
-      parsedCookie[cookieName] = cookieValue.indexOf("%") !== -1 ? (0, import_url.tryDecode)(cookieValue, import_url.decodeURIComponent_) : cookieValue;
+      parsedCookie[cookieName] =
+        cookieValue.indexOf("%") !== -1
+          ? (0, import_url.tryDecode)(
+              cookieValue,
+              import_url.decodeURIComponent_,
+            )
+          : cookieValue;
       if (name) {
         break;
       }
@@ -115,7 +141,7 @@ const _serialize = (name, value, opt = {}) => {
   if (opt && typeof opt.maxAge === "number" && opt.maxAge >= 0) {
     if (opt.maxAge > 3456e4) {
       throw new Error(
-        "Cookies Max-Age SHOULD NOT be greater than 400 days (34560000 seconds) in duration."
+        "Cookies Max-Age SHOULD NOT be greater than 400 days (34560000 seconds) in duration.",
       );
     }
     cookie += `; Max-Age=${opt.maxAge | 0}`;
@@ -129,7 +155,7 @@ const _serialize = (name, value, opt = {}) => {
   if (opt.expires) {
     if (opt.expires.getTime() - Date.now() > 3456e7) {
       throw new Error(
-        "Cookies Expires SHOULD NOT be greater than 400 days (34560000 seconds) in the future."
+        "Cookies Expires SHOULD NOT be greater than 400 days (34560000 seconds) in the future.",
       );
     }
     cookie += `; Expires=${opt.expires.toUTCString()}`;
@@ -165,9 +191,10 @@ const serializeSigned = async (name, value, secret, opt = {}) => {
   return _serialize(name, value, opt);
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  parse,
-  parseSigned,
-  serialize,
-  serializeSigned
-});
+0 &&
+  (module.exports = {
+    parse,
+    parseSigned,
+    serialize,
+    serializeSigned,
+  });

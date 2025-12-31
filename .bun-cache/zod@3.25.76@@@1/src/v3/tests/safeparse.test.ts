@@ -1,7 +1,8 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
+
 const stringSchema = z.string();
 
 test("safeparse fail", () => {
@@ -22,6 +23,6 @@ test("safeparse unexpected error", () => {
       .refine((data) => {
         throw new Error(data);
       })
-      .safeParse("12")
+      .safeParse("12"),
   ).toThrow();
 });

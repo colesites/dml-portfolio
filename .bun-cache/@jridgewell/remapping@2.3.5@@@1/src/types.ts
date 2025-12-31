@@ -1,10 +1,10 @@
-import type { SourceMapInput } from '@jridgewell/trace-mapping';
+import type { SourceMapInput } from "@jridgewell/trace-mapping";
 
 export type {
-  SourceMapSegment,
   DecodedSourceMap,
   EncodedSourceMap,
-} from '@jridgewell/trace-mapping';
+  SourceMapSegment,
+} from "@jridgewell/trace-mapping";
 
 export type { SourceMapInput };
 

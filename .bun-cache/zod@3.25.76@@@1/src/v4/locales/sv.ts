@@ -29,7 +29,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -99,9 +102,12 @@ const error: () => errors.$ZodErrorMap = () => {
         if (_issue.format === "starts_with") {
           return `Ogiltig sträng: måste börja med "${_issue.prefix}"`;
         }
-        if (_issue.format === "ends_with") return `Ogiltig sträng: måste sluta med "${_issue.suffix}"`;
-        if (_issue.format === "includes") return `Ogiltig sträng: måste innehålla "${_issue.includes}"`;
-        if (_issue.format === "regex") return `Ogiltig sträng: måste matcha mönstret "${_issue.pattern}"`;
+        if (_issue.format === "ends_with")
+          return `Ogiltig sträng: måste sluta med "${_issue.suffix}"`;
+        if (_issue.format === "includes")
+          return `Ogiltig sträng: måste innehålla "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `Ogiltig sträng: måste matcha mönstret "${_issue.pattern}"`;
         return `Ogiltig(t) ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

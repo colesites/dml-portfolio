@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var common_exports = {};
 __export(common_exports, {
   CLASS_NAME: () => CLASS_NAME,
@@ -33,11 +37,13 @@ __export(common_exports, {
   keyframesCommon: () => keyframesCommon,
   minify: () => minify,
   rawCssString: () => rawCssString,
-  viewTransitionCommon: () => viewTransitionCommon
+  viewTransitionCommon: () => viewTransitionCommon,
 });
 module.exports = __toCommonJS(common_exports);
 const PSEUDO_GLOBAL_SELECTOR = ":-hono-global";
-const isPseudoGlobalSelectorRe = new RegExp(`^${PSEUDO_GLOBAL_SELECTOR}{(.*)}$`);
+const isPseudoGlobalSelectorRe = new RegExp(
+  `^${PSEUDO_GLOBAL_SELECTOR}{(.*)}$`,
+);
 const DEFAULT_STYLE_ID = "hono-css";
 const SELECTOR = /* @__PURE__ */ Symbol();
 const CLASS_NAME = /* @__PURE__ */ Symbol();
@@ -48,47 +54,53 @@ const CSS_ESCAPED = /* @__PURE__ */ Symbol();
 const IS_CSS_ESCAPED = /* @__PURE__ */ Symbol();
 const rawCssString = (value) => {
   return {
-    [CSS_ESCAPED]: value
+    [CSS_ESCAPED]: value,
   };
 };
 const toHash = (str) => {
-  let i = 0, out = 11;
+  let i = 0,
+    out = 11;
   while (i < str.length) {
-    out = 101 * out + str.charCodeAt(i++) >>> 0;
+    out = (101 * out + str.charCodeAt(i++)) >>> 0;
   }
   return "css-" + out;
 };
 const cssStringReStr = [
   '"(?:(?:\\\\[\\s\\S]|[^"\\\\])*)"',
   // double quoted string
-  "'(?:(?:\\\\[\\s\\S]|[^'\\\\])*)'"
+  "'(?:(?:\\\\[\\s\\S]|[^'\\\\])*)'",
   // single quoted string
 ].join("|");
 const minifyCssRe = new RegExp(
   [
     "(" + cssStringReStr + ")",
     // $1: quoted string
-    "(?:" + [
-      "^\\s+",
-      // head whitespace
-      "\\/\\*.*?\\*\\/\\s*",
-      // multi-line comment
-      "\\/\\/.*\\n\\s*",
-      // single-line comment
-      "\\s+$"
-      // tail whitespace
-    ].join("|") + ")",
+    "(?:" +
+      [
+        "^\\s+",
+        // head whitespace
+        "\\/\\*.*?\\*\\/\\s*",
+        // multi-line comment
+        "\\/\\/.*\\n\\s*",
+        // single-line comment
+        "\\s+$",
+        // tail whitespace
+      ].join("|") +
+      ")",
     "\\s*;\\s*(}|$)\\s*",
     // $2: trailing semicolon
     "\\s*([{};:,])\\s*",
     // $3: whitespace around { } : , ;
-    "(\\s)\\s+"
+    "(\\s)\\s+",
     // $4: 2+ spaces
   ].join("|"),
-  "g"
+  "g",
 );
 const minify = (css) => {
-  return css.replace(minifyCssRe, (_, $1, $2, $3, $4) => $1 || $2 || $3 || $4 || "");
+  return css.replace(
+    minifyCssRe,
+    (_, $1, $2, $3, $4) => $1 || $2 || $3 || $4 || "",
+  );
 };
 const buildStyleString = (strings, values) => {
   const selectors = [];
@@ -110,7 +122,7 @@ const buildStyleString = (strings, values) => {
         continue;
       }
       if (typeof value === "string") {
-        if (/([\\"'\/])/.test(value)) {
+        if (/([\\"'/])/.test(value)) {
           styleString += value.replace(/([\\"']|(?<=<)\/)/g, "\\$1");
         } else {
           styleString += value;
@@ -145,19 +157,26 @@ const buildStyleString = (strings, values) => {
   return [label, minify(styleString), selectors, externalClassNames];
 };
 const cssCommon = (strings, values) => {
-  let [label, thisStyleString, selectors, externalClassNames] = buildStyleString(strings, values);
+  let [label, thisStyleString, selectors, externalClassNames] =
+    buildStyleString(strings, values);
   const isPseudoGlobal = isPseudoGlobalSelectorRe.exec(thisStyleString);
   if (isPseudoGlobal) {
     thisStyleString = isPseudoGlobal[1];
   }
-  const selector = (isPseudoGlobal ? PSEUDO_GLOBAL_SELECTOR : "") + toHash(label + thisStyleString);
-  const className = (isPseudoGlobal ? selectors.map((s) => s[CLASS_NAME]) : [selector, ...externalClassNames]).join(" ");
+  const selector =
+    (isPseudoGlobal ? PSEUDO_GLOBAL_SELECTOR : "") +
+    toHash(label + thisStyleString);
+  const className = (
+    isPseudoGlobal
+      ? selectors.map((s) => s[CLASS_NAME])
+      : [selector, ...externalClassNames]
+  ).join(" ");
   return {
     [SELECTOR]: selector,
     [CLASS_NAME]: className,
     [STYLE_STRING]: thisStyleString,
     [SELECTORS]: selectors,
-    [EXTERNAL_CLASS_NAMES]: externalClassNames
+    [EXTERNAL_CLASS_NAMES]: externalClassNames,
   };
 };
 const cxCommon = (args) => {
@@ -169,7 +188,7 @@ const cxCommon = (args) => {
         [CLASS_NAME]: "",
         [STYLE_STRING]: "",
         [SELECTORS]: [],
-        [EXTERNAL_CLASS_NAMES]: [arg]
+        [EXTERNAL_CLASS_NAMES]: [arg],
       };
     }
   }
@@ -182,11 +201,11 @@ const keyframesCommon = (strings, ...values) => {
     [CLASS_NAME]: `@keyframes ${toHash(label + styleString)}`,
     [STYLE_STRING]: styleString,
     [SELECTORS]: [],
-    [EXTERNAL_CLASS_NAMES]: []
+    [EXTERNAL_CLASS_NAMES]: [],
   };
 };
 let viewTransitionNameIndex = 0;
-const viewTransitionCommon = ((strings, values) => {
+const viewTransitionCommon = (strings, values) => {
   if (!strings) {
     strings = [`/* h-v-t ${viewTransitionNameIndex++} */`];
   }
@@ -196,28 +215,29 @@ const viewTransitionCommon = ((strings, values) => {
   content[CLASS_NAME] = PSEUDO_GLOBAL_SELECTOR + content[CLASS_NAME];
   content[STYLE_STRING] = content[STYLE_STRING].replace(
     /(?<=::view-transition(?:[a-z-]*)\()(?=\))/g,
-    transitionName
+    transitionName,
   );
   res[CLASS_NAME] = res[SELECTOR] = transitionName;
   res[SELECTORS] = [...content[SELECTORS], content];
   return res;
-});
+};
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  CLASS_NAME,
-  DEFAULT_STYLE_ID,
-  EXTERNAL_CLASS_NAMES,
-  IS_CSS_ESCAPED,
-  PSEUDO_GLOBAL_SELECTOR,
-  SELECTOR,
-  SELECTORS,
-  STYLE_STRING,
-  buildStyleString,
-  cssCommon,
-  cxCommon,
-  isPseudoGlobalSelectorRe,
-  keyframesCommon,
-  minify,
-  rawCssString,
-  viewTransitionCommon
-});
+0 &&
+  (module.exports = {
+    CLASS_NAME,
+    DEFAULT_STYLE_ID,
+    EXTERNAL_CLASS_NAMES,
+    IS_CSS_ESCAPED,
+    PSEUDO_GLOBAL_SELECTOR,
+    SELECTOR,
+    SELECTORS,
+    STYLE_STRING,
+    buildStyleString,
+    cssCommon,
+    cxCommon,
+    isPseudoGlobalSelectorRe,
+    keyframesCommon,
+    minify,
+    rawCssString,
+    viewTransitionCommon,
+  });

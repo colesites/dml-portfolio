@@ -8,18 +8,22 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var WebSocketClientManager_exports = {};
 __export(WebSocketClientManager_exports, {
   WebSocketClientManager: () => WebSocketClientManager,
-  WebSocketRemoteClientConnection: () => WebSocketRemoteClientConnection
+  WebSocketRemoteClientConnection: () => WebSocketRemoteClientConnection,
 });
 module.exports = __toCommonJS(WebSocketClientManager_exports);
 var import_WebSocketMemoryClientStore = require("./WebSocketMemoryClientStore");
@@ -27,7 +31,10 @@ var import_WebSocketIndexedDBClientStore = require("./WebSocketIndexedDBClientSt
 class WebSocketClientManager {
   constructor(channel) {
     this.channel = channel;
-    this.store = typeof indexedDB !== "undefined" ? new import_WebSocketIndexedDBClientStore.WebSocketIndexedDBClientStore() : new import_WebSocketMemoryClientStore.WebSocketMemoryClientStore();
+    this.store =
+      typeof indexedDB !== "undefined"
+        ? new import_WebSocketIndexedDBClientStore.WebSocketIndexedDBClientStore()
+        : new import_WebSocketMemoryClientStore.WebSocketMemoryClientStore();
     this.runtimeClients = /* @__PURE__ */ new Map();
     this.allClients = /* @__PURE__ */ new Set();
     this.channel.addEventListener("message", (message) => {
@@ -57,9 +64,9 @@ class WebSocketClientManager {
         return new WebSocketRemoteClientConnection(
           client.id,
           new URL(client.url),
-          this.channel
+          this.channel,
         );
-      })
+      }),
     );
   }
   async removeRuntimeClients() {
@@ -97,7 +104,11 @@ class WebSocketClientManager {
     await this.addClient(client);
     const handleExtraneousMessage = (message) => {
       const { type, payload } = message.data;
-      if (typeof payload === "object" && "clientId" in payload && payload.clientId !== client.id) {
+      if (
+        typeof payload === "object" &&
+        "clientId" in payload &&
+        payload.clientId !== client.id
+      ) {
         return;
       }
       switch (type) {
@@ -113,10 +124,10 @@ class WebSocketClientManager {
     };
     const abortController = new AbortController();
     this.channel.addEventListener("message", handleExtraneousMessage, {
-      signal: abortController.signal
+      signal: abortController.signal,
     });
     client.addEventListener("close", () => abortController.abort(), {
-      once: true
+      once: true,
     });
   }
 }
@@ -131,8 +142,8 @@ class WebSocketRemoteClientConnection {
       type: "extraneous:send",
       payload: {
         clientId: this.id,
-        data
-      }
+        data,
+      },
     });
   }
   close(code, reason) {
@@ -141,18 +152,18 @@ class WebSocketRemoteClientConnection {
       payload: {
         clientId: this.id,
         code,
-        reason
-      }
+        reason,
+      },
     });
   }
   addEventListener(_type, _listener, _options) {
     throw new Error(
-      "WebSocketRemoteClientConnection.addEventListener is not supported"
+      "WebSocketRemoteClientConnection.addEventListener is not supported",
     );
   }
   removeEventListener(_event, _listener, _options) {
     throw new Error(
-      "WebSocketRemoteClientConnection.removeEventListener is not supported"
+      "WebSocketRemoteClientConnection.removeEventListener is not supported",
     );
   }
 }

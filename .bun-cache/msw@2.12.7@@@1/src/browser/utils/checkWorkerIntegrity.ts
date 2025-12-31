@@ -1,6 +1,6 @@
-import { devUtils } from '~/core/utils/internal/devUtils'
-import type { SetupWorkerInternalContext } from '../setupWorker/glossary'
-import { DeferredPromise } from '@open-draft/deferred-promise'
+import { DeferredPromise } from "@open-draft/deferred-promise";
+import { devUtils } from "~/core/utils/internal/devUtils";
+import type { SetupWorkerInternalContext } from "../setupWorker/glossary";
 
 /**
  * Check whether the registered Service Worker has been
@@ -10,12 +10,12 @@ import { DeferredPromise } from '@open-draft/deferred-promise'
 export function checkWorkerIntegrity(
   context: SetupWorkerInternalContext,
 ): Promise<void> {
-  const integrityCheckPromise = new DeferredPromise<void>()
+  const integrityCheckPromise = new DeferredPromise<void>();
 
   // Request the integrity checksum from the registered worker.
-  context.workerChannel.postMessage('INTEGRITY_CHECK_REQUEST')
-  context.workerChannel.once('INTEGRITY_CHECK_RESPONSE', (event) => {
-    const { checksum, packageVersion } = event.data
+  context.workerChannel.postMessage("INTEGRITY_CHECK_REQUEST");
+  context.workerChannel.once("INTEGRITY_CHECK_RESPONSE", (event) => {
+    const { checksum, packageVersion } = event.data;
 
     // Compare the response from the Service Worker and the
     // global variable set during the build.
@@ -32,11 +32,11 @@ It's recommended you update your worker script by running this command:
   \u2022 npx msw init <PUBLIC_DIR>
 
 You can also automate this process and make the worker script update automatically upon the library installations. Read more: https://mswjs.io/docs/cli/init.`,
-      )
+      );
     }
 
-    integrityCheckPromise.resolve()
-  })
+    integrityCheckPromise.resolve();
+  });
 
-  return integrityCheckPromise
+  return integrityCheckPromise;
 }

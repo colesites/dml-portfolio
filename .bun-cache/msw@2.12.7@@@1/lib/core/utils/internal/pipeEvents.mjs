@@ -10,7 +10,5 @@ function pipeEvents(source, destination) {
   sourceEmit._isPiped = true;
   source.emit = sourceEmit;
 }
-export {
-  pipeEvents
-};
+export { pipeEvents };
 //# sourceMappingURL=pipeEvents.mjs.map

@@ -8,7 +8,12 @@
  * @module
  * @deprecated
  */
-import { SHA224 as SHA224n, sha224 as sha224n, SHA256 as SHA256n, sha256 as sha256n, } from "./sha2.js";
+import {
+  SHA224 as SHA224n,
+  SHA256 as SHA256n,
+  sha224 as sha224n,
+  sha256 as sha256n,
+} from "./sha2.js";
 /** @deprecated Use import from `noble/hashes/sha2` module */
 export const SHA256 = SHA256n;
 /** @deprecated Use import from `noble/hashes/sha2` module */

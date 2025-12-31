@@ -1,4 +1,4 @@
-import type {TupleOf} from './tuple-of.d.ts';
+import type { TupleOf } from "./tuple-of.d.ts";
 
 /**
 Create a type that represents a read-only tuple of the given type and length.
@@ -29,6 +29,6 @@ guestFencingTeam.push('Sam');
 
 @category Utilities
 */
-export type ReadonlyTuple<Element, Length extends number> = Readonly<TupleOf<Length, Element>>;
-
-export {};
+export type ReadonlyTuple<Element, Length extends number> = Readonly<
+  TupleOf<Length, Element>
+>;

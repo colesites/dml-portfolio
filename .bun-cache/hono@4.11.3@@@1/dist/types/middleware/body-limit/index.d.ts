@@ -2,12 +2,12 @@
  * @module
  * Body Limit Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
 type OnError = (c: Context) => Response | Promise<Response>;
 type BodyLimitOptions = {
-    maxSize: number;
-    onError?: OnError;
+  maxSize: number;
+  onError?: OnError;
 };
 /**
  * Body Limit Middleware for Hono.
@@ -41,5 +41,6 @@ type BodyLimitOptions = {
  * )
  * ```
  */
-export declare const bodyLimit: (options: BodyLimitOptions) => MiddlewareHandler;
-export {};
+export declare const bodyLimit: (
+  options: BodyLimitOptions,
+) => MiddlewareHandler;

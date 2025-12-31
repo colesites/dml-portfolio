@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.beginHiddenCallStack = beginHiddenCallStack;
 exports.endHiddenCallStack = endHiddenCallStack;
@@ -9,7 +9,14 @@ exports.expectedError = expectedError;
 exports.injectVirtualStackFrame = injectVirtualStackFrame;
 var _Object$getOwnPropert;
 const ErrorToString = Function.call.bind(Error.prototype.toString);
-const SUPPORTED = !!Error.captureStackTrace && ((_Object$getOwnPropert = Object.getOwnPropertyDescriptor(Error, "stackTraceLimit")) == null ? void 0 : _Object$getOwnPropert.writable) === true;
+const SUPPORTED =
+  !!Error.captureStackTrace &&
+  ((_Object$getOwnPropert = Object.getOwnPropertyDescriptor(
+    Error,
+    "stackTraceLimit",
+  )) == null
+    ? void 0
+    : _Object$getOwnPropert.writable) === true;
 const START_HIDING = "startHiding - secret - don't use this - v1";
 const STOP_HIDING = "stopHiding - secret - don't use this - v1";
 const expectedErrors = new WeakSet();
@@ -25,13 +32,13 @@ function CallSite(filename) {
     getFunctionName: () => undefined,
     getMethodName: () => undefined,
     getTypeName: () => undefined,
-    toString: () => filename
+    toString: () => filename,
   });
 }
 function injectVirtualStackFrame(error, filename) {
   if (!SUPPORTED) return;
   let frames = virtualFrames.get(error);
-  if (!frames) virtualFrames.set(error, frames = []);
+  if (!frames) virtualFrames.set(error, (frames = []));
   frames.push(CallSite(filename));
   return error;
 }
@@ -42,28 +49,32 @@ function expectedError(error) {
 }
 function beginHiddenCallStack(fn) {
   if (!SUPPORTED) return fn;
-  return Object.defineProperty(function (...args) {
-    setupPrepareStackTrace();
-    return fn(...args);
-  }, "name", {
-    value: STOP_HIDING
-  });
+  return Object.defineProperty(
+    (...args) => {
+      setupPrepareStackTrace();
+      return fn(...args);
+    },
+    "name",
+    {
+      value: STOP_HIDING,
+    },
+  );
 }
 function endHiddenCallStack(fn) {
   if (!SUPPORTED) return fn;
-  return Object.defineProperty(function (...args) {
-    return fn(...args);
-  }, "name", {
-    value: START_HIDING
+  return Object.defineProperty((...args) => fn(...args), "name", {
+    value: START_HIDING,
   });
 }
 function setupPrepareStackTrace() {
   setupPrepareStackTrace = () => {};
-  const {
-    prepareStackTrace = defaultPrepareStackTrace
-  } = Error;
+  const { prepareStackTrace = defaultPrepareStackTrace } = Error;
   const MIN_STACK_TRACE_LIMIT = 50;
-  Error.stackTraceLimit && (Error.stackTraceLimit = Math.max(Error.stackTraceLimit, MIN_STACK_TRACE_LIMIT));
+  Error.stackTraceLimit &&
+    (Error.stackTraceLimit = Math.max(
+      Error.stackTraceLimit,
+      MIN_STACK_TRACE_LIMIT,
+    ));
   Error.prepareStackTrace = function stackTraceRewriter(err, trace) {
     let newTrace = [];
     const isExpected = expectedErrors.has(err);

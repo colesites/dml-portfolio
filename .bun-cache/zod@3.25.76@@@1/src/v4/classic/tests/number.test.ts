@@ -179,8 +179,12 @@ test(".finite() validation", () => {
 
 test(".safe() validation", () => {
   const schema = z.number().safe();
-  expect(schema.parse(Number.MIN_SAFE_INTEGER)).toEqual(Number.MIN_SAFE_INTEGER);
-  expect(schema.parse(Number.MAX_SAFE_INTEGER)).toEqual(Number.MAX_SAFE_INTEGER);
+  expect(schema.parse(Number.MIN_SAFE_INTEGER)).toEqual(
+    Number.MIN_SAFE_INTEGER,
+  );
+  expect(schema.parse(Number.MAX_SAFE_INTEGER)).toEqual(
+    Number.MAX_SAFE_INTEGER,
+  );
   expect(() => schema.parse(Number.MIN_SAFE_INTEGER - 1)).toThrow();
   expect(() => schema.parse(Number.MAX_SAFE_INTEGER + 1)).toThrow();
 });

@@ -1,17 +1,17 @@
-import type {ExecFileOptions} from 'node:child_process';
+import type { ExecFileOptions } from "node:child_process";
 
 export type ExecutePowerShellOptions = ExecFileOptions & {
-	/**
+  /**
 	Path to PowerShell executable.
 
 	@default powerShellPath()
 	*/
-	readonly powerShellPath?: string;
+  readonly powerShellPath?: string;
 };
 
 export type ExecutePowerShellResult = {
-	readonly stdout: string;
-	readonly stderr: string;
+  readonly stdout: string;
+  readonly stderr: string;
 };
 
 /**
@@ -64,12 +64,12 @@ console.log(stdout);
 ```
 */
 export function executePowerShell(
-	command: string,
-	options?: ExecutePowerShellOptions
+  command: string,
+  options?: ExecutePowerShellOptions,
 ): Promise<ExecutePowerShellResult>;
 
 export namespace executePowerShell {
-	/**
+  /**
 	Standard PowerShell arguments that prefix the encoded command.
 
 	Use these when manually building PowerShell execution arguments for `spawn()`, `execFile()`, etc.
@@ -82,9 +82,9 @@ export namespace executePowerShell {
 	childProcess.spawn(powerShellPath(), arguments_);
 	```
 	*/
-	export const argumentsPrefix: readonly string[];
+  export const argumentsPrefix: readonly string[];
 
-	/**
+  /**
 	Encode a PowerShell command as Base64 UTF-16LE.
 
 	This encoding prevents shell escaping issues and ensures complex commands with special characters are executed reliably.
@@ -99,9 +99,9 @@ export namespace executePowerShell {
 	const encoded = executePowerShell.encodeCommand('Get-Process');
 	```
 	*/
-	export function encodeCommand(command: string): string;
+  export function encodeCommand(command: string): string;
 
-	/**
+  /**
 	Escape a string argument for use in PowerShell single-quoted strings.
 
 	@param value - The value to escape.
@@ -118,5 +118,5 @@ export namespace executePowerShell {
 	const command = `Start-Process ${executePowerShell.escapeArgument(appName)}`;
 	```
 	*/
-	export function escapeArgument(value: unknown): string;
+  export function escapeArgument(value: unknown): string;
 }

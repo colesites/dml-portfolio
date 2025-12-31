@@ -1,4 +1,4 @@
-import type {IsAny} from './is-any.d.ts';
+import type { IsAny } from "./is-any.d.ts";
 
 /**
 Returns a boolean for whether the given type includes `null`.
@@ -25,6 +25,8 @@ type D = IsNullable<string | null | undefined>;
 @category Type Guard
 @category Utilities
 */
-export type IsNullable<T> = IsAny<T> extends true ? true : Extract<T, null> extends never ? false : true;
-
-export {};
+export type IsNullable<T> = IsAny<T> extends true
+  ? true
+  : Extract<T, null> extends never
+    ? false
+    : true;

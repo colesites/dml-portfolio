@@ -1,5 +1,11 @@
-import { StringReader, StringWriter } from './strings';
-import { comma, decodeInteger, encodeInteger, hasMoreVlq, semicolon } from './vlq';
+import { StringReader, StringWriter } from "./strings";
+import {
+  comma,
+  decodeInteger,
+  encodeInteger,
+  hasMoreVlq,
+  semicolon,
+} from "./vlq";
 
 const EMPTY: any[] = [];
 
@@ -55,7 +61,9 @@ export function decodeOriginalScopes(input: string): OriginalScope[] {
     const hasName = fields & 0b0001;
 
     const scope: OriginalScope = (
-      hasName ? [line, column, 0, 0, kind, decodeInteger(reader, 0)] : [line, column, 0, 0, kind]
+      hasName
+        ? [line, column, 0, 0, kind, decodeInteger(reader, 0)]
+        : [line, column, 0, 0, kind]
     ) as OriginalScope;
 
     let vars: Var[] = EMPTY;
@@ -94,7 +102,14 @@ function _encodeOriginalScopes(
   ],
 ): number {
   const scope = scopes[index];
-  const { 0: startLine, 1: startColumn, 2: endLine, 3: endColumn, 4: kind, vars } = scope;
+  const {
+    0: startLine,
+    1: startColumn,
+    2: endLine,
+    3: endColumn,
+    4: kind,
+    vars,
+  } = scope;
 
   if (index > 0) writer.write(comma);
 
@@ -142,7 +157,7 @@ export function decodeGeneratedRanges(input: string): GeneratedRange[] {
   let bindingColumn = 0;
 
   do {
-    const semi = reader.indexOf(';');
+    const semi = reader.indexOf(";");
     let genColumn = 0;
 
     for (; reader.pos < semi; reader.pos++) {
@@ -171,7 +186,14 @@ export function decodeGeneratedRanges(input: string): GeneratedRange[] {
         );
 
         definitionSourcesIndex = defSourcesIndex;
-        range = [genLine, genColumn, 0, 0, defSourcesIndex, definitionScopeIndex] as GeneratedRange;
+        range = [
+          genLine,
+          genColumn,
+          0,
+          0,
+          defSourcesIndex,
+          definitionScopeIndex,
+        ] as GeneratedRange;
       } else {
         range = [genLine, genColumn, 0, 0] as GeneratedRange;
       }
@@ -205,7 +227,10 @@ export function decodeGeneratedRanges(input: string): GeneratedRange[] {
             for (let i = -1; i > expressionsCount; i--) {
               const prevBl = bindingLine;
               bindingLine = decodeInteger(reader, bindingLine);
-              bindingColumn = decodeInteger(reader, bindingLine === prevBl ? bindingColumn : 0);
+              bindingColumn = decodeInteger(
+                reader,
+                bindingLine === prevBl ? bindingColumn : 0,
+              );
               const expression = decodeInteger(reader, 0);
               expressionRanges.push([expression, bindingLine, bindingColumn]);
             }
@@ -229,7 +254,7 @@ export function decodeGeneratedRanges(input: string): GeneratedRange[] {
 }
 
 export function encodeGeneratedRanges(ranges: GeneratedRange[]): string {
-  if (ranges.length === 0) return '';
+  if (ranges.length === 0) return "";
 
   const writer = new StringWriter();
 
@@ -276,7 +301,9 @@ function _encodeGeneratedRanges(
   state[1] = encodeInteger(writer, range[1], state[1]);
 
   const fields =
-    (range.length === 6 ? 0b0001 : 0) | (callsite ? 0b0010 : 0) | (isScope ? 0b0100 : 0);
+    (range.length === 6 ? 0b0001 : 0) |
+    (callsite ? 0b0010 : 0) |
+    (isScope ? 0b0100 : 0);
   encodeInteger(writer, fields, 0);
 
   if (range.length === 6) {
@@ -310,8 +337,16 @@ function _encodeGeneratedRanges(
       let bindingStartColumn = startColumn;
       for (let i = 1; i < binding.length; i++) {
         const expRange = binding[i];
-        bindingStartLine = encodeInteger(writer, expRange[1]!, bindingStartLine);
-        bindingStartColumn = encodeInteger(writer, expRange[2]!, bindingStartColumn);
+        bindingStartLine = encodeInteger(
+          writer,
+          expRange[1]!,
+          bindingStartLine,
+        );
+        bindingStartColumn = encodeInteger(
+          writer,
+          expRange[2]!,
+          bindingStartColumn,
+        );
         encodeInteger(writer, expRange[0]!, 0);
       }
     }

@@ -1,41 +1,44 @@
-const guessPublicKeyName = require('./../helpers/guessPublicKeyName')
-const smartDotenvPublicKey = require('./../helpers/smartDotenvPublicKey')
-const guessPrivateKeyName = require('./../helpers/guessPrivateKeyName')
-const smartDotenvPrivateKey = require('./../helpers/smartDotenvPrivateKey')
+const guessPublicKeyName = require("./../helpers/guessPublicKeyName");
+const smartDotenvPublicKey = require("./../helpers/smartDotenvPublicKey");
+const guessPrivateKeyName = require("./../helpers/guessPrivateKeyName");
+const smartDotenvPrivateKey = require("./../helpers/smartDotenvPrivateKey");
 
 class Keypair {
-  constructor (envFile = '.env', envKeysFilepath = null) {
-    this.envFile = envFile
-    this.envKeysFilepath = envKeysFilepath
+  constructor(envFile = ".env", envKeysFilepath = null) {
+    this.envFile = envFile;
+    this.envKeysFilepath = envKeysFilepath;
   }
 
-  run () {
-    const out = {}
+  run() {
+    const out = {};
 
-    const envFilepaths = this._envFilepaths()
+    const envFilepaths = this._envFilepaths();
     for (const envFilepath of envFilepaths) {
       // public key
-      const publicKeyName = guessPublicKeyName(envFilepath)
-      const publicKeyValue = smartDotenvPublicKey(envFilepath)
-      out[publicKeyName] = publicKeyValue
+      const publicKeyName = guessPublicKeyName(envFilepath);
+      const publicKeyValue = smartDotenvPublicKey(envFilepath);
+      out[publicKeyName] = publicKeyValue;
 
       // private key
-      const privateKeyName = guessPrivateKeyName(envFilepath)
-      const privateKeyValue = smartDotenvPrivateKey(envFilepath, this.envKeysFilepath)
+      const privateKeyName = guessPrivateKeyName(envFilepath);
+      const privateKeyValue = smartDotenvPrivateKey(
+        envFilepath,
+        this.envKeysFilepath,
+      );
 
-      out[privateKeyName] = privateKeyValue
+      out[privateKeyName] = privateKeyValue;
     }
 
-    return out
+    return out;
   }
 
-  _envFilepaths () {
+  _envFilepaths() {
     if (!Array.isArray(this.envFile)) {
-      return [this.envFile]
+      return [this.envFile];
     }
 
-    return this.envFile
+    return this.envFile;
   }
 }
 
-module.exports = Keypair
+module.exports = Keypair;

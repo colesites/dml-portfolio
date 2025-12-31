@@ -8,25 +8,38 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var body_exports = {};
 __export(body_exports, {
-  parseBody: () => parseBody
+  parseBody: () => parseBody,
 });
 module.exports = __toCommonJS(body_exports);
 var import_request = require("../request");
-const parseBody = async (request, options = /* @__PURE__ */ Object.create(null)) => {
+const parseBody = async (
+  request,
+  options = /* @__PURE__ */ Object.create(null),
+) => {
   const { all = false, dot = false } = options;
-  const headers = request instanceof import_request.HonoRequest ? request.raw.headers : request.headers;
+  const headers =
+    request instanceof import_request.HonoRequest
+      ? request.raw.headers
+      : request.headers;
   const contentType = headers.get("Content-Type");
-  if (contentType?.startsWith("multipart/form-data") || contentType?.startsWith("application/x-www-form-urlencoded")) {
+  if (
+    contentType?.startsWith("multipart/form-data") ||
+    contentType?.startsWith("application/x-www-form-urlencoded")
+  ) {
     return parseFormData(request, { all, dot });
   }
   return {};
@@ -62,7 +75,6 @@ function convertFormDataToBodyData(formData, options) {
 const handleParsingAllValues = (form, key, value) => {
   if (form[key] !== void 0) {
     if (Array.isArray(form[key])) {
-      ;
       form[key].push(value);
     } else {
       form[key] = [form[key], value];
@@ -82,7 +94,12 @@ const handleParsingNestedValues = (form, key, value) => {
     if (index === keys.length - 1) {
       nestedForm[key2] = value;
     } else {
-      if (!nestedForm[key2] || typeof nestedForm[key2] !== "object" || Array.isArray(nestedForm[key2]) || nestedForm[key2] instanceof File) {
+      if (
+        !nestedForm[key2] ||
+        typeof nestedForm[key2] !== "object" ||
+        Array.isArray(nestedForm[key2]) ||
+        nestedForm[key2] instanceof File
+      ) {
         nestedForm[key2] = /* @__PURE__ */ Object.create(null);
       }
       nestedForm = nestedForm[key2];
@@ -90,6 +107,7 @@ const handleParsingNestedValues = (form, key, value) => {
   });
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  parseBody
-});
+0 &&
+  (module.exports = {
+    parseBody,
+  });

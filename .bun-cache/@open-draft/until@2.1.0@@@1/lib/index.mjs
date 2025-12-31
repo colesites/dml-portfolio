@@ -9,7 +9,5 @@ var until = async (promise) => {
     return { error, data: null };
   }
 };
-export {
-  until
-};
+export { until };
 //# sourceMappingURL=index.mjs.map

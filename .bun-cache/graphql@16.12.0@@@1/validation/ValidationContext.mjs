@@ -1,6 +1,6 @@
-import { Kind } from '../language/kinds.mjs';
-import { visit } from '../language/visitor.mjs';
-import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo.mjs';
+import { Kind } from "../language/kinds.mjs";
+import { visit } from "../language/visitor.mjs";
+import { TypeInfo, visitWithTypeInfo } from "../utilities/TypeInfo.mjs";
 
 /**
  * An instance of this class is passed as the "this" context to all validators,
@@ -17,7 +17,7 @@ export class ASTValidationContext {
   }
 
   get [Symbol.toStringTag]() {
-    return 'ASTValidationContext';
+    return "ASTValidationContext";
   }
 
   reportError(error) {
@@ -110,7 +110,7 @@ export class SDLValidationContext extends ASTValidationContext {
   }
 
   get [Symbol.toStringTag]() {
-    return 'SDLValidationContext';
+    return "SDLValidationContext";
   }
 
   getSchema() {
@@ -127,7 +127,7 @@ export class ValidationContext extends ASTValidationContext {
   }
 
   get [Symbol.toStringTag]() {
-    return 'ValidationContext';
+    return "ValidationContext";
   }
 
   getSchema() {

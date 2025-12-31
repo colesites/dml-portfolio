@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.BreakStatement = BreakStatement;
 exports.CatchClause = CatchClause;
@@ -22,12 +22,7 @@ exports.VariableDeclarator = VariableDeclarator;
 exports.WhileStatement = WhileStatement;
 exports.WithStatement = WithStatement;
 var _t = require("@babel/types");
-const {
-  isFor,
-  isForStatement,
-  isIfStatement,
-  isStatement
-} = _t;
+const { isFor, isForStatement, isIfStatement, isStatement } = _t;
 function WithStatement(node) {
   this.word("with");
   this.space();
@@ -43,7 +38,8 @@ function IfStatement(node) {
   this.print(node.test);
   this.tokenChar(41);
   this.space();
-  const needsBlock = node.alternate && isIfStatement(getLastStatement(node.consequent));
+  const needsBlock =
+    node.alternate && isIfStatement(getLastStatement(node.consequent));
   if (needsBlock) {
     this.tokenChar(123);
     this.newline();
@@ -63,9 +59,7 @@ function IfStatement(node) {
   }
 }
 function getLastStatement(statement) {
-  const {
-    body
-  } = statement;
+  const { body } = statement;
   if (isStatement(body) === false) {
     return statement;
   }
@@ -123,8 +117,8 @@ function ForXStatement(node) {
   this.tokenChar(41);
   this.printBlock(node);
 }
-const ForInStatement = exports.ForInStatement = ForXStatement;
-const ForOfStatement = exports.ForOfStatement = ForXStatement;
+const ForInStatement = (exports.ForInStatement = ForXStatement);
+const ForOfStatement = (exports.ForOfStatement = ForXStatement);
 function DoWhileStatement(node) {
   this.word("do");
   this.space();
@@ -230,9 +224,7 @@ function VariableDeclaration(node, parent) {
     this.word("declare");
     this.space();
   }
-  const {
-    kind
-  } = node;
+  const { kind } = node;
   if (kind === "await using") {
     this.word("await");
     this.space();
@@ -249,10 +241,18 @@ function VariableDeclaration(node, parent) {
       }
     }
   }
-  this.printList(node.declarations, undefined, undefined, node.declarations.length > 1, hasInits ? function (occurrenceCount) {
-    this.token(",", false, occurrenceCount);
-    this.newline();
-  } : undefined);
+  this.printList(
+    node.declarations,
+    undefined,
+    undefined,
+    node.declarations.length > 1,
+    hasInits
+      ? function (occurrenceCount) {
+          this.token(",", false, occurrenceCount);
+          this.newline();
+        }
+      : undefined,
+  );
   if (isFor(parent)) {
     if (isForStatement(parent)) {
       if (parent.init === node) return;

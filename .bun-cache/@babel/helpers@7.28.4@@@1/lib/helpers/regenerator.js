@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _regenerator;
 var _regeneratorDefine = require("./regeneratorDefine.js");
@@ -12,9 +12,15 @@ function _regenerator() {
   var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
   var _;
   function wrap(innerFn, outerFn, self, tryLocsList) {
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var protoGenerator =
+      outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
     var generator = Object.create(protoGenerator.prototype);
-    (0, _regeneratorDefine.default)(generator, "_invoke", makeInvokeMethod(innerFn, self, tryLocsList), true);
+    (0, _regeneratorDefine.default)(
+      generator,
+      "_invoke",
+      makeInvokeMethod(innerFn, self, tryLocsList),
+      true,
+    );
     return generator;
   }
   var ContinueSentinel = {};
@@ -22,29 +28,49 @@ function _regenerator() {
   function GeneratorFunction() {}
   function GeneratorFunctionPrototype() {}
   _ = Object.getPrototypeOf;
-  var IteratorPrototype = [][iteratorSymbol] ? _(_([][iteratorSymbol]())) : ((0, _regeneratorDefine.default)(_ = {}, iteratorSymbol, function () {
-    return this;
-  }), _);
-  var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
+  var IteratorPrototype = [][iteratorSymbol]
+    ? _(_([][iteratorSymbol]()))
+    : ((0, _regeneratorDefine.default)((_ = {}), iteratorSymbol, function () {
+        return this;
+      }),
+      _);
+  var Gp =
+    (GeneratorFunctionPrototype.prototype =
+    Generator.prototype =
+      Object.create(IteratorPrototype));
   GeneratorFunction.prototype = GeneratorFunctionPrototype;
-  (0, _regeneratorDefine.default)(Gp, "constructor", GeneratorFunctionPrototype);
-  (0, _regeneratorDefine.default)(GeneratorFunctionPrototype, "constructor", GeneratorFunction);
+  (0, _regeneratorDefine.default)(
+    Gp,
+    "constructor",
+    GeneratorFunctionPrototype,
+  );
+  (0, _regeneratorDefine.default)(
+    GeneratorFunctionPrototype,
+    "constructor",
+    GeneratorFunction,
+  );
   GeneratorFunction.displayName = "GeneratorFunction";
-  (0, _regeneratorDefine.default)(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction");
+  (0, _regeneratorDefine.default)(
+    GeneratorFunctionPrototype,
+    toStringTagSymbol,
+    "GeneratorFunction",
+  );
   (0, _regeneratorDefine.default)(Gp);
   (0, _regeneratorDefine.default)(Gp, toStringTagSymbol, "Generator");
   (0, _regeneratorDefine.default)(Gp, iteratorSymbol, function () {
     return this;
   });
-  (0, _regeneratorDefine.default)(Gp, "toString", function () {
-    return "[object Generator]";
-  });
+  (0, _regeneratorDefine.default)(Gp, "toString", () => "[object Generator]");
   function mark(genFun) {
     if (Object.setPrototypeOf) {
       Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
     } else {
       genFun.__proto__ = GeneratorFunctionPrototype;
-      (0, _regeneratorDefine.default)(genFun, toStringTagSymbol, "GeneratorFunction");
+      (0, _regeneratorDefine.default)(
+        genFun,
+        toStringTagSymbol,
+        "GeneratorFunction",
+      );
     }
     genFun.prototype = Object.create(Gp);
     return genFun;
@@ -76,7 +102,7 @@ function _regenerator() {
           state = 2;
           if (delegateIterator) {
             if (!method) _methodName = "next";
-            if (_ = delegateIterator[_methodName]) {
+            if ((_ = delegateIterator[_methodName])) {
               if (!(_ = _.call(delegateIterator, arg))) {
                 throw TypeError("iterator result is not an object");
               }
@@ -92,13 +118,17 @@ function _regenerator() {
                 _.call(delegateIterator);
               }
               if (method < 2) {
-                arg = TypeError("The iterator does not provide a '" + _methodName + "' method");
+                arg = TypeError(
+                  "The iterator does not provide a '" +
+                    _methodName +
+                    "' method",
+                );
                 method = 1;
               }
             }
             delegateIterator = undefined;
           } else {
-            if (done = ctx.n < 0) {
+            if ((done = ctx.n < 0)) {
               _ = arg;
             } else {
               _ = innerFn.call(self, ctx);
@@ -117,7 +147,7 @@ function _regenerator() {
       }
       return {
         value: _,
-        done: done
+        done: done,
       };
     }
     var tryEntries = tryLocsList || [];
@@ -131,35 +161,42 @@ function _regenerator() {
       v: undefined,
       a: Context_dispatchExceptionOrFinishOrAbrupt,
       f: Context_dispatchExceptionOrFinishOrAbrupt.bind(undefined, 4),
-      d: function (iterable, nextLoc) {
+      d: (iterable, nextLoc) => {
         delegateIterator = iterable;
         method = 0;
         arg = undefined;
         ctx.n = nextLoc;
         return ContinueSentinel;
-      }
+      },
     };
     function Context_dispatchExceptionOrFinishOrAbrupt(_type, _arg) {
       method = _type;
       arg = _arg;
-      for (_ = 0; !done && state && !shouldReturn && _ < tryEntries.length; _++) {
+      for (
+        _ = 0;
+        !done && state && !shouldReturn && _ < tryEntries.length;
+        _++
+      ) {
         var entry = tryEntries[_];
         var prev = ctx.p;
         var finallyLoc = entry[2];
         var shouldReturn;
         if (_type > 3) {
-          if (shouldReturn = finallyLoc === _arg) {
-            arg = entry[(method = entry[4]) ? 5 : (method = 3, 3)];
+          if ((shouldReturn = finallyLoc === _arg)) {
+            arg = entry[(method = entry[4]) ? 5 : ((method = 3), 3)];
             entry[4] = entry[5] = undefined;
           }
         } else {
           if (entry[0] <= prev) {
-            if (shouldReturn = _type < 2 && prev < entry[1]) {
+            if ((shouldReturn = _type < 2 && prev < entry[1])) {
               method = 0;
               ctx.v = _arg;
               ctx.n = entry[1];
             } else if (prev < finallyLoc) {
-              if (shouldReturn = _type < 3 || entry[0] > _arg || _arg > finallyLoc) {
+              if (
+                (shouldReturn =
+                  _type < 3 || entry[0] > _arg || _arg > finallyLoc)
+              ) {
                 entry[4] = _type;
                 entry[5] = _arg;
                 ctx.n = finallyLoc;
@@ -177,12 +214,11 @@ function _regenerator() {
     }
     return invoke;
   }
-  return (exports.default = _regenerator = function () {
-    return {
+  return (exports.default = _regenerator =
+    () => ({
       w: wrap,
-      m: mark
-    };
-  })();
+      m: mark,
+    }))();
 }
 
 //# sourceMappingURL=regenerator.js.map

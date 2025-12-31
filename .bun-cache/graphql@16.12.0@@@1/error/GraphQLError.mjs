@@ -1,14 +1,14 @@
-import { isObjectLike } from '../jsutils/isObjectLike.mjs';
-import { getLocation } from '../language/location.mjs';
+import { isObjectLike } from "../jsutils/isObjectLike.mjs";
+import { getLocation } from "../language/location.mjs";
 import {
   printLocation,
   printSourceLocation,
-} from '../language/printLocation.mjs';
+} from "../language/printLocation.mjs";
 
 function toNormalizedOptions(args) {
   const firstArg = args[0];
 
-  if (firstArg == null || 'kind' in firstArg || 'length' in firstArg) {
+  if (firstArg == null || "kind" in firstArg || "length" in firstArg) {
     return {
       nodes: firstArg,
       source: args[1],
@@ -80,7 +80,7 @@ export class GraphQLError extends Error {
     const { nodes, source, positions, path, originalError, extensions } =
       toNormalizedOptions(rawArgs);
     super(message);
-    this.name = 'GraphQLError';
+    this.name = "GraphQLError";
     this.path = path !== null && path !== void 0 ? path : undefined;
     this.originalError =
       originalError !== null && originalError !== void 0
@@ -100,23 +100,23 @@ export class GraphQLError extends Error {
       source !== null && source !== void 0
         ? source
         : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : (_nodeLocations$ = nodeLocations[0]) === null ||
-          _nodeLocations$ === void 0
-        ? void 0
-        : _nodeLocations$.source;
+          ? void 0
+          : (_nodeLocations$ = nodeLocations[0]) === null ||
+              _nodeLocations$ === void 0
+            ? void 0
+            : _nodeLocations$.source;
     this.positions =
       positions !== null && positions !== void 0
         ? positions
         : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : nodeLocations.map((loc) => loc.start);
+          ? void 0
+          : nodeLocations.map((loc) => loc.start);
     this.locations =
       positions && source
         ? positions.map((pos) => getLocation(source, pos))
         : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : nodeLocations.map((loc) => getLocation(loc.source, loc.start));
+          ? void 0
+          : nodeLocations.map((loc) => getLocation(loc.source, loc.start));
     const originalExtensions = isObjectLike(
       originalError === null || originalError === void 0
         ? void 0
@@ -165,7 +165,7 @@ export class GraphQLError extends Error {
       originalError !== void 0 &&
       originalError.stack
     ) {
-      Object.defineProperty(this, 'stack', {
+      Object.defineProperty(this, "stack", {
         value: originalError.stack,
         writable: true,
         configurable: true,
@@ -173,7 +173,7 @@ export class GraphQLError extends Error {
     } else if (Error.captureStackTrace) {
       Error.captureStackTrace(this, GraphQLError);
     } else {
-      Object.defineProperty(this, 'stack', {
+      Object.defineProperty(this, "stack", {
         value: Error().stack,
         writable: true,
         configurable: true,
@@ -183,7 +183,7 @@ export class GraphQLError extends Error {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLError';
+    return "GraphQLError";
   }
 
   toString() {
@@ -192,12 +192,12 @@ export class GraphQLError extends Error {
     if (this.nodes) {
       for (const node of this.nodes) {
         if (node.loc) {
-          output += '\n\n' + printLocation(node.loc);
+          output += "\n\n" + printLocation(node.loc);
         }
       }
     } else if (this.source && this.locations) {
       for (const location of this.locations) {
-        output += '\n\n' + printSourceLocation(this.source, location);
+        output += "\n\n" + printSourceLocation(this.source, location);
       }
     }
 

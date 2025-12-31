@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var body_limit_exports = {};
 __export(body_limit_exports, {
-  bodyLimit: () => bodyLimit
+  bodyLimit: () => bodyLimit,
 });
 module.exports = __toCommonJS(body_limit_exports);
 var import_http_exception = require("../../http-exception");
@@ -30,12 +34,14 @@ class BodyLimitError extends Error {
   }
 }
 const bodyLimit = (options) => {
-  const onError = options.onError || (() => {
-    const res = new Response(ERROR_MESSAGE, {
-      status: 413
+  const onError =
+    options.onError ||
+    (() => {
+      const res = new Response(ERROR_MESSAGE, {
+        status: 413,
+      });
+      throw new import_http_exception.HTTPException(413, { res });
     });
-    throw new import_http_exception.HTTPException(413, { res });
-  });
   const maxSize = options.maxSize;
   return async function bodyLimit2(c, next) {
     if (!c.req.raw.body) {
@@ -46,7 +52,10 @@ const bodyLimit = (options) => {
     if (hasTransferEncoding && hasContentLength) {
     }
     if (hasContentLength && !hasTransferEncoding) {
-      const contentLength = parseInt(c.req.raw.headers.get("content-length") || "0", 10);
+      const contentLength = parseInt(
+        c.req.raw.headers.get("content-length") || "0",
+        10,
+      );
       return contentLength > maxSize ? onError(c) : next();
     }
     let size = 0;
@@ -54,7 +63,7 @@ const bodyLimit = (options) => {
     const reader = new ReadableStream({
       async start(controller) {
         try {
-          for (; ; ) {
+          for (;;) {
             const { done, value } = await rawReader.read();
             if (done) {
               break;
@@ -69,7 +78,7 @@ const bodyLimit = (options) => {
         } finally {
           controller.close();
         }
-      }
+      },
     });
     const requestInit = { body: reader, duplex: "half" };
     c.req.raw = new Request(c.req.raw, requestInit);
@@ -80,6 +89,7 @@ const bodyLimit = (options) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  bodyLimit
-});
+0 &&
+  (module.exports = {
+    bodyLimit,
+  });

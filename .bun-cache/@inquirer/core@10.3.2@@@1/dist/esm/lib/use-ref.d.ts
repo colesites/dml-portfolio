@@ -1,6 +1,6 @@
 export declare function useRef<Value>(val: Value): {
-    current: Value;
+  current: Value;
 };
 export declare function useRef<Value>(val?: Value): {
-    current: Value | undefined;
+  current: Value | undefined;
 };

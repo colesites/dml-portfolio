@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -46,17 +46,33 @@ test("flat inference", () => {
   util.assertEqual<z.infer<(typeof schemas)[8]>, any>(true);
   util.assertEqual<z.infer<(typeof schemas)[9]>, Readonly<unknown>>(true);
   util.assertEqual<z.infer<(typeof schemas)[10]>, void>(true);
-  util.assertEqual<z.infer<(typeof schemas)[11]>, (args_0: string, args_1: number, ...args_2: unknown[]) => unknown>(
-    true
-  );
+  util.assertEqual<
+    z.infer<(typeof schemas)[11]>,
+    (args_0: string, args_1: number, ...args_2: unknown[]) => unknown
+  >(true);
   util.assertEqual<z.infer<(typeof schemas)[12]>, readonly string[]>(true);
 
-  util.assertEqual<z.infer<(typeof schemas)[13]>, readonly [string, number]>(true);
-  util.assertEqual<z.infer<(typeof schemas)[14]>, ReadonlyMap<string, Date>>(true);
-  util.assertEqual<z.infer<(typeof schemas)[15]>, ReadonlySet<Promise<string>>>(true);
-  util.assertEqual<z.infer<(typeof schemas)[16]>, Readonly<Record<string, string>>>(true);
-  util.assertEqual<z.infer<(typeof schemas)[17]>, Readonly<Record<string, number>>>(true);
-  util.assertEqual<z.infer<(typeof schemas)[18]>, { readonly a: string; readonly 1: number }>(true);
+  util.assertEqual<z.infer<(typeof schemas)[13]>, readonly [string, number]>(
+    true,
+  );
+  util.assertEqual<z.infer<(typeof schemas)[14]>, ReadonlyMap<string, Date>>(
+    true,
+  );
+  util.assertEqual<z.infer<(typeof schemas)[15]>, ReadonlySet<Promise<string>>>(
+    true,
+  );
+  util.assertEqual<
+    z.infer<(typeof schemas)[16]>,
+    Readonly<Record<string, string>>
+  >(true);
+  util.assertEqual<
+    z.infer<(typeof schemas)[17]>,
+    Readonly<Record<string, number>>
+  >(true);
+  util.assertEqual<
+    z.infer<(typeof schemas)[18]>,
+    { readonly a: string; readonly 1: number }
+  >(true);
   util.assertEqual<z.infer<(typeof schemas)[19]>, Readonly<testEnum>>(true);
   util.assertEqual<z.infer<(typeof schemas)[20]>, Promise<string>>(true);
 });
@@ -142,53 +158,99 @@ test("flat inference", () => {
 // });
 
 test("object freezing", () => {
-  expect(Object.isFrozen(z.array(z.string()).readonly().parse(["a"]))).toBe(true);
-  expect(Object.isFrozen(z.tuple([z.string(), z.number()]).readonly().parse(["a", 1]))).toBe(true);
+  expect(Object.isFrozen(z.array(z.string()).readonly().parse(["a"]))).toBe(
+    true,
+  );
+  expect(
+    Object.isFrozen(
+      z.tuple([z.string(), z.number()]).readonly().parse(["a", 1]),
+    ),
+  ).toBe(true);
   expect(
     Object.isFrozen(
       z
         .map(z.string(), z.date())
         .readonly()
-        .parse(new Map([["a", new Date()]]))
-    )
+        .parse(new Map([["a", new Date()]])),
+    ),
   ).toBe(true);
   expect(
     Object.isFrozen(
       z
         .set(z.promise(z.string()))
         .readonly()
-        .parse(new Set([Promise.resolve("a")]))
-    )
+        .parse(new Set([Promise.resolve("a")])),
+    ),
   ).toBe(true);
-  expect(Object.isFrozen(z.record(z.string()).readonly().parse({ a: "b" }))).toBe(true);
-  expect(Object.isFrozen(z.record(z.string(), z.number()).readonly().parse({ a: 1 }))).toBe(true);
-  expect(Object.isFrozen(z.object({ a: z.string(), 1: z.number() }).readonly().parse({ a: "b", 1: 2 }))).toBe(true);
-  expect(Object.isFrozen(z.promise(z.string()).readonly().parse(Promise.resolve("a")))).toBe(true);
+  expect(
+    Object.isFrozen(z.record(z.string()).readonly().parse({ a: "b" })),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      z.record(z.string(), z.number()).readonly().parse({ a: 1 }),
+    ),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      z
+        .object({ a: z.string(), 1: z.number() })
+        .readonly()
+        .parse({ a: "b", 1: 2 }),
+    ),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      z.promise(z.string()).readonly().parse(Promise.resolve("a")),
+    ),
+  ).toBe(true);
 });
 
 test("async object freezing", async () => {
-  expect(Object.isFrozen(await z.array(z.string()).readonly().parseAsync(["a"]))).toBe(true);
-  expect(Object.isFrozen(await z.tuple([z.string(), z.number()]).readonly().parseAsync(["a", 1]))).toBe(true);
+  expect(
+    Object.isFrozen(await z.array(z.string()).readonly().parseAsync(["a"])),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z.tuple([z.string(), z.number()]).readonly().parseAsync(["a", 1]),
+    ),
+  ).toBe(true);
   expect(
     Object.isFrozen(
       await z
         .map(z.string(), z.date())
         .readonly()
-        .parseAsync(new Map([["a", new Date()]]))
-    )
+        .parseAsync(new Map([["a", new Date()]])),
+    ),
   ).toBe(true);
   expect(
     Object.isFrozen(
       await z
         .set(z.promise(z.string()))
         .readonly()
-        .parseAsync(new Set([Promise.resolve("a")]))
-    )
+        .parseAsync(new Set([Promise.resolve("a")])),
+    ),
   ).toBe(true);
-  expect(Object.isFrozen(await z.record(z.string()).readonly().parseAsync({ a: "b" }))).toBe(true);
-  expect(Object.isFrozen(await z.record(z.string(), z.number()).readonly().parseAsync({ a: 1 }))).toBe(true);
   expect(
-    Object.isFrozen(await z.object({ a: z.string(), 1: z.number() }).readonly().parseAsync({ a: "b", 1: 2 }))
+    Object.isFrozen(
+      await z.record(z.string()).readonly().parseAsync({ a: "b" }),
+    ),
   ).toBe(true);
-  expect(Object.isFrozen(await z.promise(z.string()).readonly().parseAsync(Promise.resolve("a")))).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z.record(z.string(), z.number()).readonly().parseAsync({ a: 1 }),
+    ),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z
+        .object({ a: z.string(), 1: z.number() })
+        .readonly()
+        .parseAsync({ a: "b", 1: 2 }),
+    ),
+  ).toBe(true);
+  expect(
+    Object.isFrozen(
+      await z.promise(z.string()).readonly().parseAsync(Promise.resolve("a")),
+    ),
+  ).toBe(true);
 });

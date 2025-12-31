@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports._assertUnremoved = _assertUnremoved;
 exports._callRemovalHooks = _callRemovalHooks;
@@ -33,7 +33,7 @@ function remove() {
 }
 function _removeFromScope() {
   const bindings = t.getBindingIdentifiers(this.node, false, false, true);
-  Object.keys(bindings).forEach(name => this.scope.removeBinding(name));
+  Object.keys(bindings).forEach((name) => this.scope.removeBinding(name));
 }
 function _callRemovalHooks() {
   if (this.parentPath) {
@@ -54,13 +54,16 @@ function _markRemoved() {
   this._traverseFlags |= _index.SHOULD_SKIP | _index.REMOVED;
   if (this.parent) {
     var _getCachedPaths;
-    (_getCachedPaths = (0, _cache.getCachedPaths)(this)) == null || _getCachedPaths.delete(this.node);
+    (_getCachedPaths = (0, _cache.getCachedPaths)(this)) == null ||
+      _getCachedPaths.delete(this.node);
   }
   this.node = null;
 }
 function _assertUnremoved() {
   if (this.removed) {
-    throw this.buildCodeFrameError("NodePath has been removed so is read-only.");
+    throw this.buildCodeFrameError(
+      "NodePath has been removed so is read-only.",
+    );
   }
 }
 

@@ -1,5 +1,5 @@
-import { BLAKE2 } from './blake2.ts';
-import { type CHashXO, type HashXOF, type Input } from './utils.ts';
+import { BLAKE2 } from "./blake2.ts";
+import { type CHashXO, type HashXOF, type Input } from "./utils.ts";
 /**
  * Ensure to use EITHER `key` OR `context`, not both.
  *
@@ -8,37 +8,37 @@ import { type CHashXO, type HashXOF, type Input } from './utils.ts';
  *   A good default format for the context string is "[application] [commit timestamp] [purpose]".
  */
 export type Blake3Opts = {
-    dkLen?: number;
-    key?: Input;
-    context?: Input;
+  dkLen?: number;
+  key?: Input;
+  context?: Input;
 };
 /** Blake3 hash. Can be used as MAC and KDF. */
 export declare class BLAKE3 extends BLAKE2<BLAKE3> implements HashXOF<BLAKE3> {
-    private chunkPos;
-    private chunksDone;
-    private flags;
-    private IV;
-    private state;
-    private stack;
-    private posOut;
-    private bufferOut32;
-    private bufferOut;
-    private chunkOut;
-    private enableXOF;
-    constructor(opts?: Blake3Opts, flags?: number);
-    protected get(): [];
-    protected set(): void;
-    private b2Compress;
-    protected compress(buf: Uint32Array, bufPos?: number, isLast?: boolean): void;
-    _cloneInto(to?: BLAKE3): BLAKE3;
-    destroy(): void;
-    private b2CompressOut;
-    protected finish(): void;
-    private writeInto;
-    xofInto(out: Uint8Array): Uint8Array;
-    xof(bytes: number): Uint8Array;
-    digestInto(out: Uint8Array): Uint8Array;
-    digest(): Uint8Array;
+  private chunkPos;
+  private chunksDone;
+  private flags;
+  private IV;
+  private state;
+  private stack;
+  private posOut;
+  private bufferOut32;
+  private bufferOut;
+  private chunkOut;
+  private enableXOF;
+  constructor(opts?: Blake3Opts, flags?: number);
+  protected get(): [];
+  protected set(): void;
+  private b2Compress;
+  protected compress(buf: Uint32Array, bufPos?: number, isLast?: boolean): void;
+  _cloneInto(to?: BLAKE3): BLAKE3;
+  destroy(): void;
+  private b2CompressOut;
+  protected finish(): void;
+  private writeInto;
+  xofInto(out: Uint8Array): Uint8Array;
+  xof(bytes: number): Uint8Array;
+  digestInto(out: Uint8Array): Uint8Array;
+  digest(): Uint8Array;
 }
 /**
  * BLAKE3 hash function. Can be used as MAC and KDF.

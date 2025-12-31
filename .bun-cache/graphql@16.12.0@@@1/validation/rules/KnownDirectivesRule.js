@@ -1,23 +1,21 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.KnownDirectivesRule = KnownDirectivesRule;
 
-var _inspect = require('../../jsutils/inspect.js');
+var _inspect = require("../../jsutils/inspect.js");
 
-var _invariant = require('../../jsutils/invariant.js');
+var _invariant = require("../../jsutils/invariant.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _ast = require('../../language/ast.js');
+var _ast = require("../../language/ast.js");
 
-var _directiveLocation = require('../../language/directiveLocation.js');
+var _directiveLocation = require("../../language/directiveLocation.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _directives = require('../../type/directives.js');
+var _directives = require("../../type/directives.js");
 
 /**
  * Known directives
@@ -78,7 +76,7 @@ function KnownDirectivesRule(context) {
 
 function getDirectiveLocationForASTPath(ancestors) {
   const appliedTo = ancestors[ancestors.length - 1];
-  'kind' in appliedTo || (0, _invariant.invariant)(false);
+  "kind" in appliedTo || (0, _invariant.invariant)(false);
 
   switch (appliedTo.kind) {
     case _kinds.Kind.OPERATION_DEFINITION:
@@ -135,7 +133,7 @@ function getDirectiveLocationForASTPath(ancestors) {
 
     case _kinds.Kind.INPUT_VALUE_DEFINITION: {
       const parentNode = ancestors[ancestors.length - 3];
-      'kind' in parentNode || (0, _invariant.invariant)(false);
+      "kind" in parentNode || (0, _invariant.invariant)(false);
       return parentNode.kind === _kinds.Kind.INPUT_OBJECT_TYPE_DEFINITION
         ? _directiveLocation.DirectiveLocation.INPUT_FIELD_DEFINITION
         : _directiveLocation.DirectiveLocation.ARGUMENT_DEFINITION;
@@ -148,7 +146,7 @@ function getDirectiveLocationForASTPath(ancestors) {
       false ||
         (0, _invariant.invariant)(
           false,
-          'Unexpected kind: ' + (0, _inspect.inspect)(appliedTo.kind),
+          "Unexpected kind: " + (0, _inspect.inspect)(appliedTo.kind),
         );
   }
 }

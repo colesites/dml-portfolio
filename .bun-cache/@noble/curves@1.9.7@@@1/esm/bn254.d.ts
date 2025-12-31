@@ -1,6 +1,9 @@
-import { type CurveFn as BLSCurveFn, type PostPrecomputeFn } from './abstract/bls.ts';
-import { type IField } from './abstract/modular.ts';
-import { type CurveFn } from './abstract/weierstrass.ts';
+import {
+  type CurveFn as BLSCurveFn,
+  type PostPrecomputeFn,
+} from "./abstract/bls.ts";
+import { type IField } from "./abstract/modular.ts";
+import { type CurveFn } from "./abstract/weierstrass.ts";
 export declare const bn254_Fr: IField<bigint>;
 export declare const _postPrecompute: PostPrecomputeFn;
 /**

@@ -21,7 +21,10 @@ test("test2", () => {
 
 test("async validation", async () => {
   const testTuple = z
-    .tuple([z.string().refine(async () => true), z.number().refine(async () => true)])
+    .tuple([
+      z.string().refine(async () => true),
+      z.number().refine(async () => true),
+    ])
     .refine(async () => true);
   expectTypeOf<typeof testTuple._output>().toEqualTypeOf<[string, number]>();
 

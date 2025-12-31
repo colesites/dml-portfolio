@@ -1,12 +1,12 @@
-import { didYouMean } from '../../jsutils/didYouMean.mjs';
-import { naturalCompare } from '../../jsutils/naturalCompare.mjs';
-import { suggestionList } from '../../jsutils/suggestionList.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { didYouMean } from "../../jsutils/didYouMean.mjs";
+import { naturalCompare } from "../../jsutils/naturalCompare.mjs";
+import { suggestionList } from "../../jsutils/suggestionList.mjs";
 import {
   isAbstractType,
   isInterfaceType,
   isObjectType,
-} from '../../type/definition.mjs';
+} from "../../type/definition.mjs";
 
 /**
  * Fields on correct type
@@ -30,11 +30,11 @@ export function FieldsOnCorrectTypeRule(context) {
           const fieldName = node.name.value; // First determine if there are any suggested types to condition on.
 
           let suggestion = didYouMean(
-            'to use an inline fragment on',
+            "to use an inline fragment on",
             getSuggestedTypeNames(schema, type, fieldName),
           ); // If there are no suggested types, then perhaps this was a typo?
 
-          if (suggestion === '') {
+          if (suggestion === "") {
             suggestion = didYouMean(getSuggestedFieldNames(type, fieldName));
           } // Report an error, including helpful suggestions.
 

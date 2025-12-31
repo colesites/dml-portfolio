@@ -1,6 +1,3 @@
-class WebSocketClientStore {
-}
-export {
-  WebSocketClientStore
-};
+class WebSocketClientStore {}
+export { WebSocketClientStore };
 //# sourceMappingURL=WebSocketClientStore.mjs.map

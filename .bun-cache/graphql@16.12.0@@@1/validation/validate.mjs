@@ -1,13 +1,13 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { GraphQLError } from '../error/GraphQLError.mjs';
-import { visit, visitInParallel } from '../language/visitor.mjs';
-import { assertValidSchema } from '../type/validate.mjs';
-import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo.mjs';
-import { specifiedRules, specifiedSDLRules } from './specifiedRules.mjs';
+import { GraphQLError } from "../error/GraphQLError.mjs";
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { visit, visitInParallel } from "../language/visitor.mjs";
+import { assertValidSchema } from "../type/validate.mjs";
+import { TypeInfo, visitWithTypeInfo } from "../utilities/TypeInfo.mjs";
+import { specifiedRules, specifiedSDLRules } from "./specifiedRules.mjs";
 import {
   SDLValidationContext,
   ValidationContext,
-} from './ValidationContext.mjs';
+} from "./ValidationContext.mjs";
 /**
  * Implements the "Validation" section of the spec.
  *
@@ -45,7 +45,7 @@ export function validate(
       null && _options$maxErrors !== void 0
       ? _options$maxErrors
       : 100;
-  documentAST || devAssert(false, 'Must provide document.'); // If the schema used for validation is invalid, throw an error.
+  documentAST || devAssert(false, "Must provide document."); // If the schema used for validation is invalid, throw an error.
 
   assertValidSchema(schema);
   const abortObj = Object.freeze({});
@@ -58,7 +58,7 @@ export function validate(
       if (errors.length >= maxErrors) {
         errors.push(
           new GraphQLError(
-            'Too many validation errors, error limit reached. Validation aborted.',
+            "Too many validation errors, error limit reached. Validation aborted.",
           ),
         ); // eslint-disable-next-line @typescript-eslint/no-throw-literal
 
@@ -114,7 +114,7 @@ export function assertValidSDL(documentAST) {
   const errors = validateSDL(documentAST);
 
   if (errors.length !== 0) {
-    throw new Error(errors.map((error) => error.message).join('\n\n'));
+    throw new Error(errors.map((error) => error.message).join("\n\n"));
   }
 }
 /**
@@ -128,6 +128,6 @@ export function assertValidSDLExtension(documentAST, schema) {
   const errors = validateSDL(documentAST, schema);
 
   if (errors.length !== 0) {
-    throw new Error(errors.map((error) => error.message).join('\n\n'));
+    throw new Error(errors.map((error) => error.message).join("\n\n"));
   }
 }

@@ -1,31 +1,31 @@
 import {
-  Interceptor,
   BatchInterceptor,
-  HttpRequestEventMap,
-} from '@mswjs/interceptors'
-import { FetchInterceptor } from '@mswjs/interceptors/fetch'
-import { XMLHttpRequestInterceptor } from '@mswjs/interceptors/XMLHttpRequest'
-import { SetupWorkerInternalContext, StartOptions } from '../glossary'
-import type { RequiredDeep } from '~/core/typeUtils'
-import { handleRequest } from '~/core/utils/handleRequest'
-import { isHandlerKind } from '~/core/utils/internal/isHandlerKind'
+  type HttpRequestEventMap,
+  type Interceptor,
+} from "@mswjs/interceptors";
+import { FetchInterceptor } from "@mswjs/interceptors/fetch";
+import { XMLHttpRequestInterceptor } from "@mswjs/interceptors/XMLHttpRequest";
+import type { RequiredDeep } from "~/core/typeUtils";
+import { handleRequest } from "~/core/utils/handleRequest";
+import { isHandlerKind } from "~/core/utils/internal/isHandlerKind";
+import type { SetupWorkerInternalContext, StartOptions } from "../glossary";
 
 export function createFallbackRequestListener(
   context: SetupWorkerInternalContext,
   options: RequiredDeep<StartOptions>,
 ): Interceptor<HttpRequestEventMap> {
   const interceptor = new BatchInterceptor({
-    name: 'fallback',
+    name: "fallback",
     interceptors: [new FetchInterceptor(), new XMLHttpRequestInterceptor()],
-  })
+  });
 
-  interceptor.on('request', async ({ request, requestId, controller }) => {
-    const requestCloneForLogs = request.clone()
+  interceptor.on("request", async ({ request, requestId, controller }) => {
+    const requestCloneForLogs = request.clone();
 
     const response = await handleRequest(
       request,
       requestId,
-      context.getRequestHandlers().filter(isHandlerKind('RequestHandler')),
+      context.getRequestHandlers().filter(isHandlerKind("RequestHandler")),
       options,
       context.emitter,
       {
@@ -34,38 +34,38 @@ export function createFallbackRequestListener(
         },
         onMockedResponse(_, { handler, parsedResult }) {
           if (!options.quiet) {
-            context.emitter.once('response:mocked', ({ response }) => {
+            context.emitter.once("response:mocked", ({ response }) => {
               handler.log({
                 request: requestCloneForLogs,
                 response,
                 parsedResult,
-              })
-            })
+              });
+            });
           }
         },
       },
-    )
+    );
 
     if (response) {
-      controller.respondWith(response)
+      controller.respondWith(response);
     }
-  })
+  });
 
   interceptor.on(
-    'response',
+    "response",
     ({ response, isMockedResponse, request, requestId }) => {
       context.emitter.emit(
-        isMockedResponse ? 'response:mocked' : 'response:bypass',
+        isMockedResponse ? "response:mocked" : "response:bypass",
         {
           response,
           request,
           requestId,
         },
-      )
+      );
     },
-  )
+  );
 
-  interceptor.apply()
+  interceptor.apply();
 
-  return interceptor
+  return interceptor;
 }

@@ -1,40 +1,30 @@
-/*!
- * express
- * Copyright(c) 2009-2013 TJ Holowaychuk
- * Copyright(c) 2013 Roman Shtylman
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict';
-
 /**
  * Module dependencies.
  * @private
  */
 
-var accepts = require('accepts');
-var isIP = require('node:net').isIP;
-var typeis = require('type-is');
-var http = require('node:http');
-var fresh = require('fresh');
-var parseRange = require('range-parser');
-var parse = require('parseurl');
-var proxyaddr = require('proxy-addr');
+var accepts = require("accepts");
+var isIP = require("node:net").isIP;
+var typeis = require("type-is");
+var http = require("node:http");
+var fresh = require("fresh");
+var parseRange = require("range-parser");
+var parse = require("parseurl");
+var proxyaddr = require("proxy-addr");
 
 /**
  * Request prototype.
  * @public
  */
 
-var req = Object.create(http.IncomingMessage.prototype)
+var req = Object.create(http.IncomingMessage.prototype);
 
 /**
  * Module exports.
  * @public
  */
 
-module.exports = req
+module.exports = req;
 
 /**
  * Return request header.
@@ -60,23 +50,21 @@ module.exports = req
  * @public
  */
 
-req.get =
-req.header = function header(name) {
+req.get = req.header = function header(name) {
   if (!name) {
-    throw new TypeError('name argument is required to req.get');
+    throw new TypeError("name argument is required to req.get");
   }
 
-  if (typeof name !== 'string') {
-    throw new TypeError('name must be a string to req.get');
+  if (typeof name !== "string") {
+    throw new TypeError("name must be a string to req.get");
   }
 
   var lc = name.toLowerCase();
 
   switch (lc) {
-    case 'referer':
-    case 'referrer':
-      return this.headers.referrer
-        || this.headers.referer;
+    case "referer":
+    case "referrer":
+      return this.headers.referrer || this.headers.referer;
     default:
       return this.headers[lc];
   }
@@ -128,7 +116,7 @@ req.header = function header(name) {
  * @public
  */
 
-req.accepts = function(){
+req.accepts = function () {
   var accept = accepts(this);
   return accept.types.apply(accept, arguments);
 };
@@ -141,7 +129,7 @@ req.accepts = function(){
  * @public
  */
 
-req.acceptsEncodings = function(){
+req.acceptsEncodings = function () {
   var accept = accepts(this);
   return accept.encodings.apply(accept, arguments);
 };
@@ -155,7 +143,7 @@ req.acceptsEncodings = function(){
  * @public
  */
 
-req.acceptsCharsets = function(){
+req.acceptsCharsets = function () {
   var accept = accepts(this);
   return accept.charsets.apply(accept, arguments);
 };
@@ -169,7 +157,7 @@ req.acceptsCharsets = function(){
  * @public
  */
 
-req.acceptsLanguages = function(...languages) {
+req.acceptsLanguages = function (...languages) {
   return accepts(this).languages(...languages);
 };
 
@@ -199,7 +187,7 @@ req.acceptsLanguages = function(...languages) {
  */
 
 req.range = function range(size, options) {
-  var range = this.get('Range');
+  var range = this.get("Range");
   if (!range) return;
   return parseRange(size, range, options);
 };
@@ -214,8 +202,8 @@ req.range = function range(size, options) {
  * @api public
  */
 
-defineGetter(req, 'query', function query(){
-  var queryparse = this.app.get('query parser fn');
+defineGetter(req, "query", function query() {
+  var queryparse = this.app.get("query parser fn");
 
   if (!queryparse) {
     // parsing is disabled
@@ -281,11 +269,9 @@ req.is = function is(types) {
  * @public
  */
 
-defineGetter(req, 'protocol', function protocol(){
-  var proto = this.socket.encrypted
-    ? 'https'
-    : 'http';
-  var trust = this.app.get('trust proxy fn');
+defineGetter(req, "protocol", function protocol() {
+  var proto = this.socket.encrypted ? "https" : "http";
+  var trust = this.app.get("trust proxy fn");
 
   if (!trust(this.socket.remoteAddress, 0)) {
     return proto;
@@ -293,12 +279,10 @@ defineGetter(req, 'protocol', function protocol(){
 
   // Note: X-Forwarded-Proto is normally only ever a
   //       single value, but this is to be safe.
-  var header = this.get('X-Forwarded-Proto') || proto
-  var index = header.indexOf(',')
+  var header = this.get("X-Forwarded-Proto") || proto;
+  var index = header.indexOf(",");
 
-  return index !== -1
-    ? header.substring(0, index).trim()
-    : header.trim()
+  return index !== -1 ? header.substring(0, index).trim() : header.trim();
 });
 
 /**
@@ -310,8 +294,8 @@ defineGetter(req, 'protocol', function protocol(){
  * @public
  */
 
-defineGetter(req, 'secure', function secure(){
-  return this.protocol === 'https';
+defineGetter(req, "secure", function secure() {
+  return this.protocol === "https";
 });
 
 /**
@@ -324,8 +308,8 @@ defineGetter(req, 'secure', function secure(){
  * @public
  */
 
-defineGetter(req, 'ip', function ip(){
-  var trust = this.app.get('trust proxy fn');
+defineGetter(req, "ip", function ip() {
+  var trust = this.app.get("trust proxy fn");
   return proxyaddr(this, trust);
 });
 
@@ -341,15 +325,15 @@ defineGetter(req, 'ip', function ip(){
  * @public
  */
 
-defineGetter(req, 'ips', function ips() {
-  var trust = this.app.get('trust proxy fn');
+defineGetter(req, "ips", function ips() {
+  var trust = this.app.get("trust proxy fn");
   var addrs = proxyaddr.all(this, trust);
 
   // reverse the order (to farthest -> closest)
   // and remove socket address
-  addrs.reverse().pop()
+  addrs.reverse().pop();
 
-  return addrs
+  return addrs;
 });
 
 /**
@@ -367,15 +351,13 @@ defineGetter(req, 'ips', function ips() {
  * @public
  */
 
-defineGetter(req, 'subdomains', function subdomains() {
+defineGetter(req, "subdomains", function subdomains() {
   var hostname = this.hostname;
 
   if (!hostname) return [];
 
-  var offset = this.app.get('subdomain offset');
-  var subdomains = !isIP(hostname)
-    ? hostname.split('.').reverse()
-    : [hostname];
+  var offset = this.app.get("subdomain offset");
+  var subdomains = !isIP(hostname) ? hostname.split(".").reverse() : [hostname];
 
   return subdomains.slice(offset);
 });
@@ -387,7 +369,7 @@ defineGetter(req, 'subdomains', function subdomains() {
  * @public
  */
 
-defineGetter(req, 'path', function path() {
+defineGetter(req, "path", function path() {
   return parse(this).pathname;
 });
 
@@ -402,16 +384,16 @@ defineGetter(req, 'path', function path() {
  * @public
  */
 
-defineGetter(req, 'host', function host(){
-  var trust = this.app.get('trust proxy fn');
-  var val = this.get('X-Forwarded-Host');
+defineGetter(req, "host", function host() {
+  var trust = this.app.get("trust proxy fn");
+  var val = this.get("X-Forwarded-Host");
 
   if (!val || !trust(this.socket.remoteAddress, 0)) {
-    val = this.get('Host');
-  } else if (val.indexOf(',') !== -1) {
+    val = this.get("Host");
+  } else if (val.indexOf(",") !== -1) {
     // Note: X-Forwarded-Host is normally only ever a
     //       single value, but this is to be safe.
-    val = val.substring(0, val.indexOf(',')).trimRight()
+    val = val.substring(0, val.indexOf(",")).trimRight();
   }
 
   return val || undefined;
@@ -428,20 +410,16 @@ defineGetter(req, 'host', function host(){
  * @api public
  */
 
-defineGetter(req, 'hostname', function hostname(){
+defineGetter(req, "hostname", function hostname() {
   var host = this.host;
 
   if (!host) return;
 
   // IPv6 literal support
-  var offset = host[0] === '['
-    ? host.indexOf(']') + 1
-    : 0;
-  var index = host.indexOf(':', offset);
+  var offset = host[0] === "[" ? host.indexOf("]") + 1 : 0;
+  var index = host.indexOf(":", offset);
 
-  return index !== -1
-    ? host.substring(0, index)
-    : host;
+  return index !== -1 ? host.substring(0, index) : host;
 });
 
 /**
@@ -453,20 +431,20 @@ defineGetter(req, 'hostname', function hostname(){
  * @public
  */
 
-defineGetter(req, 'fresh', function(){
+defineGetter(req, "fresh", function () {
   var method = this.method;
-  var res = this.res
-  var status = res.statusCode
+  var res = this.res;
+  var status = res.statusCode;
 
   // GET or HEAD for weak freshness validation only
-  if ('GET' !== method && 'HEAD' !== method) return false;
+  if ("GET" !== method && "HEAD" !== method) return false;
 
   // 2xx or 304 as per rfc2616 14.26
   if ((status >= 200 && status < 300) || 304 === status) {
     return fresh(this.headers, {
-      'etag': res.get('ETag'),
-      'last-modified': res.get('Last-Modified')
-    })
+      etag: res.get("ETag"),
+      "last-modified": res.get("Last-Modified"),
+    });
   }
 
   return false;
@@ -481,7 +459,7 @@ defineGetter(req, 'fresh', function(){
  * @public
  */
 
-defineGetter(req, 'stale', function stale(){
+defineGetter(req, "stale", function stale() {
   return !this.fresh;
 });
 
@@ -492,9 +470,9 @@ defineGetter(req, 'stale', function stale(){
  * @public
  */
 
-defineGetter(req, 'xhr', function xhr(){
-  var val = this.get('X-Requested-With') || '';
-  return val.toLowerCase() === 'xmlhttprequest';
+defineGetter(req, "xhr", function xhr() {
+  var val = this.get("X-Requested-With") || "";
+  return val.toLowerCase() === "xmlhttprequest";
 });
 
 /**
@@ -509,6 +487,6 @@ function defineGetter(obj, name, getter) {
   Object.defineProperty(obj, name, {
     configurable: true,
     enumerable: true,
-    get: getter
+    get: getter,
   });
 }

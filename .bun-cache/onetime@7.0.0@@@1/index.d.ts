@@ -1,14 +1,14 @@
 export type Options = {
-	/**
+  /**
 	Throw an error when called more than once.
 
 	@default false
 	*/
-	readonly throw?: boolean;
+  readonly throw?: boolean;
 };
 
 declare const onetime: {
-	/**
+  /**
 	Ensure a function is only called once. When called multiple times it will return the return value from the first call.
 
 	@param fn - The function that should only be called once.
@@ -29,12 +29,12 @@ declare const onetime: {
 	onetime.callCount(foo); //=> 3
 	```
 	*/
-	<ArgumentsType extends unknown[], ReturnType>(
-		fn: (...arguments_: ArgumentsType) => ReturnType,
-		options?: Options
-	): (...arguments_: ArgumentsType) => ReturnType;
+  <ArgumentsType extends unknown[], ReturnType>(
+    fn: (...arguments_: ArgumentsType) => ReturnType,
+    options?: Options,
+  ): (...arguments_: ArgumentsType) => ReturnType;
 
-	/**
+  /**
 	Get the number of times `fn` has been called.
 
 	@param fn - The function to get call count from.
@@ -53,7 +53,7 @@ declare const onetime: {
 	//=> 3
 	```
 	*/
-	callCount(fn: (...arguments_: any[]) => unknown): number;
+  callCount(fn: (...arguments_: any[]) => unknown): number;
 };
 
 export default onetime;

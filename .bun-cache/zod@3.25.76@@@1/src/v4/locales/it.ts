@@ -29,7 +29,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -76,7 +79,8 @@ const error: () => errors.$ZodErrorMap = () => {
         return `Input non valido: atteso ${issue.expected}, ricevuto ${parsedType(issue.input)}`;
       // return `Input non valido: atteso ${issue.expected}, ricevuto ${util.getParsedType(issue.input)}`;
       case "invalid_value":
-        if (issue.values.length === 1) return `Input non valido: atteso ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `Input non valido: atteso ${util.stringifyPrimitive(issue.values[0])}`;
         return `Opzione non valida: atteso uno tra ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
@@ -96,10 +100,14 @@ const error: () => errors.$ZodErrorMap = () => {
       }
       case "invalid_format": {
         const _issue = issue as errors.$ZodStringFormatIssues;
-        if (_issue.format === "starts_with") return `Stringa non valida: deve iniziare con "${_issue.prefix}"`;
-        if (_issue.format === "ends_with") return `Stringa non valida: deve terminare con "${_issue.suffix}"`;
-        if (_issue.format === "includes") return `Stringa non valida: deve includere "${_issue.includes}"`;
-        if (_issue.format === "regex") return `Stringa non valida: deve corrispondere al pattern ${_issue.pattern}`;
+        if (_issue.format === "starts_with")
+          return `Stringa non valida: deve iniziare con "${_issue.prefix}"`;
+        if (_issue.format === "ends_with")
+          return `Stringa non valida: deve terminare con "${_issue.suffix}"`;
+        if (_issue.format === "includes")
+          return `Stringa non valida: deve includere "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `Stringa non valida: deve corrispondere al pattern ${_issue.pattern}`;
         return `Invalid ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

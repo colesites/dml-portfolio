@@ -1,7 +1,7 @@
 export enum StatusCodeColor {
-  Success = '#69AB32',
-  Warning = '#F0BB4B',
-  Danger = '#E95F5D',
+  Success = "#69AB32",
+  Warning = "#F0BB4B",
+  Danger = "#E95F5D",
 }
 
 /**
@@ -9,12 +9,12 @@ export enum StatusCodeColor {
  */
 export function getStatusCodeColor(status: number): StatusCodeColor {
   if (status < 300) {
-    return StatusCodeColor.Success
+    return StatusCodeColor.Success;
   }
 
   if (status < 400) {
-    return StatusCodeColor.Warning
+    return StatusCodeColor.Warning;
   }
 
-  return StatusCodeColor.Danger
+  return StatusCodeColor.Danger;
 }

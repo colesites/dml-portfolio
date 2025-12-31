@@ -17,7 +17,10 @@ export const parsedType = (data: any): string => {
         return "null";
       }
 
-      if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+      if (
+        Object.getPrototypeOf(data) !== Object.prototype &&
+        data.constructor
+      ) {
         return data.constructor.name;
       }
     }
@@ -76,7 +79,8 @@ const error: () => errors.$ZodErrorMap = () => {
         return `Invalid input: expected ${issue.expected}, received ${parsedType(issue.input)}`;
 
       case "invalid_value":
-        if (issue.values.length === 1) return `Invalid input: expected ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `Invalid input: expected ${util.stringifyPrimitive(issue.values[0])}`;
         return `Invalid option: expected one of ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
@@ -99,9 +103,12 @@ const error: () => errors.$ZodErrorMap = () => {
         if (_issue.format === "starts_with") {
           return `Invalid string: must start with "${_issue.prefix}"`;
         }
-        if (_issue.format === "ends_with") return `Invalid string: must end with "${_issue.suffix}"`;
-        if (_issue.format === "includes") return `Invalid string: must include "${_issue.includes}"`;
-        if (_issue.format === "regex") return `Invalid string: must match pattern ${_issue.pattern}`;
+        if (_issue.format === "ends_with")
+          return `Invalid string: must end with "${_issue.suffix}"`;
+        if (_issue.format === "includes")
+          return `Invalid string: must include "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `Invalid string: must match pattern ${_issue.pattern}`;
         return `Invalid ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

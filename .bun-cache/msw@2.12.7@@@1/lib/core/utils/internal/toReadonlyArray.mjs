@@ -3,7 +3,5 @@ function toReadonlyArray(source) {
   Object.freeze(clone);
   return clone;
 }
-export {
-  toReadonlyArray
-};
+export { toReadonlyArray };
 //# sourceMappingURL=toReadonlyArray.mjs.map

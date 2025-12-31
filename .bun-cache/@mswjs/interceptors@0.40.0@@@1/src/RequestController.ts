@@ -1,37 +1,37 @@
-import { DeferredPromise } from '@open-draft/deferred-promise'
-import { invariant } from 'outvariant'
-import { InterceptorError } from './InterceptorError'
+import { DeferredPromise } from "@open-draft/deferred-promise";
+import { invariant } from "outvariant";
+import { InterceptorError } from "./InterceptorError";
 
 export interface RequestControllerSource {
-  passthrough(): void
-  respondWith(response: Response): void
-  errorWith(reason?: unknown): void
+  passthrough(): void;
+  respondWith(response: Response): void;
+  errorWith(reason?: unknown): void;
 }
 
 export class RequestController {
-  static PENDING = 0 as const
-  static PASSTHROUGH = 1 as const
-  static RESPONSE = 2 as const
-  static ERROR = 3 as const
+  static PENDING = 0 as const;
+  static PASSTHROUGH = 1 as const;
+  static RESPONSE = 2 as const;
+  static ERROR = 3 as const;
 
-  public readyState: number
+  public readyState: number;
 
   /**
    * A Promise that resolves when this controller handles a request.
    * See `controller.readyState` for more information on the handling result.
    */
-  public handled: Promise<void>
+  public handled: Promise<void>;
 
   constructor(
     protected readonly request: Request,
-    protected readonly source: RequestControllerSource
+    protected readonly source: RequestControllerSource,
   ) {
-    this.readyState = RequestController.PENDING
-    this.handled = new DeferredPromise<void>()
+    this.readyState = RequestController.PENDING;
+    this.handled = new DeferredPromise<void>();
   }
 
   get #handled() {
-    return this.handled as DeferredPromise<void>
+    return this.handled as DeferredPromise<void>;
   }
 
   /**
@@ -43,12 +43,12 @@ export class RequestController {
       this.readyState === RequestController.PENDING,
       'Failed to passthrough the "%s %s" request: the request has already been handled',
       this.request.method,
-      this.request.url
-    )
+      this.request.url,
+    );
 
-    this.readyState = RequestController.PASSTHROUGH
-    await this.source.passthrough()
-    this.#handled.resolve()
+    this.readyState = RequestController.PASSTHROUGH;
+    await this.source.passthrough();
+    this.#handled.resolve();
   }
 
   /**
@@ -67,12 +67,12 @@ export class RequestController {
       this.request.method,
       this.request.url,
       response.status,
-      response.statusText || 'OK',
-      this.readyState
-    )
+      response.statusText || "OK",
+      this.readyState,
+    );
 
-    this.readyState = RequestController.RESPONSE
-    this.#handled.resolve()
+    this.readyState = RequestController.RESPONSE;
+    this.#handled.resolve();
 
     /**
      * @note Although `source.respondWith()` is potentially asynchronous,
@@ -80,7 +80,7 @@ export class RequestController {
      * the request listener invocation as soon as a listener responds to a request.
      * Ideally, that's what we want, but that's not what we promise the user.
      */
-    this.source.respondWith(response)
+    this.source.respondWith(response);
   }
 
   /**
@@ -99,11 +99,11 @@ export class RequestController {
       this.request.method,
       this.request.url,
       reason?.toString(),
-      this.readyState
-    )
+      this.readyState,
+    );
 
-    this.readyState = RequestController.ERROR
-    this.source.errorWith(reason)
-    this.#handled.resolve()
+    this.readyState = RequestController.ERROR;
+    this.source.errorWith(reason);
+    this.#handled.resolve();
   }
 }

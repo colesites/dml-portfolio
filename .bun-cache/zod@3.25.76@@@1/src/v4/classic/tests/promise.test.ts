@@ -5,7 +5,7 @@ const promSchema = z.promise(
   z.object({
     name: z.string(),
     age: z.number(),
-  })
+  }),
 );
 
 test("promise inference", () => {
@@ -27,13 +27,17 @@ test("promise parsing success", async () => {
 });
 
 test("promise parsing fail", async () => {
-  const bad = await promSchema.safeParseAsync(Promise.resolve({ name: "Bobby", age: "10" }));
+  const bad = await promSchema.safeParseAsync(
+    Promise.resolve({ name: "Bobby", age: "10" }),
+  );
   expect(bad.success).toBe(false);
   expect(bad.error).toBeInstanceOf(z.ZodError);
 });
 
 test("promise parsing fail 2", async () => {
-  const result = await promSchema.safeParseAsync(Promise.resolve({ name: "Bobby", age: "10" }));
+  const result = await promSchema.safeParseAsync(
+    Promise.resolve({ name: "Bobby", age: "10" }),
+  );
   expect(result.success).toBe(false);
   expect(result.error).toBeInstanceOf(z.ZodError);
 });

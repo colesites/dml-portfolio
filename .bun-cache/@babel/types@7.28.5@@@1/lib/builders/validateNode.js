@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = validateNode;
 var _validate = require("../validators/validate.js");
@@ -13,7 +13,8 @@ function validateNode(node) {
   const keys = _index.BUILDER_KEYS[node.type];
   for (const key of keys) {
     const field = fields[key];
-    if (field != null) (0, _validate.validateInternal)(field, node, key, node[key]);
+    if (field != null)
+      (0, _validate.validateInternal)(field, node, key, node[key]);
   }
   return node;
 }

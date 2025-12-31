@@ -1,3 +1,2 @@
 #!/usr/bin/env node
-'use strict'
-import '../dist/nup.mjs'
+import "../dist/nup.mjs";

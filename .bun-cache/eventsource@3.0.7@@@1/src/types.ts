@@ -1,4 +1,4 @@
-import type {ErrorEvent} from './errors.js'
+import type { ErrorEvent } from "./errors.js";
 
 /**
  * Stripped down version of `fetch()`, only defining the parts we care about.
@@ -9,7 +9,7 @@ import type {ErrorEvent} from './errors.js'
 export type FetchLike = (
   url: string | URL,
   init: EventSourceFetchInit,
-) => Promise<FetchLikeResponse>
+) => Promise<FetchLikeResponse>;
 
 /**
  * Subset of `RequestInit` used for `fetch()` calls made by the `EventSource` class.
@@ -21,25 +21,25 @@ export type FetchLike = (
 export interface EventSourceFetchInit {
   /** An AbortSignal to set request's signal. Typed as `any` because of polyfill inconsistencies. */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  signal: {aborted: boolean} | any
+  signal: { aborted: boolean } | any;
 
   /** A Headers object, an object literal, or an array of two-item arrays to set request's headers. */
   headers: {
-    [key: string]: string
-    Accept: 'text/event-stream'
-  }
+    [key: string]: string;
+    Accept: "text/event-stream";
+  };
 
   /** A string to indicate whether the request will use CORS, or will be restricted to same-origin URLs. Sets request's mode. */
-  mode: 'cors' | 'no-cors' | 'same-origin'
+  mode: "cors" | "no-cors" | "same-origin";
 
   /** A string indicating whether credentials will be sent with the request always, never, or only when sent to a same-origin URL. Sets request's credentials. */
-  credentials?: 'include' | 'omit' | 'same-origin'
+  credentials?: "include" | "omit" | "same-origin";
 
   /** Controls how the request is cached. */
-  cache: 'no-store'
+  cache: "no-store";
 
   /** A string indicating whether request follows redirects, results in an error upon encountering a redirect, or returns the redirect (in an opaque fashion). Sets request's redirect. */
-  redirect: 'error' | 'follow' | 'manual'
+  redirect: "error" | "follow" | "manual";
 }
 
 /**
@@ -47,7 +47,7 @@ export interface EventSourceFetchInit {
  * @deprecated Use `EventSourceFetchInit` instead.
  * This type is only here for backwards compatibility and will be removed in a future version.
  */
-export type FetchLikeInit = EventSourceFetchInit
+export type FetchLikeInit = EventSourceFetchInit;
 
 /**
  * Stripped down version of `ReadableStreamDefaultReader`, only defining the parts we care about.
@@ -55,8 +55,10 @@ export type FetchLikeInit = EventSourceFetchInit
  * @public
  */
 export interface ReaderLike {
-  read(): Promise<{done: false; value: unknown} | {done: true; value?: undefined}>
-  cancel(): Promise<void>
+  read(): Promise<
+    { done: false; value: unknown } | { done: true; value?: undefined }
+  >;
+  cancel(): Promise<void>;
 }
 
 /**
@@ -66,11 +68,11 @@ export interface ReaderLike {
  */
 export interface FetchLikeResponse {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly body: {getReader(): ReaderLike} | Response['body'] | null
-  readonly url: string
-  readonly status: number
-  readonly redirected: boolean
-  readonly headers: {get(name: string): string | null}
+  readonly body: { getReader(): ReaderLike } | Response["body"] | null;
+  readonly url: string;
+  readonly status: number;
+  readonly redirected: boolean;
+  readonly headers: { get(name: string): string | null };
 }
 
 /**
@@ -79,9 +81,9 @@ export interface FetchLikeResponse {
  * @public
  */
 export interface EventSourceEventMap {
-  error: ErrorEvent
-  message: MessageEvent
-  open: Event
+  error: ErrorEvent;
+  message: MessageEvent;
+  open: Event;
 }
 
 /**
@@ -93,13 +95,13 @@ export interface EventSourceInit {
   /**
    * A boolean value, defaulting to `false`, indicating if CORS should be set to `include` credentials.
    */
-  withCredentials?: boolean
+  withCredentials?: boolean;
 
   /**
    * Optional fetch implementation to use. Defaults to `globalThis.fetch`.
    * Can also be used for advanced use cases like mocking, proxying, custom certs etc.
    */
-  fetch?: FetchLike
+  fetch?: FetchLike;
 }
 
 /**
@@ -109,7 +111,7 @@ export interface EventSourceInit {
  */
 export interface EventListenerOptions {
   /** Not directly used by Node.js. Added for API completeness. Default: `false`. */
-  capture?: boolean
+  capture?: boolean;
 }
 
 /**
@@ -119,11 +121,11 @@ export interface EventListenerOptions {
  */
 export interface AddEventListenerOptions extends EventListenerOptions {
   /** When `true`, the listener is automatically removed when it is first invoked. Default: `false`. */
-  once?: boolean
+  once?: boolean;
   /** When `true`, serves as a hint that the listener will not call the `Event` object's `preventDefault()` method. Default: false. */
-  passive?: boolean
+  passive?: boolean;
   /** The listener will be removed when the given AbortSignal object's `abort()` method is called. */
-  signal?: AbortSignal
+  signal?: AbortSignal;
 }
 
 /**
@@ -131,16 +133,16 @@ export interface AddEventListenerOptions extends EventListenerOptions {
  *
  * @public
  */
-export type EventListenerOrEventListenerObject = EventListener | EventListenerObject
+export type EventListenerOrEventListenerObject =
+  | EventListener
+  | EventListenerObject;
 
 /**
  * Mirrors the official DOM typings.
  *
  * @public
  */
-export interface EventListener {
-  (evt: Event | MessageEvent): void
-}
+export type EventListener = (evt: Event | MessageEvent) => void;
 
 /**
  * Mirrors the official DOM typings.
@@ -148,5 +150,5 @@ export interface EventListener {
  * @public
  */
 export interface EventListenerObject {
-  handleEvent(object: Event): void
+  handleEvent(object: Event): void;
 }

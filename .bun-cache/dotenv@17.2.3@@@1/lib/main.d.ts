@@ -1,6 +1,6 @@
 // TypeScript Version: 3.0
 /// <reference types="node" />
-import type { URL } from 'url';
+import type { URL } from "url";
 
 export interface DotenvParseOutput {
   [name: string]: string;
@@ -19,7 +19,7 @@ export interface DotenvPopulateOutput {
  * @returns an object with keys and values based on `src`. example: `{ DB_HOST : 'localhost' }`
  */
 export function parse<T extends DotenvParseOutput = DotenvParseOutput>(
-  src: string | Buffer
+  src: string | Buffer,
 ): T;
 
 export interface DotenvConfigOptions {
@@ -95,13 +95,13 @@ export interface DotenvConfigOutput {
 }
 
 type DotenvError = Error & {
-  code: 
-    | 'MISSING_DATA'
-    | 'INVALID_DOTENV_KEY'
-    | 'NOT_FOUND_DOTENV_ENVIRONMENT'
-    | 'DECRYPTION_FAILED'
-    | 'OBJECT_REQUIRED';
-}
+  code:
+    | "MISSING_DATA"
+    | "INVALID_DOTENV_KEY"
+    | "NOT_FOUND_DOTENV_ENVIRONMENT"
+    | "DECRYPTION_FAILED"
+    | "OBJECT_REQUIRED";
+};
 
 export interface DotenvPopulateOptions {
   /**
@@ -163,7 +163,7 @@ export function configDotenv(options?: DotenvConfigOptions): DotenvConfigOutput;
 export function populate(
   processEnv: DotenvPopulateInput,
   parsed: DotenvPopulateInput,
-  options?: DotenvConfigOptions
+  options?: DotenvConfigOptions,
 ): DotenvPopulateOutput;
 
 /**

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = validate;
 exports.validateChild = validateChild;
@@ -24,7 +24,13 @@ function validateInternal(field, node, key, val, maybeNode) {
     var _NODE_PARENT_VALIDATI;
     const type = val.type;
     if (type == null) return;
-    (_NODE_PARENT_VALIDATI = _index.NODE_PARENT_VALIDATIONS[type]) == null || _NODE_PARENT_VALIDATI.call(_index.NODE_PARENT_VALIDATIONS, node, key, val);
+    (_NODE_PARENT_VALIDATI = _index.NODE_PARENT_VALIDATIONS[type]) == null ||
+      _NODE_PARENT_VALIDATI.call(
+        _index.NODE_PARENT_VALIDATIONS,
+        node,
+        key,
+        val,
+      );
   }
 }
 function validateField(node, key, val, field) {
@@ -36,7 +42,8 @@ function validateChild(node, key, val) {
   var _NODE_PARENT_VALIDATI2;
   const type = val == null ? void 0 : val.type;
   if (type == null) return;
-  (_NODE_PARENT_VALIDATI2 = _index.NODE_PARENT_VALIDATIONS[type]) == null || _NODE_PARENT_VALIDATI2.call(_index.NODE_PARENT_VALIDATIONS, node, key, val);
+  (_NODE_PARENT_VALIDATI2 = _index.NODE_PARENT_VALIDATIONS[type]) == null ||
+    _NODE_PARENT_VALIDATI2.call(_index.NODE_PARENT_VALIDATIONS, node, key, val);
 }
 
 //# sourceMappingURL=validate.js.map

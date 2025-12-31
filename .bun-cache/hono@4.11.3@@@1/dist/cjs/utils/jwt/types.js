@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var types_exports = {};
 __export(types_exports, {
   CryptoKeyUsage: () => CryptoKeyUsage,
@@ -29,7 +33,7 @@ __export(types_exports, {
   JwtTokenIssuedAt: () => JwtTokenIssuedAt,
   JwtTokenIssuer: () => JwtTokenIssuer,
   JwtTokenNotBefore: () => JwtTokenNotBefore,
-  JwtTokenSignatureMismatched: () => JwtTokenSignatureMismatched
+  JwtTokenSignatureMismatched: () => JwtTokenSignatureMismatched,
 });
 module.exports = __toCommonJS(types_exports);
 class JwtAlgorithmNotImplemented extends Error {
@@ -59,7 +63,7 @@ class JwtTokenExpired extends Error {
 class JwtTokenIssuedAt extends Error {
   constructor(currentTimestamp, iat) {
     super(
-      `Invalid "iat" claim, must be a valid number lower than "${currentTimestamp}" (iat: "${iat}")`
+      `Invalid "iat" claim, must be a valid number lower than "${currentTimestamp}" (iat: "${iat}")`,
     );
     this.name = "JwtTokenIssuedAt";
   }
@@ -97,7 +101,7 @@ class JwtPayloadRequiresAud extends Error {
 class JwtTokenAudience extends Error {
   constructor(expected, aud) {
     super(
-      `expected audience "${Array.isArray(expected) ? expected.join(", ") : expected}", got "${aud}"`
+      `expected audience "${Array.isArray(expected) ? expected.join(", ") : expected}", got "${aud}"`,
     );
     this.name = "JwtTokenAudience";
   }
@@ -114,17 +118,18 @@ var CryptoKeyUsage = /* @__PURE__ */ ((CryptoKeyUsage2) => {
   return CryptoKeyUsage2;
 })(CryptoKeyUsage || {});
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  CryptoKeyUsage,
-  JwtAlgorithmNotImplemented,
-  JwtHeaderInvalid,
-  JwtHeaderRequiresKid,
-  JwtPayloadRequiresAud,
-  JwtTokenAudience,
-  JwtTokenExpired,
-  JwtTokenInvalid,
-  JwtTokenIssuedAt,
-  JwtTokenIssuer,
-  JwtTokenNotBefore,
-  JwtTokenSignatureMismatched
-});
+0 &&
+  (module.exports = {
+    CryptoKeyUsage,
+    JwtAlgorithmNotImplemented,
+    JwtHeaderInvalid,
+    JwtHeaderRequiresKid,
+    JwtPayloadRequiresAud,
+    JwtTokenAudience,
+    JwtTokenExpired,
+    JwtTokenInvalid,
+    JwtTokenIssuedAt,
+    JwtTokenIssuer,
+    JwtTokenNotBefore,
+    JwtTokenSignatureMismatched,
+  });

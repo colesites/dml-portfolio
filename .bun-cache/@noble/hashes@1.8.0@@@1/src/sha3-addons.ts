@@ -10,7 +10,7 @@
  * * KeccakPRG: Pseudo-random generator based on Keccak [(pdf)](https://keccak.team/files/CSF-0.1.pdf)
  * @module
  */
-import { Keccak, type ShakeOpts } from './sha3.ts';
+import { Keccak, type ShakeOpts } from "./sha3.ts";
 import {
   abytes,
   anumber,
@@ -18,12 +18,12 @@ import {
   type CHashXO,
   createOptHasher,
   createXOFer,
-  Hash,
+  type Hash,
   type HashXOF,
   type Input,
   toBytes,
   u32,
-} from './utils.ts';
+} from "./utils.ts";
 
 // cSHAKE && KMAC (NIST SP800-185)
 const _8n = BigInt(8);
@@ -58,8 +58,12 @@ const abytesOrZero = (buf?: Input) => {
   return toBytes(buf);
 };
 // NOTE: second modulo is necessary since we don't need to add padding if current element takes whole block
-const getPadding = (len: number, block: number) => new Uint8Array((block - (len % block)) % block);
-export type cShakeOpts = ShakeOpts & { personalization?: Input; NISTfn?: Input };
+const getPadding = (len: number, block: number) =>
+  new Uint8Array((block - (len % block)) % block);
+export type cShakeOpts = ShakeOpts & {
+  personalization?: Input;
+  NISTfn?: Input;
+};
 
 // Personalization
 function cshakePers(hash: Keccak, opts: cShakeOpts = {}): Keccak {
@@ -73,15 +77,28 @@ function cshakePers(hash: Keccak, opts: cShakeOpts = {}): Keccak {
   const persLen = leftEncode(_8n * BigInt(pers.length)); // length in bits
   if (!fn.length && !pers.length) return hash;
   hash.suffix = 0x04;
-  hash.update(blockLenBytes).update(fnLen).update(fn).update(persLen).update(pers);
-  let totalLen = blockLenBytes.length + fnLen.length + fn.length + persLen.length + pers.length;
+  hash
+    .update(blockLenBytes)
+    .update(fnLen)
+    .update(fn)
+    .update(persLen)
+    .update(pers);
+  const totalLen =
+    blockLenBytes.length +
+    fnLen.length +
+    fn.length +
+    persLen.length +
+    pers.length;
   hash.update(getPadding(totalLen, hash.blockLen));
   return hash;
 }
 
 const gencShake = (suffix: number, blockLen: number, outputLen: number) =>
   createXOFer<Keccak, cShakeOpts>((opts: cShakeOpts = {}) =>
-    cshakePers(new Keccak(blockLen, suffix, chooseLen(opts, outputLen), true), opts)
+    cshakePers(
+      new Keccak(blockLen, suffix, chooseLen(opts, outputLen), true),
+      opts,
+    ),
   );
 
 // TODO: refactor
@@ -99,8 +116,10 @@ export type IParHash = {
   (message: Input, opts?: ParallelOpts): Uint8Array;
   create(opts?: ParallelOpts): ParallelHash;
 };
-export const cshake128: ICShake = /* @__PURE__ */ (() => gencShake(0x1f, 168, 128 / 8))();
-export const cshake256: ICShake = /* @__PURE__ */ (() => gencShake(0x1f, 136, 256 / 8))();
+export const cshake128: ICShake = /* @__PURE__ */ (() =>
+  gencShake(0x1f, 168, 128 / 8))();
+export const cshake256: ICShake = /* @__PURE__ */ (() =>
+  gencShake(0x1f, 136, 256 / 8))();
 
 export class KMAC extends Keccak implements HashXOF<KMAC> {
   constructor(
@@ -108,10 +127,10 @@ export class KMAC extends Keccak implements HashXOF<KMAC> {
     outputLen: number,
     enableXOF: boolean,
     key: Input,
-    opts: cShakeOpts = {}
+    opts: cShakeOpts = {},
   ) {
     super(blockLen, 0x1f, outputLen, enableXOF);
-    cshakePers(this, { NISTfn: 'KMAC', personalization: opts.personalization });
+    cshakePers(this, { NISTfn: "KMAC", personalization: opts.personalization });
     key = toBytes(key);
     abytes(key);
     // 1. newX = bytepad(encode_string(K), 168) || X || right_encode(L).
@@ -122,7 +141,10 @@ export class KMAC extends Keccak implements HashXOF<KMAC> {
     this.update(getPadding(totalLen, this.blockLen));
   }
   protected finish(): void {
-    if (!this.finished) this.update(rightEncode(this.enableXOF ? 0 : _8n * BigInt(this.outputLen))); // outputLen in bits
+    if (!this.finished)
+      this.update(
+        rightEncode(this.enableXOF ? 0 : _8n * BigInt(this.outputLen)),
+      ); // outputLen in bits
     super.finish();
   }
   _cloneInto(to?: KMAC): KMAC {
@@ -169,9 +191,17 @@ export const kmac256xof: {
 // TupleHash
 // Usage: tuple(['ab', 'cd']) != tuple(['a', 'bcd'])
 export class TupleHash extends Keccak implements HashXOF<TupleHash> {
-  constructor(blockLen: number, outputLen: number, enableXOF: boolean, opts: cShakeOpts = {}) {
+  constructor(
+    blockLen: number,
+    outputLen: number,
+    enableXOF: boolean,
+    opts: cShakeOpts = {},
+  ) {
     super(blockLen, 0x1f, outputLen, enableXOF);
-    cshakePers(this, { NISTfn: 'TupleHash', personalization: opts.personalization });
+    cshakePers(this, {
+      NISTfn: "TupleHash",
+      personalization: opts.personalization,
+    });
     // Change update after cshake processed
     this.update = (data: Input) => {
       data = toBytes(data);
@@ -183,7 +213,9 @@ export class TupleHash extends Keccak implements HashXOF<TupleHash> {
   }
   protected finish(): void {
     if (!this.finished)
-      super.update(rightEncode(this.enableXOF ? 0 : _8n * BigInt(this.outputLen))); // outputLen in bits
+      super.update(
+        rightEncode(this.enableXOF ? 0 : _8n * BigInt(this.outputLen)),
+      ); // outputLen in bits
     super.finish();
   }
   _cloneInto(to?: TupleHash): TupleHash {
@@ -207,13 +239,17 @@ function genTuple(blockLen: number, outputLen: number, xof = false) {
 }
 
 /** 128-bit TupleHASH. */
-export const tuplehash128: ITupleHash = /* @__PURE__ */ (() => genTuple(168, 128 / 8))();
+export const tuplehash128: ITupleHash = /* @__PURE__ */ (() =>
+  genTuple(168, 128 / 8))();
 /** 256-bit TupleHASH. */
-export const tuplehash256: ITupleHash = /* @__PURE__ */ (() => genTuple(136, 256 / 8))();
+export const tuplehash256: ITupleHash = /* @__PURE__ */ (() =>
+  genTuple(136, 256 / 8))();
 /** 128-bit TupleHASH XOF. */
-export const tuplehash128xof: ITupleHash = /* @__PURE__ */ (() => genTuple(168, 128 / 8, true))();
+export const tuplehash128xof: ITupleHash = /* @__PURE__ */ (() =>
+  genTuple(168, 128 / 8, true))();
 /** 256-bit TupleHASH XOF. */
-export const tuplehash256xof: ITupleHash = /* @__PURE__ */ (() => genTuple(136, 256 / 8, true))();
+export const tuplehash256xof: ITupleHash = /* @__PURE__ */ (() =>
+  genTuple(136, 256 / 8, true))();
 
 // ParallelHash (same as K12/M14, but without speedup for inputs less 8kb, reduced number of rounds and more simple)
 type ParallelOpts = cShakeOpts & { blockLen?: number };
@@ -229,10 +265,13 @@ export class ParallelHash extends Keccak implements HashXOF<ParallelHash> {
     outputLen: number,
     leafCons: () => Hash<Keccak>,
     enableXOF: boolean,
-    opts: ParallelOpts = {}
+    opts: ParallelOpts = {},
   ) {
     super(blockLen, 0x1f, outputLen, enableXOF);
-    cshakePers(this, { NISTfn: 'ParallelHash', personalization: opts.personalization });
+    cshakePers(this, {
+      NISTfn: "ParallelHash",
+      personalization: opts.personalization,
+    });
     this.leafCons = leafCons;
     let { blockLen: B } = opts;
     B ||= 8;
@@ -268,12 +307,20 @@ export class ParallelHash extends Keccak implements HashXOF<ParallelHash> {
       this.chunksDone++;
     }
     super.update(rightEncode(this.chunksDone));
-    super.update(rightEncode(this.enableXOF ? 0 : _8n * BigInt(this.outputLen))); // outputLen in bits
+    super.update(
+      rightEncode(this.enableXOF ? 0 : _8n * BigInt(this.outputLen)),
+    ); // outputLen in bits
     super.finish();
   }
   _cloneInto(to?: ParallelHash): ParallelHash {
-    to ||= new ParallelHash(this.blockLen, this.outputLen, this.leafCons, this.enableXOF);
-    if (this.leafHash) to.leafHash = this.leafHash._cloneInto(to.leafHash as Keccak);
+    to ||= new ParallelHash(
+      this.blockLen,
+      this.outputLen,
+      this.leafCons,
+      this.enableXOF,
+    );
+    if (this.leafHash)
+      to.leafHash = this.leafHash._cloneInto(to.leafHash as Keccak);
     to.chunkPos = this.chunkPos;
     to.chunkLen = this.chunkLen;
     to.chunksDone = this.chunksDone;
@@ -292,7 +339,7 @@ function genPrl(
   blockLen: number,
   outputLen: number,
   leaf: ReturnType<typeof gencShake>,
-  xof = false
+  xof = false,
 ) {
   const parallel = (message: Input, opts?: ParallelOpts): Uint8Array =>
     parallel.create(opts).update(message).digest();
@@ -302,15 +349,17 @@ function genPrl(
       chooseLen(opts, outputLen),
       () => leaf.create({ dkLen: 2 * outputLen }),
       xof,
-      opts
+      opts,
     );
   return parallel;
 }
 
 /** 128-bit ParallelHash. In JS, it is not parallel. */
-export const parallelhash128: IParHash = /* @__PURE__ */ (() => genPrl(168, 128 / 8, cshake128))();
+export const parallelhash128: IParHash = /* @__PURE__ */ (() =>
+  genPrl(168, 128 / 8, cshake128))();
 /** 256-bit ParallelHash. In JS, it is not parallel. */
-export const parallelhash256: IParHash = /* @__PURE__ */ (() => genPrl(136, 256 / 8, cshake256))();
+export const parallelhash256: IParHash = /* @__PURE__ */ (() =>
+  genPrl(136, 256 / 8, cshake256))();
 /** 128-bit ParallelHash XOF. In JS, it is not parallel. */
 export const parallelhash128xof: IParHash = /* @__PURE__ */ (() =>
   genPrl(168, 128 / 8, cshake128, true))();
@@ -328,14 +377,28 @@ const genTurboshake = (blockLen: number, outputLen: number) =>
     const D = opts.D === undefined ? 0x1f : opts.D;
     // Section 2.1 of https://datatracker.ietf.org/doc/draft-irtf-cfrg-kangarootwelve/
     if (!Number.isSafeInteger(D) || D < 0x01 || D > 0x7f)
-      throw new Error('invalid domain separation byte must be 0x01..0x7f, got: ' + D);
-    return new Keccak(blockLen, D, opts.dkLen === undefined ? outputLen : opts.dkLen, true, 12);
+      throw new Error(
+        "invalid domain separation byte must be 0x01..0x7f, got: " + D,
+      );
+    return new Keccak(
+      blockLen,
+      D,
+      opts.dkLen === undefined ? outputLen : opts.dkLen,
+      true,
+      12,
+    );
   });
 
 /** TurboSHAKE 128-bit: reduced 12-round keccak. */
-export const turboshake128: CHashXO = /* @__PURE__ */ genTurboshake(168, 256 / 8);
+export const turboshake128: CHashXO = /* @__PURE__ */ genTurboshake(
+  168,
+  256 / 8,
+);
 /** TurboSHAKE 256-bit: reduced 12-round keccak. */
-export const turboshake256: CHashXO = /* @__PURE__ */ genTurboshake(136, 512 / 8);
+export const turboshake256: CHashXO = /* @__PURE__ */ genTurboshake(
+  136,
+  512 / 8,
+);
 
 // Kangaroo
 // Same as NIST rightEncode, but returns [0] for zero string
@@ -362,7 +425,7 @@ export class KangarooTwelve extends Keccak implements HashXOF<KangarooTwelve> {
     leafLen: number,
     outputLen: number,
     rounds: number,
-    opts: KangarooOpts
+    opts: KangarooOpts,
   ) {
     super(blockLen, 0x07, outputLen, true, rounds);
     this.leafLen = leafLen;
@@ -428,12 +491,14 @@ export class KangarooTwelve extends Keccak implements HashXOF<KangarooTwelve> {
 /** KangarooTwelve: reduced 12-round keccak. */
 export const k12: CHashO = /* @__PURE__ */ (() =>
   createOptHasher<KangarooTwelve, KangarooOpts>(
-    (opts: KangarooOpts = {}) => new KangarooTwelve(168, 32, chooseLen(opts, 32), 12, opts)
+    (opts: KangarooOpts = {}) =>
+      new KangarooTwelve(168, 32, chooseLen(opts, 32), 12, opts),
   ))();
 /** MarsupilamiFourteen: reduced 14-round keccak. */
 export const m14: CHashO = /* @__PURE__ */ (() =>
   createOptHasher<KangarooTwelve, KangarooOpts>(
-    (opts: KangarooOpts = {}) => new KangarooTwelve(136, 64, chooseLen(opts, 64), 14, opts)
+    (opts: KangarooOpts = {}) =>
+      new KangarooTwelve(136, 64, chooseLen(opts, 64), 14, opts),
   ))();
 
 /**
@@ -445,7 +510,7 @@ export class KeccakPRG extends Keccak {
     anumber(capacity);
     // Rho should be full bytes
     if (capacity < 0 || capacity > 1600 - 10 || (1600 - capacity - 2) % 8)
-      throw new Error('invalid capacity');
+      throw new Error("invalid capacity");
     // blockLen = rho in bytes
     super((1600 - capacity - 2) / 8, 0, 0, true);
     this.rate = 1600 - capacity;
@@ -469,14 +534,15 @@ export class KeccakPRG extends Keccak {
   }
   protected finish(): void {}
   digestInto(_out: Uint8Array): Uint8Array {
-    throw new Error('digest is not allowed, use .fetch instead');
+    throw new Error("digest is not allowed, use .fetch instead");
   }
   fetch(bytes: number): Uint8Array {
     return this.xof(bytes);
   }
   // Ensure irreversibility (even if state leaked previous outputs cannot be computed)
   forget(): void {
-    if (this.rate < 1600 / 2 + 1) throw new Error('rate is too low to use .forget()');
+    if (this.rate < 1600 / 2 + 1)
+      throw new Error("rate is too low to use .forget()");
     this.keccak();
     for (let i = 0; i < this.blockLen; i++) this.state[i] = 0;
     this.pos = this.blockLen;

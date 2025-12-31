@@ -1,13 +1,13 @@
-import { inspect } from '../jsutils/inspect.mjs';
-import { keyMap } from '../jsutils/keyMap.mjs';
-import { printPathArray } from '../jsutils/printPathArray.mjs';
-import { GraphQLError } from '../error/GraphQLError.mjs';
-import { Kind } from '../language/kinds.mjs';
-import { print } from '../language/printer.mjs';
-import { isInputType, isNonNullType } from '../type/definition.mjs';
-import { coerceInputValue } from '../utilities/coerceInputValue.mjs';
-import { typeFromAST } from '../utilities/typeFromAST.mjs';
-import { valueFromAST } from '../utilities/valueFromAST.mjs';
+import { GraphQLError } from "../error/GraphQLError.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { keyMap } from "../jsutils/keyMap.mjs";
+import { printPathArray } from "../jsutils/printPathArray.mjs";
+import { Kind } from "../language/kinds.mjs";
+import { print } from "../language/printer.mjs";
+import { isInputType, isNonNullType } from "../type/definition.mjs";
+import { coerceInputValue } from "../utilities/coerceInputValue.mjs";
+import { typeFromAST } from "../utilities/typeFromAST.mjs";
+import { valueFromAST } from "../utilities/valueFromAST.mjs";
 
 /**
  * Prepares an object map of variableValues of the correct type based on the
@@ -31,7 +31,7 @@ export function getVariableValues(schema, varDefNodes, inputs, options) {
       (error) => {
         if (maxErrors != null && errors.length >= maxErrors) {
           throw new GraphQLError(
-            'Too many errors processing variables, error limit reached. Execution aborted.',
+            "Too many errors processing variables, error limit reached. Execution aborted.",
           );
         }
 
@@ -120,7 +120,7 @@ function coerceVariableValues(schema, varDefNodes, inputs, onError) {
         }
 
         onError(
-          new GraphQLError(prefix + '; ' + error.message, {
+          new GraphQLError(prefix + "; " + error.message, {
             nodes: varDefNode,
             originalError: error,
           }),
@@ -164,7 +164,7 @@ export function getArgumentValues(def, node, variableValues) {
       } else if (isNonNullType(argType)) {
         throw new GraphQLError(
           `Argument "${name}" of required type "${inspect(argType)}" ` +
-            'was not provided.',
+            "was not provided.",
           {
             nodes: node,
           },
@@ -205,7 +205,7 @@ export function getArgumentValues(def, node, variableValues) {
     if (isNull && isNonNullType(argType)) {
       throw new GraphQLError(
         `Argument "${name}" of non-null type "${inspect(argType)}" ` +
-          'must not be null.',
+          "must not be null.",
         {
           nodes: valueNode,
         },
@@ -259,5 +259,5 @@ export function getDirectiveValues(directiveDef, node, variableValues) {
 }
 
 function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
+  return Object.hasOwn(obj, prop);
 }

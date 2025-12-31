@@ -8,18 +8,22 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var HttpHandler_exports = {};
 __export(HttpHandler_exports, {
   HttpHandler: () => HttpHandler,
-  HttpMethods: () => HttpMethods
+  HttpMethods: () => HttpMethods,
 });
 module.exports = __toCommonJS(HttpHandler_exports);
 var import_devUtils = require("../utils/internal/devUtils");
@@ -45,15 +49,16 @@ var HttpMethods = /* @__PURE__ */ ((HttpMethods2) => {
 })(HttpMethods || {});
 class HttpHandler extends import_RequestHandler.RequestHandler {
   constructor(method, predicate, resolver, options) {
-    const displayPath = typeof predicate === "function" ? "[custom predicate]" : predicate;
+    const displayPath =
+      typeof predicate === "function" ? "[custom predicate]" : predicate;
     super({
       info: {
         header: `${method}${displayPath ? ` ${displayPath}` : ""}`,
         path: predicate,
-        method
+        method,
       },
       resolver,
-      options
+      options,
     });
     this.checkRedundantQueryParameters();
   }
@@ -67,30 +72,41 @@ class HttpHandler extends import_RequestHandler.RequestHandler {
       return;
     }
     import_devUtils.devUtils.warn(
-      `Found a redundant usage of query parameters in the request handler URL for "${method} ${path}". Please match against a path instead and access query parameters using "new URL(request.url).searchParams" instead. Learn more: https://mswjs.io/docs/http/intercepting-requests#querysearch-parameters`
+      `Found a redundant usage of query parameters in the request handler URL for "${method} ${path}". Please match against a path instead and access query parameters using "new URL(request.url).searchParams" instead. Learn more: https://mswjs.io/docs/http/intercepting-requests#querysearch-parameters`,
     );
   }
   async parse(args) {
     const url = new URL(args.request.url);
-    const cookies = (0, import_getRequestCookies.getAllRequestCookies)(args.request);
+    const cookies = (0, import_getRequestCookies.getAllRequestCookies)(
+      args.request,
+    );
     if (typeof this.info.path === "function") {
       const customPredicateResult = await this.info.path({
         request: args.request,
-        cookies
+        cookies,
       });
-      const match2 = typeof customPredicateResult === "boolean" ? {
-        matches: customPredicateResult,
-        params: {}
-      } : customPredicateResult;
+      const match2 =
+        typeof customPredicateResult === "boolean"
+          ? {
+              matches: customPredicateResult,
+              params: {},
+            }
+          : customPredicateResult;
       return {
         match: match2,
-        cookies
+        cookies,
       };
     }
-    const match = this.info.path ? (0, import_matchRequestUrl.matchRequestUrl)(url, this.info.path, args.resolutionContext?.baseUrl) : { matches: false, params: {} };
+    const match = this.info.path
+      ? (0, import_matchRequestUrl.matchRequestUrl)(
+          url,
+          this.info.path,
+          args.resolutionContext?.baseUrl,
+        )
+      : { matches: false, params: {} };
     return {
       match,
-      cookies
+      cookies,
     };
   }
   async predicate(args) {
@@ -99,25 +115,32 @@ class HttpHandler extends import_RequestHandler.RequestHandler {
     return hasMatchingMethod && hasMatchingUrl;
   }
   matchMethod(actualMethod) {
-    return this.info.method instanceof RegExp ? this.info.method.test(actualMethod) : (0, import_isStringEqual.isStringEqual)(this.info.method, actualMethod);
+    return this.info.method instanceof RegExp
+      ? this.info.method.test(actualMethod)
+      : (0, import_isStringEqual.isStringEqual)(this.info.method, actualMethod);
   }
   extendResolverArgs(args) {
     return {
       params: args.parsedResult.match?.params || {},
-      cookies: args.parsedResult.cookies
+      cookies: args.parsedResult.cookies,
     };
   }
   async log(args) {
     const publicUrl = (0, import_toPublicUrl.toPublicUrl)(args.request.url);
-    const loggedRequest = await (0, import_serializeRequest.serializeRequest)(args.request);
-    const loggedResponse = await (0, import_serializeResponse.serializeResponse)(args.response);
-    const statusColor = (0, import_getStatusCodeColor.getStatusCodeColor)(loggedResponse.status);
+    const loggedRequest = await (0, import_serializeRequest.serializeRequest)(
+      args.request,
+    );
+    const loggedResponse = await (0,
+    import_serializeResponse.serializeResponse)(args.response);
+    const statusColor = (0, import_getStatusCodeColor.getStatusCodeColor)(
+      loggedResponse.status,
+    );
     console.groupCollapsed(
       import_devUtils.devUtils.formatMessage(
-        `${(0, import_getTimestamp.getTimestamp)()} ${args.request.method} ${publicUrl} (%c${loggedResponse.status} ${loggedResponse.statusText}%c)`
+        `${(0, import_getTimestamp.getTimestamp)()} ${args.request.method} ${publicUrl} (%c${loggedResponse.status} ${loggedResponse.statusText}%c)`,
       ),
       `color:${statusColor}`,
-      "color:inherit"
+      "color:inherit",
     );
     console.log("Request", loggedRequest);
     console.log("Handler:", this);

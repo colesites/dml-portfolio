@@ -2,7 +2,9 @@
 var nullBodyResponses = /* @__PURE__ */ new Set([101, 204, 205, 304]);
 async function fetchRP(fetchRes) {
   const _fetchRes = await fetchRes;
-  const hasBody = (_fetchRes.body || _fetchRes._bodyInit) && !nullBodyResponses.has(_fetchRes.status);
+  const hasBody =
+    (_fetchRes.body || _fetchRes._bodyInit) &&
+    !nullBodyResponses.has(_fetchRes.status);
   if (hasBody) {
     const responseType = detectResponseType(_fetchRes);
     _fetchRes._data = await _fetchRes[responseType]();
@@ -12,8 +14,8 @@ async function fetchRP(fetchRes) {
       statusCode: _fetchRes?.status,
       detail: {
         data: _fetchRes?._data,
-        statusText: _fetchRes?.statusText
-      }
+        statusText: _fetchRes?.statusText,
+      },
     });
   }
   return _fetchRes._data;
@@ -56,7 +58,4 @@ function detectResponseType(response) {
   }
   return "text";
 }
-export {
-  DetailedError,
-  fetchRP
-};
+export { DetailedError, fetchRP };

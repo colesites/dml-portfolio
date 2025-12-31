@@ -1,6 +1,7 @@
 // src/router/trie-router/router.ts
 import { checkOptionalParameter } from "../../utils/url.js";
 import { Node } from "./node.js";
+
 var TrieRouter = class {
   name = "TrieRouter";
   #node;
@@ -21,6 +22,4 @@ var TrieRouter = class {
     return this.#node.search(method, path);
   }
 };
-export {
-  TrieRouter
-};
+export { TrieRouter };

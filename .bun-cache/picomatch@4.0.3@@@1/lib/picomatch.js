@@ -1,10 +1,8 @@
-'use strict';
-
-const scan = require('./scan');
-const parse = require('./parse');
-const utils = require('./utils');
-const constants = require('./constants');
-const isObject = val => val && typeof val === 'object' && !Array.isArray(val);
+const scan = require("./scan");
+const parse = require("./parse");
+const utils = require("./utils");
+const constants = require("./constants");
+const isObject = (val) => val && typeof val === "object" && !Array.isArray(val);
 
 /**
  * Creates a matcher function from one or more glob patterns. The
@@ -30,8 +28,8 @@ const isObject = val => val && typeof val === 'object' && !Array.isArray(val);
 
 const picomatch = (glob, options, returnState = false) => {
   if (Array.isArray(glob)) {
-    const fns = glob.map(input => picomatch(input, options, returnState));
-    const arrayMatcher = str => {
+    const fns = glob.map((input) => picomatch(input, options, returnState));
+    const arrayMatcher = (str) => {
       for (const isMatch of fns) {
         const state = isMatch(str);
         if (state) return state;
@@ -43,8 +41,8 @@ const picomatch = (glob, options, returnState = false) => {
 
   const isState = isObject(glob) && glob.tokens && glob.input;
 
-  if (glob === '' || (typeof glob !== 'string' && !isState)) {
-    throw new TypeError('Expected pattern to be a non-empty string');
+  if (glob === "" || (typeof glob !== "string" && !isState)) {
+    throw new TypeError("Expected pattern to be a non-empty string");
   }
 
   const opts = options || {};
@@ -58,15 +56,23 @@ const picomatch = (glob, options, returnState = false) => {
 
   let isIgnored = () => false;
   if (opts.ignore) {
-    const ignoreOpts = { ...options, ignore: null, onMatch: null, onResult: null };
+    const ignoreOpts = {
+      ...options,
+      ignore: null,
+      onMatch: null,
+      onResult: null,
+    };
     isIgnored = picomatch(opts.ignore, ignoreOpts, returnState);
   }
 
   const matcher = (input, returnObject = false) => {
-    const { isMatch, match, output } = picomatch.test(input, regex, options, { glob, posix });
+    const { isMatch, match, output } = picomatch.test(input, regex, options, {
+      glob,
+      posix,
+    });
     const result = { glob, state, regex, posix, input, output, match, isMatch };
 
-    if (typeof opts.onResult === 'function') {
+    if (typeof opts.onResult === "function") {
       opts.onResult(result);
     }
 
@@ -76,14 +82,14 @@ const picomatch = (glob, options, returnState = false) => {
     }
 
     if (isIgnored(input)) {
-      if (typeof opts.onIgnore === 'function') {
+      if (typeof opts.onIgnore === "function") {
         opts.onIgnore(result);
       }
       result.isMatch = false;
       return returnObject ? result : false;
     }
 
-    if (typeof opts.onMatch === 'function') {
+    if (typeof opts.onMatch === "function") {
       opts.onMatch(result);
     }
     return returnObject ? result : true;
@@ -114,18 +120,18 @@ const picomatch = (glob, options, returnState = false) => {
  */
 
 picomatch.test = (input, regex, options, { glob, posix } = {}) => {
-  if (typeof input !== 'string') {
-    throw new TypeError('Expected input to be a string');
+  if (typeof input !== "string") {
+    throw new TypeError("Expected input to be a string");
   }
 
-  if (input === '') {
-    return { isMatch: false, output: '' };
+  if (input === "") {
+    return { isMatch: false, output: "" };
   }
 
   const opts = options || {};
   const format = opts.format || (posix ? utils.toPosixSlashes : null);
   let match = input === glob;
-  let output = (match && format) ? format(input) : input;
+  let output = match && format ? format(input) : input;
 
   if (match === false) {
     output = format ? format(input) : input;
@@ -179,7 +185,8 @@ picomatch.matchBase = (input, glob, options) => {
  * @api public
  */
 
-picomatch.isMatch = (str, patterns, options) => picomatch(patterns, options)(str);
+picomatch.isMatch = (str, patterns, options) =>
+  picomatch(patterns, options)(str);
 
 /**
  * Parse a glob pattern to create the source string for a regular
@@ -196,7 +203,8 @@ picomatch.isMatch = (str, patterns, options) => picomatch(patterns, options)(str
  */
 
 picomatch.parse = (pattern, options) => {
-  if (Array.isArray(pattern)) return pattern.map(p => picomatch.parse(p, options));
+  if (Array.isArray(pattern))
+    return pattern.map((p) => picomatch.parse(p, options));
   return parse(pattern, { ...options, fastpaths: false });
 };
 
@@ -241,14 +249,19 @@ picomatch.scan = (input, options) => scan(input, options);
  * @api public
  */
 
-picomatch.compileRe = (state, options, returnOutput = false, returnState = false) => {
+picomatch.compileRe = (
+  state,
+  options,
+  returnOutput = false,
+  returnState = false,
+) => {
   if (returnOutput === true) {
     return state.output;
   }
 
   const opts = options || {};
-  const prepend = opts.contains ? '' : '^';
-  const append = opts.contains ? '' : '$';
+  const prepend = opts.contains ? "" : "^";
+  const append = opts.contains ? "" : "$";
 
   let source = `${prepend}(?:${state.output})${append}`;
   if (state && state.negated === true) {
@@ -282,14 +295,19 @@ picomatch.compileRe = (state, options, returnOutput = false, returnState = false
  * @api public
  */
 
-picomatch.makeRe = (input, options = {}, returnOutput = false, returnState = false) => {
-  if (!input || typeof input !== 'string') {
-    throw new TypeError('Expected a non-empty string');
+picomatch.makeRe = (
+  input,
+  options = {},
+  returnOutput = false,
+  returnState = false,
+) => {
+  if (!input || typeof input !== "string") {
+    throw new TypeError("Expected a non-empty string");
   }
 
   let parsed = { negated: false, fastpaths: true };
 
-  if (options.fastpaths !== false && (input[0] === '.' || input[0] === '*')) {
+  if (options.fastpaths !== false && (input[0] === "." || input[0] === "*")) {
     parsed.output = parse.fastpaths(input, options);
   }
 
@@ -320,7 +338,7 @@ picomatch.makeRe = (input, options = {}, returnOutput = false, returnState = fal
 picomatch.toRegex = (source, options) => {
   try {
     const opts = options || {};
-    return new RegExp(source, opts.flags || (opts.nocase ? 'i' : ''));
+    return new RegExp(source, opts.flags || (opts.nocase ? "i" : ""));
   } catch (err) {
     if (options && options.debug === true) throw err;
     return /$^/;

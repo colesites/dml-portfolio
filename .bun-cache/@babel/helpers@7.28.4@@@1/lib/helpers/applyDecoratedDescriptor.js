@@ -1,12 +1,18 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _applyDecoratedDescriptor;
-function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+function _applyDecoratedDescriptor(
+  target,
+  property,
+  decorators,
+  descriptor,
+  context,
+) {
   var desc = {};
-  Object.keys(descriptor).forEach(function (key) {
+  Object.keys(descriptor).forEach((key) => {
     desc[key] = descriptor[key];
   });
   desc.enumerable = !!desc.enumerable;
@@ -14,9 +20,13 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
   if ("value" in desc || desc.initializer) {
     desc.writable = true;
   }
-  desc = decorators.slice().reverse().reduce(function (desc, decorator) {
-    return decorator(target, property, desc) || desc;
-  }, desc);
+  desc = decorators
+    .slice()
+    .reverse()
+    .reduce(
+      (desc, decorator) => decorator(target, property, desc) || desc,
+      desc,
+    );
   if (context && desc.initializer !== void 0) {
     desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
     desc.initializer = void 0;

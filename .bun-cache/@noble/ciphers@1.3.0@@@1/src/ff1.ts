@@ -3,8 +3,15 @@
  * [NIST 800-38G](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38G.pdf).
  * @module
  */
-import { unsafe } from './aes.ts';
-import { type Cipher, abytes, anumber, bytesToNumberBE, clean, numberToBytesBE } from './utils.ts';
+import { unsafe } from "./aes.ts";
+import {
+  abytes,
+  anumber,
+  bytesToNumberBE,
+  type Cipher,
+  clean,
+  numberToBytesBE,
+} from "./utils.ts";
 
 // NOTE: no point in inlining encrypt instead of encryptBlock, since BigInt stuff will be slow
 const { expandKeyLE, encryptBlock } = unsafe;
@@ -24,20 +31,26 @@ function mod(a: any, b: any): number | bigint {
 
 function NUMradix(radix: number, data: number[]): bigint {
   let res = BigInt(0);
-  for (let i of data) res = res * BigInt(radix) + BigInt(i);
+  for (const i of data) res = res * BigInt(radix) + BigInt(i);
   return res;
 }
 
-function getRound(radix: number, key: Uint8Array, tweak: Uint8Array, x: number[]) {
-  if (radix > 2 ** 16 - 1) throw new Error('invalid radix ' + radix);
+function getRound(
+  radix: number,
+  key: Uint8Array,
+  tweak: Uint8Array,
+  x: number[],
+) {
+  if (radix > 2 ** 16 - 1) throw new Error("invalid radix " + radix);
   // radix**minlen ≥ 100
   const minLen = Math.ceil(Math.log(100) / Math.log(radix));
   const maxLen = 2 ** 32 - 1;
   // 2 ≤ minlen ≤ maxlen < 2**32
   if (2 > minLen || minLen > maxLen || maxLen >= 2 ** 32)
-    throw new Error('Invalid radix: 2 ≤ minlen ≤ maxlen < 2**32');
-  if (!Array.isArray(x)) throw new Error('invalid X');
-  if (x.length < minLen || x.length > maxLen) throw new Error('X is outside minLen..maxLen bounds');
+    throw new Error("Invalid radix: 2 ≤ minlen ≤ maxlen < 2**32");
+  if (!Array.isArray(x)) throw new Error("invalid X");
+  if (x.length < minLen || x.length > maxLen)
+    throw new Error("X is outside minLen..maxLen bounds");
   const u = Math.floor(x.length / 2);
   const v = x.length - u;
   const b = Math.ceil(Math.ceil(v * Math.log2(radix)) / 8);
@@ -60,14 +73,14 @@ function getRound(radix: number, key: Uint8Array, tweak: Uint8Array, x: number[]
     PQ[PQ.length - b - 1] = i;
     if (b) PQ.set(numberToBytesBE(NUMradix(radix, B), b), PQ.length - b);
     // PRF
-    let r = new Uint8Array(16);
+    const r = new Uint8Array(16);
     for (let j = 0; j < PQ.length / BLOCK_LEN; j++) {
       for (let i = 0; i < BLOCK_LEN; i++) r[i] ^= PQ[j * BLOCK_LEN + i];
       encryptBlock(xk, r);
     }
     // Let S be the first d bytes of the following string of ⎡d/16⎤ blocks:
     // R || CIPHK(R ⊕[1]16) || CIPHK(R ⊕[2]16) ...CIPHK(R ⊕[⎡d / 16⎤ – 1]16).
-    let s = Array.from(r);
+    const s = Array.from(r);
     for (let j = 1; s.length < d; j++) {
       const block = numberToBytesBE(BigInt(j), 16);
       for (let k = 0; k < BLOCK_LEN; k++) block[k] ^= r[k];
@@ -80,7 +93,8 @@ function getRound(radix: number, key: Uint8Array, tweak: Uint8Array, x: number[]
     let c = mod(NUMradix(radix, A) + y, BigInt(radix) ** BigInt(m));
     // STR(radix, m, c)
     const C = Array(m).fill(0);
-    for (let i = 0; i < m; i++, c /= BigInt(radix)) C[m - 1 - i] = Number(c % BigInt(radix));
+    for (let i = 0; i < m; i++, c /= BigInt(radix))
+      C[m - 1 - i] = Number(c % BigInt(radix));
     A.fill(0);
     A = B;
     B = C;
@@ -98,7 +112,7 @@ const EMPTY_BUF = /* @__PURE__ */ Uint8Array.of();
 export function FF1(
   radix: number,
   key: Uint8Array,
-  tweak: Uint8Array = EMPTY_BUF
+  tweak: Uint8Array = EMPTY_BUF,
 ): { encrypt(x: number[]): number[]; decrypt(x: number[]): number[] } {
   anumber(radix);
   abytes(key);
@@ -142,7 +156,8 @@ const binLE = {
     return x;
   },
   decode(b: number[]): Uint8Array {
-    if (!Array.isArray(b) || b.length % 8) throw new Error('Invalid binary string');
+    if (!Array.isArray(b) || b.length % 8)
+      throw new Error("Invalid binary string");
     const res = new Uint8Array(b.length / 8);
     for (let i = 0, j = 0; i < res.length; i++) {
       res[i] = b[j++] | (b[j++] << 1) | (b[j++] << 2) | (b[j++] << 3);
@@ -153,7 +168,10 @@ const binLE = {
 };
 
 /** Binary version of FPE-FF1 format-preserving encryption. */
-export function BinaryFF1(key: Uint8Array, tweak: Uint8Array = EMPTY_BUF): Cipher {
+export function BinaryFF1(
+  key: Uint8Array,
+  tweak: Uint8Array = EMPTY_BUF,
+): Cipher {
   const ff1 = FF1(2, key, tweak);
   return {
     encrypt: (x: Uint8Array) => binLE.decode(ff1.encrypt(binLE.encode(x))),

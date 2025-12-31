@@ -1,10 +1,12 @@
-import type {OmitIndexSignature} from './omit-index-signature.d.ts';
-import type {PickIndexSignature} from './pick-index-signature.d.ts';
-import type {Simplify} from './simplify.d.ts';
+import type { OmitIndexSignature } from "./omit-index-signature.d.ts";
+import type { PickIndexSignature } from "./pick-index-signature.d.ts";
+import type { Simplify } from "./simplify.d.ts";
 
 // Merges two objects without worrying about index signatures.
 type SimpleMerge<Destination, Source> = {
-	[Key in keyof Destination as Key extends keyof Source ? never : Key]: Destination[Key];
+  [Key in keyof Destination as Key extends keyof Source
+    ? never
+    : Key]: Destination[Key];
 } & Source;
 
 /**
@@ -41,10 +43,7 @@ export type FooBar = Merge<Foo, Bar>;
 
 @category Object
 */
-export type Merge<Destination, Source> =
-Simplify<
-	SimpleMerge<PickIndexSignature<Destination>, PickIndexSignature<Source>>
-	& SimpleMerge<OmitIndexSignature<Destination>, OmitIndexSignature<Source>>
+export type Merge<Destination, Source> = Simplify<
+  SimpleMerge<PickIndexSignature<Destination>, PickIndexSignature<Source>> &
+    SimpleMerge<OmitIndexSignature<Destination>, OmitIndexSignature<Source>>
 >;
-
-export {};

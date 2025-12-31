@@ -187,7 +187,7 @@ const normalized = {
   8346: "p",
   8347: "s",
   8348: "t",
-  8580: "c"
+  8580: "c",
 };
 for (let i = "\u0300".codePointAt(0); i <= "\u036F".codePointAt(0); ++i) {
   const diacritic = String.fromCodePoint(i);
@@ -203,7 +203,7 @@ const ranges = {
   a: [7844, 7863],
   e: [7870, 7879],
   o: [7888, 7907],
-  u: [7912, 7921]
+  u: [7912, 7921],
 };
 for (const lowerChar of Object.keys(ranges)) {
   const upperChar = lowerChar.toUpperCase();
@@ -216,8 +216,7 @@ function normalizeRune(rune) {
     return rune;
   }
   const normalizedChar = normalized[rune];
-  if (normalizedChar !== void 0)
-    return normalizedChar.codePointAt(0);
+  if (normalizedChar !== void 0) return normalizedChar.codePointAt(0);
   return rune;
 }
 function toShort(number) {
@@ -230,31 +229,34 @@ function maxInt16(num1, num2) {
   return num1 > num2 ? num1 : num2;
 }
 const strToRunes = (str) => str.split("").map((s) => s.codePointAt(0));
-const runesToStr = (runes) => runes.map((r) => String.fromCodePoint(r)).join("");
+const runesToStr = (runes) =>
+  runes.map((r) => String.fromCodePoint(r)).join("");
 const whitespaceRunes = new Set(
-  " \f\n\r	\v\xA0\u1680\u2028\u2029\u202F\u205F\u3000\uFEFF".split("").map((v) => v.codePointAt(0))
+  " \f\n\r	\v\xA0\u1680\u2028\u2029\u202F\u205F\u3000\uFEFF"
+    .split("")
+    .map((v) => v.codePointAt(0)),
 );
-for (let codePoint = "\u2000".codePointAt(0); codePoint <= "\u200A".codePointAt(0); codePoint++) {
+for (
+  let codePoint = "\u2000".codePointAt(0);
+  codePoint <= "\u200A".codePointAt(0);
+  codePoint++
+) {
   whitespaceRunes.add(codePoint);
 }
 const isWhitespace = (rune) => whitespaceRunes.has(rune);
 const whitespacesAtStart = (runes) => {
   let whitespaces = 0;
   for (const rune of runes) {
-    if (isWhitespace(rune))
-      whitespaces++;
-    else
-      break;
+    if (isWhitespace(rune)) whitespaces++;
+    else break;
   }
   return whitespaces;
 };
 const whitespacesAtEnd = (runes) => {
   let whitespaces = 0;
   for (let i = runes.length - 1; i >= 0; i--) {
-    if (isWhitespace(runes[i]))
-      whitespaces++;
-    else
-      break;
+    if (isWhitespace(runes[i])) whitespaces++;
+    else break;
   }
   return whitespaces;
 };
@@ -271,7 +273,14 @@ function indexAt(index, max, forward) {
   }
   return max - index - 1;
 }
-const SCORE_MATCH = 16, SCORE_GAP_START = -3, SCORE_GAP_EXTENTION = -1, BONUS_BOUNDARY = SCORE_MATCH / 2, BONUS_NON_WORD = SCORE_MATCH / 2, BONUS_CAMEL_123 = BONUS_BOUNDARY + SCORE_GAP_EXTENTION, BONUS_CONSECUTIVE = -(SCORE_GAP_START + SCORE_GAP_EXTENTION), BONUS_FIRST_CHAR_MULTIPLIER = 2;
+const SCORE_MATCH = 16,
+  SCORE_GAP_START = -3,
+  SCORE_GAP_EXTENTION = -1,
+  BONUS_BOUNDARY = SCORE_MATCH / 2,
+  BONUS_NON_WORD = SCORE_MATCH / 2,
+  BONUS_CAMEL_123 = BONUS_BOUNDARY + SCORE_GAP_EXTENTION,
+  BONUS_CONSECUTIVE = -(SCORE_GAP_START + SCORE_GAP_EXTENTION),
+  BONUS_FIRST_CHAR_MULTIPLIER = 2;
 function createPosSet(withPos) {
   if (withPos) {
     return /* @__PURE__ */ new Set();
@@ -325,7 +334,10 @@ function charClassOf(rune) {
 function bonusFor(prevClass, currClass) {
   if (prevClass === 0 && currClass !== 0) {
     return BONUS_BOUNDARY;
-  } else if (prevClass === 1 && currClass === 2 || prevClass !== 4 && currClass === 4) {
+  } else if (
+    (prevClass === 1 && currClass === 2) ||
+    (prevClass !== 4 && currClass === 4)
+  ) {
     return BONUS_CAMEL_123;
   } else if (currClass === 0) {
     return BONUS_NON_WORD;
@@ -373,7 +385,8 @@ function asciiFuzzyIndex(input, pattern, caseSensitive) {
   if (!isAscii(pattern)) {
     return -1;
   }
-  let firstIdx = 0, idx = 0;
+  let firstIdx = 0,
+    idx = 0;
   for (let pidx = 0; pidx < pattern.length; pidx++) {
     idx = trySkip(input, caseSensitive, pattern[pidx], idx);
     if (idx < 0) {
@@ -386,20 +399,40 @@ function asciiFuzzyIndex(input, pattern, caseSensitive) {
   }
   return firstIdx;
 }
-const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos, slab2) => {
+const fuzzyMatchV2 = (
+  caseSensitive,
+  normalize,
+  forward,
+  input,
+  pattern,
+  withPos,
+  slab2,
+) => {
   const M = pattern.length;
   if (M === 0) {
     return [{ start: 0, end: 0, score: 0 }, createPosSet(withPos)];
   }
   const N = input.length;
   if (slab2 !== null && N * M > slab2.i16.length) {
-    return fuzzyMatchV1(caseSensitive, normalize, forward, input, pattern, withPos);
+    return fuzzyMatchV1(
+      caseSensitive,
+      normalize,
+      forward,
+      input,
+      pattern,
+      withPos,
+    );
   }
   const idx = asciiFuzzyIndex(input, pattern, caseSensitive);
   if (idx < 0) {
     return [{ start: -1, end: -1, score: 0 }, null];
   }
-  let offset16 = 0, offset32 = 0, H0 = null, C0 = null, B = null, F = null;
+  let offset16 = 0,
+    offset32 = 0,
+    H0 = null,
+    C0 = null,
+    B = null,
+    F = null;
   [offset16, H0] = alloc16(offset16, slab2, N);
   [offset16, C0] = alloc16(offset16, slab2, N);
   [offset16, B] = alloc16(offset16, slab2, N);
@@ -408,12 +441,19 @@ const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos
   for (let i = 0; i < T.length; i++) {
     T[i] = input[i];
   }
-  let maxScore = toShort(0), maxScorePos = 0;
-  let pidx = 0, lastIdx = 0;
+  let maxScore = toShort(0),
+    maxScorePos = 0;
+  let pidx = 0,
+    lastIdx = 0;
   const pchar0 = pattern[0];
-  let pchar = pattern[0], prevH0 = toShort(0), prevCharClass = 0, inGap = false;
-  let Tsub = T.subarray(idx);
-  let H0sub = H0.subarray(idx).subarray(0, Tsub.length), C0sub = C0.subarray(idx).subarray(0, Tsub.length), Bsub = B.subarray(idx).subarray(0, Tsub.length);
+  let pchar = pattern[0],
+    prevH0 = toShort(0),
+    prevCharClass = 0,
+    inGap = false;
+  const Tsub = T.subarray(idx);
+  const H0sub = H0.subarray(idx).subarray(0, Tsub.length),
+    C0sub = C0.subarray(idx).subarray(0, Tsub.length),
+    Bsub = B.subarray(idx).subarray(0, Tsub.length);
   for (let [off, char] of Tsub.entries()) {
     let charClass = null;
     if (char <= MAX_ASCII) {
@@ -446,7 +486,10 @@ const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos
       const score = SCORE_MATCH + bonus * BONUS_FIRST_CHAR_MULTIPLIER;
       H0sub[off] = score;
       C0sub[off] = 1;
-      if (M === 1 && (forward && score > maxScore || !forward && score >= maxScore)) {
+      if (
+        M === 1 &&
+        ((forward && score > maxScore) || (!forward && score >= maxScore))
+      ) {
         maxScore = score;
         maxScorePos = idx + off;
         if (forward && bonus === BONUS_BOUNDARY) {
@@ -472,7 +515,7 @@ const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos
     const result = {
       start: maxScorePos,
       end: maxScorePos + 1,
-      score: maxScore
+      score: maxScore,
     };
     if (!withPos) {
       return [result, null];
@@ -491,7 +534,7 @@ const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos
       H[i] = v;
     }
   }
-  let [, C] = alloc16(offset16, slab2, width * M);
+  const [, C] = alloc16(offset16, slab2, width * M);
   {
     const toCopy = C0.subarray(f0, lastIdx + 1);
     for (const [i, v] of toCopy.entries()) {
@@ -502,11 +545,22 @@ const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos
   const Psub = pattern.slice(1).slice(0, Fsub.length);
   for (const [off, f] of Fsub.entries()) {
     let inGap2 = false;
-    const pchar2 = Psub[off], pidx2 = off + 1, row = pidx2 * width, Tsub2 = T.subarray(f, lastIdx + 1), Bsub2 = B.subarray(f).subarray(0, Tsub2.length), Csub = C.subarray(row + f - f0).subarray(0, Tsub2.length), Cdiag = C.subarray(row + f - f0 - 1 - width).subarray(0, Tsub2.length), Hsub = H.subarray(row + f - f0).subarray(0, Tsub2.length), Hdiag = H.subarray(row + f - f0 - 1 - width).subarray(0, Tsub2.length), Hleft = H.subarray(row + f - f0 - 1).subarray(0, Tsub2.length);
+    const pchar2 = Psub[off],
+      pidx2 = off + 1,
+      row = pidx2 * width,
+      Tsub2 = T.subarray(f, lastIdx + 1),
+      Bsub2 = B.subarray(f).subarray(0, Tsub2.length),
+      Csub = C.subarray(row + f - f0).subarray(0, Tsub2.length),
+      Cdiag = C.subarray(row + f - f0 - 1 - width).subarray(0, Tsub2.length),
+      Hsub = H.subarray(row + f - f0).subarray(0, Tsub2.length),
+      Hdiag = H.subarray(row + f - f0 - 1 - width).subarray(0, Tsub2.length),
+      Hleft = H.subarray(row + f - f0 - 1).subarray(0, Tsub2.length);
     Hleft[0] = 0;
     for (const [off2, char] of Tsub2.entries()) {
       const col = off2 + f;
-      let s1 = 0, s2 = 0, consecutive = 0;
+      let s1 = 0,
+        s2 = 0,
+        consecutive = 0;
       if (inGap2) {
         s2 = Hleft[off2] + SCORE_GAP_EXTENTION;
       } else {
@@ -519,7 +573,10 @@ const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos
         if (b === BONUS_BOUNDARY) {
           consecutive = 1;
         } else if (consecutive > 1) {
-          b = maxInt16(b, maxInt16(BONUS_CONSECUTIVE, B[col - consecutive + 1]));
+          b = maxInt16(
+            b,
+            maxInt16(BONUS_CONSECUTIVE, B[col - consecutive + 1]),
+          );
         }
         if (s1 + b < s2) {
           s1 += Bsub2[off2];
@@ -531,7 +588,10 @@ const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos
       Csub[off2] = consecutive;
       inGap2 = s1 < s2;
       const score = maxInt16(maxInt16(s1, s2), 0);
-      if (pidx2 === M - 1 && (forward && score > maxScore || !forward && score >= maxScore)) {
+      if (
+        pidx2 === M - 1 &&
+        ((forward && score > maxScore) || (!forward && score >= maxScore))
+      ) {
         maxScore = score;
         maxScorePos = col;
       }
@@ -545,29 +605,46 @@ const fuzzyMatchV2 = (caseSensitive, normalize, forward, input, pattern, withPos
     j = maxScorePos;
     let preferMatch = true;
     while (true) {
-      const I = i * width, j0 = j - f0, s = H[I + j0];
-      let s1 = 0, s2 = 0;
+      const I = i * width,
+        j0 = j - f0,
+        s = H[I + j0];
+      let s1 = 0,
+        s2 = 0;
       if (i > 0 && j >= F[i]) {
         s1 = H[I - width + j0 - 1];
       }
       if (j > F[i]) {
         s2 = H[I + j0 - 1];
       }
-      if (s > s1 && (s > s2 || s === s2 && preferMatch)) {
+      if (s > s1 && (s > s2 || (s === s2 && preferMatch))) {
         pos.add(j);
         if (i === 0) {
           break;
         }
         i--;
       }
-      preferMatch = C[I + j0] > 1 || I + width + j0 + 1 < C.length && C[I + width + j0 + 1] > 0;
+      preferMatch =
+        C[I + j0] > 1 ||
+        (I + width + j0 + 1 < C.length && C[I + width + j0 + 1] > 0);
       j--;
     }
   }
   return [{ start: j, end: maxScorePos + 1, score: maxScore }, pos];
 };
-function calculateScore(caseSensitive, normalize, text, pattern, sidx, eidx, withPos) {
-  let pidx = 0, score = 0, inGap = false, consecutive = 0, firstBonus = toShort(0);
+function calculateScore(
+  caseSensitive,
+  normalize,
+  text,
+  pattern,
+  sidx,
+  eidx,
+  withPos,
+) {
+  let pidx = 0,
+    score = 0,
+    inGap = false,
+    consecutive = 0,
+    firstBonus = toShort(0);
   const pos = createPosSet(withPos);
   let prevCharClass = 0;
   if (sidx > 0) {
@@ -622,14 +699,24 @@ function calculateScore(caseSensitive, normalize, text, pattern, sidx, eidx, wit
   }
   return [score, pos];
 }
-const fuzzyMatchV1 = (caseSensitive, normalize, forward, text, pattern, withPos, slab2) => {
+const fuzzyMatchV1 = (
+  caseSensitive,
+  normalize,
+  forward,
+  text,
+  pattern,
+  withPos,
+  slab2,
+) => {
   if (pattern.length === 0) {
     return [{ start: 0, end: 0, score: 0 }, null];
   }
   if (asciiFuzzyIndex(text, pattern, caseSensitive) < 0) {
     return [{ start: -1, end: -1, score: 0 }, null];
   }
-  let pidx = 0, sidx = -1, eidx = -1;
+  let pidx = 0,
+    sidx = -1,
+    eidx = -1;
   const lenRunes = text.length;
   const lenPattern = pattern.length;
   for (let index = 0; index < lenRunes; index++) {
@@ -690,13 +777,21 @@ const fuzzyMatchV1 = (caseSensitive, normalize, forward, text, pattern, withPos,
       pattern,
       sidx,
       eidx,
-      withPos
+      withPos,
     );
     return [{ start: sidx, end: eidx, score }, pos];
   }
   return [{ start: -1, end: -1, score: 0 }, null];
 };
-const exactMatchNaive = (caseSensitive, normalize, forward, text, pattern, withPos, slab2) => {
+const exactMatchNaive = (
+  caseSensitive,
+  normalize,
+  forward,
+  text,
+  pattern,
+  withPos,
+  slab2,
+) => {
   if (pattern.length === 0) {
     return [{ start: 0, end: 0, score: 0 }, null];
   }
@@ -709,7 +804,9 @@ const exactMatchNaive = (caseSensitive, normalize, forward, text, pattern, withP
     return [{ start: -1, end: -1, score: 0 }, null];
   }
   let pidx = 0;
-  let bestPos = -1, bonus = toShort(0), bestBonus = toShort(-1);
+  let bestPos = -1,
+    bonus = toShort(0),
+    bestBonus = toShort(-1);
   for (let index = 0; index < lenRunes; index++) {
     const index_ = indexAt(index, lenRunes, forward);
     let rune = text[index_];
@@ -749,7 +846,8 @@ const exactMatchNaive = (caseSensitive, normalize, forward, text, pattern, withP
     }
   }
   if (bestPos >= 0) {
-    let sidx = 0, eidx = 0;
+    let sidx = 0,
+      eidx = 0;
     if (forward) {
       sidx = bestPos - lenPattern + 1;
       eidx = bestPos + 1;
@@ -757,12 +855,28 @@ const exactMatchNaive = (caseSensitive, normalize, forward, text, pattern, withP
       sidx = lenRunes - (bestPos + 1);
       eidx = lenRunes - (bestPos - lenPattern + 1);
     }
-    const [score] = calculateScore(caseSensitive, normalize, text, pattern, sidx, eidx, false);
+    const [score] = calculateScore(
+      caseSensitive,
+      normalize,
+      text,
+      pattern,
+      sidx,
+      eidx,
+      false,
+    );
     return [{ start: sidx, end: eidx, score }, null];
   }
   return [{ start: -1, end: -1, score: 0 }, null];
 };
-const prefixMatch = (caseSensitive, normalize, forward, text, pattern, withPos, slab2) => {
+const prefixMatch = (
+  caseSensitive,
+  normalize,
+  forward,
+  text,
+  pattern,
+  withPos,
+  slab2,
+) => {
   if (pattern.length === 0) {
     return [{ start: 0, end: 0, score: 0 }, null];
   }
@@ -793,11 +907,19 @@ const prefixMatch = (caseSensitive, normalize, forward, text, pattern, withPos, 
     pattern,
     trimmedLen,
     trimmedLen + lenPattern,
-    false
+    false,
   );
   return [{ start: trimmedLen, end: trimmedLen + lenPattern, score }, null];
 };
-const suffixMatch = (caseSensitive, normalize, forward, text, pattern, withPos, slab2) => {
+const suffixMatch = (
+  caseSensitive,
+  normalize,
+  forward,
+  text,
+  pattern,
+  withPos,
+  slab2,
+) => {
   const lenRunes = text.length;
   let trimmedLen = lenRunes;
   if (pattern.length === 0 || !isWhitespace(pattern[pattern.length - 1])) {
@@ -825,10 +947,26 @@ const suffixMatch = (caseSensitive, normalize, forward, text, pattern, withPos, 
   const lenPattern = pattern.length;
   const sidx = trimmedLen - lenPattern;
   const eidx = trimmedLen;
-  const [score] = calculateScore(caseSensitive, normalize, text, pattern, sidx, eidx, false);
+  const [score] = calculateScore(
+    caseSensitive,
+    normalize,
+    text,
+    pattern,
+    sidx,
+    eidx,
+    false,
+  );
   return [{ start: sidx, end: eidx, score }, null];
 };
-const equalMatch = (caseSensitive, normalize, forward, text, pattern, withPos, slab2) => {
+const equalMatch = (
+  caseSensitive,
+  normalize,
+  forward,
+  text,
+  pattern,
+  withPos,
+  slab2,
+) => {
   const lenPattern = pattern.length;
   if (lenPattern === 0) {
     return [{ start: -1, end: -1, score: 0 }, null];
@@ -858,7 +996,10 @@ const equalMatch = (caseSensitive, normalize, forward, text, pattern, withPos, s
       }
     }
   } else {
-    let runesStr = runesToStr(text).substring(trimmedLen, text.length - trimmedEndLen);
+    let runesStr = runesToStr(text).substring(
+      trimmedLen,
+      text.length - trimmedEndLen,
+    );
     if (!caseSensitive) {
       runesStr = runesStr.toLowerCase();
     }
@@ -869,9 +1010,11 @@ const equalMatch = (caseSensitive, normalize, forward, text, pattern, withPos, s
       {
         start: trimmedLen,
         end: trimmedLen + lenPattern,
-        score: (SCORE_MATCH + BONUS_BOUNDARY) * lenPattern + (BONUS_FIRST_CHAR_MULTIPLIER - 1) * BONUS_BOUNDARY
+        score:
+          (SCORE_MATCH + BONUS_BOUNDARY) * lenPattern +
+          (BONUS_FIRST_CHAR_MULTIPLIER - 1) * BONUS_BOUNDARY,
       },
-      null
+      null,
     ];
   }
   return [{ start: -1, end: -1, score: 0 }, null];
@@ -881,16 +1024,16 @@ const SLAB_32_SIZE = 2048;
 function makeSlab(size16, size32) {
   return {
     i16: new Int16Array(size16),
-    i32: new Int32Array(size32)
+    i32: new Int32Array(size32),
   };
 }
 const slab = makeSlab(SLAB_16_SIZE, SLAB_32_SIZE);
 var TermType = /* @__PURE__ */ ((TermType2) => {
-  TermType2[TermType2["Fuzzy"] = 0] = "Fuzzy";
-  TermType2[TermType2["Exact"] = 1] = "Exact";
-  TermType2[TermType2["Prefix"] = 2] = "Prefix";
-  TermType2[TermType2["Suffix"] = 3] = "Suffix";
-  TermType2[TermType2["Equal"] = 4] = "Equal";
+  TermType2[(TermType2["Fuzzy"] = 0)] = "Fuzzy";
+  TermType2[(TermType2["Exact"] = 1)] = "Exact";
+  TermType2[(TermType2["Prefix"] = 2)] = "Prefix";
+  TermType2[(TermType2["Suffix"] = 3)] = "Suffix";
+  TermType2[(TermType2["Equal"] = 4)] = "Equal";
   return TermType2;
 })(TermType || {});
 const termTypeMap = {
@@ -898,14 +1041,17 @@ const termTypeMap = {
   [1]: exactMatchNaive,
   [2]: prefixMatch,
   [3]: suffixMatch,
-  [4]: equalMatch
+  [4]: equalMatch,
 };
 function buildPatternForExtendedMatch(fuzzy, caseMode, normalize, str) {
   let cacheable = true;
   str = str.trimLeft();
   {
     const trimmedAtRightStr = str.trimRight();
-    if (trimmedAtRightStr.endsWith("\\") && str[trimmedAtRightStr.length] === " ") {
+    if (
+      trimmedAtRightStr.endsWith("\\") &&
+      str[trimmedAtRightStr.length] === " "
+    ) {
       str = trimmedAtRightStr + " ";
     } else {
       str = trimmedAtRightStr;
@@ -914,26 +1060,31 @@ function buildPatternForExtendedMatch(fuzzy, caseMode, normalize, str) {
   let sortable = false;
   let termSets = [];
   termSets = parseTerms(fuzzy, caseMode, normalize, str);
-  Loop:
-    for (const termSet of termSets) {
-      for (const [idx, term] of termSet.entries()) {
-        if (!term.inv) {
-          sortable = true;
-        }
-        if (!cacheable || idx > 0 || term.inv || fuzzy && term.typ !== 0 || !fuzzy && term.typ !== 1) {
-          cacheable = false;
-          if (sortable) {
-            break Loop;
-          }
+  Loop: for (const termSet of termSets) {
+    for (const [idx, term] of termSet.entries()) {
+      if (!term.inv) {
+        sortable = true;
+      }
+      if (
+        !cacheable ||
+        idx > 0 ||
+        term.inv ||
+        (fuzzy && term.typ !== 0) ||
+        (!fuzzy && term.typ !== 1)
+      ) {
+        cacheable = false;
+        if (sortable) {
+          break Loop;
         }
       }
     }
+  }
   return {
     str,
     termSets,
     sortable,
     cacheable,
-    fuzzy
+    fuzzy,
   };
 }
 function parseTerms(fuzzy, caseMode, normalize, str) {
@@ -944,10 +1095,16 @@ function parseTerms(fuzzy, caseMode, normalize, str) {
   let switchSet = false;
   let afterBar = false;
   for (const token of tokens) {
-    let typ = 0, inv = false, text = token.replace(/\t/g, " ");
+    let typ = 0,
+      inv = false,
+      text = token.replace(/\t/g, " ");
     const lowerText = text.toLowerCase();
-    const caseSensitive = caseMode === "case-sensitive" || caseMode === "smart-case" && text !== lowerText;
-    const normalizeTerm = normalize && lowerText === runesToStr(strToRunes(lowerText).map(normalizeRune));
+    const caseSensitive =
+      caseMode === "case-sensitive" ||
+      (caseMode === "smart-case" && text !== lowerText);
+    const normalizeTerm =
+      normalize &&
+      lowerText === runesToStr(strToRunes(lowerText).map(normalizeRune));
     if (!caseSensitive) {
       text = lowerText;
     }
@@ -998,7 +1155,7 @@ function parseTerms(fuzzy, caseMode, normalize, str) {
         inv,
         text: textRunes,
         caseSensitive,
-        normalize: normalizeTerm
+        normalize: normalizeTerm,
       });
       switchSet = true;
     }
@@ -1030,12 +1187,28 @@ const buildPatternForBasicMatch = (query, casing, normalize) => {
   }
   return {
     queryRunes,
-    caseSensitive
+    caseSensitive,
   };
 };
-function iter(algoFn, tokens, caseSensitive, normalize, forward, pattern, slab2) {
+function iter(
+  algoFn,
+  tokens,
+  caseSensitive,
+  normalize,
+  forward,
+  pattern,
+  slab2,
+) {
   for (const part of tokens) {
-    const [res, pos] = algoFn(caseSensitive, normalize, forward, part.text, pattern, true, slab2);
+    const [res, pos] = algoFn(
+      caseSensitive,
+      normalize,
+      forward,
+      part.text,
+      pattern,
+      true,
+      slab2,
+    );
     if (res.start >= 0) {
       const sidx = res.start + part.prefixLength;
       const eidx = res.end + part.prefixLength;
@@ -1053,8 +1226,8 @@ function computeExtendedMatch(text, pattern, fuzzyAlgo, forward) {
   const input = [
     {
       text,
-      prefixLength: 0
-    }
+      prefixLength: 0,
+    },
   ];
   const offsets = [];
   let totalScore = 0;
@@ -1075,7 +1248,7 @@ function computeExtendedMatch(text, pattern, fuzzyAlgo, forward) {
         term.normalize,
         forward,
         term.text,
-        slab
+        slab,
       );
       const sidx = off[0];
       if (sidx >= 0) {
@@ -1097,7 +1270,6 @@ function computeExtendedMatch(text, pattern, fuzzyAlgo, forward) {
         offset = [0, 0];
         currentScore = 0;
         matched = true;
-        continue;
       }
     }
     if (matched) {
@@ -1108,7 +1280,9 @@ function computeExtendedMatch(text, pattern, fuzzyAlgo, forward) {
   return { offsets, totalScore, allPos };
 }
 function getResultFromScoreMap(scoreMap, limit) {
-  const scoresInDesc = Object.keys(scoreMap).map((v) => parseInt(v, 10)).sort((a, b) => b - a);
+  const scoresInDesc = Object.keys(scoreMap)
+    .map((v) => parseInt(v, 10))
+    .sort((a, b) => b - a);
   let result = [];
   for (const score of scoresInDesc) {
     result = result.concat(scoreMap[score]);
@@ -1121,8 +1295,7 @@ function getResultFromScoreMap(scoreMap, limit) {
 function getBasicMatchIter(scoreMap, queryRunes, caseSensitive) {
   return (idx) => {
     const itemRunes = this.runesList[idx];
-    if (queryRunes.length > itemRunes.length)
-      return;
+    if (queryRunes.length > itemRunes.length) return;
     let [match, positions] = this.algoFn(
       caseSensitive,
       this.opts.normalize,
@@ -1130,10 +1303,9 @@ function getBasicMatchIter(scoreMap, queryRunes, caseSensitive) {
       itemRunes,
       queryRunes,
       true,
-      slab
+      slab,
     );
-    if (match.start === -1)
-      return;
+    if (match.start === -1) return;
     if (this.opts.fuzzy === false) {
       positions = /* @__PURE__ */ new Set();
       for (let position = match.start; position < match.end; ++position) {
@@ -1147,17 +1319,22 @@ function getBasicMatchIter(scoreMap, queryRunes, caseSensitive) {
     scoreMap[scoreKey].push({
       item: this.items[idx],
       ...match,
-      positions: positions != null ? positions : /* @__PURE__ */ new Set()
+      positions: positions != null ? positions : /* @__PURE__ */ new Set(),
     });
   };
 }
 function getExtendedMatchIter(scoreMap, pattern) {
   return (idx) => {
     const runes = this.runesList[idx];
-    const match = computeExtendedMatch(runes, pattern, this.algoFn, this.opts.forward);
-    if (match.offsets.length !== pattern.termSets.length)
-      return;
-    let sidx = -1, eidx = -1;
+    const match = computeExtendedMatch(
+      runes,
+      pattern,
+      this.algoFn,
+      this.opts.forward,
+    );
+    if (match.offsets.length !== pattern.termSets.length) return;
+    let sidx = -1,
+      eidx = -1;
     if (match.allPos.size > 0) {
       sidx = Math.min(...match.allPos);
       eidx = Math.max(...match.allPos) + 1;
@@ -1171,7 +1348,7 @@ function getExtendedMatchIter(scoreMap, pattern) {
       item: this.items[idx],
       positions: match.allPos,
       start: sidx,
-      end: eidx
+      end: eidx,
     });
   };
 }
@@ -1179,13 +1356,13 @@ function basicMatch(query) {
   const { queryRunes, caseSensitive } = buildPatternForBasicMatch(
     query,
     this.opts.casing,
-    this.opts.normalize
+    this.opts.normalize,
   );
   const scoreMap = {};
   const iter2 = getBasicMatchIter.bind(this)(
     scoreMap,
     queryRunes,
-    caseSensitive
+    caseSensitive,
   );
   for (let i = 0, len = this.runesList.length; i < len; ++i) {
     iter2(i);
@@ -1197,7 +1374,7 @@ function extendedMatch(query) {
     Boolean(this.opts.fuzzy),
     this.opts.casing,
     this.opts.normalize,
-    query
+    query,
   );
   const scoreMap = {};
   const iter2 = getExtendedMatchIter.bind(this)(scoreMap, pattern);
@@ -1210,10 +1387,10 @@ const isNode = typeof require !== "undefined" && typeof window === "undefined";
 function asyncMatcher(token, len, iter2, onFinish) {
   return new Promise((resolve, reject) => {
     const INCREMENT = 1e3;
-    let i = 0, end = Math.min(INCREMENT, len);
+    let i = 0,
+      end = Math.min(INCREMENT, len);
     const step = () => {
-      if (token.cancelled)
-        return reject("search cancelled");
+      if (token.cancelled) return reject("search cancelled");
       for (; i < end; ++i) {
         iter2(i);
       }
@@ -1231,14 +1408,14 @@ function asyncBasicMatch(query, token) {
   const { queryRunes, caseSensitive } = buildPatternForBasicMatch(
     query,
     this.opts.casing,
-    this.opts.normalize
+    this.opts.normalize,
   );
   const scoreMap = {};
   return asyncMatcher(
     token,
     this.runesList.length,
     getBasicMatchIter.bind(this)(scoreMap, queryRunes, caseSensitive),
-    () => getResultFromScoreMap(scoreMap, this.opts.limit)
+    () => getResultFromScoreMap(scoreMap, this.opts.limit),
   );
 }
 function asyncExtendedMatch(query, token) {
@@ -1246,14 +1423,14 @@ function asyncExtendedMatch(query, token) {
     Boolean(this.opts.fuzzy),
     this.opts.casing,
     this.opts.normalize,
-    query
+    query,
   );
   const scoreMap = {};
   return asyncMatcher(
     token,
     this.runesList.length,
     getExtendedMatchIter.bind(this)(scoreMap, pattern),
-    () => getResultFromScoreMap(scoreMap, this.opts.limit)
+    () => getResultFromScoreMap(scoreMap, this.opts.limit),
   );
 }
 const defaultOpts = {
@@ -1264,13 +1441,15 @@ const defaultOpts = {
   fuzzy: "v2",
   tiebreakers: [],
   sort: true,
-  forward: true
+  forward: true,
 };
 class BaseFinder {
   constructor(list, ...optionsTuple) {
     this.opts = { ...defaultOpts, ...optionsTuple[0] };
     this.items = list;
-    this.runesList = list.map((item) => strToRunes(this.opts.selector(item).normalize()));
+    this.runesList = list.map((item) =>
+      strToRunes(this.opts.selector(item).normalize()),
+    );
     this.algoFn = exactMatchNaive;
     switch (this.opts.fuzzy) {
       case "v2":
@@ -1284,7 +1463,7 @@ class BaseFinder {
 }
 const syncDefaultOpts = {
   ...defaultOpts,
-  match: basicMatch
+  match: basicMatch,
 };
 class SyncFinder extends BaseFinder {
   constructor(list, ...optionsTuple) {
@@ -1293,15 +1472,17 @@ class SyncFinder extends BaseFinder {
   }
   find(query) {
     if (query.length === 0 || this.items.length === 0)
-      return this.items.slice(0, this.opts.limit).map(createResultItemWithEmptyPos);
+      return this.items
+        .slice(0, this.opts.limit)
+        .map(createResultItemWithEmptyPos);
     query = query.normalize();
-    let result = this.opts.match.bind(this)(query);
+    const result = this.opts.match.bind(this)(query);
     return postProcessResultItems(result, this.opts);
   }
 }
 const asyncDefaultOpts = {
   ...defaultOpts,
-  match: asyncBasicMatch
+  match: asyncBasicMatch,
 };
 class AsyncFinder extends BaseFinder {
   constructor(list, ...optionsTuple) {
@@ -1313,9 +1494,11 @@ class AsyncFinder extends BaseFinder {
     this.token.cancelled = true;
     this.token = { cancelled: false };
     if (query.length === 0 || this.items.length === 0)
-      return this.items.slice(0, this.opts.limit).map(createResultItemWithEmptyPos);
+      return this.items
+        .slice(0, this.opts.limit)
+        .map(createResultItemWithEmptyPos);
     query = query.normalize();
-    let result = await this.opts.match.bind(this)(query, this.token);
+    const result = await this.opts.match.bind(this)(query, this.token);
     return postProcessResultItems(result, this.opts);
   }
 }
@@ -1324,7 +1507,7 @@ const createResultItemWithEmptyPos = (item) => ({
   start: -1,
   end: -1,
   score: 0,
-  positions: /* @__PURE__ */ new Set()
+  positions: /* @__PURE__ */ new Set(),
 });
 function postProcessResultItems(result, opts) {
   if (opts.sort) {
@@ -1364,4 +1547,13 @@ class AsyncFzf {
     this.find = this.finder.find.bind(this.finder);
   }
 }
-export { AsyncFzf, Fzf, asyncBasicMatch, asyncExtendedMatch, basicMatch, byLengthAsc, byStartAsc, extendedMatch };
+export {
+  AsyncFzf,
+  Fzf,
+  asyncBasicMatch,
+  asyncExtendedMatch,
+  basicMatch,
+  byLengthAsc,
+  byStartAsc,
+  extendedMatch,
+};

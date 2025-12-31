@@ -1,5 +1,5 @@
-import { isObject } from './isObject'
-import { isPropertyAccessible } from './isPropertyAccessible'
+import { isObject } from "./isObject";
+import { isPropertyAccessible } from "./isPropertyAccessible";
 
 /**
  * Creates a generic 500 Unhandled Exception response.
@@ -13,19 +13,19 @@ export function createServerErrorResponse(body: unknown): Response {
             message: body.message,
             stack: body.stack,
           }
-        : body
+        : body,
     ),
     {
       status: 500,
-      statusText: 'Unhandled Exception',
+      statusText: "Unhandled Exception",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-    }
-  )
+    },
+  );
 }
 
-export type ResponseError = Response & { type: 'error' }
+export type ResponseError = Response & { type: "error" };
 
 /**
  * Check if the given response is a `Response.error()`.
@@ -39,9 +39,9 @@ export function isResponseError(response: unknown): response is ResponseError {
   return (
     response != null &&
     response instanceof Response &&
-    isPropertyAccessible(response, 'type') &&
-    response.type === 'error'
-  )
+    isPropertyAccessible(response, "type") &&
+    response.type === "error"
+  );
 }
 
 /**
@@ -52,8 +52,8 @@ export function isResponseError(response: unknown): response is ResponseError {
 export function isResponseLike(value: unknown): value is Response {
   return (
     isObject<Record<string, any>>(value, true) &&
-    isPropertyAccessible(value, 'status') &&
-    isPropertyAccessible(value, 'statusText') &&
-    isPropertyAccessible(value, 'bodyUsed')
-  )
+    isPropertyAccessible(value, "status") &&
+    isPropertyAccessible(value, "statusText") &&
+    isPropertyAccessible(value, "bodyUsed")
+  );
 }

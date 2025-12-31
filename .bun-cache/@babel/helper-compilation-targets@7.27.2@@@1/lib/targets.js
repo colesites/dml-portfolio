@@ -1,13 +1,13 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.unreleasedLabels = exports.browserNameMap = void 0;
-const unreleasedLabels = exports.unreleasedLabels = {
-  safari: "tp"
-};
-const browserNameMap = exports.browserNameMap = {
+const unreleasedLabels = (exports.unreleasedLabels = {
+  safari: "tp",
+});
+const browserNameMap = (exports.browserNameMap = {
   and_chr: "chrome",
   and_ff: "firefox",
   android: "android",
@@ -22,7 +22,7 @@ const browserNameMap = exports.browserNameMap = {
   op_mob: "opera_mobile",
   opera: "opera",
   safari: "safari",
-  samsung: "samsung"
-};
+  samsung: "samsung",
+});
 
 //# sourceMappingURL=targets.js.map

@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var components_exports = {};
 __export(components_exports, {
   button: () => button,
@@ -27,7 +31,7 @@ __export(components_exports, {
   meta: () => meta,
   script: () => script,
   style: () => style,
-  title: () => title
+  title: () => title,
 });
 module.exports = __toCommonJS(components_exports);
 var import_context = require("../../context");
@@ -45,9 +49,11 @@ const composeRef = (ref, cb) => {
       let refCleanup;
       if (ref) {
         if (typeof ref === "function") {
-          refCleanup = ref(e) || (() => {
-            ref(null);
-          });
+          refCleanup =
+            ref(e) ||
+            (() => {
+              ref(null);
+            });
         } else if (ref && "current" in ref) {
           ref.current = e;
           refCleanup = () => {
@@ -61,18 +67,24 @@ const composeRef = (ref, cb) => {
         refCleanup?.();
       };
     },
-    [ref]
+    [ref],
   );
 };
 let blockingPromiseMap = /* @__PURE__ */ Object.create(null);
 let createdElements = /* @__PURE__ */ Object.create(null);
-const documentMetadataTag = (tag, props, preserveNodeType, supportSort, supportBlocking) => {
+const documentMetadataTag = (
+  tag,
+  props,
+  preserveNodeType,
+  supportSort,
+  supportBlocking,
+) => {
   if (props?.itemProp) {
     return {
       tag,
       props,
       type: tag,
-      ref: props.ref
+      ref: props.ref,
     };
   }
   const head = document.head;
@@ -93,8 +105,9 @@ const documentMetadataTag = (tag, props, preserveNodeType, supportSort, supportB
     }
     if (!element) {
       const cacheKey = deDupeKeys.reduce(
-        (acc, key) => props[key] === void 0 ? acc : `${acc}-${key}-${props[key]}`,
-        tag
+        (acc, key) =>
+          props[key] === void 0 ? acc : `${acc}-${key}-${props[key]}`,
+        tag,
       );
       created = !createdElements[cacheKey];
       element = createdElements[cacheKey] ||= (() => {
@@ -113,7 +126,7 @@ const documentMetadataTag = (tag, props, preserveNodeType, supportSort, supportB
   } else {
     existingElements = head.querySelectorAll(tag);
   }
-  precedence = supportSort ? precedence ?? "" : void 0;
+  precedence = supportSort ? (precedence ?? "") : void 0;
   if (supportSort) {
     restProps[import_common.dataPrecedenceAttr] = precedence;
   }
@@ -122,11 +135,18 @@ const documentMetadataTag = (tag, props, preserveNodeType, supportSort, supportB
       if (deDupeKeys.length > 0) {
         let found = false;
         for (const existingElement of head.querySelectorAll(tag)) {
-          if (found && existingElement.getAttribute(import_common.dataPrecedenceAttr) !== precedence) {
+          if (
+            found &&
+            existingElement.getAttribute(import_common.dataPrecedenceAttr) !==
+              precedence
+          ) {
             head.insertBefore(e, existingElement);
             return;
           }
-          if (existingElement.getAttribute(import_common.dataPrecedenceAttr) === precedence) {
+          if (
+            existingElement.getAttribute(import_common.dataPrecedenceAttr) ===
+            precedence
+          ) {
             found = true;
           }
         }
@@ -142,13 +162,15 @@ const documentMetadataTag = (tag, props, preserveNodeType, supportSort, supportB
         if (!found) {
           head.insertBefore(
             e,
-            head.contains(existingElements[0]) ? existingElements[0] : head.querySelector(tag)
+            head.contains(existingElements[0])
+              ? existingElements[0]
+              : head.querySelector(tag),
           );
         }
         existingElements = void 0;
       }
     },
-    [precedence]
+    [precedence],
   );
   const ref = composeRef(props.ref, (e) => {
     const key = deDupeKeys[0];
@@ -161,30 +183,31 @@ const documentMetadataTag = (tag, props, preserveNodeType, supportSort, supportB
     if (!onError && !onLoad) {
       return;
     }
-    let promise = blockingPromiseMap[e.getAttribute(key)] ||= new Promise(
+    let promise = (blockingPromiseMap[e.getAttribute(key)] ||= new Promise(
       (resolve, reject) => {
         e.addEventListener("load", resolve);
         e.addEventListener("error", reject);
-      }
-    );
+      },
+    ));
     if (onLoad) {
       promise = promise.then(onLoad);
     }
     if (onError) {
       promise = promise.catch(onError);
     }
-    promise.catch(() => {
-    });
+    promise.catch(() => {});
   });
   if (supportBlocking && blocking === "render") {
     const key = import_common.deDupeKeyMap[tag][0];
     if (props[key]) {
       const value = props[key];
-      const promise = blockingPromiseMap[value] ||= new Promise((resolve, reject) => {
-        insert(element);
-        element.addEventListener("load", resolve);
-        element.addEventListener("error", reject);
-      });
+      const promise = (blockingPromiseMap[value] ||= new Promise(
+        (resolve, reject) => {
+          insert(element);
+          element.addEventListener("load", resolve);
+          element.addEventListener("error", reject);
+        },
+      ));
       (0, import_hooks.use)(promise);
     }
   }
@@ -193,9 +216,9 @@ const documentMetadataTag = (tag, props, preserveNodeType, supportSort, supportB
     type: tag,
     props: {
       ...restProps,
-      ref
+      ref,
     },
-    ref
+    ref,
   };
   jsxNode.p = preserveNodeType;
   if (element) {
@@ -203,20 +226,21 @@ const documentMetadataTag = (tag, props, preserveNodeType, supportSort, supportB
   }
   return (0, import_render.createPortal)(
     jsxNode,
-    head
+    head,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   );
 };
 const title = (props) => {
   const nameSpaceContext = (0, import_render.getNameSpaceContext)();
-  const ns = nameSpaceContext && (0, import_context.useContext)(nameSpaceContext);
+  const ns =
+    nameSpaceContext && (0, import_context.useContext)(nameSpaceContext);
   if (ns?.endsWith("svg")) {
     return {
       tag: "title",
       props,
       type: "title",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ref: props.ref
+      ref: props.ref,
     };
   }
   return documentMetadataTag("title", props, void 0, false, false);
@@ -227,7 +251,7 @@ const script = (props) => {
       tag: "script",
       props,
       type: "script",
-      ref: props.ref
+      ref: props.ref,
     };
   }
   return documentMetadataTag("script", props, 1, false, true);
@@ -238,7 +262,7 @@ const style = (props) => {
       tag: "style",
       props,
       type: "style",
-      ref: props.ref
+      ref: props.ref,
     };
   }
   props["data-href"] = props.href;
@@ -246,12 +270,17 @@ const style = (props) => {
   return documentMetadataTag("style", props, 2, true, true);
 };
 const link = (props) => {
-  if (!props || ["onLoad", "onError"].some((k) => k in props) || props.rel === "stylesheet" && (!("precedence" in props) || "disabled" in props)) {
+  if (
+    !props ||
+    ["onLoad", "onError"].some((k) => k in props) ||
+    (props.rel === "stylesheet" &&
+      (!("precedence" in props) || "disabled" in props))
+  ) {
     return {
       tag: "link",
       props,
       type: "link",
-      ref: props.ref
+      ref: props.ref,
     };
   }
   return documentMetadataTag("link", props, 1, "precedence" in props, true);
@@ -263,28 +292,26 @@ const customEventFormAction = /* @__PURE__ */ Symbol();
 const form = (props) => {
   const { action, ...restProps } = props;
   if (typeof action !== "function") {
-    ;
     restProps.action = action;
   }
   const [state, setState] = (0, import_hooks.useState)([null, false]);
-  const onSubmit = (0, import_hooks.useCallback)(
-    async (ev) => {
-      const currentAction = ev.isTrusted ? action : ev.detail[customEventFormAction];
-      if (typeof currentAction !== "function") {
-        return;
-      }
-      ev.preventDefault();
-      const formData = new FormData(ev.target);
-      setState([formData, true]);
-      const actionRes = currentAction(formData);
-      if (actionRes instanceof Promise) {
-        (0, import_hooks2.registerAction)(actionRes);
-        await actionRes;
-      }
-      setState([null, true]);
-    },
-    []
-  );
+  const onSubmit = (0, import_hooks.useCallback)(async (ev) => {
+    const currentAction = ev.isTrusted
+      ? action
+      : ev.detail[customEventFormAction];
+    if (typeof currentAction !== "function") {
+      return;
+    }
+    ev.preventDefault();
+    const formData = new FormData(ev.target);
+    setState([formData, true]);
+    const actionRes = currentAction(formData);
+    if (actionRes instanceof Promise) {
+      (0, import_hooks2.registerAction)(actionRes);
+      await actionRes;
+    }
+    setState([null, true]);
+  }, []);
   const ref = composeRef(props.ref, (el) => {
     el.addEventListener("submit", onSubmit);
     return () => {
@@ -300,31 +327,30 @@ const form = (props) => {
         pending: data !== null,
         data,
         method: data ? "post" : null,
-        action: data ? action : null
+        action: data ? action : null,
       },
       children: {
         tag: "form",
         props: {
           ...restProps,
-          ref
+          ref,
         },
         type: "form",
-        ref
-      }
+        ref,
+      },
     },
-    f: isDirty
+    f: isDirty,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   };
 };
-const formActionableElement = (tag, {
-  formAction,
-  ...props
-}) => {
+const formActionableElement = (tag, { formAction, ...props }) => {
   if (typeof formAction === "function") {
     const onClick = (0, import_hooks.useCallback)((ev) => {
       ev.preventDefault();
       ev.currentTarget.form.dispatchEvent(
-        new CustomEvent("submit", { detail: { [customEventFormAction]: formAction } })
+        new CustomEvent("submit", {
+          detail: { [customEventFormAction]: formAction },
+        }),
       );
     }, []);
     props.ref = composeRef(props.ref, (el) => {
@@ -338,7 +364,7 @@ const formActionableElement = (tag, {
     tag,
     props,
     type: tag,
-    ref: props.ref
+    ref: props.ref,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   };
 };
@@ -352,18 +378,19 @@ Object.assign(import_common.domRenderers, {
   meta,
   form,
   input,
-  button
+  button,
 });
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  button,
-  clearCache,
-  composeRef,
-  form,
-  input,
-  link,
-  meta,
-  script,
-  style,
-  title
-});
+0 &&
+  (module.exports = {
+    button,
+    clearCache,
+    composeRef,
+    form,
+    input,
+    link,
+    meta,
+    script,
+    style,
+    title,
+  });

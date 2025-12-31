@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var middleware_exports = {};
 __export(middleware_exports, {
   SSG_CONTEXT: () => SSG_CONTEXT,
@@ -24,7 +28,7 @@ __export(middleware_exports, {
   disableSSG: () => disableSSG,
   isSSGContext: () => isSSGContext,
   onlySSG: () => onlySSG,
-  ssgParams: () => ssgParams
+  ssgParams: () => ssgParams,
 });
 module.exports = __toCommonJS(middleware_exports);
 var import_utils = require("./utils");
@@ -34,7 +38,7 @@ const SSG_DISABLED_RESPONSE = (() => {
   try {
     return new Response("SSG is disabled", {
       status: 404,
-      headers: { [X_HONO_DISABLE_SSG_HEADER_KEY]: "true" }
+      headers: { [X_HONO_DISABLE_SSG_HEADER_KEY]: "true" },
     });
   } catch {
     return null;
@@ -42,33 +46,35 @@ const SSG_DISABLED_RESPONSE = (() => {
 })();
 const ssgParams = (params) => async (c, next) => {
   if ((0, import_utils.isDynamicRoute)(c.req.path)) {
-    ;
     c.req.raw.ssgParams = Array.isArray(params) ? params : await params(c);
     return c.notFound();
   }
   await next();
 };
 const isSSGContext = (c) => !!c.env?.[SSG_CONTEXT];
-const disableSSG = () => async function disableSSG2(c, next) {
-  if (isSSGContext(c)) {
-    c.header(X_HONO_DISABLE_SSG_HEADER_KEY, "true");
-    return c.notFound();
-  }
-  await next();
-};
-const onlySSG = () => async function onlySSG2(c, next) {
-  if (!isSSGContext(c)) {
-    return c.notFound();
-  }
-  await next();
-};
+const disableSSG = () =>
+  async function disableSSG2(c, next) {
+    if (isSSGContext(c)) {
+      c.header(X_HONO_DISABLE_SSG_HEADER_KEY, "true");
+      return c.notFound();
+    }
+    await next();
+  };
+const onlySSG = () =>
+  async function onlySSG2(c, next) {
+    if (!isSSGContext(c)) {
+      return c.notFound();
+    }
+    await next();
+  };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  SSG_CONTEXT,
-  SSG_DISABLED_RESPONSE,
-  X_HONO_DISABLE_SSG_HEADER_KEY,
-  disableSSG,
-  isSSGContext,
-  onlySSG,
-  ssgParams
-});
+0 &&
+  (module.exports = {
+    SSG_CONTEXT,
+    SSG_DISABLED_RESPONSE,
+    X_HONO_DISABLE_SSG_HEADER_KEY,
+    disableSSG,
+    isSSGContext,
+    onlySSG,
+    ssgParams,
+  });

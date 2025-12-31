@@ -1,10 +1,10 @@
-import { inspect } from '../../jsutils/inspect.mjs';
-import { invariant } from '../../jsutils/invariant.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { OperationTypeNode } from '../../language/ast.mjs';
-import { DirectiveLocation } from '../../language/directiveLocation.mjs';
-import { Kind } from '../../language/kinds.mjs';
-import { specifiedDirectives } from '../../type/directives.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { inspect } from "../../jsutils/inspect.mjs";
+import { invariant } from "../../jsutils/invariant.mjs";
+import { OperationTypeNode } from "../../language/ast.mjs";
+import { DirectiveLocation } from "../../language/directiveLocation.mjs";
+import { Kind } from "../../language/kinds.mjs";
+import { specifiedDirectives } from "../../type/directives.mjs";
 
 /**
  * Known directives
@@ -65,7 +65,7 @@ export function KnownDirectivesRule(context) {
 
 function getDirectiveLocationForASTPath(ancestors) {
   const appliedTo = ancestors[ancestors.length - 1];
-  'kind' in appliedTo || invariant(false);
+  "kind" in appliedTo || invariant(false);
 
   switch (appliedTo.kind) {
     case Kind.OPERATION_DEFINITION:
@@ -122,7 +122,7 @@ function getDirectiveLocationForASTPath(ancestors) {
 
     case Kind.INPUT_VALUE_DEFINITION: {
       const parentNode = ancestors[ancestors.length - 3];
-      'kind' in parentNode || invariant(false);
+      "kind" in parentNode || invariant(false);
       return parentNode.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
         ? DirectiveLocation.INPUT_FIELD_DEFINITION
         : DirectiveLocation.ARGUMENT_DEFINITION;
@@ -132,7 +132,7 @@ function getDirectiveLocationForASTPath(ancestors) {
     /* c8 ignore next */
 
     default:
-      false || invariant(false, 'Unexpected kind: ' + inspect(appliedTo.kind));
+      false || invariant(false, "Unexpected kind: " + inspect(appliedTo.kind));
   }
 }
 

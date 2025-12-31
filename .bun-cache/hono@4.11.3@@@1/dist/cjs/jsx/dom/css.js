@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var css_exports = {};
 __export(css_exports, {
   Style: () => Style,
@@ -25,7 +29,7 @@ __export(css_exports, {
   cx: () => cx,
   keyframes: () => keyframes,
   rawCssString: () => import_common2.rawCssString,
-  viewTransition: () => viewTransition
+  viewTransition: () => viewTransition,
 });
 module.exports = __toCommonJS(css_exports);
 var import_common = require("../../helper/css/common");
@@ -60,7 +64,6 @@ const splitRule = (rule) => {
         result.push(rule.slice(startPos, i + 1));
         startPos = i + 1;
       }
-      continue;
     }
   }
   return result;
@@ -71,7 +74,6 @@ const createCssJsxDomObjects = ({ id }) => {
     if (!styleSheet) {
       styleSheet = document.querySelector(`style#${id}`)?.sheet;
       if (styleSheet) {
-        ;
         styleSheet.addedStyles = /* @__PURE__ */ new Set();
       }
     }
@@ -90,7 +92,10 @@ const createCssJsxDomObjects = ({ id }) => {
     }
     if (!addedStyles.has(className)) {
       addedStyles.add(className);
-      (className.startsWith(import_common.PSEUDO_GLOBAL_SELECTOR) ? splitRule(styleString) : [`${className[0] === "@" ? "" : "."}${className}{${styleString}}`]).forEach((rule) => {
+      (className.startsWith(import_common.PSEUDO_GLOBAL_SELECTOR)
+        ? splitRule(styleString)
+        : [`${className[0] === "@" ? "" : "."}${className}{${styleString}}`]
+      ).forEach((rule) => {
         sheet.insertRule(rule, sheet.cssRules.length);
       });
     }
@@ -99,21 +104,28 @@ const createCssJsxDomObjects = ({ id }) => {
     toString() {
       const selector = this[import_common.SELECTOR];
       insertRule(selector, this[import_common.STYLE_STRING]);
-      this[import_common.SELECTORS].forEach(({ [import_common.CLASS_NAME]: className, [import_common.STYLE_STRING]: styleString }) => {
-        insertRule(className, styleString);
-      });
+      this[import_common.SELECTORS].forEach(
+        ({
+          [import_common.CLASS_NAME]: className,
+          [import_common.STYLE_STRING]: styleString,
+        }) => {
+          insertRule(className, styleString);
+        },
+      );
       return this[import_common.CLASS_NAME];
-    }
+    },
   };
   const Style2 = ({ children, nonce }) => ({
     tag: "style",
     props: {
       id,
       nonce,
-      children: children && (Array.isArray(children) ? children : [children]).map(
-        (c) => c[import_common.STYLE_STRING]
-      )
-    }
+      children:
+        children &&
+        (Array.isArray(children) ? children : [children]).map(
+          (c) => c[import_common.STYLE_STRING],
+        ),
+    },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   });
   return [cssObject, Style2];
@@ -132,15 +144,17 @@ const createCssContext = ({ id }) => {
     return css2(Array(args.length).fill(""), ...args);
   };
   const keyframes2 = import_common.keyframesCommon;
-  const viewTransition2 = ((strings, ...values) => {
-    return newCssClassNameObject((0, import_common.viewTransitionCommon)(strings, values));
-  });
+  const viewTransition2 = (strings, ...values) => {
+    return newCssClassNameObject(
+      (0, import_common.viewTransitionCommon)(strings, values),
+    );
+  };
   return {
     css: css2,
     cx: cx2,
     keyframes: keyframes2,
     viewTransition: viewTransition2,
-    Style: Style2
+    Style: Style2,
   };
 };
 const defaultContext = createCssContext({ id: import_common.DEFAULT_STYLE_ID });
@@ -150,13 +164,14 @@ const keyframes = defaultContext.keyframes;
 const viewTransition = defaultContext.viewTransition;
 const Style = defaultContext.Style;
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  Style,
-  createCssContext,
-  createCssJsxDomObjects,
-  css,
-  cx,
-  keyframes,
-  rawCssString,
-  viewTransition
-});
+0 &&
+  (module.exports = {
+    Style,
+    createCssContext,
+    createCssJsxDomObjects,
+    css,
+    cx,
+    keyframes,
+    rawCssString,
+    viewTransition,
+  });

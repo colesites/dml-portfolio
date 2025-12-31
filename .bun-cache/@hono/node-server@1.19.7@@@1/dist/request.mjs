@@ -1,6 +1,7 @@
 // src/request.ts
 import { Http2ServerRequest } from "http2";
 import { Readable } from "stream";
+
 var RequestError = class extends Error {
   constructor(message, options) {
     super(message, options);
@@ -20,7 +21,6 @@ var Request = class extends GlobalRequest {
       input = input[getRequestCache]();
     }
     if (typeof options?.body?.getReader !== "undefined") {
-      ;
       options.duplex ??= "half";
     }
     super(input, options);
@@ -31,19 +31,24 @@ var newHeadersFromIncoming = (incoming) => {
   const rawHeaders = incoming.rawHeaders;
   for (let i = 0; i < rawHeaders.length; i += 2) {
     const { [i]: key, [i + 1]: value } = rawHeaders;
-    if (key.charCodeAt(0) !== /*:*/
-    58) {
+    if (key.charCodeAt(0) /*:*/ !== 58) {
       headerRecord.push([key, value]);
     }
   }
   return new Headers(headerRecord);
 };
 var wrapBodyStream = Symbol("wrapBodyStream");
-var newRequestFromIncoming = (method, url, headers, incoming, abortController) => {
+var newRequestFromIncoming = (
+  method,
+  url,
+  headers,
+  incoming,
+  abortController,
+) => {
   const init = {
     method,
     headers,
-    signal: abortController.signal
+    signal: abortController.signal,
   };
   if (method === "TRACE") {
     init.method = "GET";
@@ -51,7 +56,7 @@ var newRequestFromIncoming = (method, url, headers, incoming, abortController) =
     Object.defineProperty(req, "method", {
       get() {
         return "TRACE";
-      }
+      },
     });
     return req;
   }
@@ -61,7 +66,7 @@ var newRequestFromIncoming = (method, url, headers, incoming, abortController) =
         start(controller) {
           controller.enqueue(incoming.rawBody);
           controller.close();
-        }
+        },
       });
     } else if (incoming[wrapBodyStream]) {
       let reader;
@@ -78,7 +83,7 @@ var newRequestFromIncoming = (method, url, headers, incoming, abortController) =
           } catch (error) {
             controller.error(error);
           }
-        }
+        },
       });
     } else {
       init.body = Readable.toWeb(incoming);
@@ -101,7 +106,7 @@ var requestPrototype = {
     return this[urlKey];
   },
   get headers() {
-    return this[headersKey] ||= newHeadersFromIncoming(this[incomingKey]);
+    return (this[headersKey] ||= newHeadersFromIncoming(this[incomingKey]));
   },
   [getAbortController]() {
     this[getRequestCache]();
@@ -109,14 +114,14 @@ var requestPrototype = {
   },
   [getRequestCache]() {
     this[abortControllerKey] ||= new AbortController();
-    return this[requestCache] ||= newRequestFromIncoming(
+    return (this[requestCache] ||= newRequestFromIncoming(
       this.method,
       this[urlKey],
       this.headers,
       this[incomingKey],
-      this[abortControllerKey]
-    );
-  }
+      this[abortControllerKey],
+    ));
+  },
 };
 [
   "body",
@@ -130,19 +135,19 @@ var requestPrototype = {
   "referrer",
   "referrerPolicy",
   "signal",
-  "keepalive"
+  "keepalive",
 ].forEach((k) => {
   Object.defineProperty(requestPrototype, k, {
     get() {
       return this[getRequestCache]()[k];
-    }
+    },
   });
 });
 ["arrayBuffer", "blob", "clone", "formData", "json", "text"].forEach((k) => {
   Object.defineProperty(requestPrototype, k, {
-    value: function() {
+    value: function () {
       return this[getRequestCache]()[k]();
-    }
+    },
   });
 });
 Object.setPrototypeOf(requestPrototype, Request.prototype);
@@ -150,8 +155,10 @@ var newRequest = (incoming, defaultHostname) => {
   const req = Object.create(requestPrototype);
   req[incomingKey] = incoming;
   const incomingUrl = incoming.url || "";
-  if (incomingUrl[0] !== "/" && // short-circuit for performance. most requests are relative URL.
-  (incomingUrl.startsWith("http://") || incomingUrl.startsWith("https://"))) {
+  if (
+    incomingUrl[0] !== "/" && // short-circuit for performance. most requests are relative URL.
+    (incomingUrl.startsWith("http://") || incomingUrl.startsWith("https://"))
+  ) {
     if (incoming instanceof Http2ServerRequest) {
       throw new RequestError("Absolute URL for :path is not allowed in HTTP/2");
     }
@@ -163,7 +170,10 @@ var newRequest = (incoming, defaultHostname) => {
     }
     return req;
   }
-  const host = (incoming instanceof Http2ServerRequest ? incoming.authority : incoming.headers.host) || defaultHostname;
+  const host =
+    (incoming instanceof Http2ServerRequest
+      ? incoming.authority
+      : incoming.headers.host) || defaultHostname;
   if (!host) {
     throw new RequestError("Missing host header");
   }
@@ -177,7 +187,10 @@ var newRequest = (incoming, defaultHostname) => {
     scheme = incoming.socket && incoming.socket.encrypted ? "https" : "http";
   }
   const url = new URL(`${scheme}://${host}${incomingUrl}`);
-  if (url.hostname.length !== host.length && url.hostname !== host.replace(/:\d+$/, "")) {
+  if (
+    url.hostname.length !== host.length &&
+    url.hostname !== host.replace(/:\d+$/, "")
+  ) {
     throw new RequestError("Invalid host header");
   }
   req[urlKey] = url.href;
@@ -191,5 +204,5 @@ export {
   getAbortController,
   newRequest,
   toRequestError,
-  wrapBodyStream
+  wrapBodyStream,
 };

@@ -1,9 +1,18 @@
-import { type AffinePoint } from './abstract/curve.ts';
-import { PrimeEdwardsPoint, type CurveFn, type EdwardsPoint } from './abstract/edwards.ts';
-import { type H2CHasher, type H2CHasherBase, type H2CMethod, type htfBasicOpts } from './abstract/hash-to-curve.ts';
-import { type IField } from './abstract/modular.ts';
-import { type MontgomeryECDH as XCurveFn } from './abstract/montgomery.ts';
-import { type Hex } from './utils.ts';
+import { type AffinePoint } from "./abstract/curve.ts";
+import {
+  PrimeEdwardsPoint,
+  type CurveFn,
+  type EdwardsPoint,
+} from "./abstract/edwards.ts";
+import {
+  type H2CHasher,
+  type H2CHasherBase,
+  type H2CMethod,
+  type htfBasicOpts,
+} from "./abstract/hash-to-curve.ts";
+import { type IField } from "./abstract/modular.ts";
+import { type MontgomeryECDH as XCurveFn } from "./abstract/montgomery.ts";
+import { type Hex } from "./utils.ts";
 /**
  * ed25519 curve with EdDSA signatures.
  * @example
@@ -43,38 +52,38 @@ type ExtendedPoint = EdwardsPoint;
  * See [RFC9496](https://www.rfc-editor.org/rfc/rfc9496).
  */
 declare class _RistrettoPoint extends PrimeEdwardsPoint<_RistrettoPoint> {
-    static BASE: _RistrettoPoint;
-    static ZERO: _RistrettoPoint;
-    static Fp: IField<bigint>;
-    static Fn: IField<bigint>;
-    constructor(ep: ExtendedPoint);
-    static fromAffine(ap: AffinePoint<bigint>): _RistrettoPoint;
-    protected assertSame(other: _RistrettoPoint): void;
-    protected init(ep: EdwardsPoint): _RistrettoPoint;
-    /** @deprecated use `import { ristretto255_hasher } from '@noble/curves/ed25519.js';` */
-    static hashToCurve(hex: Hex): _RistrettoPoint;
-    static fromBytes(bytes: Uint8Array): _RistrettoPoint;
-    /**
-     * Converts ristretto-encoded string to ristretto point.
-     * Described in [RFC9496](https://www.rfc-editor.org/rfc/rfc9496#name-decode).
-     * @param hex Ristretto-encoded 32 bytes. Not every 32-byte string is valid ristretto encoding
-     */
-    static fromHex(hex: Hex): _RistrettoPoint;
-    static msm(points: _RistrettoPoint[], scalars: bigint[]): _RistrettoPoint;
-    /**
-     * Encodes ristretto point to Uint8Array.
-     * Described in [RFC9496](https://www.rfc-editor.org/rfc/rfc9496#name-encode).
-     */
-    toBytes(): Uint8Array;
-    /**
-     * Compares two Ristretto points.
-     * Described in [RFC9496](https://www.rfc-editor.org/rfc/rfc9496#name-equals).
-     */
-    equals(other: _RistrettoPoint): boolean;
-    is0(): boolean;
+  static BASE: _RistrettoPoint;
+  static ZERO: _RistrettoPoint;
+  static Fp: IField<bigint>;
+  static Fn: IField<bigint>;
+  constructor(ep: ExtendedPoint);
+  static fromAffine(ap: AffinePoint<bigint>): _RistrettoPoint;
+  protected assertSame(other: _RistrettoPoint): void;
+  protected init(ep: EdwardsPoint): _RistrettoPoint;
+  /** @deprecated use `import { ristretto255_hasher } from '@noble/curves/ed25519.js';` */
+  static hashToCurve(hex: Hex): _RistrettoPoint;
+  static fromBytes(bytes: Uint8Array): _RistrettoPoint;
+  /**
+   * Converts ristretto-encoded string to ristretto point.
+   * Described in [RFC9496](https://www.rfc-editor.org/rfc/rfc9496#name-decode).
+   * @param hex Ristretto-encoded 32 bytes. Not every 32-byte string is valid ristretto encoding
+   */
+  static fromHex(hex: Hex): _RistrettoPoint;
+  static msm(points: _RistrettoPoint[], scalars: bigint[]): _RistrettoPoint;
+  /**
+   * Encodes ristretto point to Uint8Array.
+   * Described in [RFC9496](https://www.rfc-editor.org/rfc/rfc9496#name-encode).
+   */
+  toBytes(): Uint8Array;
+  /**
+   * Compares two Ristretto points.
+   * Described in [RFC9496](https://www.rfc-editor.org/rfc/rfc9496#name-equals).
+   */
+  equals(other: _RistrettoPoint): boolean;
+  is0(): boolean;
 }
 export declare const ristretto255: {
-    Point: typeof _RistrettoPoint;
+  Point: typeof _RistrettoPoint;
 };
 /** Hashing to ristretto255 points / field. RFC 9380 methods. */
 export declare const ristretto255_hasher: H2CHasherBase<bigint>;
@@ -90,7 +99,9 @@ export declare function edwardsToMontgomeryPub(edwardsPub: Hex): Uint8Array;
 /** @deprecated use `ed25519.utils.toMontgomery` */
 export declare const edwardsToMontgomery: typeof edwardsToMontgomeryPub;
 /** @deprecated use `ed25519.utils.toMontgomerySecret` */
-export declare function edwardsToMontgomeryPriv(edwardsPriv: Uint8Array): Uint8Array;
+export declare function edwardsToMontgomeryPriv(
+  edwardsPriv: Uint8Array,
+): Uint8Array;
 /** @deprecated use `ristretto255.Point` */
 export declare const RistrettoPoint: typeof _RistrettoPoint;
 /** @deprecated use `import { ed25519_hasher } from '@noble/curves/ed25519.js';` */
@@ -102,5 +113,4 @@ type RistHasher = (msg: Uint8Array, options: htfBasicOpts) => _RistrettoPoint;
 export declare const hashToRistretto255: RistHasher;
 /** @deprecated use `import { ristretto255_hasher } from '@noble/curves/ed25519.js';` */
 export declare const hash_to_ristretto255: RistHasher;
-export {};
 //# sourceMappingURL=ed25519.d.ts.map

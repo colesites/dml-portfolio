@@ -1,7 +1,17 @@
-"use strict";
-
 exports.__esModule = true;
-exports.universal = exports.tag = exports.string = exports.selector = exports.root = exports.pseudo = exports.nesting = exports.id = exports.comment = exports.combinator = exports.className = exports.attribute = void 0;
+exports.universal =
+  exports.tag =
+  exports.string =
+  exports.selector =
+  exports.root =
+  exports.pseudo =
+  exports.nesting =
+  exports.id =
+  exports.comment =
+  exports.combinator =
+  exports.className =
+  exports.attribute =
+    void 0;
 var _attribute = _interopRequireDefault(require("./attribute"));
 var _className = _interopRequireDefault(require("./className"));
 var _combinator = _interopRequireDefault(require("./combinator"));
@@ -14,7 +24,9 @@ var _selector = _interopRequireDefault(require("./selector"));
 var _string = _interopRequireDefault(require("./string"));
 var _tag = _interopRequireDefault(require("./tag"));
 var _universal = _interopRequireDefault(require("./universal"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 var attribute = function attribute(opts) {
   return new _attribute["default"](opts);
 };

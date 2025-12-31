@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -283,7 +283,9 @@ test("parse dateSchema invalid date", async () => {
   try {
     await dateSchema.parseAsync(new Date("invalid"));
   } catch (err) {
-    expect((err as z.ZodError).issues[0].code).toEqual(z.ZodIssueCode.invalid_date);
+    expect((err as z.ZodError).issues[0].code).toEqual(
+      z.ZodIssueCode.invalid_date,
+    );
   }
 });
 // ==============
@@ -386,17 +388,29 @@ test("primitive inference", () => {
 
   util.assertEqual<z.TypeOf<typeof nullSchema>, null>(true);
   util.assertEqual<z.TypeOf<typeof undefinedSchema>, undefined>(true);
-  util.assertEqual<z.TypeOf<typeof stringSchemaOptional>, string | undefined>(true);
+  util.assertEqual<z.TypeOf<typeof stringSchemaOptional>, string | undefined>(
+    true,
+  );
   util.assertEqual<z.TypeOf<typeof stringSchemaNullable>, string | null>(true);
-  util.assertEqual<z.TypeOf<typeof numberSchemaOptional>, number | undefined>(true);
+  util.assertEqual<z.TypeOf<typeof numberSchemaOptional>, number | undefined>(
+    true,
+  );
   util.assertEqual<z.TypeOf<typeof numberSchemaNullable>, number | null>(true);
-  util.assertEqual<z.TypeOf<typeof bigintSchemaOptional>, bigint | undefined>(true);
+  util.assertEqual<z.TypeOf<typeof bigintSchemaOptional>, bigint | undefined>(
+    true,
+  );
   util.assertEqual<z.TypeOf<typeof bigintSchemaNullable>, bigint | null>(true);
-  util.assertEqual<z.TypeOf<typeof booleanSchemaOptional>, boolean | undefined>(true);
-  util.assertEqual<z.TypeOf<typeof booleanSchemaNullable>, boolean | null>(true);
+  util.assertEqual<z.TypeOf<typeof booleanSchemaOptional>, boolean | undefined>(
+    true,
+  );
+  util.assertEqual<z.TypeOf<typeof booleanSchemaNullable>, boolean | null>(
+    true,
+  );
   util.assertEqual<z.TypeOf<typeof dateSchemaOptional>, Date | undefined>(true);
   util.assertEqual<z.TypeOf<typeof dateSchemaNullable>, Date | null>(true);
-  util.assertEqual<z.TypeOf<typeof symbolSchemaOptional>, symbol | undefined>(true);
+  util.assertEqual<z.TypeOf<typeof symbolSchemaOptional>, symbol | undefined>(
+    true,
+  );
   util.assertEqual<z.TypeOf<typeof symbolSchemaNullable>, symbol | null>(true);
 
   // [

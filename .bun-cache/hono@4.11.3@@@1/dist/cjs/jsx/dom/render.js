@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var render_exports = {};
 __export(render_exports, {
   build: () => build,
@@ -26,7 +30,7 @@ __export(render_exports, {
   getNameSpaceContext: () => getNameSpaceContext,
   render: () => render,
   renderNode: () => renderNode,
-  update: () => update
+  update: () => update,
 });
 module.exports = __toCommonJS(render_exports);
 var import_children = require("../children");
@@ -38,11 +42,11 @@ var import_context2 = require("./context");
 const HONO_PORTAL_ELEMENT = "_hp";
 const eventAliasMap = {
   Change: "Input",
-  DoubleClick: "DblClick"
+  DoubleClick: "DblClick",
 };
 const nameSpaceMap = {
   svg: "2000/svg",
-  math: "1998/Math/MathML"
+  math: "1998/Math/MathML",
 };
 const buildDataStack = [];
 const refCleanupMap = /* @__PURE__ */ new WeakMap();
@@ -51,7 +55,7 @@ const getNameSpaceContext = () => nameSpaceContext;
 const isNodeString = (node) => "t" in node;
 const eventCache = {
   // pre-define events that are used very frequently
-  onClick: ["click", false]
+  onClick: ["click", false],
 };
 const getEventSpec = (key) => {
   if (!key.startsWith("on")) {
@@ -63,23 +67,39 @@ const getEventSpec = (key) => {
   const match = key.match(/^on([A-Z][a-zA-Z]+?(?:PointerCapture)?)(Capture)?$/);
   if (match) {
     const [, eventName, capture] = match;
-    return eventCache[key] = [(eventAliasMap[eventName] || eventName).toLowerCase(), !!capture];
+    return (eventCache[key] = [
+      (eventAliasMap[eventName] || eventName).toLowerCase(),
+      !!capture,
+    ]);
   }
   return void 0;
 };
-const toAttributeName = (element, key) => nameSpaceContext && element instanceof SVGElement && /[A-Z]/.test(key) && (key in element.style || // Presentation attributes are findable in style object. "clip-path", "font-size", "stroke-width", etc.
-key.match(/^(?:o|pai|str|u|ve)/)) ? key.replace(/([A-Z])/g, "-$1").toLowerCase() : key;
+const toAttributeName = (element, key) =>
+  nameSpaceContext &&
+  element instanceof SVGElement &&
+  /[A-Z]/.test(key) &&
+  (key in element.style || // Presentation attributes are findable in style object. "clip-path", "font-size", "stroke-width", etc.
+    key.match(/^(?:o|pai|str|u|ve)/))
+    ? key.replace(/([A-Z])/g, "-$1").toLowerCase()
+    : key;
 const applyProps = (container, attributes, oldAttributes) => {
   attributes ||= {};
   for (let key in attributes) {
     const value = attributes[key];
-    if (key !== "children" && (!oldAttributes || oldAttributes[key] !== value)) {
+    if (
+      key !== "children" &&
+      (!oldAttributes || oldAttributes[key] !== value)
+    ) {
       key = (0, import_utils.normalizeIntrinsicElementKey)(key);
       const eventSpec = getEventSpec(key);
       if (eventSpec) {
         if (oldAttributes?.[key] !== value) {
           if (oldAttributes) {
-            container.removeEventListener(eventSpec[0], oldAttributes[key], eventSpec[1]);
+            container.removeEventListener(
+              eventSpec[0],
+              oldAttributes[key],
+              eventSpec[1],
+            );
           }
           if (value != null) {
             if (typeof value !== "function") {
@@ -96,7 +116,7 @@ const applyProps = (container, attributes, oldAttributes) => {
           cleanup = value(container) || (() => value(null));
         } else if (value && "current" in value) {
           value.current = container;
-          cleanup = () => value.current = null;
+          cleanup = () => (value.current = null);
         }
         refCleanupMap.set(container, cleanup);
       } else if (key === "style") {
@@ -106,28 +126,38 @@ const applyProps = (container, attributes, oldAttributes) => {
         } else {
           style.cssText = "";
           if (value != null) {
-            (0, import_utils.styleObjectForEach)(value, style.setProperty.bind(style));
+            (0, import_utils.styleObjectForEach)(
+              value,
+              style.setProperty.bind(style),
+            );
           }
         }
       } else {
         if (key === "value") {
           const nodeName = container.nodeName;
-          if (nodeName === "INPUT" || nodeName === "TEXTAREA" || nodeName === "SELECT") {
-            ;
-            container.value = value === null || value === void 0 || value === false ? null : value;
+          if (
+            nodeName === "INPUT" ||
+            nodeName === "TEXTAREA" ||
+            nodeName === "SELECT"
+          ) {
+            container.value =
+              value === null || value === void 0 || value === false
+                ? null
+                : value;
             if (nodeName === "TEXTAREA") {
               container.textContent = value;
               continue;
             } else if (nodeName === "SELECT") {
               if (container.selectedIndex === -1) {
-                ;
                 container.selectedIndex = 0;
               }
               continue;
             }
           }
-        } else if (key === "checked" && container.nodeName === "INPUT" || key === "selected" && container.nodeName === "OPTION") {
-          ;
+        } else if (
+          (key === "checked" && container.nodeName === "INPUT") ||
+          (key === "selected" && container.nodeName === "OPTION")
+        ) {
           container[key] = value;
         }
         const k = toAttributeName(container, key);
@@ -164,24 +194,34 @@ const invokeTag = (context, node) => {
   node[import_constants.DOM_STASH][0] = 0;
   buildDataStack.push([context, node]);
   const func = node.tag[import_constants.DOM_RENDERER] || node.tag;
-  const props = func.defaultProps ? {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...func.defaultProps,
-    ...node.props
-  } : node.props;
+  const props = func.defaultProps
+    ? {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ...func.defaultProps,
+        ...node.props,
+      }
+    : node.props;
   try {
     return [func.call(null, props)];
   } finally {
     buildDataStack.pop();
   }
 };
-const getNextChildren = (node, container, nextChildren, childrenToRemove, callbacks) => {
+const getNextChildren = (
+  node,
+  container,
+  nextChildren,
+  childrenToRemove,
+  callbacks,
+) => {
   if (node.vR?.length) {
     childrenToRemove.push(...node.vR);
     delete node.vR;
   }
   if (typeof node.tag === "function") {
-    node[import_constants.DOM_STASH][1][import_hooks.STASH_EFFECT]?.forEach((data) => callbacks.push(data));
+    node[import_constants.DOM_STASH][1][import_hooks.STASH_EFFECT]?.forEach(
+      (data) => callbacks.push(data),
+    );
   }
   node.vC.forEach((child) => {
     if (isNodeString(child)) {
@@ -190,7 +230,13 @@ const getNextChildren = (node, container, nextChildren, childrenToRemove, callba
       if (typeof child.tag === "function" || child.tag === "") {
         child.c = container;
         const currentNextChildrenIndex = nextChildren.length;
-        getNextChildren(child, container, nextChildren, childrenToRemove, callbacks);
+        getNextChildren(
+          child,
+          container,
+          nextChildren,
+          childrenToRemove,
+          callbacks,
+        );
         if (child.s) {
           for (let i = currentNextChildrenIndex; i < nextChildren.length; i++) {
             nextChildren[i].s = true;
@@ -208,7 +254,14 @@ const getNextChildren = (node, container, nextChildren, childrenToRemove, callba
   });
 };
 const findInsertBefore = (node) => {
-  for (; ; node = node.tag === HONO_PORTAL_ELEMENT || !node.vC || !node.pP ? node.nN : node.vC[0]) {
+  for (
+    ;
+    ;
+    node =
+      node.tag === HONO_PORTAL_ELEMENT || !node.vC || !node.pP
+        ? node.nN
+        : node.vC[0]
+  ) {
     if (!node) {
       return null;
     }
@@ -219,10 +272,12 @@ const findInsertBefore = (node) => {
 };
 const removeNode = (node) => {
   if (!isNodeString(node)) {
-    node[import_constants.DOM_STASH]?.[1][import_hooks.STASH_EFFECT]?.forEach((data) => data[2]?.());
+    node[import_constants.DOM_STASH]?.[1][import_hooks.STASH_EFFECT]?.forEach(
+      (data) => data[2]?.(),
+    );
     refCleanupMap.get(node.e)?.();
     if (node.p === 2) {
-      node.vC?.forEach((n) => n.p = 2);
+      node.vC?.forEach((n) => (n.p = 2));
     }
     node.vC?.forEach(removeNode);
   }
@@ -267,12 +322,19 @@ const applyNodeObject = (node, container, isNew) => {
   } else if (!childNodes.length) {
     offset = 0;
   } else {
-    const offsetByNextNode = findChildNodeIndex(childNodes, findInsertBefore(node.nN));
+    const offsetByNextNode = findChildNodeIndex(
+      childNodes,
+      findInsertBefore(node.nN),
+    );
     if (offsetByNextNode !== void 0) {
       insertBeforeNode = childNodes[offsetByNextNode];
       offset = offsetByNextNode;
     } else {
-      offset = findChildNodeIndex(childNodes, next.find((n) => n.tag !== HONO_PORTAL_ELEMENT && n.e)?.e) ?? -1;
+      offset =
+        findChildNodeIndex(
+          childNodes,
+          next.find((n) => n.tag !== HONO_PORTAL_ELEMENT && n.e)?.e,
+        ) ?? -1;
     }
     if (offset === -1) {
       isNew = true;
@@ -293,7 +355,9 @@ const applyNodeObject = (node, container, isNew) => {
         child.d = false;
         el = child.e ||= document.createTextNode(child.t);
       } else {
-        el = child.e ||= child.n ? document.createElementNS(child.n, child.tag) : document.createElement(child.tag);
+        el = child.e ||= child.n
+          ? document.createElementNS(child.n, child.tag)
+          : document.createElement(child.tag);
         applyProps(el, child.props, child.pP);
         applyNodeObject(child, el, isNewLocal);
       }
@@ -308,7 +372,10 @@ const applyNodeObject = (node, container, isNew) => {
       if (childNodes[offset + 1] === el) {
         container.appendChild(childNodes[offset]);
       } else {
-        container.insertBefore(el, insertBeforeNode || childNodes[offset] || null);
+        container.insertBefore(
+          el,
+          insertBeforeNode || childNodes[offset] || null,
+        );
       }
     }
   }
@@ -318,15 +385,17 @@ const applyNodeObject = (node, container, isNew) => {
   if (callbacks.length) {
     const useLayoutEffectCbs = [];
     const useEffectCbs = [];
-    callbacks.forEach(([, useLayoutEffectCb, , useEffectCb, useInsertionEffectCb]) => {
-      if (useLayoutEffectCb) {
-        useLayoutEffectCbs.push(useLayoutEffectCb);
-      }
-      if (useEffectCb) {
-        useEffectCbs.push(useEffectCb);
-      }
-      useInsertionEffectCb?.();
-    });
+    callbacks.forEach(
+      ([, useLayoutEffectCb, , useEffectCb, useInsertionEffectCb]) => {
+        if (useLayoutEffectCb) {
+          useLayoutEffectCbs.push(useLayoutEffectCb);
+        }
+        if (useEffectCb) {
+          useEffectCbs.push(useEffectCb);
+        }
+        useInsertionEffectCb?.();
+      },
+    );
     useLayoutEffectCbs.forEach((cb) => cb());
     if (useEffectCbs.length) {
       requestAnimationFrame(() => {
@@ -335,7 +404,12 @@ const applyNodeObject = (node, container, isNew) => {
     }
   }
 };
-const isSameContext = (oldContexts, newContexts) => !!(oldContexts && oldContexts.length === newContexts.length && oldContexts.every((ctx, i) => ctx[1] === newContexts[i][1]));
+const isSameContext = (oldContexts, newContexts) =>
+  !!(
+    oldContexts &&
+    oldContexts.length === newContexts.length &&
+    oldContexts.every((ctx, i) => ctx[1] === newContexts[i][1])
+  );
 const fallbackUpdateFnArrayMap = /* @__PURE__ */ new WeakMap();
 const build = (context, node, children) => {
   const buildWithPreviousChildren = !children && node.pC;
@@ -344,12 +418,22 @@ const build = (context, node, children) => {
   }
   let foundErrorHandler;
   try {
-    children ||= typeof node.tag == "function" ? invokeTag(context, node) : (0, import_children.toArray)(node.props.children);
-    if (children[0]?.tag === "" && children[0][import_constants.DOM_ERROR_HANDLER]) {
+    children ||=
+      typeof node.tag == "function"
+        ? invokeTag(context, node)
+        : (0, import_children.toArray)(node.props.children);
+    if (
+      children[0]?.tag === "" &&
+      children[0][import_constants.DOM_ERROR_HANDLER]
+    ) {
       foundErrorHandler = children[0][import_constants.DOM_ERROR_HANDLER];
       context[5].push([context, foundErrorHandler, node]);
     }
-    const oldVChildren = buildWithPreviousChildren ? [...node.pC] : node.vC ? [...node.vC] : void 0;
+    const oldVChildren = buildWithPreviousChildren
+      ? [...node.pC]
+      : node.vC
+        ? [...node.vC]
+        : void 0;
     const vChildren = [];
     let prevNode;
     for (let i = 0; i < children.length; i++) {
@@ -358,10 +442,13 @@ const build = (context, node, children) => {
       }
       let child = buildNode(children[i]);
       if (child) {
-        if (typeof child.tag === "function" && // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        !child.tag[import_constants.DOM_INTERNAL_TAG]) {
+        if (
+          typeof child.tag === "function" && // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          !child.tag[import_constants.DOM_INTERNAL_TAG]
+        ) {
           if (import_context.globalContexts.length > 0) {
-            child[import_constants.DOM_STASH][2] = import_context.globalContexts.map((c) => [c, c.values.at(-1)]);
+            child[import_constants.DOM_STASH][2] =
+              import_context.globalContexts.map((c) => [c, c.values.at(-1)]);
           }
           if (context[5]?.length) {
             child[import_constants.DOM_STASH][3] = context[5].at(-1);
@@ -370,7 +457,11 @@ const build = (context, node, children) => {
         let oldChild;
         if (oldVChildren && oldVChildren.length) {
           const i2 = oldVChildren.findIndex(
-            isNodeString(child) ? (c) => isNodeString(c) : child.key !== void 0 ? (c) => c.key === child.key && c.tag === child.tag : (c) => c.tag === child.tag
+            isNodeString(child)
+              ? (c) => isNodeString(c)
+              : child.key !== void 0
+                ? (c) => c.key === child.key && c.tag === child.tag
+                : (c) => c.tag === child.tag,
           );
           if (i2 !== -1) {
             oldChild = oldVChildren[i2];
@@ -380,22 +471,32 @@ const build = (context, node, children) => {
         if (oldChild) {
           if (isNodeString(child)) {
             if (oldChild.t !== child.t) {
-              ;
               oldChild.t = child.t;
               oldChild.d = true;
             }
             child = oldChild;
           } else {
-            const pP = oldChild.pP = oldChild.props;
+            const pP = (oldChild.pP = oldChild.props);
             oldChild.props = child.props;
             oldChild.f ||= child.f || node.f;
             if (typeof child.tag === "function") {
               const oldContexts = oldChild[import_constants.DOM_STASH][2];
-              oldChild[import_constants.DOM_STASH][2] = child[import_constants.DOM_STASH][2] || [];
-              oldChild[import_constants.DOM_STASH][3] = child[import_constants.DOM_STASH][3];
-              if (!oldChild.f && ((oldChild.o || oldChild) === child.o || // The code generated by the react compiler is memoized under this condition.
-              oldChild.tag[import_constants.DOM_MEMO]?.(pP, oldChild.props)) && // The `memo` function is memoized under this condition.
-              isSameContext(oldContexts, oldChild[import_constants.DOM_STASH][2])) {
+              oldChild[import_constants.DOM_STASH][2] =
+                child[import_constants.DOM_STASH][2] || [];
+              oldChild[import_constants.DOM_STASH][3] =
+                child[import_constants.DOM_STASH][3];
+              if (
+                !oldChild.f &&
+                ((oldChild.o || oldChild) === child.o || // The code generated by the react compiler is memoized under this condition.
+                  oldChild.tag[import_constants.DOM_MEMO]?.(
+                    pP,
+                    oldChild.props,
+                  )) && // The `memo` function is memoized under this condition.
+                isSameContext(
+                  oldContexts,
+                  oldChild[import_constants.DOM_STASH][2],
+                )
+              ) {
                 oldChild.s = true;
               }
             }
@@ -420,7 +521,9 @@ const build = (context, node, children) => {
         prevNode = child;
       }
     }
-    node.vR = buildWithPreviousChildren ? [...node.vC, ...oldVChildren || []] : oldVChildren || [];
+    node.vR = buildWithPreviousChildren
+      ? [...node.vC, ...(oldVChildren || [])]
+      : oldVChildren || [];
     node.vC = vChildren;
     if (buildWithPreviousChildren) {
       delete node.pC;
@@ -434,10 +537,13 @@ const build = (context, node, children) => {
         throw e;
       }
     }
-    const [errorHandlerContext, errorHandler, errorHandlerNode] = node[import_constants.DOM_STASH]?.[3] || [];
+    const [errorHandlerContext, errorHandler, errorHandlerNode] =
+      node[import_constants.DOM_STASH]?.[3] || [];
     if (errorHandler) {
-      const fallbackUpdateFn = () => update([0, false, context[2]], errorHandlerNode);
-      const fallbackUpdateFnArray = fallbackUpdateFnArrayMap.get(errorHandlerNode) || [];
+      const fallbackUpdateFn = () =>
+        update([0, false, context[2]], errorHandlerNode);
+      const fallbackUpdateFnArray =
+        fallbackUpdateFnArrayMap.get(errorHandlerNode) || [];
       fallbackUpdateFnArray.push(fallbackUpdateFn);
       fallbackUpdateFnArrayMap.set(errorHandlerNode, fallbackUpdateFnArray);
       const fallback = errorHandler(e, () => {
@@ -455,7 +561,10 @@ const build = (context, node, children) => {
           context[1] = true;
         } else {
           build(context, errorHandlerNode, [fallback]);
-          if ((errorHandler.length === 1 || context !== errorHandlerContext) && errorHandlerNode.c) {
+          if (
+            (errorHandler.length === 1 || context !== errorHandlerContext) &&
+            errorHandlerNode.c
+          ) {
             apply(errorHandlerNode, errorHandlerNode.c, false);
             return;
           }
@@ -484,12 +593,11 @@ const buildNode = (node) => {
         f: node.f,
         type: node.tag,
         ref: node.props.ref,
-        o: node.o || node
+        o: node.o || node,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       };
     }
     if (typeof node.tag === "function") {
-      ;
       node[import_constants.DOM_STASH] = [0, []];
     } else {
       const ns = nameSpaceMap[node.tag];
@@ -499,10 +607,10 @@ const buildNode = (node) => {
           {
             tag: nameSpaceContext,
             props: {
-              value: node.n = `http://www.w3.org/${ns}`,
-              children: node.props.children
-            }
-          }
+              value: (node.n = `http://www.w3.org/${ns}`),
+              children: node.props.children,
+            },
+          },
         ];
       }
     }
@@ -544,7 +652,7 @@ const update = async (context, node) => {
     existing[0](void 0);
   }
   let resolve;
-  const promise = new Promise((r) => resolve = r);
+  const promise = new Promise((r) => (resolve = r));
   updateMap.set(node, [
     resolve,
     () => {
@@ -556,10 +664,9 @@ const update = async (context, node) => {
         updateSync(context, node);
         resolve(node);
       }
-    }
+    },
   ]);
   if (currentUpdateSets.length) {
-    ;
     currentUpdateSets.at(-1).add(node);
   } else {
     await Promise.resolve();
@@ -601,22 +708,23 @@ const flushSync = (callback) => {
 const createPortal = (children, container, key) => ({
   tag: HONO_PORTAL_ELEMENT,
   props: {
-    children
+    children,
   },
   key,
   e: container,
-  p: 1
+  p: 1,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 });
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  build,
-  buildDataStack,
-  buildNode,
-  createPortal,
-  flushSync,
-  getNameSpaceContext,
-  render,
-  renderNode,
-  update
-});
+0 &&
+  (module.exports = {
+    build,
+    buildDataStack,
+    buildNode,
+    createPortal,
+    flushSync,
+    getNameSpaceContext,
+    render,
+    renderNode,
+    update,
+  });

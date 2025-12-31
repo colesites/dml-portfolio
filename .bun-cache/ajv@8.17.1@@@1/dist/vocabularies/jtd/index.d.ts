@@ -7,4 +7,10 @@ import { JTDDiscriminatorError } from "./discriminator";
 import { JTDValuesError } from "./values";
 declare const jtdVocabulary: Vocabulary;
 export default jtdVocabulary;
-export type JTDErrorObject = JTDTypeError | JTDEnumError | JTDElementsError | JTDPropertiesError | JTDDiscriminatorError | JTDValuesError;
+export type JTDErrorObject =
+  | JTDTypeError
+  | JTDEnumError
+  | JTDElementsError
+  | JTDPropertiesError
+  | JTDDiscriminatorError
+  | JTDValuesError;

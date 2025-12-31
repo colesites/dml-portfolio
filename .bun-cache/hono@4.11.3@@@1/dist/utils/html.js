@@ -2,7 +2,7 @@
 var HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
-  Stream: 3
+  Stream: 3,
 };
 var raw = (value, callbacks) => {
   const escapedString = new String(value);
@@ -23,12 +23,12 @@ var stringBufferToString = async (buffer, callbacks) => {
     }
     let r = resolvedBuffer[i];
     if (typeof r === "object") {
-      callbacks.push(...r.callbacks || []);
+      callbacks.push(...(r.callbacks || []));
     }
     const isEscaped = r.isEscaped;
     r = await (typeof r === "object" ? r.toString() : r);
     if (typeof r === "object") {
-      callbacks.push(...r.callbacks || []);
+      callbacks.push(...(r.callbacks || []));
     }
     if (r.isEscaped ?? isEscaped) {
       str += r;
@@ -81,10 +81,18 @@ var resolveCallbackSync = (str) => {
   }
   const buffer = [str];
   const context = {};
-  callbacks.forEach((c) => c({ phase: HtmlEscapedCallbackPhase.Stringify, buffer, context }));
+  callbacks.forEach((c) =>
+    c({ phase: HtmlEscapedCallbackPhase.Stringify, buffer, context }),
+  );
   return buffer[0];
 };
-var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => {
+var resolveCallback = async (
+  str,
+  phase,
+  preserveCallbacks,
+  context,
+  buffer,
+) => {
   if (typeof str === "object" && !(str instanceof String)) {
     if (!(str instanceof Promise)) {
       str = str.toString();
@@ -102,10 +110,14 @@ var resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => 
   } else {
     buffer = [str];
   }
-  const resStr = Promise.all(callbacks.map((c) => c({ phase, buffer, context }))).then(
-    (res) => Promise.all(
-      res.filter(Boolean).map((str2) => resolveCallback(str2, phase, false, context, buffer))
-    ).then(() => buffer[0])
+  const resStr = Promise.all(
+    callbacks.map((c) => c({ phase, buffer, context })),
+  ).then((res) =>
+    Promise.all(
+      res
+        .filter(Boolean)
+        .map((str2) => resolveCallback(str2, phase, false, context, buffer)),
+    ).then(() => buffer[0]),
   );
   if (preserveCallbacks) {
     return raw(await resStr, callbacks);
@@ -119,5 +131,5 @@ export {
   raw,
   resolveCallback,
   resolveCallbackSync,
-  stringBufferToString
+  stringBufferToString,
 };

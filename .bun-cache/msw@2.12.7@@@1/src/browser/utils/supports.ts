@@ -4,11 +4,11 @@
  */
 export function supportsServiceWorker(): boolean {
   return (
-    typeof navigator !== 'undefined' &&
-    'serviceWorker' in navigator &&
-    typeof location !== 'undefined' &&
-    location.protocol !== 'file:'
-  )
+    typeof navigator !== "undefined" &&
+    "serviceWorker" in navigator &&
+    typeof location !== "undefined" &&
+    location.protocol !== "file:"
+  );
 }
 
 /**
@@ -20,11 +20,11 @@ export function supportsReadableStreamTransfer() {
   try {
     const stream = new ReadableStream({
       start: (controller) => controller.close(),
-    })
-    const message = new MessageChannel()
-    message.port1.postMessage(stream, [stream])
-    return true
+    });
+    const message = new MessageChannel();
+    message.port1.postMessage(stream, [stream]);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }

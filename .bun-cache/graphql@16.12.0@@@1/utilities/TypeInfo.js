@@ -1,22 +1,20 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.TypeInfo = void 0;
 exports.visitWithTypeInfo = visitWithTypeInfo;
 
-var _ast = require('../language/ast.js');
+var _ast = require("../language/ast.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _visitor = require('../language/visitor.js');
+var _visitor = require("../language/visitor.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _introspection = require('../type/introspection.js');
+var _introspection = require("../type/introspection.js");
 
-var _typeFromAST = require('./typeFromAST.js');
+var _typeFromAST = require("./typeFromAST.js");
 
 /**
  * TypeInfo is a utility class which, given a GraphQL schema, can keep track
@@ -64,7 +62,7 @@ class TypeInfo {
   }
 
   get [Symbol.toStringTag]() {
-    return 'TypeInfo';
+    return "TypeInfo";
   }
 
   getType() {

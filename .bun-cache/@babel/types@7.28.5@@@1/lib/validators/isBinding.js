@@ -1,12 +1,17 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = isBinding;
 var _getBindingIdentifiers = require("../retrievers/getBindingIdentifiers.js");
 function isBinding(node, parent, grandparent) {
-  if (grandparent && node.type === "Identifier" && parent.type === "ObjectProperty" && grandparent.type === "ObjectExpression") {
+  if (
+    grandparent &&
+    node.type === "Identifier" &&
+    parent.type === "ObjectProperty" &&
+    grandparent.type === "ObjectExpression"
+  ) {
     return false;
   }
   const keys = _getBindingIdentifiers.default.keys[parent.type];

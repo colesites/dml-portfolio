@@ -2,25 +2,25 @@
  * @module
  * Server-Timing Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
-import '../../context';
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
+import "../../context";
 export type TimingVariables = {
-    metric?: {
-        headers: string[];
-        timers: Map<string, Timer>;
-    };
+  metric?: {
+    headers: string[];
+    timers: Map<string, Timer>;
+  };
 };
 interface Timer {
-    description?: string;
-    start: number;
+  description?: string;
+  start: number;
 }
 interface TimingOptions {
-    total?: boolean;
-    enabled?: boolean | ((c: Context) => boolean);
-    totalDescription?: string;
-    autoEnd?: boolean;
-    crossOrigin?: boolean | string | ((c: Context) => boolean | string);
+  total?: boolean;
+  enabled?: boolean | ((c: Context) => boolean);
+  totalDescription?: string;
+  autoEnd?: boolean;
+  crossOrigin?: boolean | string | ((c: Context) => boolean | string);
 }
 /**
  * Server-Timing Middleware for Hono.
@@ -63,8 +63,14 @@ interface TimingOptions {
  */
 export declare const timing: (config?: TimingOptions) => MiddlewareHandler;
 interface SetMetric {
-    (c: Context, name: string, value: number, description?: string, precision?: number): void;
-    (c: Context, name: string, description?: string): void;
+  (
+    c: Context,
+    name: string,
+    value: number,
+    description?: string,
+    precision?: number,
+  ): void;
+  (c: Context, name: string, description?: string): void;
 }
 /**
  * Set a metric for the timing middleware.
@@ -94,7 +100,11 @@ export declare const setMetric: SetMetric;
  * startTime(c, 'db')
  * ```
  */
-export declare const startTime: (c: Context, name: string, description?: string) => void;
+export declare const startTime: (
+  c: Context,
+  name: string,
+  description?: string,
+) => void;
 /**
  * End a timer for the timing middleware.
  *
@@ -107,7 +117,11 @@ export declare const startTime: (c: Context, name: string, description?: string)
  * endTime(c, 'db')
  * ```
  */
-export declare const endTime: (c: Context, name: string, precision?: number) => void;
+export declare const endTime: (
+  c: Context,
+  name: string,
+  precision?: number,
+) => void;
 /**
  * Wrap a Promise to capture its duration.
  * @param {Context} c - The context of the request.
@@ -125,5 +139,10 @@ export declare const endTime: (c: Context, name: string, precision?: number) => 
  *   const data = await wrapTime(c, 'query', db.findMany(...));
  * ```
  * */
-export declare function wrapTime<T>(c: Context, name: string, callable: Promise<T>, description?: string, precision?: number): Promise<T>;
-export {};
+export declare function wrapTime<T>(
+  c: Context,
+  name: string,
+  callable: Promise<T>,
+  description?: string,
+  precision?: number,
+): Promise<T>;

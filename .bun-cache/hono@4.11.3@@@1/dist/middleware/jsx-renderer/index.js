@@ -1,22 +1,30 @@
 // src/middleware/jsx-renderer/index.ts
 import { html, raw } from "../../helper/html/index.js";
-import { Fragment, createContext, jsx, useContext } from "../../jsx/index.js";
+import { createContext, Fragment, jsx, useContext } from "../../jsx/index.js";
 import { renderToReadableStream } from "../../jsx/streaming.js";
+
 var RequestContext = createContext(null);
 var createRenderer = (c, Layout, component, options) => (children, props) => {
-  const docType = typeof options?.docType === "string" ? options.docType : options?.docType === false ? "" : "<!DOCTYPE html>";
-  const currentLayout = component ? jsx(
-    (props2) => component(props2, c),
-    {
-      Layout,
-      ...props
-    },
-    children
-  ) : children;
+  const docType =
+    typeof options?.docType === "string"
+      ? options.docType
+      : options?.docType === false
+        ? ""
+        : "<!DOCTYPE html>";
+  const currentLayout = component
+    ? jsx(
+        (props2) => component(props2, c),
+        {
+          Layout,
+          ...props,
+        },
+        children,
+      )
+    : children;
   const body = html`${raw(docType)}${jsx(
     RequestContext.Provider,
     { value: c },
-    currentLayout
+    currentLayout,
   )}`;
   if (options?.stream) {
     if (options.stream === true) {
@@ -33,16 +41,17 @@ var createRenderer = (c, Layout, component, options) => (children, props) => {
     return c.html(body);
   }
 };
-var jsxRenderer = (component, options) => function jsxRenderer2(c, next) {
-  const Layout = c.getLayout() ?? Fragment;
-  if (component) {
-    c.setLayout((props) => {
-      return component({ ...props, Layout }, c);
-    });
-  }
-  c.setRenderer(createRenderer(c, Layout, component, options));
-  return next();
-};
+var jsxRenderer = (component, options) =>
+  function jsxRenderer2(c, next) {
+    const Layout = c.getLayout() ?? Fragment;
+    if (component) {
+      c.setLayout((props) => {
+        return component({ ...props, Layout }, c);
+      });
+    }
+    c.setRenderer(createRenderer(c, Layout, component, options));
+    return next();
+  };
 var useRequestContext = () => {
   const c = useContext(RequestContext);
   if (!c) {
@@ -50,8 +59,4 @@ var useRequestContext = () => {
   }
   return c;
 };
-export {
-  RequestContext,
-  jsxRenderer,
-  useRequestContext
-};
+export { RequestContext, jsxRenderer, useRequestContext };

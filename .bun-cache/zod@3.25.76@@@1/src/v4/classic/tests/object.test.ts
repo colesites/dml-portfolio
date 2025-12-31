@@ -80,7 +80,9 @@ test("empty object", () => {
   expect(schema.parse({ name: "asdf" })).toEqual({});
   expect(schema.safeParse(null).success).toEqual(false);
   expect(schema.safeParse("asdf").success).toEqual(false);
-  expectTypeOf<z.output<typeof schema>>().toEqualTypeOf<Record<string, never>>();
+  expectTypeOf<z.output<typeof schema>>().toEqualTypeOf<
+    Record<string, never>
+  >();
 });
 
 const data = {
@@ -94,7 +96,13 @@ test("strip by default", () => {
 });
 
 test("unknownkeys override", () => {
-  const val = z.object({ points: z.number() }).strict().passthrough().strip().passthrough().parse(data);
+  const val = z
+    .object({ points: z.number() })
+    .strict()
+    .passthrough()
+    .strip()
+    .passthrough()
+    .parse(data);
 
   expect(val).toEqual(data);
 });
@@ -130,7 +138,10 @@ test("catchall inference", () => {
 });
 
 test("catchall overrides strict", () => {
-  const o1 = z.object({ first: z.string().optional() }).strict().catchall(z.number());
+  const o1 = z
+    .object({ first: z.string().optional() })
+    .strict()
+    .catchall(z.number());
 
   // should run fine
   // setting a catchall overrides the unknownKeys behavior
@@ -176,7 +187,10 @@ test("optional keys are unset", async () => {
 });
 
 test("catchall parsing", async () => {
-  const result = z.object({ name: z.string() }).catchall(z.number()).parse({ name: "Foo", validExtraKey: 61 });
+  const result = z
+    .object({ name: z.string() })
+    .catchall(z.number())
+    .parse({ name: "Foo", validExtraKey: 61 });
 
   expect(result).toEqual({ name: "Foo", validExtraKey: 61 });
 
@@ -189,7 +203,10 @@ test("catchall parsing", async () => {
 });
 
 test("nonexistent keys", async () => {
-  const Schema = z.union([z.object({ a: z.string() }), z.object({ b: z.number() })]);
+  const Schema = z.union([
+    z.object({ a: z.string() }),
+    z.object({ b: z.number() }),
+  ]);
   const obj = { a: "A" };
   const result = await Schema.spa(obj); // Works with 1.11.10, breaks with 2.0.0-beta.21
   expect(result.success).toBe(true);
@@ -242,7 +259,9 @@ test("inferred unioned object type with optional properties", async () => {
     z.object({ a: z.string().optional(), b: z.string() }),
   ]);
   type Unioned = z.infer<typeof Unioned>;
-  expectTypeOf<Unioned>().toEqualTypeOf<{ a: string; b?: string } | { a?: string; b: string }>();
+  expectTypeOf<Unioned>().toEqualTypeOf<
+    { a: string; b?: string } | { a?: string; b: string }
+  >();
 });
 
 test("inferred enum type", async () => {
@@ -262,13 +281,17 @@ test("inferred enum type", async () => {
 });
 
 test("inferred partial object type with optional properties", async () => {
-  const Partial = z.object({ a: z.string(), b: z.string().optional() }).partial();
+  const Partial = z
+    .object({ a: z.string(), b: z.string().optional() })
+    .partial();
   type Partial = z.infer<typeof Partial>;
   expectTypeOf<Partial>().toEqualTypeOf<{ a?: string; b?: string }>();
 });
 
 test("inferred picked object type with optional properties", async () => {
-  const Picked = z.object({ a: z.string(), b: z.string().optional() }).pick({ b: true });
+  const Picked = z
+    .object({ a: z.string(), b: z.string().optional() })
+    .pick({ b: true });
   type Picked = z.infer<typeof Picked>;
   expectTypeOf<Picked>().toEqualTypeOf<{ b?: string }>();
 });
@@ -317,7 +340,9 @@ test("intersection of object with date", async () => {
   const schema = z.object({
     a: z.date(),
   });
-  expect(z.intersection(schema, schema).parse({ a: new Date(1637353595983) })).toEqual({
+  expect(
+    z.intersection(schema, schema).parse({ a: new Date(1637353595983) }),
+  ).toEqual({
     a: new Date(1637353595983),
   });
   const result = await schema.parseAsync({ a: new Date(1637353595983) });
@@ -330,7 +355,9 @@ test("intersection of object with refine with date", async () => {
       a: z.date(),
     })
     .refine(() => true);
-  expect(z.intersection(schema, schema).parse({ a: new Date(1637353595983) })).toEqual({
+  expect(
+    z.intersection(schema, schema).parse({ a: new Date(1637353595983) }),
+  ).toEqual({
     a: new Date(1637353595983),
   });
   const result = await schema.parseAsync({ a: new Date(1637353595983) });
@@ -348,7 +375,7 @@ test("constructor key", () => {
     person.parse({
       name: "bob dylan",
       constructor: 61,
-    })
+    }),
   ).toThrow();
 });
 
@@ -403,8 +430,14 @@ test("extend() should return schema with new key", () => {
   const actual = PersonWithNickname.parse(expected);
 
   expect(actual).toEqual(expected);
-  expectTypeOf<keyof PersonWithNickname>().toEqualTypeOf<"firstName" | "lastName" | "nickName">();
-  expectTypeOf<PersonWithNickname>().toEqualTypeOf<{ firstName: string; lastName: string; nickName: string }>();
+  expectTypeOf<keyof PersonWithNickname>().toEqualTypeOf<
+    "firstName" | "lastName" | "nickName"
+  >();
+  expectTypeOf<PersonWithNickname>().toEqualTypeOf<{
+    firstName: string;
+    lastName: string;
+    nickName: string;
+  }>();
 });
 
 test("extend() should have power to override existing key", () => {
@@ -417,7 +450,10 @@ test("extend() should have power to override existing key", () => {
   const actual = PersonWithNumberAsLastName.parse(expected);
 
   expect(actual).toEqual(expected);
-  expectTypeOf<PersonWithNumberAsLastName>().toEqualTypeOf<{ firstName: string; lastName: number }>();
+  expectTypeOf<PersonWithNumberAsLastName>().toEqualTypeOf<{
+    firstName: string;
+    lastName: number;
+  }>();
 });
 
 test("passthrough index signature", () => {
@@ -444,7 +480,9 @@ test("passthrough index signature", () => {
 
 test("assignability", () => {
   z.object({ a: z.string() }) satisfies z.ZodObject<{ a: z.ZodString }>;
-  z.object({ a: z.string() }).catchall(z.number()) satisfies z.ZodObject<{ a: z.ZodString }>;
+  z.object({ a: z.string() }).catchall(z.number()) satisfies z.ZodObject<{
+    a: z.ZodString;
+  }>;
   z.object({ a: z.string() }).strict() satisfies z.ZodObject;
   z.object({}) satisfies z.ZodObject;
 
@@ -537,16 +575,26 @@ test("empty shape", () => {
 
 test("zodtype assignability", () => {
   // Does not error
-  z.object({ hello: z.string().optional() }) satisfies z.ZodType<{ hello?: string | undefined }>;
-  z.object({ hello: z.string() }) satisfies z.ZodType<{ hello?: string | undefined }>;
+  z.object({ hello: z.string().optional() }) satisfies z.ZodType<{
+    hello?: string | undefined;
+  }>;
+  z.object({ hello: z.string() }) satisfies z.ZodType<{
+    hello?: string | undefined;
+  }>;
   // @ts-expect-error
   z.object({}) satisfies z.ZodType<{ hello: string | undefined }>;
   // @ts-expect-error
-  z.object({ hello: z.string().optional() }) satisfies z.ZodType<{ hello: string | undefined }>;
+  z.object({ hello: z.string().optional() }) satisfies z.ZodType<{
+    hello: string | undefined;
+  }>;
   // @ts-expect-error
-  z.object({ hello: z.string().optional() }) satisfies z.ZodType<{ hello: string }>;
+  z.object({ hello: z.string().optional() }) satisfies z.ZodType<{
+    hello: string;
+  }>;
   // @ts-expect-error
-  z.object({ hello: z.number() }) satisfies z.ZodType<{ hello?: string | undefined }>;
+  z.object({ hello: z.number() }) satisfies z.ZodType<{
+    hello?: string | undefined;
+  }>;
 });
 
 test("index signature in shape", () => {

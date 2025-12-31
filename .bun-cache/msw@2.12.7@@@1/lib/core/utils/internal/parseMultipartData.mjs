@@ -1,4 +1,5 @@
 import { stringToHeaders } from "headers-polyfill";
+
 function parseContentHeaders(headersString) {
   const headers = stringToHeaders(headersString);
   const contentType = headers.get("content-type") || "text/plain";
@@ -16,7 +17,7 @@ function parseContentHeaders(headersString) {
   return {
     name,
     filename,
-    contentType
+    contentType,
   };
 }
 function parseMultipartData(data, headers) {
@@ -25,12 +26,17 @@ function parseMultipartData(data, headers) {
     return void 0;
   }
   const [, ...directives] = contentType.split(/; */);
-  const boundary = directives.filter((d) => d.startsWith("boundary=")).map((s) => s.replace(/^boundary=/, ""))[0];
+  const boundary = directives
+    .filter((d) => d.startsWith("boundary="))
+    .map((s) => s.replace(/^boundary=/, ""))[0];
   if (!boundary) {
     return void 0;
   }
   const boundaryRegExp = new RegExp(`--+${boundary}`);
-  const fields = data.split(boundaryRegExp).filter((chunk) => chunk.startsWith("\r\n") && chunk.endsWith("\r\n")).map((chunk) => chunk.trimStart().replace(/\r\n$/, ""));
+  const fields = data
+    .split(boundaryRegExp)
+    .filter((chunk) => chunk.startsWith("\r\n") && chunk.endsWith("\r\n"))
+    .map((chunk) => chunk.trimStart().replace(/\r\n$/, ""));
   if (!fields.length) {
     return void 0;
   }
@@ -39,8 +45,15 @@ function parseMultipartData(data, headers) {
     for (const field of fields) {
       const [contentHeaders, ...rest] = field.split("\r\n\r\n");
       const contentBody = rest.join("\r\n\r\n");
-      const { contentType: contentType2, filename, name } = parseContentHeaders(contentHeaders);
-      const value = filename === void 0 ? contentBody : new File([contentBody], filename, { type: contentType2 });
+      const {
+        contentType: contentType2,
+        filename,
+        name,
+      } = parseContentHeaders(contentHeaders);
+      const value =
+        filename === void 0
+          ? contentBody
+          : new File([contentBody], filename, { type: contentType2 });
       const parsedValue = parsedBody[name];
       if (parsedValue === void 0) {
         parsedBody[name] = value;
@@ -55,7 +68,5 @@ function parseMultipartData(data, headers) {
     return void 0;
   }
 }
-export {
-  parseMultipartData
-};
+export { parseMultipartData };
 //# sourceMappingURL=parseMultipartData.mjs.map

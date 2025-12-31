@@ -1,4 +1,3 @@
-"use strict";
 /**
  * Audited & minimal JS implementation of Salsa20, ChaCha and AES. Check out individual modules.
  * @example
@@ -24,5 +23,7 @@ import { ghash, polyval } from '@noble/ciphers/_polyval';
 ```
  * @module
  */
-throw new Error('root module cannot be imported: import submodules instead. Check out README');
+throw new Error(
+  "root module cannot be imported: import submodules instead. Check out README",
+);
 //# sourceMappingURL=index.js.map

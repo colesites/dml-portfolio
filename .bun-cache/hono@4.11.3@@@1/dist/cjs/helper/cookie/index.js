@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var cookie_exports = {};
 __export(cookie_exports, {
   deleteCookie: () => deleteCookie,
@@ -24,7 +28,7 @@ __export(cookie_exports, {
   getCookie: () => getCookie,
   getSignedCookie: () => getSignedCookie,
   setCookie: () => setCookie,
-  setSignedCookie: () => setSignedCookie
+  setSignedCookie: () => setSignedCookie,
 });
 module.exports = __toCommonJS(cookie_exports);
 var import_cookie = require("../../utils/cookie");
@@ -73,13 +77,17 @@ const getSignedCookie = async (c, secret, key, prefix) => {
 const generateCookie = (name, value, opt) => {
   let cookie;
   if (opt?.prefix === "secure") {
-    cookie = (0, import_cookie.serialize)("__Secure-" + name, value, { path: "/", ...opt, secure: true });
+    cookie = (0, import_cookie.serialize)("__Secure-" + name, value, {
+      path: "/",
+      ...opt,
+      secure: true,
+    });
   } else if (opt?.prefix === "host") {
     cookie = (0, import_cookie.serialize)("__Host-" + name, value, {
       ...opt,
       path: "/",
       secure: true,
-      domain: void 0
+      domain: void 0,
     });
   } else {
     cookie = (0, import_cookie.serialize)(name, value, { path: "/", ...opt });
@@ -93,20 +101,33 @@ const setCookie = (c, name, value, opt) => {
 const generateSignedCookie = async (name, value, secret, opt) => {
   let cookie;
   if (opt?.prefix === "secure") {
-    cookie = await (0, import_cookie.serializeSigned)("__Secure-" + name, value, secret, {
-      path: "/",
-      ...opt,
-      secure: true
-    });
+    cookie = await (0, import_cookie.serializeSigned)(
+      "__Secure-" + name,
+      value,
+      secret,
+      {
+        path: "/",
+        ...opt,
+        secure: true,
+      },
+    );
   } else if (opt?.prefix === "host") {
-    cookie = await (0, import_cookie.serializeSigned)("__Host-" + name, value, secret, {
-      ...opt,
-      path: "/",
-      secure: true,
-      domain: void 0
-    });
+    cookie = await (0, import_cookie.serializeSigned)(
+      "__Host-" + name,
+      value,
+      secret,
+      {
+        ...opt,
+        path: "/",
+        secure: true,
+        domain: void 0,
+      },
+    );
   } else {
-    cookie = await (0, import_cookie.serializeSigned)(name, value, secret, { path: "/", ...opt });
+    cookie = await (0, import_cookie.serializeSigned)(name, value, secret, {
+      path: "/",
+      ...opt,
+    });
   }
   return cookie;
 };
@@ -120,12 +141,13 @@ const deleteCookie = (c, name, opt) => {
   return deletedCookie;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  deleteCookie,
-  generateCookie,
-  generateSignedCookie,
-  getCookie,
-  getSignedCookie,
-  setCookie,
-  setSignedCookie
-});
+0 &&
+  (module.exports = {
+    deleteCookie,
+    generateCookie,
+    generateSignedCookie,
+    getCookie,
+    getSignedCookie,
+    setCookie,
+    setSignedCookie,
+  });

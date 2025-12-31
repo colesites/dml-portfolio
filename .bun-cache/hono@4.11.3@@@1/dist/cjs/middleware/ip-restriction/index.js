@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var ip_restriction_exports = {};
 __export(ip_restriction_exports, {
-  ipRestriction: () => ipRestriction
+  ipRestriction: () => ipRestriction,
 });
 module.exports = __toCommonJS(ip_restriction_exports);
 var import_http_exception = require("../../http-exception");
@@ -46,8 +50,14 @@ const buildMatcher = (rules) => {
         if (isIPv4 ? prefix === 32 : prefix === 128) {
           rule = addrStr;
         } else {
-          const addr = (isIPv4 ? import_ipaddr.convertIPv4ToBinary : import_ipaddr.convertIPv6ToBinary)(addrStr);
-          const mask = (1n << BigInt(prefix)) - 1n << BigInt((isIPv4 ? 32 : 128) - prefix);
+          const addr = (
+            isIPv4
+              ? import_ipaddr.convertIPv4ToBinary
+              : import_ipaddr.convertIPv6ToBinary
+          )(addrStr);
+          const mask =
+            ((1n << BigInt(prefix)) - 1n) <<
+            BigInt((isIPv4 ? 32 : 128) - prefix);
           cidrRules.push([isIPv4, addr & mask, mask]);
           continue;
         }
@@ -57,7 +67,11 @@ const buildMatcher = (rules) => {
         throw new TypeError(`Invalid rule: ${rule}`);
       }
       staticRules.add(
-        type === "IPv4" ? rule : (0, import_ipaddr.convertIPv6BinaryToString)((0, import_ipaddr.convertIPv6ToBinary)(rule))
+        type === "IPv4"
+          ? rule
+          : (0, import_ipaddr.convertIPv6BinaryToString)(
+              (0, import_ipaddr.convertIPv6ToBinary)(rule),
+            ),
         // normalize IPv6 address (e.g. 0000:0000:0000:0000:0000:0000:0000:0001 => ::1)
       );
     }
@@ -70,7 +84,11 @@ const buildMatcher = (rules) => {
       if (isIPv4 !== remote.isIPv4) {
         continue;
       }
-      const remoteAddr = remote.binaryAddr ||= (isIPv4 ? import_ipaddr.convertIPv4ToBinary : import_ipaddr.convertIPv6ToBinary)(remote.addr);
+      const remoteAddr = (remote.binaryAddr ||= (
+        isIPv4
+          ? import_ipaddr.convertIPv4ToBinary
+          : import_ipaddr.convertIPv6ToBinary
+      )(remote.addr));
       if ((remoteAddr & mask) === addr) {
         return true;
       }
@@ -87,18 +105,22 @@ const ipRestriction = (getIP, { denyList = [], allowList = [] }, onError) => {
   const allowLength = allowList.length;
   const denyMatcher = buildMatcher(denyList);
   const allowMatcher = buildMatcher(allowList);
-  const blockError = (c) => new import_http_exception.HTTPException(403, {
-    res: c.text("Forbidden", {
-      status: 403
-    })
-  });
+  const blockError = (c) =>
+    new import_http_exception.HTTPException(403, {
+      res: c.text("Forbidden", {
+        status: 403,
+      }),
+    });
   return async function ipRestriction2(c, next) {
     const connInfo = getIP(c);
-    const addr = typeof connInfo === "string" ? connInfo : connInfo.remote.address;
+    const addr =
+      typeof connInfo === "string" ? connInfo : connInfo.remote.address;
     if (!addr) {
       throw blockError(c);
     }
-    const type = typeof connInfo !== "string" && connInfo.remote.addressType || (0, import_ipaddr.distinctRemoteAddr)(addr);
+    const type =
+      (typeof connInfo !== "string" && connInfo.remote.addressType) ||
+      (0, import_ipaddr.distinctRemoteAddr)(addr);
     const remoteData = { addr, type, isIPv4: type === "IPv4" };
     if (denyMatcher(remoteData)) {
       if (onError) {
@@ -120,6 +142,7 @@ const ipRestriction = (getIP, { denyList = [], allowList = [] }, onError) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  ipRestriction
-});
+0 &&
+  (module.exports = {
+    ipRestriction,
+  });

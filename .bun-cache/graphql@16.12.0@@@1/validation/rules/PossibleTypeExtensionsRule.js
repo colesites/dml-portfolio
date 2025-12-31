@@ -1,25 +1,23 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.PossibleTypeExtensionsRule = PossibleTypeExtensionsRule;
 
-var _didYouMean = require('../../jsutils/didYouMean.js');
+var _didYouMean = require("../../jsutils/didYouMean.js");
 
-var _inspect = require('../../jsutils/inspect.js');
+var _inspect = require("../../jsutils/inspect.js");
 
-var _invariant = require('../../jsutils/invariant.js');
+var _invariant = require("../../jsutils/invariant.js");
 
-var _suggestionList = require('../../jsutils/suggestionList.js');
+var _suggestionList = require("../../jsutils/suggestionList.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _predicates = require('../../language/predicates.js');
+var _predicates = require("../../language/predicates.js");
 
-var _definition = require('../../type/definition.js');
+var _definition = require("../../type/definition.js");
 
 /**
  * Possible type extension
@@ -134,29 +132,29 @@ function typeToExtKind(type) {
   false ||
     (0, _invariant.invariant)(
       false,
-      'Unexpected type: ' + (0, _inspect.inspect)(type),
+      "Unexpected type: " + (0, _inspect.inspect)(type),
     );
 }
 
 function extensionKindToTypeName(kind) {
   switch (kind) {
     case _kinds.Kind.SCALAR_TYPE_EXTENSION:
-      return 'scalar';
+      return "scalar";
 
     case _kinds.Kind.OBJECT_TYPE_EXTENSION:
-      return 'object';
+      return "object";
 
     case _kinds.Kind.INTERFACE_TYPE_EXTENSION:
-      return 'interface';
+      return "interface";
 
     case _kinds.Kind.UNION_TYPE_EXTENSION:
-      return 'union';
+      return "union";
 
     case _kinds.Kind.ENUM_TYPE_EXTENSION:
-      return 'enum';
+      return "enum";
 
     case _kinds.Kind.INPUT_OBJECT_TYPE_EXTENSION:
-      return 'input object';
+      return "input object";
     // Not reachable. All possible types have been considered
 
     /* c8 ignore next */
@@ -165,7 +163,7 @@ function extensionKindToTypeName(kind) {
       false ||
         (0, _invariant.invariant)(
           false,
-          'Unexpected kind: ' + (0, _inspect.inspect)(kind),
+          "Unexpected kind: " + (0, _inspect.inspect)(kind),
         );
   }
 }

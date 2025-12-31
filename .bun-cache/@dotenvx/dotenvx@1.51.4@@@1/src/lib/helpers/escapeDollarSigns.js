@@ -1,5 +1,5 @@
-function escapeDollarSigns (str) {
-  return str.replace(/\$/g, '$$$$')
+function escapeDollarSigns(str) {
+  return str.replace(/\$/g, "$$$$");
 }
 
-module.exports = escapeDollarSigns
+module.exports = escapeDollarSigns;

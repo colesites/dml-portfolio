@@ -3,5 +3,5 @@ export function toResponseInit(response: Response): ResponseInit {
     status: response.status,
     statusText: response.statusText,
     headers: Object.fromEntries(response.headers.entries()),
-  }
+  };
 }

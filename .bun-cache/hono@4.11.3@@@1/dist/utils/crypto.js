@@ -27,18 +27,15 @@ var createHash = async (data, algorithm) => {
   if (crypto && crypto.subtle) {
     const buffer = await crypto.subtle.digest(
       {
-        name: algorithm.name
+        name: algorithm.name,
       },
-      sourceBuffer
+      sourceBuffer,
     );
-    const hash = Array.prototype.map.call(new Uint8Array(buffer), (x) => ("00" + x.toString(16)).slice(-2)).join("");
+    const hash = Array.prototype.map
+      .call(new Uint8Array(buffer), (x) => ("00" + x.toString(16)).slice(-2))
+      .join("");
     return hash;
   }
   return null;
 };
-export {
-  createHash,
-  md5,
-  sha1,
-  sha256
-};
+export { createHash, md5, sha1, sha256 };

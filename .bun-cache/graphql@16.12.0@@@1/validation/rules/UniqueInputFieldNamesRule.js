@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.UniqueInputFieldNamesRule = UniqueInputFieldNamesRule;
 
-var _invariant = require('../../jsutils/invariant.js');
+var _invariant = require("../../jsutils/invariant.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
 /**
  * Unique input field names

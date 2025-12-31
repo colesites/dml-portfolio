@@ -8,18 +8,22 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var sse_exports = {};
 __export(sse_exports, {
   SSEStreamingApi: () => SSEStreamingApi,
-  streamSSE: () => streamSSE
+  streamSSE: () => streamSSE,
 });
 module.exports = __toCommonJS(sse_exports);
 var import_html = require("../../utils/html");
@@ -30,16 +34,27 @@ class SSEStreamingApi extends import_stream.StreamingApi {
     super(writable, readable);
   }
   async writeSSE(message) {
-    const data = await (0, import_html.resolveCallback)(message.data, import_html.HtmlEscapedCallbackPhase.Stringify, false, {});
-    const dataLines = data.split("\n").map((line) => {
-      return `data: ${line}`;
-    }).join("\n");
-    const sseData = [
-      message.event && `event: ${message.event}`,
-      dataLines,
-      message.id && `id: ${message.id}`,
-      message.retry && `retry: ${message.retry}`
-    ].filter(Boolean).join("\n") + "\n\n";
+    const data = await (0, import_html.resolveCallback)(
+      message.data,
+      import_html.HtmlEscapedCallbackPhase.Stringify,
+      false,
+      {},
+    );
+    const dataLines = data
+      .split("\n")
+      .map((line) => {
+        return `data: ${line}`;
+      })
+      .join("\n");
+    const sseData =
+      [
+        message.event && `event: ${message.event}`,
+        dataLines,
+        message.id && `id: ${message.id}`,
+        message.retry && `retry: ${message.retry}`,
+      ]
+        .filter(Boolean)
+        .join("\n") + "\n\n";
     await this.write(sseData);
   }
 }
@@ -51,7 +66,7 @@ const run = async (stream, cb, onError) => {
       await onError(e, stream);
       await stream.writeSSE({
         event: "error",
-        data: e.message
+        data: e.message,
       });
     } else {
       console.error(e);
@@ -80,7 +95,8 @@ const streamSSE = (c, cb, onError) => {
   return c.newResponse(stream.responseReadable);
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  SSEStreamingApi,
-  streamSSE
-});
+0 &&
+  (module.exports = {
+    SSEStreamingApi,
+    streamSSE,
+  });

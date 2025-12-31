@@ -1,14 +1,12 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.run = run;
 function _traverse() {
   const data = require("@babel/traverse");
-  _traverse = function () {
-    return data;
-  };
+  _traverse = () => data;
   return data;
 }
 var _pluginPass = require("./plugin-pass.js");
@@ -19,13 +17,18 @@ var _generate = require("./file/generate.js");
 var _deepArray = require("../config/helpers/deep-array.js");
 var _async = require("../gensync-utils/async.js");
 function* run(config, code, ast) {
-  const file = yield* (0, _normalizeFile.default)(config.passes, (0, _normalizeOpts.default)(config), code, ast);
+  const file = yield* (0, _normalizeFile.default)(
+    config.passes,
+    (0, _normalizeOpts.default)(config),
+    code,
+    ast,
+  );
   const opts = file.opts;
   try {
     yield* transformFile(file, config.passes);
   } catch (e) {
     var _opts$filename;
-    e.message = `${(_opts$filename = opts.filename) != null ? _opts$filename : "unknown file"}: ${e.message}`;
+    e.message = `${((_opts$filename = opts.filename)) != null ? _opts$filename : "unknown file"}: ${e.message}`;
     if (!e.code) {
       e.code = "BABEL_TRANSFORM_ERROR";
     }
@@ -34,14 +37,11 @@ function* run(config, code, ast) {
   let outputCode, outputMap;
   try {
     if (opts.code !== false) {
-      ({
-        outputCode,
-        outputMap
-      } = (0, _generate.default)(config.passes, file));
+      ({ outputCode, outputMap } = (0, _generate.default)(config.passes, file));
     }
   } catch (e) {
     var _opts$filename2;
-    e.message = `${(_opts$filename2 = opts.filename) != null ? _opts$filename2 : "unknown file"}: ${e.message}`;
+    e.message = `${((_opts$filename2 = opts.filename)) != null ? _opts$filename2 : "unknown file"}: ${e.message}`;
     if (!e.code) {
       e.code = "BABEL_GENERATE_ERROR";
     }
@@ -54,7 +54,9 @@ function* run(config, code, ast) {
     code: outputCode === undefined ? null : outputCode,
     map: outputMap === undefined ? null : outputMap,
     sourceType: file.ast.program.sourceType,
-    externalDependencies: (0, _deepArray.flattenToSet)(config.externalDependencies)
+    externalDependencies: (0, _deepArray.flattenToSet)(
+      config.externalDependencies,
+    ),
   };
 }
 function* transformFile(file, pluginPasses) {
@@ -63,25 +65,40 @@ function* transformFile(file, pluginPasses) {
     const passPairs = [];
     const passes = [];
     const visitors = [];
-    for (const plugin of pluginPairs.concat([(0, _blockHoistPlugin.default)()])) {
-      const pass = new _pluginPass.default(file, plugin.key, plugin.options, async);
+    for (const plugin of pluginPairs.concat([
+      (0, _blockHoistPlugin.default)(),
+    ])) {
+      const pass = new _pluginPass.default(
+        file,
+        plugin.key,
+        plugin.options,
+        async,
+      );
       passPairs.push([plugin, pass]);
       passes.push(pass);
       visitors.push(plugin.visitor);
     }
     for (const [plugin, pass] of passPairs) {
       if (plugin.pre) {
-        const fn = (0, _async.maybeAsync)(plugin.pre, `You appear to be using an async plugin/preset, but Babel has been called synchronously`);
+        const fn = (0, _async.maybeAsync)(
+          plugin.pre,
+          `You appear to be using an async plugin/preset, but Babel has been called synchronously`,
+        );
         yield* fn.call(pass, file);
       }
     }
-    const visitor = _traverse().default.visitors.merge(visitors, passes, file.opts.wrapPluginVisitorMethod);
-    {
-      (0, _traverse().default)(file.ast, visitor, file.scope);
-    }
+    const visitor = _traverse().default.visitors.merge(
+      visitors,
+      passes,
+      file.opts.wrapPluginVisitorMethod,
+    );
+    (0, _traverse().default)(file.ast, visitor, file.scope);
     for (const [plugin, pass] of passPairs) {
       if (plugin.post) {
-        const fn = (0, _async.maybeAsync)(plugin.post, `You appear to be using an async plugin/preset, but Babel has been called synchronously`);
+        const fn = (0, _async.maybeAsync)(
+          plugin.post,
+          `You appear to be using an async plugin/preset, but Babel has been called synchronously`,
+        );
         yield* fn.call(pass, file);
       }
     }

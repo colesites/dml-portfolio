@@ -1,16 +1,19 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.lazyImportsHook = void 0;
 var _core = require("@babel/core");
 var _helperModuleTransforms = require("@babel/helper-module-transforms");
-const lazyImportsHook = lazy => ({
+const lazyImportsHook = (lazy) => ({
   name: `${"@babel/plugin-transform-modules-commonjs"}/lazy`,
   version: "7.27.1",
   getWrapperPayload(source, metadata) {
-    if ((0, _helperModuleTransforms.isSideEffectImport)(metadata) || metadata.reexportAll) {
+    if (
+      (0, _helperModuleTransforms.isSideEffectImport)(metadata) ||
+      metadata.reexportAll
+    ) {
       return null;
     }
     if (lazy === true) {
@@ -37,7 +40,7 @@ const lazyImportsHook = lazy => ({
   },
   wrapReference(ref, payload) {
     if (payload === "lazy/function") return _core.types.callExpression(ref, []);
-  }
+  },
 });
 exports.lazyImportsHook = lazyImportsHook;
 

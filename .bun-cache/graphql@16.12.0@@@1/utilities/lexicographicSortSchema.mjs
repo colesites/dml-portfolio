@@ -1,7 +1,7 @@
-import { inspect } from '../jsutils/inspect.mjs';
-import { invariant } from '../jsutils/invariant.mjs';
-import { keyValMap } from '../jsutils/keyValMap.mjs';
-import { naturalCompare } from '../jsutils/naturalCompare.mjs';
+import { inspect } from "../jsutils/inspect.mjs";
+import { invariant } from "../jsutils/invariant.mjs";
+import { keyValMap } from "../jsutils/keyValMap.mjs";
+import { naturalCompare } from "../jsutils/naturalCompare.mjs";
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -18,10 +18,10 @@ import {
   isObjectType,
   isScalarType,
   isUnionType,
-} from '../type/definition.mjs';
-import { GraphQLDirective } from '../type/directives.mjs';
-import { isIntrospectionType } from '../type/introspection.mjs';
-import { GraphQLSchema } from '../type/schema.mjs';
+} from "../type/definition.mjs";
+import { GraphQLDirective } from "../type/directives.mjs";
+import { isIntrospectionType } from "../type/introspection.mjs";
+import { GraphQLSchema } from "../type/schema.mjs";
 /**
  * Sort GraphQLSchema.
  *
@@ -145,7 +145,7 @@ export function lexicographicSortSchema(schema) {
     /* c8 ignore next 3 */
     // Not reachable, all possible types have been considered.
 
-    false || invariant(false, 'Unexpected type: ' + inspect(type));
+    false || invariant(false, "Unexpected type: " + inspect(type));
   }
 }
 

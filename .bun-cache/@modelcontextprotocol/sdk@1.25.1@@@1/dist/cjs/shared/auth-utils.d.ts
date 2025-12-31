@@ -16,8 +16,11 @@ export declare function resourceUrlFromServerUrl(url: URL | string): URL;
  * @param configuredResource The resource URL that has been configured
  * @returns true if the requested resource matches the configured resource, false otherwise
  */
-export declare function checkResourceAllowed({ requestedResource, configuredResource }: {
-    requestedResource: URL | string;
-    configuredResource: URL | string;
+export declare function checkResourceAllowed({
+  requestedResource,
+  configuredResource,
+}: {
+  requestedResource: URL | string;
+  configuredResource: URL | string;
 }): boolean;
 //# sourceMappingURL=auth-utils.d.ts.map

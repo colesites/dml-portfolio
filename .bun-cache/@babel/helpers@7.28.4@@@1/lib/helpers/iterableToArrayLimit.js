@@ -1,11 +1,15 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _iterableToArrayLimit;
 function _iterableToArrayLimit(arr, i) {
-  var iterator = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+  var iterator =
+    arr == null
+      ? null
+      : (typeof Symbol !== "undefined" && arr[Symbol.iterator]) ||
+        arr["@@iterator"];
   if (iterator == null) return;
   var _arr = [];
   var iteratorNormalCompletion = true;
@@ -17,7 +21,11 @@ function _iterableToArrayLimit(arr, i) {
       if (Object(iterator) !== iterator) return;
       iteratorNormalCompletion = false;
     } else {
-      for (; !(iteratorNormalCompletion = (step = next.call(iterator)).done); iteratorNormalCompletion = true) {
+      for (
+        ;
+        !(iteratorNormalCompletion = (step = next.call(iterator)).done);
+        iteratorNormalCompletion = true
+      ) {
         _arr.push(step.value);
         if (_arr.length === i) break;
       }

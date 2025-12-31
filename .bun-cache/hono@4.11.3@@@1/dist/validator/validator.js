@@ -2,9 +2,12 @@
 import { getCookie } from "../helper/cookie/index.js";
 import { HTTPException } from "../http-exception.js";
 import { bufferToFormData } from "../utils/buffer.js";
-var jsonRegex = /^application\/([a-z-\.]+\+)?json(;\s*[a-zA-Z0-9\-]+\=([^;]+))*$/;
-var multipartRegex = /^multipart\/form-data(;\s?boundary=[a-zA-Z0-9'"()+_,\-./:=?]+)?$/;
-var urlencodedRegex = /^application\/x-www-form-urlencoded(;\s*[a-zA-Z0-9\-]+\=([^;]+))*$/;
+
+var jsonRegex = /^application\/([a-z-.]+\+)?json(;\s*[a-zA-Z0-9-]+=([^;]+))*$/;
+var multipartRegex =
+  /^multipart\/form-data(;\s?boundary=[a-zA-Z0-9'"()+_,\-./:=?]+)?$/;
+var urlencodedRegex =
+  /^application\/x-www-form-urlencoded(;\s*[a-zA-Z0-9-]+=([^;]+))*$/;
 var validator = (target, validationFunc) => {
   return async (c, next) => {
     let value = {};
@@ -22,7 +25,13 @@ var validator = (target, validationFunc) => {
         }
         break;
       case "form": {
-        if (!contentType || !(multipartRegex.test(contentType) || urlencodedRegex.test(contentType))) {
+        if (
+          !contentType ||
+          !(
+            multipartRegex.test(contentType) ||
+            urlencodedRegex.test(contentType)
+          )
+        ) {
           break;
         }
         let formData;
@@ -42,10 +51,8 @@ var validator = (target, validationFunc) => {
         const form = {};
         formData.forEach((value2, key) => {
           if (key.endsWith("[]")) {
-            ;
             (form[key] ??= []).push(value2);
           } else if (Array.isArray(form[key])) {
-            ;
             form[key].push(value2);
           } else if (key in form) {
             form[key] = [form[key], value2];
@@ -60,7 +67,7 @@ var validator = (target, validationFunc) => {
         value = Object.fromEntries(
           Object.entries(c.req.queries()).map(([k, v]) => {
             return v.length === 1 ? [k, v[0]] : [k, v];
-          })
+          }),
         );
         break;
       case "param":
@@ -81,6 +88,4 @@ var validator = (target, validationFunc) => {
     return await next();
   };
 };
-export {
-  validator
-};
+export { validator };

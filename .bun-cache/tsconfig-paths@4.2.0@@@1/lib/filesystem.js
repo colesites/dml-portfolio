@@ -1,20 +1,23 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeExtension = exports.fileExistsAsync = exports.readJsonFromDiskAsync = exports.readJsonFromDiskSync = exports.fileExistsSync = void 0;
+exports.removeExtension =
+  exports.fileExistsAsync =
+  exports.readJsonFromDiskAsync =
+  exports.readJsonFromDiskSync =
+  exports.fileExistsSync =
+    void 0;
 var fs = require("fs");
 function fileExistsSync(path) {
-    // If the file doesn't exist, avoid throwing an exception over the native barrier for every miss
-    if (!fs.existsSync(path)) {
-        return false;
-    }
-    try {
-        var stats = fs.statSync(path);
-        return stats.isFile();
-    }
-    catch (err) {
-        // If error, assume file did not exist
-        return false;
-    }
+  // If the file doesn't exist, avoid throwing an exception over the native barrier for every miss
+  if (!fs.existsSync(path)) {
+    return false;
+  }
+  try {
+    var stats = fs.statSync(path);
+    return stats.isFile();
+  } catch (err) {
+    // If error, assume file did not exist
+    return false;
+  }
 }
 exports.fileExistsSync = fileExistsSync;
 /**
@@ -24,38 +27,40 @@ exports.fileExistsSync = fileExistsSync;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function readJsonFromDiskSync(packageJsonPath) {
-    if (!fs.existsSync(packageJsonPath)) {
-        return undefined;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    return require(packageJsonPath);
+  if (!fs.existsSync(packageJsonPath)) {
+    return undefined;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  return require(packageJsonPath);
 }
 exports.readJsonFromDiskSync = readJsonFromDiskSync;
-function readJsonFromDiskAsync(path, 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-callback) {
-    fs.readFile(path, "utf8", function (err, result) {
-        // If error, assume file did not exist
-        if (err || !result) {
-            return callback();
-        }
-        var json = JSON.parse(result);
-        return callback(undefined, json);
-    });
+function readJsonFromDiskAsync(
+  path,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  callback,
+) {
+  fs.readFile(path, "utf8", (err, result) => {
+    // If error, assume file did not exist
+    if (err || !result) {
+      return callback();
+    }
+    var json = JSON.parse(result);
+    return callback(undefined, json);
+  });
 }
 exports.readJsonFromDiskAsync = readJsonFromDiskAsync;
 function fileExistsAsync(path2, callback2) {
-    fs.stat(path2, function (err, stats) {
-        if (err) {
-            // If error assume file does not exist
-            return callback2(undefined, false);
-        }
-        callback2(undefined, stats ? stats.isFile() : false);
-    });
+  fs.stat(path2, (err, stats) => {
+    if (err) {
+      // If error assume file does not exist
+      return callback2(undefined, false);
+    }
+    callback2(undefined, stats ? stats.isFile() : false);
+  });
 }
 exports.fileExistsAsync = fileExistsAsync;
 function removeExtension(path) {
-    return path.substring(0, path.lastIndexOf(".")) || path;
+  return path.substring(0, path.lastIndexOf(".")) || path;
 }
 exports.removeExtension = removeExtension;
 //# sourceMappingURL=filesystem.js.map

@@ -100,7 +100,9 @@ test("date schema", async () => {
   expect(() => dateSchema.parse(true)).toThrow();
   expect(() => dateSchema.parse(undefined)).toThrow();
   expect(() => dateSchema.parse(null)).toThrow();
-  expect(await dateSchema.safeParseAsync(new Date("invalid"))).toMatchInlineSnapshot(`
+  expect(
+    await dateSchema.safeParseAsync(new Date("invalid")),
+  ).toMatchInlineSnapshot(`
     {
       "error": [ZodError: [
       {
@@ -155,18 +157,42 @@ test("primitive inference", () => {
   expectTypeOf<z.TypeOf<typeof symbolSchema>>().toEqualTypeOf<symbol>();
   expectTypeOf<z.TypeOf<typeof nullSchema>>().toEqualTypeOf<null>();
   expectTypeOf<z.TypeOf<typeof undefinedSchema>>().toEqualTypeOf<undefined>();
-  expectTypeOf<z.TypeOf<typeof stringSchemaOptional>>().toEqualTypeOf<string | undefined>();
-  expectTypeOf<z.TypeOf<typeof stringSchemaNullable>>().toEqualTypeOf<string | null>();
-  expectTypeOf<z.TypeOf<typeof numberSchemaOptional>>().toEqualTypeOf<number | undefined>();
-  expectTypeOf<z.TypeOf<typeof numberSchemaNullable>>().toEqualTypeOf<number | null>();
-  expectTypeOf<z.TypeOf<typeof bigintSchemaOptional>>().toEqualTypeOf<bigint | undefined>();
-  expectTypeOf<z.TypeOf<typeof bigintSchemaNullable>>().toEqualTypeOf<bigint | null>();
-  expectTypeOf<z.TypeOf<typeof booleanSchemaOptional>>().toEqualTypeOf<boolean | undefined>();
-  expectTypeOf<z.TypeOf<typeof booleanSchemaNullable>>().toEqualTypeOf<boolean | null>();
-  expectTypeOf<z.TypeOf<typeof dateSchemaOptional>>().toEqualTypeOf<Date | undefined>();
-  expectTypeOf<z.TypeOf<typeof dateSchemaNullable>>().toEqualTypeOf<Date | null>();
-  expectTypeOf<z.TypeOf<typeof symbolSchemaOptional>>().toEqualTypeOf<symbol | undefined>();
-  expectTypeOf<z.TypeOf<typeof symbolSchemaNullable>>().toEqualTypeOf<symbol | null>();
+  expectTypeOf<z.TypeOf<typeof stringSchemaOptional>>().toEqualTypeOf<
+    string | undefined
+  >();
+  expectTypeOf<z.TypeOf<typeof stringSchemaNullable>>().toEqualTypeOf<
+    string | null
+  >();
+  expectTypeOf<z.TypeOf<typeof numberSchemaOptional>>().toEqualTypeOf<
+    number | undefined
+  >();
+  expectTypeOf<z.TypeOf<typeof numberSchemaNullable>>().toEqualTypeOf<
+    number | null
+  >();
+  expectTypeOf<z.TypeOf<typeof bigintSchemaOptional>>().toEqualTypeOf<
+    bigint | undefined
+  >();
+  expectTypeOf<z.TypeOf<typeof bigintSchemaNullable>>().toEqualTypeOf<
+    bigint | null
+  >();
+  expectTypeOf<z.TypeOf<typeof booleanSchemaOptional>>().toEqualTypeOf<
+    boolean | undefined
+  >();
+  expectTypeOf<z.TypeOf<typeof booleanSchemaNullable>>().toEqualTypeOf<
+    boolean | null
+  >();
+  expectTypeOf<z.TypeOf<typeof dateSchemaOptional>>().toEqualTypeOf<
+    Date | undefined
+  >();
+  expectTypeOf<
+    z.TypeOf<typeof dateSchemaNullable>
+  >().toEqualTypeOf<Date | null>();
+  expectTypeOf<z.TypeOf<typeof symbolSchemaOptional>>().toEqualTypeOf<
+    symbol | undefined
+  >();
+  expectTypeOf<z.TypeOf<typeof symbolSchemaNullable>>().toEqualTypeOf<
+    symbol | null
+  >();
 });
 
 test("get literal values", () => {

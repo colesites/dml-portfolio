@@ -1,6 +1,6 @@
-import {Buffer} from 'node:buffer';
-import {StringDecoder} from 'node:string_decoder';
-import {isUint8Array, bufferToUint8Array} from '../utils/uint-array.js';
+import { Buffer } from "node:buffer";
+import { StringDecoder } from "node:string_decoder";
+import { bufferToUint8Array, isUint8Array } from "../utils/uint-array.js";
 
 /*
 When using binary encodings, add an internal generator that converts chunks from `Buffer` to `string` or `Uint8Array`.
@@ -14,38 +14,40 @@ However, those are converted to Buffer:
 - on reads: `Duplex.readable` `readableEncoding: null` default option
 */
 export const getEncodingTransformGenerator = (binary, encoding, skipped) => {
-	if (skipped) {
-		return;
-	}
+  if (skipped) {
+    return;
+  }
 
-	if (binary) {
-		return {transform: encodingUint8ArrayGenerator.bind(undefined, new TextEncoder())};
-	}
+  if (binary) {
+    return {
+      transform: encodingUint8ArrayGenerator.bind(undefined, new TextEncoder()),
+    };
+  }
 
-	const stringDecoder = new StringDecoder(encoding);
-	return {
-		transform: encodingStringGenerator.bind(undefined, stringDecoder),
-		final: encodingStringFinal.bind(undefined, stringDecoder),
-	};
+  const stringDecoder = new StringDecoder(encoding);
+  return {
+    transform: encodingStringGenerator.bind(undefined, stringDecoder),
+    final: encodingStringFinal.bind(undefined, stringDecoder),
+  };
 };
 
-const encodingUint8ArrayGenerator = function * (textEncoder, chunk) {
-	if (Buffer.isBuffer(chunk)) {
-		yield bufferToUint8Array(chunk);
-	} else if (typeof chunk === 'string') {
-		yield textEncoder.encode(chunk);
-	} else {
-		yield chunk;
-	}
+const encodingUint8ArrayGenerator = function* (textEncoder, chunk) {
+  if (Buffer.isBuffer(chunk)) {
+    yield bufferToUint8Array(chunk);
+  } else if (typeof chunk === "string") {
+    yield textEncoder.encode(chunk);
+  } else {
+    yield chunk;
+  }
 };
 
-const encodingStringGenerator = function * (stringDecoder, chunk) {
-	yield isUint8Array(chunk) ? stringDecoder.write(chunk) : chunk;
+const encodingStringGenerator = function* (stringDecoder, chunk) {
+  yield isUint8Array(chunk) ? stringDecoder.write(chunk) : chunk;
 };
 
-const encodingStringFinal = function * (stringDecoder) {
-	const lastChunk = stringDecoder.end();
-	if (lastChunk !== '') {
-		yield lastChunk;
-	}
+const encodingStringFinal = function* (stringDecoder) {
+  const lastChunk = stringDecoder.end();
+  if (lastChunk !== "") {
+    yield lastChunk;
+  }
 };

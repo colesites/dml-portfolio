@@ -1,5 +1,5 @@
-import * as Filesystem from "../filesystem";
 import * as path from "path";
+import * as Filesystem from "../filesystem";
 
 describe("filesystem", () => {
   const fileThatExists = path.join(__dirname, "../../package.json");

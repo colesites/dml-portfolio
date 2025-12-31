@@ -1,3 +1,2 @@
 #!/usr/bin/env node
-'use strict'
-import '../dist/nci.mjs'
+import "../dist/nci.mjs";

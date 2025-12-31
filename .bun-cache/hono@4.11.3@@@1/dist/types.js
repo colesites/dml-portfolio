@@ -1,6 +1,3 @@
 // src/types.ts
-var FetchEventLike = class {
-};
-export {
-  FetchEventLike
-};
+var FetchEventLike = class {};
+export { FetchEventLike };

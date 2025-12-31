@@ -1,5 +1,5 @@
-import { type CurveFnWithCreate } from './_shortw_utils.ts';
-import { type H2CHasher } from './abstract/hash-to-curve.ts';
+import { type CurveFnWithCreate } from "./_shortw_utils.ts";
+import { type H2CHasher } from "./abstract/hash-to-curve.ts";
 /** NIST P256 (aka secp256r1, prime256v1) curve, ECDSA and ECDH methods. */
 export declare const p256: CurveFnWithCreate;
 /** Hashing / encoding to p256 points / field. RFC 9380 methods. */

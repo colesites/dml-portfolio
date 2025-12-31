@@ -1,28 +1,17 @@
-import {
-  BatchInterceptor
-} from "./chunk-SQ6RHTJR.mjs";
-import {
-  ClientRequestInterceptor
-} from "./chunk-5UGIB6OX.mjs";
+import { ClientRequestInterceptor } from "./chunk-5UGIB6OX.mjs";
+import { BatchInterceptor } from "./chunk-SQ6RHTJR.mjs";
 import "./chunk-GKN5RBVR.mjs";
-import {
-  XMLHttpRequestInterceptor
-} from "./chunk-5V3SIIW2.mjs";
+import { XMLHttpRequestInterceptor } from "./chunk-5V3SIIW2.mjs";
 import "./chunk-6HYIRFX2.mjs";
-import {
-  FetchInterceptor
-} from "./chunk-OFW5L5ET.mjs";
+import { FetchInterceptor } from "./chunk-OFW5L5ET.mjs";
 import "./chunk-TX5GBTFY.mjs";
 import "./chunk-6YM4PLBI.mjs";
 import {
-  handleRequest,
-  isResponseError
-} from "./chunk-R6T7CL5E.mjs";
-import {
   FetchResponse,
   Interceptor,
-  RequestController
+  RequestController,
 } from "./chunk-JXGB54LE.mjs";
+import { handleRequest, isResponseError } from "./chunk-R6T7CL5E.mjs";
 import "./chunk-YWNGXXUQ.mjs";
 
 // src/RemoteHttpInterceptor.ts
@@ -33,8 +22,8 @@ var RemoteHttpInterceptor = class extends BatchInterceptor {
       interceptors: [
         new ClientRequestInterceptor(),
         new XMLHttpRequestInterceptor(),
-        new FetchInterceptor()
-      ]
+        new FetchInterceptor(),
+      ],
     });
   }
   setup() {
@@ -48,31 +37,34 @@ var RemoteHttpInterceptor = class extends BatchInterceptor {
         url: request.url,
         headers: Array.from(request.headers.entries()),
         credentials: request.credentials,
-        body: ["GET", "HEAD"].includes(request.method) ? null : await request.text()
+        body: ["GET", "HEAD"].includes(request.method)
+          ? null
+          : await request.text(),
       });
       this.logger.info(
         "sent serialized request to the child:",
-        serializedRequest
+        serializedRequest,
       );
-      (_a = process.send) == null ? void 0 : _a.call(process, `request:${serializedRequest}`);
+      (_a = process.send) == null
+        ? void 0
+        : _a.call(process, `request:${serializedRequest}`);
       const responsePromise = new Promise((resolve) => {
         handleParentMessage = (message) => {
           if (typeof message !== "string") {
             return resolve();
           }
           if (message.startsWith(`response:${requestId}`)) {
-            const [, serializedResponse] = message.match(/^response:.+?:(.+)$/) || [];
+            const [, serializedResponse] =
+              message.match(/^response:.+?:(.+)$/) || [];
             if (!serializedResponse) {
               return resolve();
             }
-            const responseInit = JSON.parse(
-              serializedResponse
-            );
+            const responseInit = JSON.parse(serializedResponse);
             const mockedResponse = new FetchResponse(responseInit.body, {
               url: request.url,
               status: responseInit.status,
               statusText: responseInit.statusText,
-              headers: responseInit.headers
+              headers: responseInit.headers,
             });
             controller.respondWith(mockedResponse);
             return resolve();
@@ -81,7 +73,7 @@ var RemoteHttpInterceptor = class extends BatchInterceptor {
       });
       this.logger.info(
         'add "message" listener to the parent process',
-        handleParentMessage
+        handleParentMessage,
       );
       process.addListener("message", handleParentMessage);
       return responsePromise;
@@ -118,20 +110,16 @@ var _RemoteHttpResolver = class extends Interceptor {
       if (!serializedRequest) {
         return;
       }
-      const requestJson = JSON.parse(
-        serializedRequest,
-        requestReviver
-      );
+      const requestJson = JSON.parse(serializedRequest, requestReviver);
       logger.info("parsed intercepted request", requestJson);
       const request = new Request(requestJson.url, {
         method: requestJson.method,
         headers: new Headers(requestJson.headers),
         credentials: requestJson.credentials,
-        body: requestJson.body
+        body: requestJson.body,
       });
       const controller = new RequestController(request, {
-        passthrough: () => {
-        },
+        passthrough: () => {},
         respondWith: async (response) => {
           if (isResponseError(response)) {
             this.logger.info("received a network error!", { response });
@@ -144,7 +132,7 @@ var _RemoteHttpResolver = class extends Interceptor {
             status: response.status,
             statusText: response.statusText,
             headers: Array.from(response.headers.entries()),
-            body: responseText
+            body: responseText,
           });
           this.process.send(
             `response:${requestJson.id}:${serializedResponse}`,
@@ -156,25 +144,25 @@ var _RemoteHttpResolver = class extends Interceptor {
                 request,
                 requestId: requestJson.id,
                 response: responseClone,
-                isMockedResponse: true
+                isMockedResponse: true,
               });
-            }
+            },
           );
           logger.info(
             "sent serialized mocked response to the parent:",
-            serializedResponse
+            serializedResponse,
           );
         },
         errorWith: (reason) => {
           this.logger.info("request has errored!", { error: reason });
           throw new Error("Not implemented");
-        }
+        },
       });
       await handleRequest({
         request,
         requestId: requestJson.id,
         controller,
-        emitter: this.emitter
+        emitter: this.emitter,
       });
     };
     this.subscriptions.push(() => {
@@ -189,9 +177,5 @@ var _RemoteHttpResolver = class extends Interceptor {
 };
 var RemoteHttpResolver = _RemoteHttpResolver;
 RemoteHttpResolver.symbol = Symbol("remote-resolver");
-export {
-  RemoteHttpInterceptor,
-  RemoteHttpResolver,
-  requestReviver
-};
+export { RemoteHttpInterceptor, RemoteHttpResolver, requestReviver };
 //# sourceMappingURL=RemoteHttpInterceptor.mjs.map

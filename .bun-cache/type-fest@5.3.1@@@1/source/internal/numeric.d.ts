@@ -1,8 +1,12 @@
-import type {IsNever} from '../is-never.d.ts';
-import type {Finite, NegativeInfinity, PositiveInfinity} from '../numeric.d.ts';
-import type {UnknownArray} from '../unknown-array.d.ts';
-import type {StringToNumber} from './string.d.ts';
-import type {IsAnyOrNever} from './type.d.ts';
+import type { IsNever } from "../is-never.d.ts";
+import type {
+  Finite,
+  NegativeInfinity,
+  PositiveInfinity,
+} from "../numeric.d.ts";
+import type { UnknownArray } from "../unknown-array.d.ts";
+import type { StringToNumber } from "./string.d.ts";
+import type { IsAnyOrNever } from "./type.d.ts";
 
 /**
 Returns the absolute value of a given value.
@@ -19,7 +23,10 @@ type C = NumberAbsolute<NegativeInfinity>;
 //=> PositiveInfinity
 ```
 */
-export type NumberAbsolute<N extends number> = `${N}` extends `-${infer StringPositiveN}` ? StringToNumber<StringPositiveN> : N;
+export type NumberAbsolute<N extends number> =
+  `${N}` extends `-${infer StringPositiveN}`
+    ? StringToNumber<StringPositiveN>
+    : N;
 
 /**
 Check whether the given type is a number or a number string.
@@ -43,11 +50,11 @@ type D = IsNumberLike<1>;
 type E = IsNumberLike<'a'>;
 //=> false
 */
-export type IsNumberLike<N> =
-	IsAnyOrNever<N> extends true ? N
-		: N extends number | `${number}`
-			? true
-			: false;
+export type IsNumberLike<N> = IsAnyOrNever<N> extends true
+  ? N
+  : N extends number | `${number}`
+    ? true
+    : false;
 
 /**
 Returns the minimum number in the given union of numbers.
@@ -69,20 +76,23 @@ type D = UnionMin<never>;
 //=> never
 ```
 */
-export type UnionMin<N extends number> =
-	IsAnyOrNever<N> extends true ? N
-		: number extends N ? number
-			: NegativeInfinity extends N ? NegativeInfinity
-				: [N] extends [PositiveInfinity] ? PositiveInfinity
-					: InternalUnionMin<Finite<N>>;
+export type UnionMin<N extends number> = IsAnyOrNever<N> extends true
+  ? N
+  : number extends N
+    ? number
+    : NegativeInfinity extends N
+      ? NegativeInfinity
+      : [N] extends [PositiveInfinity]
+        ? PositiveInfinity
+        : InternalUnionMin<Finite<N>>;
 
 /**
 The actual implementation of `UnionMin`. It's private because it has some arguments that don't need to be exposed.
 */
-type InternalUnionMin<N extends number, T extends UnknownArray = []> =
-	T['length'] extends N
-		? T['length']
-		: InternalUnionMin<N, [...T, unknown]>;
+type InternalUnionMin<
+  N extends number,
+  T extends UnknownArray = [],
+> = T["length"] extends N ? T["length"] : InternalUnionMin<N, [...T, unknown]>;
 
 /**
 Returns the maximum number in the given union of numbers.
@@ -104,22 +114,27 @@ type D = UnionMax<never>;
 //=> never
 ```
 */
-export type UnionMax<N extends number> =
-	IsAnyOrNever<N> extends true ? N
-		: number extends N ? number
-			: PositiveInfinity extends N ? PositiveInfinity
-				: [N] extends [NegativeInfinity] ? NegativeInfinity
-					: InternalUnionMax<Finite<N>>;
+export type UnionMax<N extends number> = IsAnyOrNever<N> extends true
+  ? N
+  : number extends N
+    ? number
+    : PositiveInfinity extends N
+      ? PositiveInfinity
+      : [N] extends [NegativeInfinity]
+        ? NegativeInfinity
+        : InternalUnionMax<Finite<N>>;
 
 /**
 The actual implementation of `UnionMax`. It's private because it has some arguments that don't need to be exposed.
 */
-type InternalUnionMax<N extends number, T extends UnknownArray = []> =
-	IsNever<N> extends true
-		? T['length']
-		: T['length'] extends N
-			? InternalUnionMax<Exclude<N, T['length']>, T>
-			: InternalUnionMax<N, [...T, unknown]>;
+type InternalUnionMax<
+  N extends number,
+  T extends UnknownArray = [],
+> = IsNever<N> extends true
+  ? T["length"]
+  : T["length"] extends N
+    ? InternalUnionMax<Exclude<N, T["length"]>, T>
+    : InternalUnionMax<N, [...T, unknown]>;
 
 /**
 Returns the number with reversed sign.
@@ -140,11 +155,17 @@ type D = ReverseSign<PositiveInfinity>;
 ```
 */
 export type ReverseSign<N extends number> =
-	// Handle edge cases
-	N extends 0 ? 0 : N extends PositiveInfinity ? NegativeInfinity : N extends NegativeInfinity ? PositiveInfinity :
-	// Handle negative numbers
-	`${N}` extends `-${infer P extends number}` ? P
-		// Handle positive numbers
-		: `-${N}` extends `${infer R extends number}` ? R : never;
-
-export {};
+  // Handle edge cases
+  N extends 0
+    ? 0
+    : N extends PositiveInfinity
+      ? NegativeInfinity
+      : N extends NegativeInfinity
+        ? PositiveInfinity
+        : // Handle negative numbers
+          `${N}` extends `-${infer P extends number}`
+          ? P
+          : // Handle positive numbers
+            `-${N}` extends `${infer R extends number}`
+            ? R
+            : never;

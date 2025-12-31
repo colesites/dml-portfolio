@@ -16,10 +16,19 @@
  * Check out [original website](https://cr.yp.to/mac.html).
  * @module
  */
-import { Hash, type Input, abytes, aexists, aoutput, clean, toBytes } from './utils.ts';
+import {
+  abytes,
+  aexists,
+  aoutput,
+  clean,
+  type Hash,
+  type Input,
+  toBytes,
+} from "./utils.ts";
 
 // Based on Public Domain poly1305-donna https://github.com/floodyberry/poly1305-donna
-const u8to16 = (a: Uint8Array, i: number) => (a[i++] & 0xff) | ((a[i++] & 0xff) << 8);
+const u8to16 = (a: Uint8Array, i: number) =>
+  (a[i++] & 0xff) | ((a[i++] & 0xff) << 8);
 class Poly1305 implements Hash<Poly1305> {
   readonly blockLen = 16;
   readonly outputLen = 16;
@@ -79,58 +88,91 @@ class Poly1305 implements Hash<Poly1305> {
     const t6 = u8to16(data, offset + 12);
     const t7 = u8to16(data, offset + 14);
 
-    let h0 = h[0] + (t0 & 0x1fff);
-    let h1 = h[1] + (((t0 >>> 13) | (t1 << 3)) & 0x1fff);
-    let h2 = h[2] + (((t1 >>> 10) | (t2 << 6)) & 0x1fff);
-    let h3 = h[3] + (((t2 >>> 7) | (t3 << 9)) & 0x1fff);
-    let h4 = h[4] + (((t3 >>> 4) | (t4 << 12)) & 0x1fff);
-    let h5 = h[5] + ((t4 >>> 1) & 0x1fff);
-    let h6 = h[6] + (((t4 >>> 14) | (t5 << 2)) & 0x1fff);
-    let h7 = h[7] + (((t5 >>> 11) | (t6 << 5)) & 0x1fff);
-    let h8 = h[8] + (((t6 >>> 8) | (t7 << 8)) & 0x1fff);
-    let h9 = h[9] + ((t7 >>> 5) | hibit);
+    const h0 = h[0] + (t0 & 0x1fff);
+    const h1 = h[1] + (((t0 >>> 13) | (t1 << 3)) & 0x1fff);
+    const h2 = h[2] + (((t1 >>> 10) | (t2 << 6)) & 0x1fff);
+    const h3 = h[3] + (((t2 >>> 7) | (t3 << 9)) & 0x1fff);
+    const h4 = h[4] + (((t3 >>> 4) | (t4 << 12)) & 0x1fff);
+    const h5 = h[5] + ((t4 >>> 1) & 0x1fff);
+    const h6 = h[6] + (((t4 >>> 14) | (t5 << 2)) & 0x1fff);
+    const h7 = h[7] + (((t5 >>> 11) | (t6 << 5)) & 0x1fff);
+    const h8 = h[8] + (((t6 >>> 8) | (t7 << 8)) & 0x1fff);
+    const h9 = h[9] + ((t7 >>> 5) | hibit);
 
     let c = 0;
 
-    let d0 = c + h0 * r0 + h1 * (5 * r9) + h2 * (5 * r8) + h3 * (5 * r7) + h4 * (5 * r6);
+    let d0 =
+      c +
+      h0 * r0 +
+      h1 * (5 * r9) +
+      h2 * (5 * r8) +
+      h3 * (5 * r7) +
+      h4 * (5 * r6);
     c = d0 >>> 13;
     d0 &= 0x1fff;
-    d0 += h5 * (5 * r5) + h6 * (5 * r4) + h7 * (5 * r3) + h8 * (5 * r2) + h9 * (5 * r1);
+    d0 +=
+      h5 * (5 * r5) +
+      h6 * (5 * r4) +
+      h7 * (5 * r3) +
+      h8 * (5 * r2) +
+      h9 * (5 * r1);
     c += d0 >>> 13;
     d0 &= 0x1fff;
 
-    let d1 = c + h0 * r1 + h1 * r0 + h2 * (5 * r9) + h3 * (5 * r8) + h4 * (5 * r7);
+    let d1 =
+      c + h0 * r1 + h1 * r0 + h2 * (5 * r9) + h3 * (5 * r8) + h4 * (5 * r7);
     c = d1 >>> 13;
     d1 &= 0x1fff;
-    d1 += h5 * (5 * r6) + h6 * (5 * r5) + h7 * (5 * r4) + h8 * (5 * r3) + h9 * (5 * r2);
+    d1 +=
+      h5 * (5 * r6) +
+      h6 * (5 * r5) +
+      h7 * (5 * r4) +
+      h8 * (5 * r3) +
+      h9 * (5 * r2);
     c += d1 >>> 13;
     d1 &= 0x1fff;
 
     let d2 = c + h0 * r2 + h1 * r1 + h2 * r0 + h3 * (5 * r9) + h4 * (5 * r8);
     c = d2 >>> 13;
     d2 &= 0x1fff;
-    d2 += h5 * (5 * r7) + h6 * (5 * r6) + h7 * (5 * r5) + h8 * (5 * r4) + h9 * (5 * r3);
+    d2 +=
+      h5 * (5 * r7) +
+      h6 * (5 * r6) +
+      h7 * (5 * r5) +
+      h8 * (5 * r4) +
+      h9 * (5 * r3);
     c += d2 >>> 13;
     d2 &= 0x1fff;
 
     let d3 = c + h0 * r3 + h1 * r2 + h2 * r1 + h3 * r0 + h4 * (5 * r9);
     c = d3 >>> 13;
     d3 &= 0x1fff;
-    d3 += h5 * (5 * r8) + h6 * (5 * r7) + h7 * (5 * r6) + h8 * (5 * r5) + h9 * (5 * r4);
+    d3 +=
+      h5 * (5 * r8) +
+      h6 * (5 * r7) +
+      h7 * (5 * r6) +
+      h8 * (5 * r5) +
+      h9 * (5 * r4);
     c += d3 >>> 13;
     d3 &= 0x1fff;
 
     let d4 = c + h0 * r4 + h1 * r3 + h2 * r2 + h3 * r1 + h4 * r0;
     c = d4 >>> 13;
     d4 &= 0x1fff;
-    d4 += h5 * (5 * r9) + h6 * (5 * r8) + h7 * (5 * r7) + h8 * (5 * r6) + h9 * (5 * r5);
+    d4 +=
+      h5 * (5 * r9) +
+      h6 * (5 * r8) +
+      h7 * (5 * r7) +
+      h8 * (5 * r6) +
+      h9 * (5 * r5);
     c += d4 >>> 13;
     d4 &= 0x1fff;
 
     let d5 = c + h0 * r5 + h1 * r4 + h2 * r3 + h3 * r2 + h4 * r1;
     c = d5 >>> 13;
     d5 &= 0x1fff;
-    d5 += h5 * r0 + h6 * (5 * r9) + h7 * (5 * r8) + h8 * (5 * r7) + h9 * (5 * r6);
+    d5 +=
+      h5 * r0 + h6 * (5 * r9) + h7 * (5 * r8) + h8 * (5 * r7) + h9 * (5 * r6);
     c += d5 >>> 13;
     d5 &= 0x1fff;
 
@@ -286,14 +328,15 @@ class Poly1305 implements Hash<Poly1305> {
 
 export type CHash = ReturnType<typeof wrapConstructorWithKey>;
 export function wrapConstructorWithKey<H extends Hash<H>>(
-  hashCons: (key: Input) => Hash<H>
+  hashCons: (key: Input) => Hash<H>,
 ): {
   (msg: Input, key: Input): Uint8Array;
   outputLen: number;
   blockLen: number;
   create(key: Input): Hash<H>;
 } {
-  const hashC = (msg: Input, key: Input): Uint8Array => hashCons(key).update(toBytes(msg)).digest();
+  const hashC = (msg: Input, key: Input): Uint8Array =>
+    hashCons(key).update(toBytes(msg)).digest();
   const tmp = hashCons(new Uint8Array(32));
   hashC.outputLen = tmp.outputLen;
   hashC.blockLen = tmp.blockLen;
@@ -302,4 +345,6 @@ export function wrapConstructorWithKey<H extends Hash<H>>(
 }
 
 /** Poly1305 MAC from RFC 8439. */
-export const poly1305: CHash = wrapConstructorWithKey((key) => new Poly1305(key));
+export const poly1305: CHash = wrapConstructorWithKey(
+  (key) => new Poly1305(key),
+);

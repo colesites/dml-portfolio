@@ -74,11 +74,7 @@ var _baseMimes = {
   "3gp": "video/3gpp",
   "3g2": "video/3gpp2",
   gltf: "model/gltf+json",
-  glb: "model/gltf-binary"
+  glb: "model/gltf-binary",
 };
 var baseMimes = _baseMimes;
-export {
-  getExtension,
-  getMimeType,
-  baseMimes as mimes
-};
+export { getExtension, getMimeType, baseMimes as mimes };

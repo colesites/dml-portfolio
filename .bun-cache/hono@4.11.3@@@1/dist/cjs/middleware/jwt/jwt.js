@@ -8,21 +8,25 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var jwt_exports = {};
 __export(jwt_exports, {
   decode: () => decode,
   jwt: () => jwt,
   sign: () => sign,
   verify: () => verify,
-  verifyWithJwks: () => verifyWithJwks
+  verifyWithJwks: () => verifyWithJwks,
 });
 module.exports = __toCommonJS(jwt_exports);
 var import_cookie = require("../../helper/cookie");
@@ -35,7 +39,9 @@ const jwt = (options) => {
     throw new Error('JWT auth middleware requires options for "secret"');
   }
   if (!crypto.subtle || !crypto.subtle.importKey) {
-    throw new Error("`crypto.subtle.importKey` is undefined. JWT auth middleware requires it.");
+    throw new Error(
+      "`crypto.subtle.importKey` is undefined. JWT auth middleware requires it.",
+    );
   }
   return async function jwt2(ctx, next) {
     const headerName = options.headerName || "Authorization";
@@ -50,8 +56,8 @@ const jwt = (options) => {
           res: unauthorizedResponse({
             ctx,
             error: "invalid_request",
-            errDescription
-          })
+            errDescription,
+          }),
         });
       } else {
         token = parts[1];
@@ -65,14 +71,22 @@ const jwt = (options) => {
             ctx,
             options.cookie.secret,
             options.cookie.key,
-            options.cookie.prefixOptions
+            options.cookie.prefixOptions,
           );
         } else {
-          token = await (0, import_cookie.getSignedCookie)(ctx, options.cookie.secret, options.cookie.key);
+          token = await (0, import_cookie.getSignedCookie)(
+            ctx,
+            options.cookie.secret,
+            options.cookie.key,
+          );
         }
       } else {
         if (options.cookie.prefixOptions) {
-          token = (0, import_cookie.getCookie)(ctx, options.cookie.key, options.cookie.prefixOptions);
+          token = (0, import_cookie.getCookie)(
+            ctx,
+            options.cookie.key,
+            options.cookie.prefixOptions,
+          );
         } else {
           token = (0, import_cookie.getCookie)(ctx, options.cookie.key);
         }
@@ -85,8 +99,8 @@ const jwt = (options) => {
         res: unauthorizedResponse({
           ctx,
           error: "invalid_request",
-          errDescription
-        })
+          errDescription,
+        }),
       });
     }
     let payload;
@@ -94,7 +108,7 @@ const jwt = (options) => {
     try {
       payload = await import_jwt.Jwt.verify(token, options.secret, {
         alg: options.alg,
-        ...verifyOpts
+        ...verifyOpts,
       });
     } catch (e) {
       cause = e;
@@ -106,9 +120,9 @@ const jwt = (options) => {
           ctx,
           error: "invalid_token",
           statusText: "Unauthorized",
-          errDescription: "token verification failure"
+          errDescription: "token verification failure",
         }),
-        cause
+        cause,
       });
     }
     ctx.set("jwtPayload", payload);
@@ -120,8 +134,8 @@ function unauthorizedResponse(opts) {
     status: 401,
     statusText: opts.statusText,
     headers: {
-      "WWW-Authenticate": `Bearer realm="${opts.ctx.req.url}",error="${opts.error}",error_description="${opts.errDescription}"`
-    }
+      "WWW-Authenticate": `Bearer realm="${opts.ctx.req.url}",error="${opts.error}",error_description="${opts.errDescription}"`,
+    },
   });
 }
 const verifyWithJwks = import_jwt.Jwt.verifyWithJwks;
@@ -129,10 +143,11 @@ const verify = import_jwt.Jwt.verify;
 const decode = import_jwt.Jwt.decode;
 const sign = import_jwt.Jwt.sign;
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  decode,
-  jwt,
-  sign,
-  verify,
-  verifyWithJwks
-});
+0 &&
+  (module.exports = {
+    decode,
+    jwt,
+    sign,
+    verify,
+    verifyWithJwks,
+  });

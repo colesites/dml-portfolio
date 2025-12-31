@@ -1,5 +1,5 @@
-import type { Emitter } from 'strict-event-emitter'
-import type { UnhandledRequestStrategy } from './utils/request/onUnhandledRequest'
+import type { Emitter } from "strict-event-emitter";
+import type { UnhandledRequestStrategy } from "./utils/request/onUnhandledRequest";
 
 export interface SharedOptions {
   /**
@@ -10,57 +10,57 @@ export interface SharedOptions {
    * @example worker.start({ onUnhandledRequest: 'warn' })
    * @example server.listen({ onUnhandledRequest: 'error' })
    */
-  onUnhandledRequest?: UnhandledRequestStrategy
+  onUnhandledRequest?: UnhandledRequestStrategy;
 }
 
 export type LifeCycleEventsMap = {
-  'request:start': [
+  "request:start": [
     args: {
-      request: Request
-      requestId: string
+      request: Request;
+      requestId: string;
     },
-  ]
-  'request:match': [
+  ];
+  "request:match": [
     args: {
-      request: Request
-      requestId: string
+      request: Request;
+      requestId: string;
     },
-  ]
-  'request:unhandled': [
+  ];
+  "request:unhandled": [
     args: {
-      request: Request
-      requestId: string
+      request: Request;
+      requestId: string;
     },
-  ]
-  'request:end': [
+  ];
+  "request:end": [
     args: {
-      request: Request
-      requestId: string
+      request: Request;
+      requestId: string;
     },
-  ]
-  'response:mocked': [
+  ];
+  "response:mocked": [
     args: {
-      response: Response
-      request: Request
-      requestId: string
+      response: Response;
+      request: Request;
+      requestId: string;
     },
-  ]
-  'response:bypass': [
+  ];
+  "response:bypass": [
     args: {
-      response: Response
-      request: Request
-      requestId: string
+      response: Response;
+      request: Request;
+      requestId: string;
     },
-  ]
+  ];
   unhandledException: [
     args: {
-      error: Error
-      request: Request
-      requestId: string
+      error: Error;
+      request: Request;
+      requestId: string;
     },
-  ]
-}
+  ];
+};
 
 export type LifeCycleEventEmitter<
   EventsMap extends Record<string | symbol, any>,
-> = Pick<Emitter<EventsMap>, 'on' | 'removeListener' | 'removeAllListeners'>
+> = Pick<Emitter<EventsMap>, "on" | "removeListener" | "removeAllListeners">;

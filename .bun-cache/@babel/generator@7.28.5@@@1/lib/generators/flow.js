@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.AnyTypeAnnotation = AnyTypeAnnotation;
 exports.ArrayTypeAnnotation = ArrayTypeAnnotation;
@@ -34,7 +34,10 @@ exports.FunctionTypeParam = FunctionTypeParam;
 exports.IndexedAccessType = IndexedAccessType;
 exports.InferredPredicate = InferredPredicate;
 exports.InterfaceDeclaration = InterfaceDeclaration;
-exports.GenericTypeAnnotation = exports.ClassImplements = exports.InterfaceExtends = InterfaceExtends;
+exports.GenericTypeAnnotation =
+  exports.ClassImplements =
+  exports.InterfaceExtends =
+    InterfaceExtends;
 exports.InterfaceTypeAnnotation = InterfaceTypeAnnotation;
 exports.IntersectionTypeAnnotation = IntersectionTypeAnnotation;
 exports.MixedTypeAnnotation = MixedTypeAnnotation;
@@ -42,9 +45,7 @@ exports.NullLiteralTypeAnnotation = NullLiteralTypeAnnotation;
 exports.NullableTypeAnnotation = NullableTypeAnnotation;
 Object.defineProperty(exports, "NumberLiteralTypeAnnotation", {
   enumerable: true,
-  get: function () {
-    return _types2.NumericLiteral;
-  }
+  get: () => _types2.NumericLiteral,
 });
 exports.NumberTypeAnnotation = NumberTypeAnnotation;
 exports.ObjectTypeAnnotation = ObjectTypeAnnotation;
@@ -58,9 +59,7 @@ exports.OptionalIndexedAccessType = OptionalIndexedAccessType;
 exports.QualifiedTypeIdentifier = QualifiedTypeIdentifier;
 Object.defineProperty(exports, "StringLiteralTypeAnnotation", {
   enumerable: true,
-  get: function () {
-    return _types2.StringLiteral;
-  }
+  get: () => _types2.StringLiteral,
 });
 exports.StringTypeAnnotation = StringTypeAnnotation;
 exports.SymbolTypeAnnotation = SymbolTypeAnnotation;
@@ -70,7 +69,8 @@ exports.TypeAlias = TypeAlias;
 exports.TypeAnnotation = TypeAnnotation;
 exports.TypeCastExpression = TypeCastExpression;
 exports.TypeParameter = TypeParameter;
-exports.TypeParameterDeclaration = exports.TypeParameterInstantiation = TypeParameterInstantiation;
+exports.TypeParameterDeclaration = exports.TypeParameterInstantiation =
+  TypeParameterInstantiation;
 exports.TypeofTypeAnnotation = TypeofTypeAnnotation;
 exports.UnionTypeAnnotation = UnionTypeAnnotation;
 exports.Variance = Variance;
@@ -81,10 +81,7 @@ var _t = require("@babel/types");
 var _modules = require("./modules.js");
 var _index = require("../node/index.js");
 var _types2 = require("./types.js");
-const {
-  isDeclareExportDeclaration,
-  isStatement
-} = _t;
+const { isDeclareExportDeclaration, isStatement } = _t;
 function AnyTypeAnnotation() {
   this.word("any");
 }
@@ -199,10 +196,7 @@ function DeclareExportAllDeclaration(node) {
   _modules.ExportAllDeclaration.call(this, node);
 }
 function EnumDeclaration(node) {
-  const {
-    id,
-    body
-  } = node;
+  const { id, body } = node;
   this.word("enum");
   this.space();
   this.print(id);
@@ -218,9 +212,7 @@ function enumExplicitType(context, name, hasExplicitType) {
   context.space();
 }
 function enumBody(context, node) {
-  const {
-    members
-  } = node;
+  const { members } = node;
   context.token("{");
   context.indent();
   context.newline();
@@ -236,23 +228,17 @@ function enumBody(context, node) {
   context.token("}");
 }
 function EnumBooleanBody(node) {
-  const {
-    explicitType
-  } = node;
+  const { explicitType } = node;
   enumExplicitType(this, "boolean", explicitType);
   enumBody(this, node);
 }
 function EnumNumberBody(node) {
-  const {
-    explicitType
-  } = node;
+  const { explicitType } = node;
   enumExplicitType(this, "number", explicitType);
   enumBody(this, node);
 }
 function EnumStringBody(node) {
-  const {
-    explicitType
-  } = node;
+  const { explicitType } = node;
   enumExplicitType(this, "string", explicitType);
   enumBody(this, node);
 }
@@ -261,9 +247,7 @@ function EnumSymbolBody(node) {
   enumBody(this, node);
 }
 function EnumDefaultedMember(node) {
-  const {
-    id
-  } = node;
+  const { id } = node;
   this.print(id);
   this.tokenChar(44);
 }
@@ -333,7 +317,13 @@ function FunctionTypeAnnotation(node, parent) {
   }
   this.tokenChar(41);
   const type = parent == null ? void 0 : parent.type;
-  if (type != null && (type === "ObjectTypeCallProperty" || type === "ObjectTypeInternalSlot" || type === "DeclareFunction" || type === "ObjectTypeProperty" && parent.method)) {
+  if (
+    type != null &&
+    (type === "ObjectTypeCallProperty" ||
+      type === "ObjectTypeInternalSlot" ||
+      type === "DeclareFunction" ||
+      (type === "ObjectTypeProperty" && parent.method))
+  ) {
     this.tokenChar(58);
   } else {
     this.space();
@@ -373,7 +363,10 @@ function _interfaceish(node) {
       this.space();
       this.printList(node.mixins);
     }
-    if ((_node$implements = node.implements) != null && _node$implements.length) {
+    if (
+      (_node$implements = node.implements) != null &&
+      _node$implements.length
+    ) {
       this.space();
       this.word("implements");
       this.space();
@@ -385,7 +378,8 @@ function _interfaceish(node) {
 }
 function _variance(node) {
   var _node$variance;
-  const kind = (_node$variance = node.variance) == null ? void 0 : _node$variance.kind;
+  const kind =
+    (_node$variance = node.variance) == null ? void 0 : _node$variance.kind;
   if (kind != null) {
     if (kind === "plus") {
       this.tokenChar(43);
@@ -513,7 +507,12 @@ function ObjectTypeAnnotation(node) {
   } else {
     this.tokenChar(123);
   }
-  const props = [...node.properties, ...(node.callProperties || []), ...(node.indexers || []), ...(node.internalSlots || [])];
+  const props = [
+    ...node.properties,
+    ...(node.callProperties || []),
+    ...(node.indexers || []),
+    ...(node.internalSlots || []),
+  ];
   if (props.length) {
     this.newline();
     this.space();

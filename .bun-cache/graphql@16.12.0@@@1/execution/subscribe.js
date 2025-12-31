@@ -1,30 +1,28 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.createSourceEventStream = createSourceEventStream;
 exports.subscribe = subscribe;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _isAsyncIterable = require('../jsutils/isAsyncIterable.js');
+var _isAsyncIterable = require("../jsutils/isAsyncIterable.js");
 
-var _Path = require('../jsutils/Path.js');
+var _Path = require("../jsutils/Path.js");
 
-var _GraphQLError = require('../error/GraphQLError.js');
+var _GraphQLError = require("../error/GraphQLError.js");
 
-var _locatedError = require('../error/locatedError.js');
+var _locatedError = require("../error/locatedError.js");
 
-var _collectFields = require('./collectFields.js');
+var _collectFields = require("./collectFields.js");
 
-var _execute = require('./execute.js');
+var _execute = require("./execute.js");
 
-var _mapAsyncIterator = require('./mapAsyncIterator.js');
+var _mapAsyncIterator = require("./mapAsyncIterator.js");
 
-var _values = require('./values.js');
+var _values = require("./values.js");
 
 /**
  * Implements the "Subscribe" algorithm described in the GraphQL specification.
@@ -52,7 +50,7 @@ async function subscribe(args) {
   arguments.length < 2 ||
     (0, _devAssert.devAssert)(
       false,
-      'graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.',
+      "graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.",
     );
   const resultOrStream = await createSourceEventStream(args);
 
@@ -77,7 +75,7 @@ async function subscribe(args) {
 function toNormalizedArgs(args) {
   const firstArg = args[0];
 
-  if (firstArg && 'document' in firstArg) {
+  if (firstArg && "document" in firstArg) {
     return firstArg;
   }
 
@@ -131,7 +129,7 @@ async function createSourceEventStream(...rawArgs) {
 
   const exeContext = (0, _execute.buildExecutionContext)(args); // Return early errors if execution context failed.
 
-  if (!('schema' in exeContext)) {
+  if (!("schema" in exeContext)) {
     return {
       errors: exeContext,
     };
@@ -142,7 +140,7 @@ async function createSourceEventStream(...rawArgs) {
 
     if (!(0, _isAsyncIterable.isAsyncIterable)(eventStream)) {
       throw new Error(
-        'Subscription field must return Async Iterable. ' +
+        "Subscription field must return Async Iterable. " +
           `Received: ${(0, _inspect.inspect)(eventStream)}.`,
       );
     }
@@ -168,7 +166,7 @@ async function executeSubscription(exeContext) {
 
   if (rootType == null) {
     throw new _GraphQLError.GraphQLError(
-      'Schema is not configured to execute subscription operation.',
+      "Schema is not configured to execute subscription operation.",
       {
         nodes: operation,
       },

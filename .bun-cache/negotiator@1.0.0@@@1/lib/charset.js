@@ -1,14 +1,4 @@
 /**
- * negotiator
- * Copyright(c) 2012 Isaac Z. Schlueter
- * Copyright(c) 2014 Federico Romero
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict';
-
-/**
  * Module exports.
  * @public
  */
@@ -29,7 +19,7 @@ var simpleCharsetRegExp = /^\s*([^\s;]+)\s*(?:;(.*))?$/;
  */
 
 function parseAcceptCharset(accept) {
-  var accepts = accept.split(',');
+  var accepts = accept.split(",");
 
   for (var i = 0, j = 0; i < accepts.length; i++) {
     var charset = parseCharset(accepts[i].trim(), i);
@@ -57,10 +47,10 @@ function parseCharset(str, i) {
   var charset = match[1];
   var q = 1;
   if (match[2]) {
-    var params = match[2].split(';')
+    var params = match[2].split(";");
     for (var j = 0; j < params.length; j++) {
-      var p = params[j].trim().split('=');
-      if (p[0] === 'q') {
+      var p = params[j].trim().split("=");
+      if (p[0] === "q") {
         q = parseFloat(p[1]);
         break;
       }
@@ -70,7 +60,7 @@ function parseCharset(str, i) {
   return {
     charset: charset,
     q: q,
-    i: i
+    i: i,
   };
 }
 
@@ -80,12 +70,15 @@ function parseCharset(str, i) {
  */
 
 function getCharsetPriority(charset, accepted, index) {
-  var priority = {o: -1, q: 0, s: 0};
+  var priority = { o: -1, q: 0, s: 0 };
 
   for (var i = 0; i < accepted.length; i++) {
     var spec = specify(charset, accepted[i], index);
 
-    if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
+    if (
+      spec &&
+      (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0
+    ) {
       priority = spec;
     }
   }
@@ -100,18 +93,18 @@ function getCharsetPriority(charset, accepted, index) {
 
 function specify(charset, spec, index) {
   var s = 0;
-  if(spec.charset.toLowerCase() === charset.toLowerCase()){
+  if (spec.charset.toLowerCase() === charset.toLowerCase()) {
     s |= 1;
-  } else if (spec.charset !== '*' ) {
-    return null
+  } else if (spec.charset !== "*") {
+    return null;
   }
 
   return {
     i: index,
     o: spec.i,
     q: spec.q,
-    s: s
-  }
+    s: s,
+  };
 }
 
 /**
@@ -121,14 +114,11 @@ function specify(charset, spec, index) {
 
 function preferredCharsets(accept, provided) {
   // RFC 2616 sec 14.2: no header = *
-  var accepts = parseAcceptCharset(accept === undefined ? '*' : accept || '');
+  var accepts = parseAcceptCharset(accept === undefined ? "*" : accept || "");
 
   if (!provided) {
     // sorted list of all charsets
-    return accepts
-      .filter(isQuality)
-      .sort(compareSpecs)
-      .map(getFullCharset);
+    return accepts.filter(isQuality).sort(compareSpecs).map(getFullCharset);
   }
 
   var priorities = provided.map(function getPriority(type, index) {
@@ -136,9 +126,12 @@ function preferredCharsets(accept, provided) {
   });
 
   // sorted list of accepted charsets
-  return priorities.filter(isQuality).sort(compareSpecs).map(function getCharset(priority) {
-    return provided[priorities.indexOf(priority)];
-  });
+  return priorities
+    .filter(isQuality)
+    .sort(compareSpecs)
+    .map(function getCharset(priority) {
+      return provided[priorities.indexOf(priority)];
+    });
 }
 
 /**
@@ -147,7 +140,7 @@ function preferredCharsets(accept, provided) {
  */
 
 function compareSpecs(a, b) {
-  return (b.q - a.q) || (b.s - a.s) || (a.o - b.o) || (a.i - b.i) || 0;
+  return b.q - a.q || b.s - a.s || a.o - b.o || a.i - b.i || 0;
 }
 
 /**

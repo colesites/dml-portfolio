@@ -16,19 +16,23 @@
  * @experimental
  */
 export function assertToolsCallTaskCapability(requests, method, entityName) {
-    if (!requests) {
-        throw new Error(`${entityName} does not support task creation (required for ${method})`);
-    }
-    switch (method) {
-        case 'tools/call':
-            if (!requests.tools?.call) {
-                throw new Error(`${entityName} does not support task creation for tools/call (required for ${method})`);
-            }
-            break;
-        default:
-            // Method doesn't support tasks, which is fine - no error
-            break;
-    }
+  if (!requests) {
+    throw new Error(
+      `${entityName} does not support task creation (required for ${method})`,
+    );
+  }
+  switch (method) {
+    case "tools/call":
+      if (!requests.tools?.call) {
+        throw new Error(
+          `${entityName} does not support task creation for tools/call (required for ${method})`,
+        );
+      }
+      break;
+    default:
+      // Method doesn't support tasks, which is fine - no error
+      break;
+  }
 }
 /**
  * Asserts that task creation is supported for sampling/createMessage or elicitation/create.
@@ -41,24 +45,34 @@ export function assertToolsCallTaskCapability(requests, method, entityName) {
  *
  * @experimental
  */
-export function assertClientRequestTaskCapability(requests, method, entityName) {
-    if (!requests) {
-        throw new Error(`${entityName} does not support task creation (required for ${method})`);
-    }
-    switch (method) {
-        case 'sampling/createMessage':
-            if (!requests.sampling?.createMessage) {
-                throw new Error(`${entityName} does not support task creation for sampling/createMessage (required for ${method})`);
-            }
-            break;
-        case 'elicitation/create':
-            if (!requests.elicitation?.create) {
-                throw new Error(`${entityName} does not support task creation for elicitation/create (required for ${method})`);
-            }
-            break;
-        default:
-            // Method doesn't support tasks, which is fine - no error
-            break;
-    }
+export function assertClientRequestTaskCapability(
+  requests,
+  method,
+  entityName,
+) {
+  if (!requests) {
+    throw new Error(
+      `${entityName} does not support task creation (required for ${method})`,
+    );
+  }
+  switch (method) {
+    case "sampling/createMessage":
+      if (!requests.sampling?.createMessage) {
+        throw new Error(
+          `${entityName} does not support task creation for sampling/createMessage (required for ${method})`,
+        );
+      }
+      break;
+    case "elicitation/create":
+      if (!requests.elicitation?.create) {
+        throw new Error(
+          `${entityName} does not support task creation for elicitation/create (required for ${method})`,
+        );
+      }
+      break;
+    default:
+      // Method doesn't support tasks, which is fine - no error
+      break;
+  }
 }
 //# sourceMappingURL=helpers.js.map

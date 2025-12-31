@@ -2,56 +2,60 @@
  * @module
  * Bearer Auth Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
-type MessageFunction = (c: Context) => string | object | Promise<string | object>;
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
+type MessageFunction = (
+  c: Context,
+) => string | object | Promise<string | object>;
 type CustomizedErrorResponseOptions = {
-    wwwAuthenticateHeader?: string | object | MessageFunction;
-    message?: string | object | MessageFunction;
+  wwwAuthenticateHeader?: string | object | MessageFunction;
+  message?: string | object | MessageFunction;
 };
-type BearerAuthOptions = {
-    token: string | string[];
-    realm?: string;
-    prefix?: string;
-    headerName?: string;
-    hashFunction?: Function;
-    /**
-     * @deprecated Use noAuthenticationHeader.message instead
-     */
-    noAuthenticationHeaderMessage?: string | object | MessageFunction;
-    noAuthenticationHeader?: CustomizedErrorResponseOptions;
-    /**
-     * @deprecated Use invalidAuthenticationHeader.message instead
-     */
-    invalidAuthenticationHeaderMessage?: string | object | MessageFunction;
-    invalidAuthenticationHeader?: CustomizedErrorResponseOptions;
-    /**
-     * @deprecated Use invalidToken.message instead
-     */
-    invalidTokenMessage?: string | object | MessageFunction;
-    invalidToken?: CustomizedErrorResponseOptions;
-} | {
-    realm?: string;
-    prefix?: string;
-    headerName?: string;
-    verifyToken: (token: string, c: Context) => boolean | Promise<boolean>;
-    hashFunction?: Function;
-    /**
-     * @deprecated Use noAuthenticationHeader.message instead
-     */
-    noAuthenticationHeaderMessage?: string | object | MessageFunction;
-    noAuthenticationHeader?: CustomizedErrorResponseOptions;
-    /**
-     * @deprecated Use invalidAuthenticationHeader.message instead
-     */
-    invalidAuthenticationHeaderMessage?: string | object | MessageFunction;
-    invalidAuthenticationHeader?: CustomizedErrorResponseOptions;
-    /**
-     * @deprecated Use invalidToken.message instead
-     */
-    invalidTokenMessage?: string | object | MessageFunction;
-    invalidToken?: CustomizedErrorResponseOptions;
-};
+type BearerAuthOptions =
+  | {
+      token: string | string[];
+      realm?: string;
+      prefix?: string;
+      headerName?: string;
+      hashFunction?: Function;
+      /**
+       * @deprecated Use noAuthenticationHeader.message instead
+       */
+      noAuthenticationHeaderMessage?: string | object | MessageFunction;
+      noAuthenticationHeader?: CustomizedErrorResponseOptions;
+      /**
+       * @deprecated Use invalidAuthenticationHeader.message instead
+       */
+      invalidAuthenticationHeaderMessage?: string | object | MessageFunction;
+      invalidAuthenticationHeader?: CustomizedErrorResponseOptions;
+      /**
+       * @deprecated Use invalidToken.message instead
+       */
+      invalidTokenMessage?: string | object | MessageFunction;
+      invalidToken?: CustomizedErrorResponseOptions;
+    }
+  | {
+      realm?: string;
+      prefix?: string;
+      headerName?: string;
+      verifyToken: (token: string, c: Context) => boolean | Promise<boolean>;
+      hashFunction?: Function;
+      /**
+       * @deprecated Use noAuthenticationHeader.message instead
+       */
+      noAuthenticationHeaderMessage?: string | object | MessageFunction;
+      noAuthenticationHeader?: CustomizedErrorResponseOptions;
+      /**
+       * @deprecated Use invalidAuthenticationHeader.message instead
+       */
+      invalidAuthenticationHeaderMessage?: string | object | MessageFunction;
+      invalidAuthenticationHeader?: CustomizedErrorResponseOptions;
+      /**
+       * @deprecated Use invalidToken.message instead
+       */
+      invalidTokenMessage?: string | object | MessageFunction;
+      invalidToken?: CustomizedErrorResponseOptions;
+    };
 /**
  * Bearer Auth Middleware for Hono.
  *
@@ -87,5 +91,6 @@ type BearerAuthOptions = {
  * })
  * ```
  */
-export declare const bearerAuth: (options: BearerAuthOptions) => MiddlewareHandler;
-export {};
+export declare const bearerAuth: (
+  options: BearerAuthOptions,
+) => MiddlewareHandler;

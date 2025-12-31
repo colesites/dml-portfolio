@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _objectSpread;
 var _defineProperty = require("./defineProperty.js");
@@ -10,11 +10,14 @@ function _objectSpread(target) {
     var source = arguments[i] != null ? Object(arguments[i]) : {};
     var ownKeys = Object.keys(source);
     if (typeof Object.getOwnPropertySymbols === "function") {
-      ownKeys.push.apply(ownKeys, Object.getOwnPropertySymbols(source).filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
-      }));
+      ownKeys.push.apply(
+        ownKeys,
+        Object.getOwnPropertySymbols(source).filter(
+          (sym) => Object.getOwnPropertyDescriptor(source, sym).enumerable,
+        ),
+      );
     }
-    ownKeys.forEach(function (key) {
+    ownKeys.forEach((key) => {
       (0, _defineProperty.default)(target, key, source[key]);
     });
   }

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.unload = exports.load = exports.onExit = void 0;
-const onExit = () => () => { };
+const onExit = () => () => {};
 exports.onExit = onExit;
-const load = () => { };
+const load = () => {};
 exports.load = load;
-const unload = () => { };
+const unload = () => {};
 exports.unload = unload;
 //# sourceMappingURL=browser.js.map

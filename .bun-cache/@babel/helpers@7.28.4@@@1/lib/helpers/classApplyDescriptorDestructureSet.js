@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _classApplyDescriptorDestructureSet;
 function _classApplyDescriptorDestructureSet(receiver, descriptor) {
@@ -10,7 +10,7 @@ function _classApplyDescriptorDestructureSet(receiver, descriptor) {
       descriptor.__destrObj = {
         set value(v) {
           descriptor.set.call(receiver, v);
-        }
+        },
       };
     }
     return descriptor.__destrObj;

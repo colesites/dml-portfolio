@@ -2,4 +2,4 @@
  * @module
  * PatternRouter for Hono.
  */
-export { PatternRouter } from './router';
+export { PatternRouter } from "./router";

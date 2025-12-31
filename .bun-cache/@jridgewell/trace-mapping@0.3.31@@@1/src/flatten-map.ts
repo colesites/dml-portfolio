@@ -1,34 +1,41 @@
-import { TraceMap, presortedDecodedMap, decodedMappings } from './trace-mapping';
+import type { SourceMapSegment } from "./sourcemap-segment";
 import {
   COLUMN,
-  SOURCES_INDEX,
-  SOURCE_LINE,
-  SOURCE_COLUMN,
   NAMES_INDEX,
-} from './sourcemap-segment';
-import { parse } from './types';
+  SOURCE_COLUMN,
+  SOURCE_LINE,
+  SOURCES_INDEX,
+} from "./sourcemap-segment";
+import {
+  decodedMappings,
+  presortedDecodedMap,
+  TraceMap,
+} from "./trace-mapping";
 
 import type {
   DecodedSourceMap,
   DecodedSourceMapXInput,
   EncodedSourceMapXInput,
-  SectionedSourceMapXInput,
-  SectionedSourceMapInput,
-  SectionXInput,
   Ro,
-} from './types';
-import type { SourceMapSegment } from './sourcemap-segment';
+  SectionedSourceMapInput,
+  SectionedSourceMapXInput,
+  SectionXInput,
+} from "./types";
+import { parse } from "./types";
 
 type FlattenMap = {
   new (map: Ro<SectionedSourceMapInput>, mapUrl?: string | null): TraceMap;
   (map: Ro<SectionedSourceMapInput>, mapUrl?: string | null): TraceMap;
 };
 
-export const FlattenMap: FlattenMap = function (map, mapUrl) {
+export const FlattenMap: FlattenMap = ((map, mapUrl) => {
   const parsed = parse(map as SectionedSourceMapInput);
 
-  if (!('sections' in parsed)) {
-    return new TraceMap(parsed as DecodedSourceMapXInput | EncodedSourceMapXInput, mapUrl);
+  if (!("sections" in parsed)) {
+    return new TraceMap(
+      parsed as DecodedSourceMapXInput | EncodedSourceMapXInput,
+      mapUrl,
+    );
   }
 
   const mappings: SourceMapSegment[][] = [];
@@ -62,7 +69,7 @@ export const FlattenMap: FlattenMap = function (map, mapUrl) {
   };
 
   return presortedDecodedMap(joined);
-} as FlattenMap;
+}) as FlattenMap;
 
 function recurse(
   input: SectionedSourceMapXInput,
@@ -111,7 +118,7 @@ function recurse(
 }
 
 function addSection(
-  input: SectionXInput['map'],
+  input: SectionXInput["map"],
   mapUrl: string | null | undefined,
   mappings: SourceMapSegment[][],
   sources: string[],
@@ -124,21 +131,29 @@ function addSection(
   stopColumn: number,
 ) {
   const parsed = parse(input);
-  if ('sections' in parsed) return recurse(...(arguments as unknown as Parameters<typeof recurse>));
+  if ("sections" in parsed)
+    return recurse(...(arguments as unknown as Parameters<typeof recurse>));
 
   const map = new TraceMap(parsed, mapUrl);
   const sourcesOffset = sources.length;
   const namesOffset = names.length;
   const decoded = decodedMappings(map);
-  const { resolvedSources, sourcesContent: contents, ignoreList: ignores } = map;
+  const {
+    resolvedSources,
+    sourcesContent: contents,
+    ignoreList: ignores,
+  } = map;
 
   append(sources, resolvedSources);
   append(names, map.names);
 
   if (contents) append(sourcesContent, contents);
-  else for (let i = 0; i < resolvedSources.length; i++) sourcesContent.push(null);
+  else
+    for (let i = 0; i < resolvedSources.length; i++) sourcesContent.push(null);
 
-  if (ignores) for (let i = 0; i < ignores.length; i++) ignoreList.push(ignores[i] + sourcesOffset);
+  if (ignores)
+    for (let i = 0; i < ignores.length; i++)
+      ignoreList.push(ignores[i] + sourcesOffset);
 
   for (let i = 0; i < decoded.length; i++) {
     const lineI = lineOffset + i;
@@ -176,7 +191,13 @@ function addSection(
       out.push(
         seg.length === 4
           ? [column, sourcesIndex, sourceLine, sourceColumn]
-          : [column, sourcesIndex, sourceLine, sourceColumn, namesOffset + seg[NAMES_INDEX]],
+          : [
+              column,
+              sourcesIndex,
+              sourceLine,
+              sourceColumn,
+              namesOffset + seg[NAMES_INDEX],
+            ],
       );
     }
   }

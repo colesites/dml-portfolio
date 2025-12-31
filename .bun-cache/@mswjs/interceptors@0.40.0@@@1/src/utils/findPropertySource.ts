@@ -4,17 +4,17 @@
  */
 export function findPropertySource(
   target: object,
-  propertyName: string | symbol
+  propertyName: string | symbol,
 ): object | null {
   if (!(propertyName in target)) {
-    return null
+    return null;
   }
 
-  const hasProperty = Object.prototype.hasOwnProperty.call(target, propertyName)
+  const hasProperty = Object.hasOwn(target, propertyName);
   if (hasProperty) {
-    return target
+    return target;
   }
 
-  const prototype = Reflect.getPrototypeOf(target)
-  return prototype ? findPropertySource(prototype, propertyName) : null
+  const prototype = Reflect.getPrototypeOf(target);
+  return prototype ? findPropertySource(prototype, propertyName) : null;
 }

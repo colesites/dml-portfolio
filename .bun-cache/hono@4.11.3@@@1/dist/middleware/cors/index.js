@@ -4,23 +4,23 @@ var cors = (options) => {
     origin: "*",
     allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
     allowHeaders: [],
-    exposeHeaders: []
+    exposeHeaders: [],
   };
   const opts = {
     ...defaults,
-    ...options
+    ...options,
   };
   const findAllowOrigin = ((optsOrigin) => {
     if (typeof optsOrigin === "string") {
       if (optsOrigin === "*") {
         return () => optsOrigin;
       } else {
-        return (origin) => optsOrigin === origin ? origin : null;
+        return (origin) => (optsOrigin === origin ? origin : null);
       }
     } else if (typeof optsOrigin === "function") {
       return optsOrigin;
     } else {
-      return (origin) => optsOrigin.includes(origin) ? origin : null;
+      return (origin) => (optsOrigin.includes(origin) ? origin : null);
     }
   })(opts.origin);
   const findAllowMethods = ((optsAllowMethods) => {
@@ -53,7 +53,10 @@ var cors = (options) => {
       if (opts.maxAge != null) {
         set("Access-Control-Max-Age", opts.maxAge.toString());
       }
-      const allowMethods = await findAllowMethods(c.req.header("origin") || "", c);
+      const allowMethods = await findAllowMethods(
+        c.req.header("origin") || "",
+        c,
+      );
       if (allowMethods.length) {
         set("Access-Control-Allow-Methods", allowMethods.join(","));
       }
@@ -73,7 +76,7 @@ var cors = (options) => {
       return new Response(null, {
         headers: c.res.headers,
         status: 204,
-        statusText: "No Content"
+        statusText: "No Content",
       });
     }
     await next();
@@ -82,6 +85,4 @@ var cors = (options) => {
     }
   };
 };
-export {
-  cors
-};
+export { cors };

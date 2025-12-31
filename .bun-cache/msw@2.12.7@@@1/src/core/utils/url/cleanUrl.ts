@@ -1,4 +1,4 @@
-const REDUNDANT_CHARACTERS_EXP = /[?|#].*$/g
+const REDUNDANT_CHARACTERS_EXP = /[?|#].*$/g;
 
 /**
  * Removes search parameters and the fragment
@@ -7,10 +7,10 @@ const REDUNDANT_CHARACTERS_EXP = /[?|#].*$/g
 export function cleanUrl(path: string): string {
   // If the path ends with an optional path parameter,
   // return it as-is.
-  if (path.endsWith('?')) {
-    return path
+  if (path.endsWith("?")) {
+    return path;
   }
 
   // Otherwise, remove the search and fragment from it.
-  return path.replace(REDUNDANT_CHARACTERS_EXP, '')
+  return path.replace(REDUNDANT_CHARACTERS_EXP, "");
 }

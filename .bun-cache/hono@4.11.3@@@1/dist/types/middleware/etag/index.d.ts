@@ -2,11 +2,13 @@
  * @module
  * ETag Middleware for Hono.
  */
-import type { MiddlewareHandler } from '../../types';
+import type { MiddlewareHandler } from "../../types";
 type ETagOptions = {
-    retainedHeaders?: string[];
-    weak?: boolean;
-    generateDigest?: (body: Uint8Array<ArrayBuffer>) => ArrayBuffer | Promise<ArrayBuffer>;
+  retainedHeaders?: string[];
+  weak?: boolean;
+  generateDigest?: (
+    body: Uint8Array<ArrayBuffer>,
+  ) => ArrayBuffer | Promise<ArrayBuffer>;
 };
 /**
  * Default headers to pass through on 304 responses. From the spec:
@@ -39,4 +41,3 @@ export declare const RETAINED_304_HEADERS: string[];
  * ```
  */
 export declare const etag: (options?: ETagOptions) => MiddlewareHandler;
-export {};

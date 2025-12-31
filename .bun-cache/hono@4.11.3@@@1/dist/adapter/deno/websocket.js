@@ -1,5 +1,9 @@
 // src/adapter/deno/websocket.ts
-import { WSContext, defineWebSocketHelper } from "../../helper/websocket/index.js";
+import {
+  defineWebSocketHelper,
+  WSContext,
+} from "../../helper/websocket/index.js";
+
 var upgradeWebSocket = defineWebSocketHelper(async (c, events, options) => {
   if (c.req.header("upgrade") !== "websocket") {
     return;
@@ -15,7 +19,7 @@ var upgradeWebSocket = defineWebSocketHelper(async (c, events, options) => {
       return socket.readyState;
     },
     url: socket.url ? new URL(socket.url) : null,
-    send: (source) => socket.send(source)
+    send: (source) => socket.send(source),
   });
   socket.onopen = (evt) => events.onOpen?.(evt, wsContext);
   socket.onmessage = (evt) => events.onMessage?.(evt, wsContext);
@@ -23,6 +27,4 @@ var upgradeWebSocket = defineWebSocketHelper(async (c, events, options) => {
   socket.onerror = (evt) => events.onError?.(evt, wsContext);
   return response;
 });
-export {
-  upgradeWebSocket
-};
+export { upgradeWebSocket };

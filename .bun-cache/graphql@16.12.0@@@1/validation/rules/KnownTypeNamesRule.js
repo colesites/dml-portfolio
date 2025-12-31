@@ -1,21 +1,19 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.KnownTypeNamesRule = KnownTypeNamesRule;
 
-var _didYouMean = require('../../jsutils/didYouMean.js');
+var _didYouMean = require("../../jsutils/didYouMean.js");
 
-var _suggestionList = require('../../jsutils/suggestionList.js');
+var _suggestionList = require("../../jsutils/suggestionList.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _predicates = require('../../language/predicates.js');
+var _predicates = require("../../language/predicates.js");
 
-var _introspection = require('../../type/introspection.js');
+var _introspection = require("../../type/introspection.js");
 
-var _scalars = require('../../type/scalars.js');
+var _scalars = require("../../type/scalars.js");
 
 /**
  * Known type names
@@ -82,7 +80,7 @@ const standardTypeNames = [
 
 function isSDLNode(value) {
   return (
-    'kind' in value &&
+    "kind" in value &&
     ((0, _predicates.isTypeSystemDefinitionNode)(value) ||
       (0, _predicates.isTypeSystemExtensionNode)(value))
   );

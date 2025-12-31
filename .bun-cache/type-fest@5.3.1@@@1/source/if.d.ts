@@ -1,4 +1,4 @@
-import type {IsNever} from './is-never.d.ts';
+import type { IsNever } from "./is-never.d.ts";
 
 /**
 An if-else-like type that resolves depending on whether the given `boolean` type is `true` or `false`.
@@ -92,11 +92,12 @@ type Works = IncludesWithoutIf<HundredZeroes, '1'>;
 @category Type Guard
 @category Utilities
 */
-export type If<Type extends boolean, IfBranch, ElseBranch> =
-	IsNever<Type> extends true
-		? ElseBranch
-		: Type extends true
-			? IfBranch
-			: ElseBranch;
-
-export {};
+export type If<
+  Type extends boolean,
+  IfBranch,
+  ElseBranch,
+> = IsNever<Type> extends true
+  ? ElseBranch
+  : Type extends true
+    ? IfBranch
+    : ElseBranch;

@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { onUnhandledRequest } from './onUnhandledRequest'
+import { onUnhandledRequest } from "./onUnhandledRequest";
 
 const fixtures = {
   warningWithoutSuggestions: (url = `/api`) => `\
@@ -26,37 +26,37 @@ Read more: https://mswjs.io/docs/http/intercepting-requests`,
 
 If you still wish to intercept this unhandled request, please create a request handler for it.
 Read more: https://mswjs.io/docs/http/intercepting-requests`,
-}
+};
 
 beforeAll(() => {
-  vi.spyOn(console, 'warn').mockImplementation(() => void 0)
-  vi.spyOn(console, 'error').mockImplementation(() => void 0)
-})
+  vi.spyOn(console, "warn").mockImplementation(() => void 0);
+  vi.spyOn(console, "error").mockImplementation(() => void 0);
+});
 
 afterEach(() => {
-  vi.clearAllMocks()
-})
+  vi.clearAllMocks();
+});
 
 afterAll(() => {
-  vi.restoreAllMocks()
-})
+  vi.restoreAllMocks();
+});
 
-test('prints with an absolute URL and search params', async () => {
+test("prints with an absolute URL and search params", async () => {
   await onUnhandledRequest(
-    new Request(new URL('https://mswjs.io/api?foo=boo')),
-    'warn',
-  )
+    new Request(new URL("https://mswjs.io/api?foo=boo")),
+    "warn",
+  );
 
   expect(console.warn).toHaveBeenCalledWith(
     fixtures.warningWithoutSuggestions(`https://mswjs.io/api?foo=boo`),
-  )
+  );
 
   await onUnhandledRequest(
-    new Request(new URL('http://localhost/api?foo=boo')),
-    'warn',
-  )
+    new Request(new URL("http://localhost/api?foo=boo")),
+    "warn",
+  );
 
   expect(console.warn).toHaveBeenCalledWith(
     fixtures.warningWithoutSuggestions(`http://localhost/api?foo=boo`),
-  )
-})
+  );
+});

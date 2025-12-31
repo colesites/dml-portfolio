@@ -1,5 +1,5 @@
-import type {If} from './if.d.ts';
-import type {IsNever} from './is-never.d.ts';
+import type { If } from "./if.d.ts";
+import type { IsNever } from "./is-never.d.ts";
 
 /**
 Returns a boolean for whether either of two given types is true.
@@ -77,13 +77,13 @@ type G = Or<never, never>;
 @see {@link And}
 @see {@link Xor}
 */
-export type Or<A extends boolean, B extends boolean> =
-	_Or<If<IsNever<A>, false, A>, If<IsNever<B>, false, B>>; // `never` is treated as `false`
+export type Or<A extends boolean, B extends boolean> = _Or<
+  If<IsNever<A>, false, A>,
+  If<IsNever<B>, false, B>
+>; // `never` is treated as `false`
 
 export type _Or<A extends boolean, B extends boolean> = A extends true
-	? true
-	: B extends true
-		? true
-		: false;
-
-export {};
+  ? true
+  : B extends true
+    ? true
+    : false;

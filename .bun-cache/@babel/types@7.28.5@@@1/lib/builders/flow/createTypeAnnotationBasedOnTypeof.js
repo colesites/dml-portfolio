@@ -1,11 +1,11 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _index = require("../generated/index.js");
-var _default = exports.default = createTypeAnnotationBasedOnTypeof;
+var _default = (exports.default = createTypeAnnotationBasedOnTypeof);
 function createTypeAnnotationBasedOnTypeof(type) {
   switch (type) {
     case "string":
@@ -17,11 +17,17 @@ function createTypeAnnotationBasedOnTypeof(type) {
     case "boolean":
       return (0, _index.booleanTypeAnnotation)();
     case "function":
-      return (0, _index.genericTypeAnnotation)((0, _index.identifier)("Function"));
+      return (0, _index.genericTypeAnnotation)(
+        (0, _index.identifier)("Function"),
+      );
     case "object":
-      return (0, _index.genericTypeAnnotation)((0, _index.identifier)("Object"));
+      return (0, _index.genericTypeAnnotation)(
+        (0, _index.identifier)("Object"),
+      );
     case "symbol":
-      return (0, _index.genericTypeAnnotation)((0, _index.identifier)("Symbol"));
+      return (0, _index.genericTypeAnnotation)(
+        (0, _index.identifier)("Symbol"),
+      );
     case "bigint":
       return (0, _index.anyTypeAnnotation)();
   }

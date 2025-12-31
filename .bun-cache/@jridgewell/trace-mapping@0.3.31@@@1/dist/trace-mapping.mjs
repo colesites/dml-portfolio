@@ -1,8 +1,8 @@
 // src/trace-mapping.ts
-import { encode, decode } from "@jridgewell/sourcemap-codec";
 
 // src/resolve.ts
 import resolveUri from "@jridgewell/resolve-uri";
+import { decode, encode } from "@jridgewell/sourcemap-codec";
 
 // src/strip-filename.ts
 function stripFilename(path) {
@@ -32,7 +32,11 @@ function maybeSort(mappings, owned) {
   const unsortedIndex = nextUnsortedSegmentLine(mappings, 0);
   if (unsortedIndex === mappings.length) return mappings;
   if (!owned) mappings = mappings.slice();
-  for (let i = unsortedIndex; i < mappings.length; i = nextUnsortedSegmentLine(mappings, i + 1)) {
+  for (
+    let i = unsortedIndex;
+    i < mappings.length;
+    i = nextUnsortedSegmentLine(mappings, i + 1)
+  ) {
     mappings[i] = sortSegments(mappings[i], owned);
   }
   return mappings;
@@ -89,7 +93,7 @@ function buildBySources(decoded, memos) {
 var found = false;
 function binarySearch(haystack, needle, low, high) {
   while (low <= high) {
-    const mid = low + (high - low >> 1);
+    const mid = low + ((high - low) >> 1);
     const cmp = haystack[mid][COLUMN] - needle;
     if (cmp === 0) {
       found = true;
@@ -120,7 +124,7 @@ function memoizedState() {
   return {
     lastKey: -1,
     lastNeedle: -1,
-    lastIndex: -1
+    lastIndex: -1,
   };
 }
 function memoizedBinarySearch(haystack, needle, state, key) {
@@ -140,7 +144,7 @@ function memoizedBinarySearch(haystack, needle, state, key) {
   }
   state.lastKey = key;
   state.lastNeedle = needle;
-  return state.lastIndex = binarySearch(haystack, needle, low, high);
+  return (state.lastIndex = binarySearch(haystack, needle, low, high));
 }
 
 // src/types.ts
@@ -149,7 +153,7 @@ function parse(map) {
 }
 
 // src/flatten-map.ts
-var FlattenMap = function(map, mapUrl) {
+var FlattenMap = (map, mapUrl) => {
   const parsed = parse(map);
   if (!("sections" in parsed)) {
     return new TraceMap(parsed, mapUrl);
@@ -170,7 +174,7 @@ var FlattenMap = function(map, mapUrl) {
     0,
     0,
     Infinity,
-    Infinity
+    Infinity,
   );
   const joined = {
     version: 3,
@@ -179,11 +183,23 @@ var FlattenMap = function(map, mapUrl) {
     sources,
     sourcesContent,
     mappings,
-    ignoreList
+    ignoreList,
   };
   return presortedDecodedMap(joined);
 };
-function recurse(input, mapUrl, mappings, sources, sourcesContent, names, ignoreList, lineOffset, columnOffset, stopLine, stopColumn) {
+function recurse(
+  input,
+  mapUrl,
+  mappings,
+  sources,
+  sourcesContent,
+  names,
+  ignoreList,
+  lineOffset,
+  columnOffset,
+  stopLine,
+  stopColumn,
+) {
   const { sections } = input;
   for (let i = 0; i < sections.length; i++) {
     const { map, offset } = sections[i];
@@ -209,23 +225,42 @@ function recurse(input, mapUrl, mappings, sources, sourcesContent, names, ignore
       lineOffset + offset.line,
       columnOffset + offset.column,
       sl,
-      sc
+      sc,
     );
   }
 }
-function addSection(input, mapUrl, mappings, sources, sourcesContent, names, ignoreList, lineOffset, columnOffset, stopLine, stopColumn) {
+function addSection(
+  input,
+  mapUrl,
+  mappings,
+  sources,
+  sourcesContent,
+  names,
+  ignoreList,
+  lineOffset,
+  columnOffset,
+  stopLine,
+  stopColumn,
+) {
   const parsed = parse(input);
   if ("sections" in parsed) return recurse(...arguments);
   const map = new TraceMap(parsed, mapUrl);
   const sourcesOffset = sources.length;
   const namesOffset = names.length;
   const decoded = decodedMappings(map);
-  const { resolvedSources, sourcesContent: contents, ignoreList: ignores } = map;
+  const {
+    resolvedSources,
+    sourcesContent: contents,
+    ignoreList: ignores,
+  } = map;
   append(sources, resolvedSources);
   append(names, map.names);
   if (contents) append(sourcesContent, contents);
-  else for (let i = 0; i < resolvedSources.length; i++) sourcesContent.push(null);
-  if (ignores) for (let i = 0; i < ignores.length; i++) ignoreList.push(ignores[i] + sourcesOffset);
+  else
+    for (let i = 0; i < resolvedSources.length; i++) sourcesContent.push(null);
+  if (ignores)
+    for (let i = 0; i < ignores.length; i++)
+      ignoreList.push(ignores[i] + sourcesOffset);
   for (let i = 0; i < decoded.length; i++) {
     const lineI = lineOffset + i;
     if (lineI > stopLine) return;
@@ -244,7 +279,15 @@ function addSection(input, mapUrl, mappings, sources, sourcesContent, names, ign
       const sourceLine = seg[SOURCE_LINE];
       const sourceColumn = seg[SOURCE_COLUMN];
       out.push(
-        seg.length === 4 ? [column, sourcesIndex, sourceLine, sourceColumn] : [column, sourcesIndex, sourceLine, sourceColumn, namesOffset + seg[NAMES_INDEX]]
+        seg.length === 4
+          ? [column, sourcesIndex, sourceLine, sourceColumn]
+          : [
+              column,
+              sourcesIndex,
+              sourceLine,
+              sourceColumn,
+              namesOffset + seg[NAMES_INDEX],
+            ],
       );
     }
   }
@@ -259,7 +302,8 @@ function getLine(arr, index) {
 
 // src/trace-mapping.ts
 var LINE_GTR_ZERO = "`line` must be greater than 0 (lines start at line 1)";
-var COL_GTR_EQ_ZERO = "`column` must be greater than or equal to 0 (columns start at column 0)";
+var COL_GTR_EQ_ZERO =
+  "`column` must be greater than or equal to 0 (columns start at column 0)";
 var LEAST_UPPER_BOUND = -1;
 var GREATEST_LOWER_BOUND = 1;
 var TraceMap = class {
@@ -267,7 +311,8 @@ var TraceMap = class {
     const isString = typeof map === "string";
     if (!isString && map._decodedMemo) return map;
     const parsed = parse(map);
-    const { version, file, names, sourceRoot, sources, sourcesContent } = parsed;
+    const { version, file, names, sourceRoot, sources, sourcesContent } =
+      parsed;
     this.version = version;
     this.file = file;
     this.names = names || [];
@@ -285,7 +330,9 @@ var TraceMap = class {
       this._encoded = void 0;
       this._decoded = maybeSort(mappings, isString);
     } else if (parsed.sections) {
-      throw new Error(`TraceMap passed sectioned source map, please use FlattenMap export instead`);
+      throw new Error(
+        `TraceMap passed sectioned source map, please use FlattenMap export instead`,
+      );
     } else {
       throw new Error(`invalid source map: ${JSON.stringify(parsed)}`);
     }
@@ -299,11 +346,15 @@ function cast(map) {
 }
 function encodedMappings(map) {
   var _a, _b;
-  return (_b = (_a = cast(map))._encoded) != null ? _b : _a._encoded = encode(cast(map)._decoded);
+  return (_b = (_a = cast(map))._encoded) != null
+    ? _b
+    : (_a._encoded = encode(cast(map)._decoded));
 }
 function decodedMappings(map) {
   var _a;
-  return (_a = cast(map))._decoded || (_a._decoded = decode(cast(map)._encoded));
+  return (
+    (_a = cast(map))._decoded || (_a._decoded = decode(cast(map)._encoded))
+  );
 }
 function traceSegment(map, line, column) {
   const decoded = decodedMappings(map);
@@ -314,7 +365,7 @@ function traceSegment(map, line, column) {
     cast(map)._decodedMemo,
     line,
     column,
-    GREATEST_LOWER_BOUND
+    GREATEST_LOWER_BOUND,
   );
   return index === -1 ? null : segments[index];
 }
@@ -331,7 +382,7 @@ function originalPositionFor(map, needle) {
     cast(map)._decodedMemo,
     line,
     column,
-    bias || GREATEST_LOWER_BOUND
+    bias || GREATEST_LOWER_BOUND,
   );
   if (index === -1) return OMapping(null, null, null, null);
   const segment = segments[index];
@@ -341,16 +392,30 @@ function originalPositionFor(map, needle) {
     resolvedSources[segment[SOURCES_INDEX]],
     segment[SOURCE_LINE] + 1,
     segment[SOURCE_COLUMN],
-    segment.length === 5 ? names[segment[NAMES_INDEX]] : null
+    segment.length === 5 ? names[segment[NAMES_INDEX]] : null,
   );
 }
 function generatedPositionFor(map, needle) {
   const { source, line, column, bias } = needle;
-  return generatedPosition(map, source, line, column, bias || GREATEST_LOWER_BOUND, false);
+  return generatedPosition(
+    map,
+    source,
+    line,
+    column,
+    bias || GREATEST_LOWER_BOUND,
+    false,
+  );
 }
 function allGeneratedPositionsFor(map, needle) {
   const { source, line, column, bias } = needle;
-  return generatedPosition(map, source, line, column, bias || LEAST_UPPER_BOUND, true);
+  return generatedPosition(
+    map,
+    source,
+    line,
+    column,
+    bias || LEAST_UPPER_BOUND,
+    true,
+  );
 }
 function eachMapping(map, cb) {
   const decoded = decodedMappings(map);
@@ -377,7 +442,7 @@ function eachMapping(map, cb) {
         source,
         originalLine,
         originalColumn,
-        name
+        name,
       });
     }
   }
@@ -420,7 +485,7 @@ function clone(map, mappings) {
     sources: map.sources,
     sourcesContent: map.sourcesContent,
     mappings,
-    ignoreList: map.ignoreList || map.x_google_ignoreList
+    ignoreList: map.ignoreList || map.x_google_ignoreList,
   };
 }
 function OMapping(source, line, column, name) {
@@ -432,13 +497,23 @@ function GMapping(line, column) {
 function traceSegmentInternal(segments, memo, line, column, bias) {
   let index = memoizedBinarySearch(segments, column, memo, line);
   if (found) {
-    index = (bias === LEAST_UPPER_BOUND ? upperBound : lowerBound)(segments, column, index);
+    index = (bias === LEAST_UPPER_BOUND ? upperBound : lowerBound)(
+      segments,
+      column,
+      index,
+    );
   } else if (bias === LEAST_UPPER_BOUND) index++;
   if (index === -1 || index === segments.length) return -1;
   return index;
 }
 function sliceGeneratedPositions(segments, memo, line, column, bias) {
-  let min = traceSegmentInternal(segments, memo, line, column, GREATEST_LOWER_BOUND);
+  let min = traceSegmentInternal(
+    segments,
+    memo,
+    line,
+    column,
+    GREATEST_LOWER_BOUND,
+  );
   if (!found && bias === LEAST_UPPER_BOUND) min++;
   if (min === -1 || min === segments.length) return [];
   const matchedColumn = found ? column : segments[min][COLUMN];
@@ -447,7 +522,9 @@ function sliceGeneratedPositions(segments, memo, line, column, bias) {
   const result = [];
   for (; min <= max; min++) {
     const segment = segments[min];
-    result.push(GMapping(segment[REV_GENERATED_LINE] + 1, segment[REV_GENERATED_COLUMN]));
+    result.push(
+      GMapping(segment[REV_GENERATED_LINE] + 1, segment[REV_GENERATED_COLUMN]),
+    );
   }
   return result;
 }
@@ -460,8 +537,12 @@ function generatedPosition(map, source, line, column, bias, all) {
   let sourceIndex2 = sources.indexOf(source);
   if (sourceIndex2 === -1) sourceIndex2 = resolvedSources.indexOf(source);
   if (sourceIndex2 === -1) return all ? [] : GMapping(null, null);
-  const bySourceMemos = (_a = cast(map))._bySourceMemos || (_a._bySourceMemos = sources.map(memoizedState));
-  const generated = (_b = cast(map))._bySources || (_b._bySources = buildBySources(decodedMappings(map), bySourceMemos));
+  const bySourceMemos =
+    (_a = cast(map))._bySourceMemos ||
+    (_a._bySourceMemos = sources.map(memoizedState));
+  const generated =
+    (_b = cast(map))._bySources ||
+    (_b._bySources = buildBySources(decodedMappings(map), bySourceMemos));
   const segments = generated[sourceIndex2][line];
   if (segments == null) return all ? [] : GMapping(null, null);
   const memo = bySourceMemos[sourceIndex2];
@@ -469,7 +550,10 @@ function generatedPosition(map, source, line, column, bias, all) {
   const index = traceSegmentInternal(segments, memo, line, column, bias);
   if (index === -1) return GMapping(null, null);
   const segment = segments[index];
-  return GMapping(segment[REV_GENERATED_LINE] + 1, segment[REV_GENERATED_COLUMN]);
+  return GMapping(
+    segment[REV_GENERATED_LINE] + 1,
+    segment[REV_GENERATED_COLUMN],
+  );
 }
 export {
   FlattenMap as AnyMap,
@@ -488,6 +572,6 @@ export {
   originalPositionFor,
   presortedDecodedMap,
   sourceContentFor,
-  traceSegment
+  traceSegment,
 };
 //# sourceMappingURL=trace-mapping.mjs.map

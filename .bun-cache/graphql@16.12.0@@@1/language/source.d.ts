@@ -22,4 +22,3 @@ export declare class Source {
  * @internal
  */
 export declare function isSource(source: unknown): source is Source;
-export {};

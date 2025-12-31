@@ -5,7 +5,7 @@
  * @module
  */
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
-import type { CHash } from '../utils.ts';
+import type { CHash } from "../utils.ts";
 import {
   _validateObject,
   abytes,
@@ -14,9 +14,9 @@ import {
   isBytes,
   isHash,
   utf8ToBytes,
-} from '../utils.ts';
-import type { AffinePoint, Group, GroupConstructor } from './curve.ts';
-import { FpInvertBatch, mod, type IField } from './modular.ts';
+} from "../utils.ts";
+import type { AffinePoint, Group, GroupConstructor } from "./curve.ts";
+import { FpInvertBatch, type IField, mod } from "./modular.ts";
 
 export type UnicodeOrBytes = string | Uint8Array;
 
@@ -30,14 +30,14 @@ export type UnicodeOrBytes = string | Uint8Array;
  */
 export type H2COpts = {
   DST: UnicodeOrBytes;
-  expand: 'xmd' | 'xof';
+  expand: "xmd" | "xof";
   hash: CHash;
   p: bigint;
   m: number;
   k: number;
 };
 export type H2CHashOpts = {
-  expand: 'xmd' | 'xof';
+  expand: "xmd" | "xof";
   hash: CHash;
 };
 // todo: remove
@@ -50,7 +50,8 @@ const os2ip = bytesToNumberBE;
 function i2osp(value: number, length: number): Uint8Array {
   anum(value);
   anum(length);
-  if (value < 0 || value >= 1 << (8 * length)) throw new Error('invalid I2OSP input: ' + value);
+  if (value < 0 || value >= 1 << (8 * length))
+    throw new Error("invalid I2OSP input: " + value);
   const res = Array.from({ length }).fill(0) as number[];
   for (let i = length - 1; i >= 0; i--) {
     res[i] = value & 0xff;
@@ -68,12 +69,13 @@ function strxor(a: Uint8Array, b: Uint8Array): Uint8Array {
 }
 
 function anum(item: unknown): void {
-  if (!Number.isSafeInteger(item)) throw new Error('number expected');
+  if (!Number.isSafeInteger(item)) throw new Error("number expected");
 }
 
 function normDST(DST: UnicodeOrBytes): Uint8Array {
-  if (!isBytes(DST) && typeof DST !== 'string') throw new Error('DST must be Uint8Array or string');
-  return typeof DST === 'string' ? utf8ToBytes(DST) : DST;
+  if (!isBytes(DST) && typeof DST !== "string")
+    throw new Error("DST must be Uint8Array or string");
+  return typeof DST === "string" ? utf8ToBytes(DST) : DST;
 }
 
 /**
@@ -84,16 +86,18 @@ export function expand_message_xmd(
   msg: Uint8Array,
   DST: UnicodeOrBytes,
   lenInBytes: number,
-  H: CHash
+  H: CHash,
 ): Uint8Array {
   abytes(msg);
   anum(lenInBytes);
   DST = normDST(DST);
   // https://www.rfc-editor.org/rfc/rfc9380#section-5.3.3
-  if (DST.length > 255) DST = H(concatBytes(utf8ToBytes('H2C-OVERSIZE-DST-'), DST));
+  if (DST.length > 255)
+    DST = H(concatBytes(utf8ToBytes("H2C-OVERSIZE-DST-"), DST));
   const { outputLen: b_in_bytes, blockLen: r_in_bytes } = H;
   const ell = Math.ceil(lenInBytes / b_in_bytes);
-  if (lenInBytes > 65535 || ell > 255) throw new Error('expand_message_xmd: invalid lenInBytes');
+  if (lenInBytes > 65535 || ell > 255)
+    throw new Error("expand_message_xmd: invalid lenInBytes");
   const DST_prime = concatBytes(DST, i2osp(DST.length, 1));
   const Z_pad = i2osp(0, r_in_bytes);
   const l_i_b_str = i2osp(lenInBytes, 2); // len_in_bytes_str
@@ -120,7 +124,7 @@ export function expand_message_xof(
   DST: UnicodeOrBytes,
   lenInBytes: number,
   k: number,
-  H: CHash
+  H: CHash,
 ): Uint8Array {
   abytes(msg);
   anum(lenInBytes);
@@ -129,10 +133,13 @@ export function expand_message_xof(
   // DST = H('H2C-OVERSIZE-DST-' || a_very_long_DST, Math.ceil((lenInBytes * k) / 8));
   if (DST.length > 255) {
     const dkLen = Math.ceil((2 * k) / 8);
-    DST = H.create({ dkLen }).update(utf8ToBytes('H2C-OVERSIZE-DST-')).update(DST).digest();
+    DST = H.create({ dkLen })
+      .update(utf8ToBytes("H2C-OVERSIZE-DST-"))
+      .update(DST)
+      .digest();
   }
   if (lenInBytes > 65535 || DST.length > 255)
-    throw new Error('expand_message_xof: invalid lenInBytes');
+    throw new Error("expand_message_xof: invalid lenInBytes");
   return (
     H.create({ dkLen: lenInBytes })
       .update(msg)
@@ -152,26 +159,30 @@ export function expand_message_xof(
  * @param options `{DST: string, p: bigint, m: number, k: number, expand: 'xmd' | 'xof', hash: H}`, see above
  * @returns [u_0, ..., u_(count - 1)], a list of field elements.
  */
-export function hash_to_field(msg: Uint8Array, count: number, options: H2COpts): bigint[][] {
+export function hash_to_field(
+  msg: Uint8Array,
+  count: number,
+  options: H2COpts,
+): bigint[][] {
   _validateObject(options, {
-    p: 'bigint',
-    m: 'number',
-    k: 'number',
-    hash: 'function',
+    p: "bigint",
+    m: "number",
+    k: "number",
+    hash: "function",
   });
   const { p, k, m, hash, expand, DST } = options;
-  if (!isHash(options.hash)) throw new Error('expected valid hash');
+  if (!isHash(options.hash)) throw new Error("expected valid hash");
   abytes(msg);
   anum(count);
   const log2p = p.toString(2).length;
   const L = Math.ceil((log2p + k) / 8); // section 5.1 of ietf draft link above
   const len_in_bytes = count * m * L;
   let prb; // pseudo_random_bytes
-  if (expand === 'xmd') {
+  if (expand === "xmd") {
     prb = expand_message_xmd(msg, DST, len_in_bytes, hash);
-  } else if (expand === 'xof') {
+  } else if (expand === "xof") {
     prb = expand_message_xof(msg, DST, len_in_bytes, k, hash);
-  } else if (expand === '_internal_pass') {
+  } else if (expand === "_internal_pass") {
     // for internal tests only
     prb = msg;
   } else {
@@ -192,12 +203,15 @@ export function hash_to_field(msg: Uint8Array, count: number, options: H2COpts):
 
 export type XY<T> = (x: T, y: T) => { x: T; y: T };
 export type XYRatio<T> = [T[], T[], T[], T[]]; // xn/xd, yn/yd
-export function isogenyMap<T, F extends IField<T>>(field: F, map: XYRatio<T>): XY<T> {
+export function isogenyMap<T, F extends IField<T>>(
+  field: F,
+  map: XYRatio<T>,
+): XY<T> {
   // Make same order as in spec
   const coeff = map.map((i) => Array.from(i).reverse());
   return (x: T, y: T) => {
     const [xn, xd, yn, yd] = coeff.map((val) =>
-      val.reduce((acc, i) => field.add(field.mul(acc, x), i))
+      val.reduce((acc, i) => field.add(field.mul(acc, x), i)),
     );
     // 6.6.3
     // Exceptional cases of iso_map are inputs that cause the denominator of
@@ -227,7 +241,10 @@ export type MapToCurve<T> = (scalar: bigint[]) => AffinePoint<T>;
 // Separated from initialization opts, so users won't accidentally change per-curve parameters
 // (changing DST is ok!)
 export type htfBasicOpts = { DST: UnicodeOrBytes };
-export type H2CMethod<T> = (msg: Uint8Array, options?: htfBasicOpts) => H2CPoint<T>;
+export type H2CMethod<T> = (
+  msg: Uint8Array,
+  options?: htfBasicOpts,
+) => H2CPoint<T>;
 // TODO: remove
 export type HTFMethod<T> = H2CMethod<T>;
 export type MapMethod<T> = (scalars: bigint[]) => H2CPoint<T>;
@@ -250,15 +267,16 @@ export type H2CHasher<T> = H2CHasherBase<T> & {
 // TODO: remove
 export type Hasher<T> = H2CHasher<T>;
 
-export const _DST_scalar: Uint8Array = utf8ToBytes('HashToScalar-');
+export const _DST_scalar: Uint8Array = utf8ToBytes("HashToScalar-");
 
 /** Creates hash-to-curve methods from EC Point and mapToCurve function. See {@link H2CHasher}. */
 export function createHasher<T>(
   Point: H2CPointConstructor<T>,
   mapToCurve: MapToCurve<T>,
-  defaults: H2COpts & { encodeDST?: UnicodeOrBytes }
+  defaults: H2COpts & { encodeDST?: UnicodeOrBytes },
 ): H2CHasher<T> {
-  if (typeof mapToCurve !== 'function') throw new Error('mapToCurve() must be defined');
+  if (typeof mapToCurve !== "function")
+    throw new Error("mapToCurve() must be defined");
   function map(num: bigint[]) {
     return Point.fromAffine(mapToCurve(num));
   }
@@ -288,18 +306,23 @@ export function createHasher<T>(
     },
     /** See {@link H2CHasher} */
     mapToCurve(scalars: bigint[]): H2CPoint<T> {
-      if (!Array.isArray(scalars)) throw new Error('expected array of bigints');
+      if (!Array.isArray(scalars)) throw new Error("expected array of bigints");
       for (const i of scalars)
-        if (typeof i !== 'bigint') throw new Error('expected array of bigints');
+        if (typeof i !== "bigint") throw new Error("expected array of bigints");
       return clear(map(scalars));
     },
 
     // hash_to_scalar can produce 0: https://www.rfc-editor.org/errata/eid8393
     // RFC 9380, draft-irtf-cfrg-bbs-signatures-08
     hashToScalar(msg: Uint8Array, options?: htfBasicOpts): bigint {
-      // @ts-ignore
+      // @ts-expect-error
       const N = Point.Fn.ORDER;
-      const opts = Object.assign({}, defaults, { p: N, m: 1, DST: _DST_scalar }, options);
+      const opts = Object.assign(
+        {},
+        defaults,
+        { p: N, m: 1, DST: _DST_scalar },
+        options,
+      );
       return hash_to_field(msg, 1, opts)[0][0];
     },
   };

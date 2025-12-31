@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports._call = _call;
 exports._getQueueContexts = _getQueueContexts;
@@ -36,7 +36,12 @@ function call(key) {
   }
   if (this.node) {
     var _opts$this$node$type;
-    return _call.call(this, (_opts$this$node$type = opts[this.node.type]) == null ? void 0 : _opts$this$node$type[key]);
+    return _call.call(
+      this,
+      (_opts$this$node$type = opts[this.node.type]) == null
+        ? void 0
+        : _opts$this$node$type[key],
+    );
   }
   return false;
 }
@@ -48,7 +53,12 @@ function _call(fns) {
     if (!node) return true;
     const ret = fn.call(this.state, this, this.state);
     if (ret && typeof ret === "object" && typeof ret.then === "function") {
-      throw new Error(`You appear to be using a plugin with an async traversal visitor, ` + `which your current version of Babel does not support. ` + `If you're using a published plugin, you may need to upgrade ` + `your @babel/core version.`);
+      throw new Error(
+        `You appear to be using a plugin with an async traversal visitor, ` +
+          `which your current version of Babel does not support. ` +
+          `If you're using a published plugin, you may need to upgrade ` +
+          `your @babel/core version.`,
+      );
     }
     if (ret) {
       throw new Error(`Unexpected return value from visitor method ${fn}`);
@@ -60,12 +70,13 @@ function _call(fns) {
 }
 function isDenylisted() {
   var _this$opts$denylist;
-  const denylist = (_this$opts$denylist = this.opts.denylist) != null ? _this$opts$denylist : this.opts.blacklist;
+  const denylist =
+    (_this$opts$denylist = this.opts.denylist) != null
+      ? _this$opts$denylist
+      : this.opts.blacklist;
   return denylist == null ? void 0 : denylist.includes(this.node.type);
 }
-{
-  exports.isBlacklisted = isDenylisted;
-}
+exports.isBlacklisted = isDenylisted;
 function restoreContext(path, context) {
   if (path.context !== context) {
     path.context = context;
@@ -81,7 +92,10 @@ function visit() {
   if (this.isDenylisted()) {
     return false;
   }
-  if ((_this$opts$shouldSkip = (_this$opts = this.opts).shouldSkip) != null && _this$opts$shouldSkip.call(_this$opts, this)) {
+  if (
+    (_this$opts$shouldSkip = (_this$opts = this.opts).shouldSkip) != null &&
+    _this$opts$shouldSkip.call(_this$opts, this)
+  ) {
     return false;
   }
   const currentContext = this.context;
@@ -91,7 +105,14 @@ function visit() {
   }
   restoreContext(this, currentContext);
   this.debug("Recursing into...");
-  this.shouldStop = (0, _traverseNode.traverseNode)(this.node, this.opts, this.scope, this.state, this, this.skipKeys);
+  this.shouldStop = (0, _traverseNode.traverseNode)(
+    this.node,
+    this.opts,
+    this.scope,
+    this.state,
+    this,
+    this.skipKeys,
+  );
   restoreContext(this, currentContext);
   call.call(this, "exit");
   return this.shouldStop;
@@ -112,7 +133,11 @@ function setScope() {
   var _this$opts2, _this$scope;
   if ((_this$opts2 = this.opts) != null && _this$opts2.noScope) return;
   let path = this.parentPath;
-  if ((this.key === "key" || this.listKey === "decorators") && path.isMethod() || this.key === "discriminant" && path.isSwitchStatement()) {
+  if (
+    ((this.key === "key" || this.listKey === "decorators") &&
+      path.isMethod()) ||
+    (this.key === "discriminant" && path.isSwitchStatement())
+  ) {
     path = path.parentPath;
   }
   let target;
@@ -178,7 +203,11 @@ function _resyncList() {
   this.container = newContainer || null;
 }
 function _resyncRemoved() {
-  if (this.key == null || !this.container || this.container[this.key] !== this.node) {
+  if (
+    this.key == null ||
+    !this.container ||
+    this.container[this.key] !== this.node
+  ) {
     _removal._markRemoved.call(this);
   }
 }
@@ -208,17 +237,13 @@ function setKey(key) {
 }
 function requeue(pathToQueue = this) {
   if (pathToQueue.removed) return;
-  ;
   const contexts = this.contexts;
   for (const context of contexts) {
     context.maybeQueue(pathToQueue);
   }
 }
 function requeueComputedKeyAndDecorators() {
-  const {
-    context,
-    node
-  } = this;
+  const { context, node } = this;
   if (!t.isPrivate(node) && node.computed) {
     context.maybeQueue(this.get("key"));
   }

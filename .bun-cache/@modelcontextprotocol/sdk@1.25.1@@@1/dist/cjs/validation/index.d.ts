@@ -25,5 +25,10 @@
  *
  * @module validation
  */
-export type { JsonSchemaType, JsonSchemaValidator, JsonSchemaValidatorResult, jsonSchemaValidator } from './types.js';
+export type {
+  JsonSchemaType,
+  JsonSchemaValidator,
+  JsonSchemaValidatorResult,
+  jsonSchemaValidator,
+} from "./types.js";
 //# sourceMappingURL=index.d.ts.map

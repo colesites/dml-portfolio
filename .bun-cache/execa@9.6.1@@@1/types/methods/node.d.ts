@@ -1,6 +1,6 @@
-import type {Options} from '../arguments/options.js';
-import type {ResultPromise} from '../subprocess/subprocess.js';
-import type {TemplateString} from './template.js';
+import type { Options } from "../arguments/options.js";
+import type { ResultPromise } from "../subprocess/subprocess.js";
+import type { TemplateString } from "./template.js";
 
 /**
 Same as `execa()` but using the `node: true` option.
@@ -36,27 +36,36 @@ export declare const execaNode: ExecaNodeMethod<{}>;
 `execaNode()` method either exported by Execa, or bound using `execaNode(options)`.
 */
 export type ExecaNodeMethod<OptionsType extends Options = Options> =
-	& ExecaNodeBind<OptionsType>
-	& ExecaNodeTemplate<OptionsType>
-	& ExecaNodeArrayLong<OptionsType>
-	& ExecaNodeArrayShort<OptionsType>;
+  ExecaNodeBind<OptionsType> &
+    ExecaNodeTemplate<OptionsType> &
+    ExecaNodeArrayLong<OptionsType> &
+    ExecaNodeArrayShort<OptionsType>;
 
 // `execaNode(options)` binding
-type ExecaNodeBind<OptionsType extends Options> =
-	<NewOptionsType extends Options = {}>(options: NewOptionsType)
-	=> ExecaNodeMethod<OptionsType & NewOptionsType>;
+type ExecaNodeBind<OptionsType extends Options> = <
+  NewOptionsType extends Options = {},
+>(
+  options: NewOptionsType,
+) => ExecaNodeMethod<OptionsType & NewOptionsType>;
 
 // `execaNode`command`` template syntax
-type ExecaNodeTemplate<OptionsType extends Options> =
-	(...templateString: TemplateString)
-	=> ResultPromise<OptionsType>;
+type ExecaNodeTemplate<OptionsType extends Options> = (
+  ...templateString: TemplateString
+) => ResultPromise<OptionsType>;
 
 // `execaNode('script', ['argument'], {})` array syntax
-type ExecaNodeArrayLong<OptionsType extends Options> =
-	<NewOptionsType extends Options = {}>(scriptPath: string | URL, arguments?: readonly string[], options?: NewOptionsType)
-	=> ResultPromise<OptionsType & NewOptionsType>;
+type ExecaNodeArrayLong<OptionsType extends Options> = <
+  NewOptionsType extends Options = {},
+>(
+  scriptPath: string | URL,
+  arguments?: readonly string[],
+  options?: NewOptionsType,
+) => ResultPromise<OptionsType & NewOptionsType>;
 
 // `execaNode('script', {})` array syntax
-type ExecaNodeArrayShort<OptionsType extends Options> =
-	<NewOptionsType extends Options = {}>(scriptPath: string | URL, options?: NewOptionsType)
-	=> ResultPromise<OptionsType & NewOptionsType>;
+type ExecaNodeArrayShort<OptionsType extends Options> = <
+  NewOptionsType extends Options = {},
+>(
+  scriptPath: string | URL,
+  options?: NewOptionsType,
+) => ResultPromise<OptionsType & NewOptionsType>;

@@ -4,8 +4,9 @@ import {
   convertIPv4ToBinary,
   convertIPv6BinaryToString,
   convertIPv6ToBinary,
-  distinctRemoteAddr
+  distinctRemoteAddr,
 } from "../../utils/ipaddr.js";
+
 var IS_CIDR_NOTATION_REGEX = /\/[0-9]{0,3}$/;
 var buildMatcher = (rules) => {
   const functionRules = [];
@@ -29,8 +30,12 @@ var buildMatcher = (rules) => {
         if (isIPv4 ? prefix === 32 : prefix === 128) {
           rule = addrStr;
         } else {
-          const addr = (isIPv4 ? convertIPv4ToBinary : convertIPv6ToBinary)(addrStr);
-          const mask = (1n << BigInt(prefix)) - 1n << BigInt((isIPv4 ? 32 : 128) - prefix);
+          const addr = (isIPv4 ? convertIPv4ToBinary : convertIPv6ToBinary)(
+            addrStr,
+          );
+          const mask =
+            ((1n << BigInt(prefix)) - 1n) <<
+            BigInt((isIPv4 ? 32 : 128) - prefix);
           cidrRules.push([isIPv4, addr & mask, mask]);
           continue;
         }
@@ -40,7 +45,9 @@ var buildMatcher = (rules) => {
         throw new TypeError(`Invalid rule: ${rule}`);
       }
       staticRules.add(
-        type === "IPv4" ? rule : convertIPv6BinaryToString(convertIPv6ToBinary(rule))
+        type === "IPv4"
+          ? rule
+          : convertIPv6BinaryToString(convertIPv6ToBinary(rule)),
         // normalize IPv6 address (e.g. 0000:0000:0000:0000:0000:0000:0000:0001 => ::1)
       );
     }
@@ -53,7 +60,9 @@ var buildMatcher = (rules) => {
       if (isIPv4 !== remote.isIPv4) {
         continue;
       }
-      const remoteAddr = remote.binaryAddr ||= (isIPv4 ? convertIPv4ToBinary : convertIPv6ToBinary)(remote.addr);
+      const remoteAddr = (remote.binaryAddr ||= (
+        isIPv4 ? convertIPv4ToBinary : convertIPv6ToBinary
+      )(remote.addr));
       if ((remoteAddr & mask) === addr) {
         return true;
       }
@@ -70,18 +79,22 @@ var ipRestriction = (getIP, { denyList = [], allowList = [] }, onError) => {
   const allowLength = allowList.length;
   const denyMatcher = buildMatcher(denyList);
   const allowMatcher = buildMatcher(allowList);
-  const blockError = (c) => new HTTPException(403, {
-    res: c.text("Forbidden", {
-      status: 403
-    })
-  });
+  const blockError = (c) =>
+    new HTTPException(403, {
+      res: c.text("Forbidden", {
+        status: 403,
+      }),
+    });
   return async function ipRestriction2(c, next) {
     const connInfo = getIP(c);
-    const addr = typeof connInfo === "string" ? connInfo : connInfo.remote.address;
+    const addr =
+      typeof connInfo === "string" ? connInfo : connInfo.remote.address;
     if (!addr) {
       throw blockError(c);
     }
-    const type = typeof connInfo !== "string" && connInfo.remote.addressType || distinctRemoteAddr(addr);
+    const type =
+      (typeof connInfo !== "string" && connInfo.remote.addressType) ||
+      distinctRemoteAddr(addr);
     const remoteData = { addr, type, isIPv4: type === "IPv4" };
     if (denyMatcher(remoteData)) {
       if (onError) {
@@ -102,6 +115,4 @@ var ipRestriction = (getIP, { denyList = [], allowList = [] }, onError) => {
     }
   };
 };
-export {
-  ipRestriction
-};
+export { ipRestriction };

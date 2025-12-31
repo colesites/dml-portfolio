@@ -1,6 +1,7 @@
 // src/helper/streaming/stream.ts
 import { StreamingApi } from "../../utils/stream.js";
 import { isOldBunVersion } from "./utils.js";
+
 var contextStash = /* @__PURE__ */ new WeakMap();
 var stream = (c, cb, onError) => {
   const { readable, writable } = new TransformStream();
@@ -29,6 +30,4 @@ var stream = (c, cb, onError) => {
   })();
   return c.newResponse(stream2.responseReadable);
 };
-export {
-  stream
-};
+export { stream };

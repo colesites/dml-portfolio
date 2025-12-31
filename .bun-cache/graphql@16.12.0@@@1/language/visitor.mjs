@@ -1,7 +1,7 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { inspect } from '../jsutils/inspect.mjs';
-import { isNode, QueryDocumentKeys } from './ast.mjs';
-import { Kind } from './kinds.mjs';
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { isNode, QueryDocumentKeys } from "./ast.mjs";
+import { Kind } from "./kinds.mjs";
 /**
  * A visitor is provided to visit, it contains the collection of
  * relevant functions to be called during the visitor's traversal.
@@ -95,14 +95,14 @@ export function visit(root, visitor, visitorKeys = QueryDocumentKeys) {
   }
   /* eslint-disable no-undef-init */
 
-  let stack = undefined;
+  let stack;
   let inArray = Array.isArray(root);
   let keys = [root];
   let index = -1;
   let edits = [];
   let node = root;
-  let key = undefined;
-  let parent = undefined;
+  let key;
+  let parent;
   const path = [];
   const ancestors = [];
   /* eslint-enable no-undef-init */
@@ -169,9 +169,9 @@ export function visit(root, visitor, visitorKeys = QueryDocumentKeys) {
           ? void 0
           : _enterLeaveMap$get.leave
         : (_enterLeaveMap$get2 = enterLeaveMap.get(node.kind)) === null ||
-          _enterLeaveMap$get2 === void 0
-        ? void 0
-        : _enterLeaveMap$get2.enter;
+            _enterLeaveMap$get2 === void 0
+          ? void 0
+          : _enterLeaveMap$get2.enter;
       result =
         visitFn === null || visitFn === void 0
           ? void 0
@@ -220,9 +220,9 @@ export function visit(root, visitor, visitorKeys = QueryDocumentKeys) {
       keys = inArray
         ? node
         : (_node$kind = visitorKeys[node.kind]) !== null &&
-          _node$kind !== void 0
-        ? _node$kind
-        : [];
+            _node$kind !== void 0
+          ? _node$kind
+          : [];
       index = -1;
       edits = [];
 
@@ -327,10 +327,10 @@ export function visitInParallel(visitors) {
 export function getEnterLeaveForKind(visitor, kind) {
   const kindVisitor = visitor[kind];
 
-  if (typeof kindVisitor === 'object') {
+  if (typeof kindVisitor === "object") {
     // { Kind: { enter() {}, leave() {} } }
     return kindVisitor;
-  } else if (typeof kindVisitor === 'function') {
+  } else if (typeof kindVisitor === "function") {
     // { Kind() {} }
     return {
       enter: kindVisitor,

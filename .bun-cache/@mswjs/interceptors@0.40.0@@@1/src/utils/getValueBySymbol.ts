@@ -3,17 +3,17 @@
  */
 export function getValueBySymbol<T>(
   symbolName: string,
-  source: object
+  source: object,
 ): T | undefined {
-  const ownSymbols = Object.getOwnPropertySymbols(source)
+  const ownSymbols = Object.getOwnPropertySymbols(source);
 
   const symbol = ownSymbols.find((symbol) => {
-    return symbol.description === symbolName
-  })
+    return symbol.description === symbolName;
+  });
 
   if (symbol) {
-    return Reflect.get(source, symbol)
+    return Reflect.get(source, symbol);
   }
 
-  return
+  return;
 }

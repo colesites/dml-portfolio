@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import { z } from "zod/v3";
@@ -42,7 +42,9 @@ test("catch with transform", () => {
   expect(stringWithDefault.parse(15)).toBe("default");
   expect(stringWithDefault).toBeInstanceOf(z.ZodCatch);
   expect(stringWithDefault._def.innerType).toBeInstanceOf(z.ZodEffects);
-  expect(stringWithDefault._def.innerType._def.schema).toBeInstanceOf(z.ZodSchema);
+  expect(stringWithDefault._def.innerType._def.schema).toBeInstanceOf(
+    z.ZodSchema,
+  );
 
   type inp = z.input<typeof stringWithDefault>;
   util.assertEqual<inp, unknown>(true);
@@ -56,7 +58,9 @@ test("catch on existing optional", () => {
   expect(stringWithDefault.parse(15)).toBe("asdf");
   expect(stringWithDefault).toBeInstanceOf(z.ZodCatch);
   expect(stringWithDefault._def.innerType).toBeInstanceOf(z.ZodOptional);
-  expect(stringWithDefault._def.innerType._def.innerType).toBeInstanceOf(z.ZodString);
+  expect(stringWithDefault._def.innerType._def.innerType).toBeInstanceOf(
+    z.ZodString,
+  );
 
   type inp = z.input<typeof stringWithDefault>;
   util.assertEqual<inp, unknown>(true);
@@ -186,7 +190,7 @@ test("reported issues with nested usage", () => {
 });
 
 test("catch error", () => {
-  let catchError: z.ZodError | undefined = undefined;
+  let catchError: z.ZodError | undefined;
 
   const schema = z.object({
     age: z.number(),
@@ -207,8 +211,12 @@ test("catch error", () => {
   expect(!result.success && result.error.issues[0].message).toMatch("number");
 
   expect(catchError).toBeInstanceOf(z.ZodError);
-  expect(catchError !== undefined && (catchError as z.ZodError).issues.length).toEqual(1);
-  expect(catchError !== undefined && (catchError as z.ZodError).issues[0].message).toMatch("string");
+  expect(
+    catchError !== undefined && (catchError as z.ZodError).issues.length,
+  ).toEqual(1);
+  expect(
+    catchError !== undefined && (catchError as z.ZodError).issues[0].message,
+  ).toMatch("string");
 });
 
 test("ctx.input", () => {

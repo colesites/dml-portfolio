@@ -6,4 +6,9 @@ import { type Cipher } from "@noble/ciphers/utils";
  * albeit the latter is one of `CipherCCMTypes`.
  * Interestingly, whether to set `plaintextLength` or not, or which value to set, has no actual effect.
  */
-export declare const _compat: (algorithm: "aes-256-gcm" | "aes-256-cbc" | "chacha20-poly1305", key: Uint8Array, nonce: Uint8Array, AAD?: Uint8Array) => Cipher;
+export declare const _compat: (
+  algorithm: "aes-256-gcm" | "aes-256-cbc" | "chacha20-poly1305",
+  key: Uint8Array,
+  nonce: Uint8Array,
+  AAD?: Uint8Array,
+) => Cipher;

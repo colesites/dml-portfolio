@@ -1,6 +1,6 @@
-import type {SchemaObject} from "../../types"
+import type { SchemaObject } from "../../types";
 
-export type SchemaObjectMap = {[Ref in string]?: SchemaObject}
+export type SchemaObjectMap = { [Ref in string]?: SchemaObject };
 
 export const jtdForms = [
   "elements",
@@ -11,6 +11,6 @@ export const jtdForms = [
   "enum",
   "type",
   "ref",
-] as const
+] as const;
 
-export type JTDForm = (typeof jtdForms)[number]
+export type JTDForm = (typeof jtdForms)[number];

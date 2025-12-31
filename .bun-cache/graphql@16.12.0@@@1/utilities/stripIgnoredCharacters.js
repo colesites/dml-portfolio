@@ -1,17 +1,15 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.stripIgnoredCharacters = stripIgnoredCharacters;
 
-var _blockString = require('../language/blockString.js');
+var _blockString = require("../language/blockString.js");
 
-var _lexer = require('../language/lexer.js');
+var _lexer = require("../language/lexer.js");
 
-var _source = require('../language/source.js');
+var _source = require("../language/source.js");
 
-var _tokenKind = require('../language/tokenKind.js');
+var _tokenKind = require("../language/tokenKind.js");
 
 /**
  * Strips characters that are not significant to the validity or execution
@@ -79,7 +77,7 @@ function stripIgnoredCharacters(source) {
     : new _source.Source(source);
   const body = sourceObj.body;
   const lexer = new _lexer.Lexer(sourceObj);
-  let strippedBody = '';
+  let strippedBody = "";
   let wasLastAddedTokenNonPunctuator = false;
 
   while (lexer.advance().kind !== _tokenKind.TokenKind.EOF) {
@@ -100,7 +98,7 @@ function stripIgnoredCharacters(source) {
         isNonPunctuator ||
         currentToken.kind === _tokenKind.TokenKind.SPREAD
       ) {
-        strippedBody += ' ';
+        strippedBody += " ";
       }
     }
 

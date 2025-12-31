@@ -26,8 +26,12 @@ export class Doc {
 
     const content = arg as string;
     const lines = content.split("\n").filter((x) => x);
-    const minIndent = Math.min(...lines.map((x) => x.length - x.trimStart().length));
-    const dedented = lines.map((x) => x.slice(minIndent)).map((x) => " ".repeat(this.indent * 2) + x);
+    const minIndent = Math.min(
+      ...lines.map((x) => x.length - x.trimStart().length),
+    );
+    const dedented = lines
+      .map((x) => x.slice(minIndent))
+      .map((x) => " ".repeat(this.indent * 2) + x);
     for (const line of dedented) {
       this.content.push(line);
     }

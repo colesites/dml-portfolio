@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = transpileEnum;
 exports.isSyntacticallyString = isSyntacticallyString;
@@ -18,44 +18,48 @@ const buildEnumWrapper = _core.template.expression(`
     })(INIT)
   `);
 function transpileEnum(path, t) {
-  const {
-    node,
-    parentPath
-  } = path;
+  const { node, parentPath } = path;
   if (node.declare) {
     path.remove();
     return;
   }
   const name = node.id.name;
-  const {
-    fill,
-    data,
-    isPure
-  } = enumFill(path, t, node.id);
+  const { fill, data, isPure } = enumFill(path, t, node.id);
   switch (parentPath.type) {
     case "BlockStatement":
     case "ExportNamedDeclaration":
-    case "Program":
-      {
-        const isGlobal = t.isProgram(path.parent);
-        const isSeen = seen(parentPath);
-        let init = t.objectExpression([]);
-        if (isSeen || isGlobal) {
-          init = t.logicalExpression("||", t.cloneNode(fill.ID), init);
-        }
-        const enumIIFE = buildEnumWrapper(Object.assign({}, fill, {
-          INIT: init
-        }));
-        if (isPure) (0, _helperAnnotateAsPure.default)(enumIIFE);
-        if (isSeen) {
-          const toReplace = parentPath.isExportDeclaration() ? parentPath : path;
-          toReplace.replaceWith(t.expressionStatement(t.assignmentExpression("=", t.cloneNode(node.id), enumIIFE)));
-        } else {
-          path.scope.registerDeclaration(path.replaceWith(t.variableDeclaration(isGlobal ? "var" : "let", [t.variableDeclarator(node.id, enumIIFE)]))[0]);
-        }
-        ENUMS.set(path.scope.getBindingIdentifier(name), data);
-        break;
+    case "Program": {
+      const isGlobal = t.isProgram(path.parent);
+      const isSeen = seen(parentPath);
+      let init = t.objectExpression([]);
+      if (isSeen || isGlobal) {
+        init = t.logicalExpression("||", t.cloneNode(fill.ID), init);
       }
+      const enumIIFE = buildEnumWrapper(
+        Object.assign({}, fill, {
+          INIT: init,
+        }),
+      );
+      if (isPure) (0, _helperAnnotateAsPure.default)(enumIIFE);
+      if (isSeen) {
+        const toReplace = parentPath.isExportDeclaration() ? parentPath : path;
+        toReplace.replaceWith(
+          t.expressionStatement(
+            t.assignmentExpression("=", t.cloneNode(node.id), enumIIFE),
+          ),
+        );
+      } else {
+        path.scope.registerDeclaration(
+          path.replaceWith(
+            t.variableDeclaration(isGlobal ? "var" : "let", [
+              t.variableDeclarator(node.id, enumIIFE),
+            ]),
+          )[0],
+        );
+      }
+      ENUMS.set(path.scope.getBindingIdentifier(name), data);
+      break;
+    }
     default:
       throw new Error(`Unexpected enum parent '${path.parent.type}`);
   }
@@ -77,41 +81,48 @@ const buildStringAssignment = _core.template.statement(`
 const buildNumericAssignment = _core.template.statement(`
   ENUM[ENUM["NAME"] = VALUE] = "NAME";
 `);
-const buildEnumMember = (isString, options) => (isString ? buildStringAssignment : buildNumericAssignment)(options);
+const buildEnumMember = (isString, options) =>
+  (isString ? buildStringAssignment : buildNumericAssignment)(options);
 function enumFill(path, t, id) {
-  const {
-    enumValues,
-    data,
-    isPure
-  } = translateEnumValues(path, t);
+  const { enumValues, data, isPure } = translateEnumValues(path, t);
   const enumMembers = path.get("members");
   const assignments = [];
   for (let i = 0; i < enumMembers.length; i++) {
     const [memberName, memberValue] = enumValues[i];
-    assignments.push(t.inheritsComments(buildEnumMember(isSyntacticallyString(memberValue), {
-      ENUM: t.cloneNode(id),
-      NAME: memberName,
-      VALUE: memberValue
-    }), enumMembers[i].node));
+    assignments.push(
+      t.inheritsComments(
+        buildEnumMember(isSyntacticallyString(memberValue), {
+          ENUM: t.cloneNode(id),
+          NAME: memberName,
+          VALUE: memberValue,
+        }),
+        enumMembers[i].node,
+      ),
+    );
   }
   return {
     fill: {
       ID: t.cloneNode(id),
-      ASSIGNMENTS: assignments
+      ASSIGNMENTS: assignments,
     },
     data,
-    isPure
+    isPure,
   };
 }
 function isSyntacticallyString(expr) {
-  expr = (0, _helperSkipTransparentExpressionWrappers.skipTransparentExprWrapperNodes)(expr);
+  expr = (0,
+  _helperSkipTransparentExpressionWrappers.skipTransparentExprWrapperNodes)(
+    expr,
+  );
   switch (expr.type) {
-    case "BinaryExpression":
-      {
-        const left = expr.left;
-        const right = expr.right;
-        return expr.operator === "+" && (isSyntacticallyString(left) || isSyntacticallyString(right));
-      }
+    case "BinaryExpression": {
+      const left = expr.left;
+      const right = expr.right;
+      return (
+        expr.operator === "+" &&
+        (isSyntacticallyString(left) || isSyntacticallyString(right))
+      );
+    }
     case "TemplateLiteral":
     case "StringLiteral":
       return true;
@@ -119,36 +130,39 @@ function isSyntacticallyString(expr) {
   return false;
 }
 function ReferencedIdentifier(expr, state) {
-  const {
-    seen,
-    path,
-    t
-  } = state;
+  const { seen, path, t } = state;
   const name = expr.node.name;
   if (seen.has(name)) {
-    {
-      for (let curScope = expr.scope; curScope !== path.scope; curScope = curScope.parent) {
-        if (curScope.hasOwnBinding(name)) {
-          return;
-        }
+    for (
+      let curScope = expr.scope;
+      curScope !== path.scope;
+      curScope = curScope.parent
+    ) {
+      if (curScope.hasOwnBinding(name)) {
+        return;
       }
     }
-    expr.replaceWith(t.memberExpression(t.cloneNode(path.node.id), t.cloneNode(expr.node)));
+    expr.replaceWith(
+      t.memberExpression(t.cloneNode(path.node.id), t.cloneNode(expr.node)),
+    );
     expr.skip();
   }
 }
 const enumSelfReferenceVisitor = {
-  ReferencedIdentifier
+  ReferencedIdentifier,
 };
 function translateEnumValues(path, t) {
   var _ENUMS$get;
   const bindingIdentifier = path.scope.getBindingIdentifier(path.node.id.name);
-  const seen = (_ENUMS$get = ENUMS.get(bindingIdentifier)) != null ? _ENUMS$get : new Map();
+  const seen =
+    (_ENUMS$get = ENUMS.get(bindingIdentifier)) != null
+      ? _ENUMS$get
+      : new Map();
   let constValue = -1;
   let lastName;
   let isPure = true;
   const enumMembers = path.get("members");
-  const enumValues = enumMembers.map(memberPath => {
+  const enumValues = enumMembers.map((memberPath) => {
     const member = memberPath.node;
     const name = t.isIdentifier(member.id) ? member.id.name : member.id.value;
     const initializerPath = memberPath.get("initializer");
@@ -158,7 +172,9 @@ function translateEnumValues(path, t) {
       constValue = computeConstantValue(initializerPath, seen);
       if (constValue !== undefined) {
         seen.set(name, constValue);
-        _assert(typeof constValue === "number" || typeof constValue === "string");
+        _assert(
+          typeof constValue === "number" || typeof constValue === "string",
+        );
         if (constValue === Infinity || Number.isNaN(constValue)) {
           value = t.identifier(String(constValue));
         } else if (constValue === -Infinity) {
@@ -172,13 +188,13 @@ function translateEnumValues(path, t) {
           ReferencedIdentifier(initializerPath, {
             t,
             seen,
-            path
+            path,
           });
         } else {
           initializerPath.traverse(enumSelfReferenceVisitor, {
             t,
             seen,
-            path
+            path,
           });
         }
         value = initializerPath.node;
@@ -191,7 +207,11 @@ function translateEnumValues(path, t) {
     } else if (typeof constValue === "string") {
       throw path.buildCodeFrameError("Enum member must have initializer.");
     } else {
-      const lastRef = t.memberExpression(t.cloneNode(path.node.id), t.stringLiteral(lastName), true);
+      const lastRef = t.memberExpression(
+        t.cloneNode(path.node.id),
+        t.stringLiteral(lastName),
+        true,
+      );
       value = t.binaryExpression("+", t.numericLiteral(1), lastRef);
       seen.set(name, undefined);
     }
@@ -201,7 +221,7 @@ function translateEnumValues(path, t) {
   return {
     isPure,
     data: seen,
-    enumValues
+    enumValues,
   };
 }
 function computeConstantValue(path, prevMembers, seen = new Set()) {
@@ -223,24 +243,23 @@ function computeConstantValue(path, prevMembers, seen = new Set()) {
         return evaluate(path.get("expression"));
       case "Identifier":
         return evaluateRef(path, prevMembers, seen);
-      case "TemplateLiteral":
-        {
-          if (expr.quasis.length === 1) {
-            return expr.quasis[0].value.cooked;
-          }
-          const paths = path.get("expressions");
-          const quasis = expr.quasis;
-          let str = "";
-          for (let i = 0; i < quasis.length; i++) {
-            str += quasis[i].value.cooked;
-            if (i + 1 < quasis.length) {
-              const value = evaluateRef(paths[i], prevMembers, seen);
-              if (value === undefined) return undefined;
-              str += value;
-            }
-          }
-          return str;
+      case "TemplateLiteral": {
+        if (expr.quasis.length === 1) {
+          return expr.quasis[0].value.cooked;
         }
+        const paths = path.get("expressions");
+        const quasis = expr.quasis;
+        let str = "";
+        for (let i = 0; i < quasis.length; i++) {
+          str += quasis[i].value.cooked;
+          if (i + 1 < quasis.length) {
+            const value = evaluateRef(paths[i], prevMembers, seen);
+            if (value === undefined) return undefined;
+            str += value;
+          }
+        }
+        return str;
+      }
       default:
         return undefined;
     }
@@ -250,7 +269,12 @@ function computeConstantValue(path, prevMembers, seen = new Set()) {
       const expr = path.node;
       const obj = expr.object;
       const prop = expr.property;
-      if (!_core.types.isIdentifier(obj) || (expr.computed ? !_core.types.isStringLiteral(prop) : !_core.types.isIdentifier(prop))) {
+      if (
+        !_core.types.isIdentifier(obj) ||
+        (expr.computed
+          ? !_core.types.isStringLiteral(prop)
+          : !_core.types.isIdentifier(prop))
+      ) {
         return;
       }
       const bindingIdentifier = path.scope.getBindingIdentifier(obj.name);
@@ -324,7 +348,7 @@ function computeConstantValue(path, prevMembers, seen = new Set()) {
       case "%":
         return left % right;
       case "**":
-        return Math.pow(left, right);
+        return left ** right;
       default:
         return undefined;
     }

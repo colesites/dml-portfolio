@@ -1,22 +1,18 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.resolveBrowserslistConfigFile = resolveBrowserslistConfigFile;
 exports.resolveTargets = resolveTargets;
 function _path() {
   const data = require("path");
-  _path = function () {
-    return data;
-  };
+  _path = () => data;
   return data;
 }
 function _helperCompilationTargets() {
   const data = require("@babel/helper-compilation-targets");
-  _helperCompilationTargets = function () {
-    return data;
-  };
+  _helperCompilationTargets = () => data;
   return data;
 }
 ({});
@@ -28,20 +24,18 @@ function resolveTargets(options, root) {
   let targets;
   if (typeof optTargets === "string" || Array.isArray(optTargets)) {
     targets = {
-      browsers: optTargets
+      browsers: optTargets,
     };
   } else if (optTargets) {
     if ("esmodules" in optTargets) {
       targets = Object.assign({}, optTargets, {
-        esmodules: "intersect"
+        esmodules: "intersect",
       });
     } else {
       targets = optTargets;
     }
   }
-  const {
-    browserslistConfigFile
-  } = options;
+  const { browserslistConfigFile } = options;
   let configFile;
   let ignoreBrowserslistConfig = false;
   if (typeof browserslistConfigFile === "string") {
@@ -53,7 +47,7 @@ function resolveTargets(options, root) {
     ignoreBrowserslistConfig,
     configFile,
     configPath: root,
-    browserslistEnv: options.browserslistEnv
+    browserslistEnv: options.browserslistEnv,
   });
 }
 0 && 0;

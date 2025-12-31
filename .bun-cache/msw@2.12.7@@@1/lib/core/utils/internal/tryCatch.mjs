@@ -6,7 +6,5 @@ function tryCatch(fn, onException) {
     onException?.(error);
   }
 }
-export {
-  tryCatch
-};
+export { tryCatch };
 //# sourceMappingURL=tryCatch.mjs.map

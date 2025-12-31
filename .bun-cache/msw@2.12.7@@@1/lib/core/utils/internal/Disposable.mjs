@@ -2,12 +2,10 @@ class Disposable {
   subscriptions = [];
   dispose() {
     let subscription;
-    while (subscription = this.subscriptions.shift()) {
+    while ((subscription = this.subscriptions.shift())) {
       subscription();
     }
   }
 }
-export {
-  Disposable
-};
+export { Disposable };
 //# sourceMappingURL=Disposable.mjs.map

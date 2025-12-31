@@ -420,4 +420,4 @@ export type Encoding =
   | "xroman8"
   | "xsjis"
   | "xxbig5"
-  | (string & {})
+  | (string & {});

@@ -1,6 +1,7 @@
 // src/adapter/cloudflare-pages/handler.ts
 import { Context } from "../../context.js";
 import { HTTPException } from "../../http-exception.js";
+
 var handle = (app) => (eventContext) => {
   return app.fetch(
     eventContext.request,
@@ -8,15 +9,15 @@ var handle = (app) => (eventContext) => {
     {
       waitUntil: eventContext.waitUntil,
       passThroughOnException: eventContext.passThroughOnException,
-      props: {}
-    }
+      props: {},
+    },
   );
 };
 function handleMiddleware(middleware) {
   return async (executionCtx) => {
     const context = new Context(executionCtx.request, {
       env: { ...executionCtx.env, eventContext: executionCtx },
-      executionCtx
+      executionCtx,
     });
     let response = void 0;
     try {
@@ -60,8 +61,4 @@ var serveStatic = () => {
     return res;
   };
 };
-export {
-  handle,
-  handleMiddleware,
-  serveStatic
-};
+export { handle, handleMiddleware, serveStatic };

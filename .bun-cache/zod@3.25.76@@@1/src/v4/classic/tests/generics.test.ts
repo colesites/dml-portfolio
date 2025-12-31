@@ -18,7 +18,10 @@ test("generics", () => {
 });
 
 test("generics with optional", () => {
-  async function stripOuter<TData extends z.ZodType>(schema: TData, data: unknown) {
+  async function stripOuter<TData extends z.ZodType>(
+    schema: TData,
+    data: unknown,
+  ) {
     return z
       .object({
         nested: schema.optional(),
@@ -30,7 +33,9 @@ test("generics with optional", () => {
   }
 
   const result = stripOuter(z.object({ a: z.string() }), { a: "asdf" });
-  expectTypeOf<typeof result>().toEqualTypeOf<Promise<{ a: string } | undefined>>();
+  expectTypeOf<typeof result>().toEqualTypeOf<
+    Promise<{ a: string } | undefined>
+  >();
 });
 
 // test("assignability", () => {
@@ -58,9 +63,7 @@ test("nested no undefined", () => {
 });
 
 test("generic on output type", () => {
-  const createV4Schema = <Output>(opts: {
-    schema: z.ZodType<Output>;
-  }) => {
+  const createV4Schema = <Output>(opts: { schema: z.ZodType<Output> }) => {
     return opts.schema;
   };
 

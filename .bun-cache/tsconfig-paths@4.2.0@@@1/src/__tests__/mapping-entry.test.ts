@@ -1,5 +1,5 @@
-import { getAbsoluteMappingEntries } from "../mapping-entry";
 import { join } from "path";
+import { getAbsoluteMappingEntries } from "../mapping-entry";
 
 describe("mapping-entry", () => {
   it("should change to absolute paths and sort in longest prefix order", () => {
@@ -10,7 +10,7 @@ describe("mapping-entry", () => {
         "longest/pre/fix/*": ["./foo2/bar"],
         "pre/fix/*": ["/foo3"],
       },
-      true
+      true,
     );
     expect(result).toEqual([
       {

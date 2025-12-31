@@ -1,5 +1,8 @@
 export type KVAssetOptions = {
-    manifest?: object | string;
-    namespace?: unknown;
+  manifest?: object | string;
+  namespace?: unknown;
 };
-export declare const getContentFromKVAsset: (path: string, options?: KVAssetOptions) => Promise<ReadableStream | null>;
+export declare const getContentFromKVAsset: (
+  path: string,
+  options?: KVAssetOptions,
+) => Promise<ReadableStream | null>;

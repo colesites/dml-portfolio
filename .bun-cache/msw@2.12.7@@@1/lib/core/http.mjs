@@ -1,7 +1,5 @@
-import {
-  HttpMethods,
-  HttpHandler
-} from './handlers/HttpHandler.mjs';
+import { HttpHandler, HttpMethods } from "./handlers/HttpHandler.mjs";
+
 function createHttpHandler(method) {
   return (predicate, resolver, options = {}) => {
     return new HttpHandler(method, predicate, resolver, options);
@@ -15,9 +13,7 @@ const http = {
   put: createHttpHandler(HttpMethods.PUT),
   delete: createHttpHandler(HttpMethods.DELETE),
   patch: createHttpHandler(HttpMethods.PATCH),
-  options: createHttpHandler(HttpMethods.OPTIONS)
+  options: createHttpHandler(HttpMethods.OPTIONS),
 };
-export {
-  http
-};
+export { http };
 //# sourceMappingURL=http.mjs.map

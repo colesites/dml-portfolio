@@ -2,27 +2,32 @@
  * @module
  * Proxy Helper for Hono.
  */
-import type { RequestHeader } from '../../utils/headers';
-interface ProxyRequestInit extends Omit<RequestInit, 'headers'> {
-    raw?: Request;
-    headers?: HeadersInit | [string, string][] | Record<RequestHeader, string | undefined> | Record<string, string | undefined>;
-    customFetch?: (request: Request) => Promise<Response>;
-    /**
-     * Enable strict RFC 9110 compliance for Connection header processing.
-     *
-     * - `false` (default): Ignores Connection header to prevent potential
-     *   Hop-by-Hop Header Injection attacks. Recommended for untrusted clients.
-     * - `true`: Processes Connection header per RFC 9110 and removes listed headers.
-     *   Only use in trusted environments.
-     *
-     * @default false
-     * @see https://datatracker.ietf.org/doc/html/rfc9110#section-7.6.1
-     */
-    strictConnectionProcessing?: boolean;
+import type { RequestHeader } from "../../utils/headers";
+interface ProxyRequestInit extends Omit<RequestInit, "headers"> {
+  raw?: Request;
+  headers?:
+    | HeadersInit
+    | [string, string][]
+    | Record<RequestHeader, string | undefined>
+    | Record<string, string | undefined>;
+  customFetch?: (request: Request) => Promise<Response>;
+  /**
+   * Enable strict RFC 9110 compliance for Connection header processing.
+   *
+   * - `false` (default): Ignores Connection header to prevent potential
+   *   Hop-by-Hop Header Injection attacks. Recommended for untrusted clients.
+   * - `true`: Processes Connection header per RFC 9110 and removes listed headers.
+   *   Only use in trusted environments.
+   *
+   * @default false
+   * @see https://datatracker.ietf.org/doc/html/rfc9110#section-7.6.1
+   */
+  strictConnectionProcessing?: boolean;
 }
-interface ProxyFetch {
-    (input: string | URL | Request, init?: ProxyRequestInit): Promise<Response>;
-}
+type ProxyFetch = (
+  input: string | URL | Request,
+  init?: ProxyRequestInit,
+) => Promise<Response>;
 /**
  * Fetch API wrapper for proxy.
  * The parameters and return value are the same as for `fetch` (except for the proxy-specific options).
@@ -69,4 +74,3 @@ interface ProxyFetch {
  * ```
  */
 export declare const proxy: ProxyFetch;
-export {};

@@ -1,19 +1,19 @@
-const fsx = require('./fsx')
-const ignore = require('ignore')
+const fsx = require("./fsx");
+const ignore = require("ignore");
 
-function isIgnoringDotenvKeys () {
-  if (!fsx.existsSync('.gitignore')) {
-    return false
+function isIgnoringDotenvKeys() {
+  if (!fsx.existsSync(".gitignore")) {
+    return false;
   }
 
-  const gitignore = fsx.readFileX('.gitignore')
-  const ig = ignore(gitignore).add(gitignore)
+  const gitignore = fsx.readFileX(".gitignore");
+  const ig = ignore(gitignore).add(gitignore);
 
-  if (!ig.ignores('.env.keys')) {
-    return false
+  if (!ig.ignores(".env.keys")) {
+    return false;
   }
 
-  return true
+  return true;
 }
 
-module.exports = isIgnoringDotenvKeys
+module.exports = isIgnoringDotenvKeys;

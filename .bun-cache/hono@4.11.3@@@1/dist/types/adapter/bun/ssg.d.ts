@@ -1,4 +1,4 @@
-import type { FileSystemModule, ToSSGAdaptorInterface } from '../../helper/ssg';
+import type { FileSystemModule, ToSSGAdaptorInterface } from "../../helper/ssg";
 /**
  * @experimental
  * `bunFileSystemModule` is an experimental feature.

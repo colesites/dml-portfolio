@@ -1,16 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.parse = void 0;
 exports.parseAsync = parseAsync;
 exports.parseSync = parseSync;
 function _gensync() {
   const data = require("gensync");
-  _gensync = function () {
-    return data;
-  };
+  _gensync = () => data;
   return data;
 }
 var _index = require("./config/index.js");
@@ -22,25 +20,38 @@ const parseRunner = _gensync()(function* parse(code, opts) {
   if (config === null) {
     return null;
   }
-  return yield* (0, _index2.default)(config.passes, (0, _normalizeOpts.default)(config), code);
+  return yield* (0, _index2.default)(
+    config.passes,
+    (0, _normalizeOpts.default)(config),
+    code,
+  );
 });
-const parse = exports.parse = function parse(code, opts, callback) {
+const parse = (exports.parse = function parse(code, opts, callback) {
   if (typeof opts === "function") {
     callback = opts;
     opts = undefined;
   }
   if (callback === undefined) {
-    {
-      return (0, _rewriteStackTrace.beginHiddenCallStack)(parseRunner.sync)(code, opts);
-    }
+    return (0, _rewriteStackTrace.beginHiddenCallStack)(parseRunner.sync)(
+      code,
+      opts,
+    );
   }
-  (0, _rewriteStackTrace.beginHiddenCallStack)(parseRunner.errback)(code, opts, callback);
-};
+  (0, _rewriteStackTrace.beginHiddenCallStack)(parseRunner.errback)(
+    code,
+    opts,
+    callback,
+  );
+});
 function parseSync(...args) {
-  return (0, _rewriteStackTrace.beginHiddenCallStack)(parseRunner.sync)(...args);
+  return (0, _rewriteStackTrace.beginHiddenCallStack)(parseRunner.sync)(
+    ...args,
+  );
 }
 function parseAsync(...args) {
-  return (0, _rewriteStackTrace.beginHiddenCallStack)(parseRunner.async)(...args);
+  return (0, _rewriteStackTrace.beginHiddenCallStack)(parseRunner.async)(
+    ...args,
+  );
 }
 0 && 0;
 

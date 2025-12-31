@@ -1,25 +1,23 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.lexicographicSortSchema = lexicographicSortSchema;
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
-var _keyValMap = require('../jsutils/keyValMap.js');
+var _keyValMap = require("../jsutils/keyValMap.js");
 
-var _naturalCompare = require('../jsutils/naturalCompare.js');
+var _naturalCompare = require("../jsutils/naturalCompare.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _directives = require('../type/directives.js');
+var _directives = require("../type/directives.js");
 
-var _introspection = require('../type/introspection.js');
+var _introspection = require("../type/introspection.js");
 
-var _schema = require('../type/schema.js');
+var _schema = require("../type/schema.js");
 
 /**
  * Sort GraphQLSchema.
@@ -149,7 +147,7 @@ function lexicographicSortSchema(schema) {
     false ||
       (0, _invariant.invariant)(
         false,
-        'Unexpected type: ' + (0, _inspect.inspect)(type),
+        "Unexpected type: " + (0, _inspect.inspect)(type),
       );
   }
 }

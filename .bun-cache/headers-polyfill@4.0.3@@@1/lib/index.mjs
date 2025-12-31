@@ -4,34 +4,46 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
+var __commonJS = (cb, mod) =>
+  function __require() {
+    return (
+      mod ||
+        (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod),
+      mod.exports
+    );
+  };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
+var __toESM = (mod, isNodeMode, target) => (
+  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+  __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule
+      ? __defProp(target, "default", { value: mod, enumerable: true })
+      : target,
+    mod,
+  )
+);
 
 // node_modules/set-cookie-parser/lib/set-cookie.js
 var require_set_cookie = __commonJS({
   "node_modules/set-cookie-parser/lib/set-cookie.js"(exports, module) {
-    "use strict";
     var defaultParseOptions = {
       decodeValues: true,
       map: false,
-      silent: false
+      silent: false,
     };
     function isNonEmptyString(str) {
       return typeof str === "string" && !!str.trim();
@@ -42,20 +54,24 @@ var require_set_cookie = __commonJS({
       var parsed = parseNameValuePair(nameValuePairStr);
       var name = parsed.name;
       var value = parsed.value;
-      options = options ? Object.assign({}, defaultParseOptions, options) : defaultParseOptions;
+      options = options
+        ? Object.assign({}, defaultParseOptions, options)
+        : defaultParseOptions;
       try {
         value = options.decodeValues ? decodeURIComponent(value) : value;
       } catch (e) {
         console.error(
-          "set-cookie-parser encountered an error while decoding a cookie with value '" + value + "'. Set options.decodeValues to false to disable this feature.",
-          e
+          "set-cookie-parser encountered an error while decoding a cookie with value '" +
+            value +
+            "'. Set options.decodeValues to false to disable this feature.",
+          e,
         );
       }
       var cookie = {
         name,
-        value
+        value,
       };
-      parts.forEach(function(part) {
+      parts.forEach((part) => {
         var sides = part.split("=");
         var key = sides.shift().trimLeft().toLowerCase();
         var value2 = sides.join("=");
@@ -88,7 +104,9 @@ var require_set_cookie = __commonJS({
       return { name, value };
     }
     function parse(input, options) {
-      options = options ? Object.assign({}, defaultParseOptions, options) : defaultParseOptions;
+      options = options
+        ? Object.assign({}, defaultParseOptions, options)
+        : defaultParseOptions;
       if (!input) {
         if (!options.map) {
           return [];
@@ -102,12 +120,15 @@ var require_set_cookie = __commonJS({
         } else if (input.headers["set-cookie"]) {
           input = input.headers["set-cookie"];
         } else {
-          var sch = input.headers[Object.keys(input.headers).find(function(key) {
-            return key.toLowerCase() === "set-cookie";
-          })];
+          var sch =
+            input.headers[
+              Object.keys(input.headers).find(
+                (key) => key.toLowerCase() === "set-cookie",
+              )
+            ];
           if (!sch && input.headers.cookie && !options.silent) {
             console.warn(
-              "Warning: set-cookie-parser appears to have been called on a request object. It is designed to parse Set-Cookie headers from responses, not Cookie headers from requests. Set the option {silent: true} to suppress this warning."
+              "Warning: set-cookie-parser appears to have been called on a request object. It is designed to parse Set-Cookie headers from responses, not Cookie headers from requests. Set the option {silent: true} to suppress this warning.",
             );
           }
           input = sch;
@@ -116,14 +137,16 @@ var require_set_cookie = __commonJS({
       if (!Array.isArray(input)) {
         input = [input];
       }
-      options = options ? Object.assign({}, defaultParseOptions, options) : defaultParseOptions;
+      options = options
+        ? Object.assign({}, defaultParseOptions, options)
+        : defaultParseOptions;
       if (!options.map) {
-        return input.filter(isNonEmptyString).map(function(str) {
-          return parseString(str, options);
-        });
+        return input
+          .filter(isNonEmptyString)
+          .map((str) => parseString(str, options));
       } else {
         var cookies = {};
-        return input.filter(isNonEmptyString).reduce(function(cookies2, str) {
+        return input.filter(isNonEmptyString).reduce((cookies2, str) => {
           var cookie = parseString(str, options);
           cookies2[cookie.name] = cookie;
           return cookies2;
@@ -145,7 +168,10 @@ var require_set_cookie = __commonJS({
       var nextStart;
       var cookiesSeparatorFound;
       function skipWhitespace() {
-        while (pos < cookiesString.length && /\s/.test(cookiesString.charAt(pos))) {
+        while (
+          pos < cookiesString.length &&
+          /\s/.test(cookiesString.charAt(pos))
+        ) {
           pos += 1;
         }
         return pos < cookiesString.length;
@@ -167,7 +193,10 @@ var require_set_cookie = __commonJS({
             while (pos < cookiesString.length && notSpecialChar()) {
               pos += 1;
             }
-            if (pos < cookiesString.length && cookiesString.charAt(pos) === "=") {
+            if (
+              pos < cookiesString.length &&
+              cookiesString.charAt(pos) === "="
+            ) {
               cookiesSeparatorFound = true;
               pos = nextStart;
               cookiesStrings.push(cookiesString.substring(start, lastComma));
@@ -180,7 +209,9 @@ var require_set_cookie = __commonJS({
           }
         }
         if (!cookiesSeparatorFound || pos >= cookiesString.length) {
-          cookiesStrings.push(cookiesString.substring(start, cookiesString.length));
+          cookiesStrings.push(
+            cookiesString.substring(start, cookiesString.length),
+          );
         }
       }
       return cookiesStrings;
@@ -189,7 +220,7 @@ var require_set_cookie = __commonJS({
     module.exports.parse = parse;
     module.exports.parseString = parseString;
     module.exports.splitCookiesString = splitCookiesString2;
-  }
+  },
 });
 
 // src/Headers.ts
@@ -209,11 +240,11 @@ var charCodesToRemove = [
   String.fromCharCode(10),
   String.fromCharCode(13),
   String.fromCharCode(9),
-  String.fromCharCode(32)
+  String.fromCharCode(32),
 ];
 var HEADER_VALUE_REMOVE_REGEXP = new RegExp(
   `(^[${charCodesToRemove.join("")}]|$[${charCodesToRemove.join("")}])`,
-  "g"
+  "g",
 );
 function normalizeHeaderValue(value) {
   const nextValue = value.replace(HEADER_VALUE_REMOVE_REGEXP, "");
@@ -256,7 +287,7 @@ function isToken(value) {
     "?",
     "=",
     "{",
-    "}"
+    "}",
   ].includes(value);
 }
 
@@ -273,7 +304,8 @@ function isValidHeaderValue(value) {
     if (
       // NUL.
       character === 0 || // HTTP newline bytes.
-      character === 10 || character === 13
+      character === 10 ||
+      character === 13
     ) {
       return false;
     }
@@ -294,7 +326,12 @@ var Headers = class _Headers {
     // and the normalized header name to ease the lookup.
     this[_b] = /* @__PURE__ */ new Map();
     this[_c] = "Headers";
-    if (["Headers", "HeadersPolyfill"].includes(init?.constructor.name) || init instanceof _Headers || typeof globalThis.Headers !== "undefined" && init instanceof globalThis.Headers) {
+    if (
+      ["Headers", "HeadersPolyfill"].includes(init?.constructor.name) ||
+      init instanceof _Headers ||
+      (typeof globalThis.Headers !== "undefined" &&
+        init instanceof globalThis.Headers)
+    ) {
       const initialHeaders = init;
       initialHeaders.forEach((value, name) => {
         this.append(name, value);
@@ -303,7 +340,7 @@ var Headers = class _Headers {
       init.forEach(([name, value]) => {
         this.append(
           name,
-          Array.isArray(value) ? value.join(HEADER_VALUE_DELIMITER) : value
+          Array.isArray(value) ? value.join(HEADER_VALUE_DELIMITER) : value,
         );
       });
     } else if (init) {
@@ -311,12 +348,15 @@ var Headers = class _Headers {
         const value = init[name];
         this.append(
           name,
-          Array.isArray(value) ? value.join(HEADER_VALUE_DELIMITER) : value
+          Array.isArray(value) ? value.join(HEADER_VALUE_DELIMITER) : value,
         );
       });
     }
   }
-  [(_a = NORMALIZED_HEADERS, _b = RAW_HEADER_NAMES, _c = Symbol.toStringTag, Symbol.iterator)]() {
+  [((_a = NORMALIZED_HEADERS),
+  (_b = RAW_HEADER_NAMES),
+  (_c = Symbol.toStringTag),
+  Symbol.iterator)]() {
     return this.entries();
   }
   *keys() {
@@ -330,8 +370,8 @@ var Headers = class _Headers {
     }
   }
   *entries() {
-    let sortedKeys = Object.keys(this[NORMALIZED_HEADERS]).sort(
-      (a, b) => a.localeCompare(b)
+    const sortedKeys = Object.keys(this[NORMALIZED_HEADERS]).sort((a, b) =>
+      a.localeCompare(b),
     );
     for (const name of sortedKeys) {
       if (name === "set-cookie") {
@@ -350,7 +390,7 @@ var Headers = class _Headers {
     if (!isValidHeaderName(name)) {
       throw new TypeError(`Invalid header name "${name}"`);
     }
-    return this[NORMALIZED_HEADERS].hasOwnProperty(normalizeHeaderName(name));
+    return Object.hasOwn(this[NORMALIZED_HEADERS], normalizeHeaderName(name));
   }
   /**
    * Returns a `ByteString` sequence of all the values of a header with a given name.
@@ -370,7 +410,8 @@ var Headers = class _Headers {
     }
     const normalizedName = normalizeHeaderName(name);
     const normalizedValue = normalizeHeaderValue(value);
-    this[NORMALIZED_HEADERS][normalizedName] = normalizeHeaderValue(normalizedValue);
+    this[NORMALIZED_HEADERS][normalizedName] =
+      normalizeHeaderValue(normalizedValue);
     this[RAW_HEADER_NAMES].set(normalizedName, name);
   }
   /**
@@ -382,7 +423,9 @@ var Headers = class _Headers {
     }
     const normalizedName = normalizeHeaderName(name);
     const normalizedValue = normalizeHeaderValue(value);
-    let resolvedValue = this.has(normalizedName) ? `${this.get(normalizedName)}, ${normalizedValue}` : normalizedValue;
+    const resolvedValue = this.has(normalizedName)
+      ? `${this.get(normalizedName)}, ${normalizedValue}`
+      : normalizedValue;
     this.set(name, resolvedValue);
   }
   /**
@@ -438,7 +481,9 @@ function getRawHeaders(headers) {
 function headersToList(headers) {
   const headersList = [];
   headers.forEach((value, name) => {
-    const resolvedValue = value.includes(",") ? value.split(",").map((value2) => value2.trim()) : value;
+    const resolvedValue = value.includes(",")
+      ? value.split(",").map((value2) => value2.trim())
+      : value;
     headersList.push([name, resolvedValue]);
   });
   return headersList;
@@ -459,8 +504,11 @@ var singleValueHeaders = ["user-agent"];
 function headersToObject(headers) {
   const headersObject = {};
   headers.forEach((value, name) => {
-    const isMultiValue = !singleValueHeaders.includes(name.toLowerCase()) && value.includes(",");
-    headersObject[name] = isMultiValue ? value.split(",").map((s) => s.trim()) : value;
+    const isMultiValue =
+      !singleValueHeaders.includes(name.toLowerCase()) && value.includes(",");
+    headersObject[name] = isMultiValue
+      ? value.split(",").map((s) => s.trim())
+      : value;
   });
   return headersObject;
 }
@@ -510,7 +558,7 @@ function objectToHeaders(headersObject) {
       });
       return headers;
     },
-    new Headers()
+    new Headers(),
   );
 }
 
@@ -529,7 +577,7 @@ function flattenHeadersObject(headersObject) {
       headers[name] = [].concat(value).join(", ");
       return headers;
     },
-    {}
+    {},
   );
 }
 export {
@@ -543,6 +591,6 @@ export {
   listToHeaders,
   objectToHeaders,
   reduceHeadersObject,
-  stringToHeaders
+  stringToHeaders,
 };
 //# sourceMappingURL=index.mjs.map

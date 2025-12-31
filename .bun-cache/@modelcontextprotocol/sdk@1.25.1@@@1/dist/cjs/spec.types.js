@@ -10,7 +10,15 @@
  * To update this file, run: npm run fetch:spec-types
  */ /* JSON-RPC types */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.URL_ELICITATION_REQUIRED = exports.INTERNAL_ERROR = exports.INVALID_PARAMS = exports.METHOD_NOT_FOUND = exports.INVALID_REQUEST = exports.PARSE_ERROR = exports.JSONRPC_VERSION = exports.LATEST_PROTOCOL_VERSION = void 0;
+exports.URL_ELICITATION_REQUIRED =
+  exports.INTERNAL_ERROR =
+  exports.INVALID_PARAMS =
+  exports.METHOD_NOT_FOUND =
+  exports.INVALID_REQUEST =
+  exports.PARSE_ERROR =
+  exports.JSONRPC_VERSION =
+  exports.LATEST_PROTOCOL_VERSION =
+    void 0;
 /** @internal */
 exports.LATEST_PROTOCOL_VERSION = "DRAFT-2026-v1";
 /** @internal */

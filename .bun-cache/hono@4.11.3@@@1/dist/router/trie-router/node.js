@@ -1,6 +1,7 @@
 // src/router/trie-router/node.ts
 import { METHOD_NAME_ALL } from "../../router.js";
 import { getPattern, splitPath, splitRoutingPath } from "../../utils/url.js";
+
 var emptyParams = /* @__PURE__ */ Object.create(null);
 var Node = class _Node {
   #methods;
@@ -46,8 +47,8 @@ var Node = class _Node {
       [method]: {
         handler,
         possibleKeys: possibleKeys.filter((v, i, a) => a.indexOf(v) === i),
-        score: this.#order
-      }
+        score: this.#order,
+      },
     });
     return curNode;
   }
@@ -60,11 +61,18 @@ var Node = class _Node {
       if (handlerSet !== void 0) {
         handlerSet.params = /* @__PURE__ */ Object.create(null);
         handlerSets.push(handlerSet);
-        if (nodeParams !== emptyParams || params && params !== emptyParams) {
-          for (let i2 = 0, len2 = handlerSet.possibleKeys.length; i2 < len2; i2++) {
+        if (nodeParams !== emptyParams || (params && params !== emptyParams)) {
+          for (
+            let i2 = 0, len2 = handlerSet.possibleKeys.length;
+            i2 < len2;
+            i2++
+          ) {
             const key = handlerSet.possibleKeys[i2];
             const processed = processedSet[handlerSet.score];
-            handlerSet.params[key] = params?.[key] && !processed ? params[key] : nodeParams[key] ?? params?.[key];
+            handlerSet.params[key] =
+              params?.[key] && !processed
+                ? params[key]
+                : (nodeParams[key] ?? params?.[key]);
             processedSet[handlerSet.score] = true;
           }
         }
@@ -75,8 +83,7 @@ var Node = class _Node {
   search(method, path) {
     const handlerSets = [];
     this.#params = emptyParams;
-    const curNode = this;
-    let curNodes = [curNode];
+    let curNodes = [this];
     const parts = splitPath(path);
     const curNodesQueue = [];
     for (let i = 0, len = parts.length; i < len; i++) {
@@ -91,21 +98,30 @@ var Node = class _Node {
           if (isLast) {
             if (nextNode.#children["*"]) {
               handlerSets.push(
-                ...this.#getHandlerSets(nextNode.#children["*"], method, node.#params)
+                ...this.#getHandlerSets(
+                  nextNode.#children["*"],
+                  method,
+                  node.#params,
+                ),
               );
             }
-            handlerSets.push(...this.#getHandlerSets(nextNode, method, node.#params));
+            handlerSets.push(
+              ...this.#getHandlerSets(nextNode, method, node.#params),
+            );
           } else {
             tempNodes.push(nextNode);
           }
         }
         for (let k = 0, len3 = node.#patterns.length; k < len3; k++) {
           const pattern = node.#patterns[k];
-          const params = node.#params === emptyParams ? {} : { ...node.#params };
+          const params =
+            node.#params === emptyParams ? {} : { ...node.#params };
           if (pattern === "*") {
             const astNode = node.#children["*"];
             if (astNode) {
-              handlerSets.push(...this.#getHandlerSets(astNode, method, node.#params));
+              handlerSets.push(
+                ...this.#getHandlerSets(astNode, method, node.#params),
+              );
               astNode.#params = params;
               tempNodes.push(astNode);
             }
@@ -121,11 +137,13 @@ var Node = class _Node {
             const m = matcher.exec(restPathString);
             if (m) {
               params[name] = m[0];
-              handlerSets.push(...this.#getHandlerSets(child, method, node.#params, params));
+              handlerSets.push(
+                ...this.#getHandlerSets(child, method, node.#params, params),
+              );
               if (Object.keys(child.#children).length) {
                 child.#params = params;
                 const componentCount = m[0].match(/\//)?.length ?? 0;
-                const targetCurNodes = curNodesQueue[componentCount] ||= [];
+                const targetCurNodes = (curNodesQueue[componentCount] ||= []);
                 targetCurNodes.push(child);
               }
               continue;
@@ -134,10 +152,17 @@ var Node = class _Node {
           if (matcher === true || matcher.test(part)) {
             params[name] = part;
             if (isLast) {
-              handlerSets.push(...this.#getHandlerSets(child, method, params, node.#params));
+              handlerSets.push(
+                ...this.#getHandlerSets(child, method, params, node.#params),
+              );
               if (child.#children["*"]) {
                 handlerSets.push(
-                  ...this.#getHandlerSets(child.#children["*"], method, params, node.#params)
+                  ...this.#getHandlerSets(
+                    child.#children["*"],
+                    method,
+                    params,
+                    node.#params,
+                  ),
                 );
               }
             } else {
@@ -157,6 +182,4 @@ var Node = class _Node {
     return [handlerSets.map(({ handler, params }) => [handler, params])];
   }
 };
-export {
-  Node
-};
+export { Node };

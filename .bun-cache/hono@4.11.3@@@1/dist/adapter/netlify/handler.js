@@ -4,6 +4,4 @@ var handle = (app) => {
     return app.fetch(req, { context });
   };
 };
-export {
-  handle
-};
+export { handle };

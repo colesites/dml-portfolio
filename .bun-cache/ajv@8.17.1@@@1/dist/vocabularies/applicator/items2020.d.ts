@@ -1,6 +1,14 @@
-import type { CodeKeywordDefinition, ErrorObject, AnySchema } from "../../types";
-export type ItemsError = ErrorObject<"items", {
+import type {
+  CodeKeywordDefinition,
+  ErrorObject,
+  AnySchema,
+} from "../../types";
+export type ItemsError = ErrorObject<
+  "items",
+  {
     limit: number;
-}, AnySchema>;
+  },
+  AnySchema
+>;
 declare const def: CodeKeywordDefinition;
 export default def;

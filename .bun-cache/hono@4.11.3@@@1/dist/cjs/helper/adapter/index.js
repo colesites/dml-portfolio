@@ -8,20 +8,24 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var adapter_exports = {};
 __export(adapter_exports, {
   checkUserAgentEquals: () => checkUserAgentEquals,
   env: () => env,
   getRuntimeKey: () => getRuntimeKey,
-  knownUserAgents: () => knownUserAgents
+  knownUserAgents: () => knownUserAgents,
 });
 module.exports = __toCommonJS(adapter_exports);
 const env = (c, runtime) => {
@@ -38,7 +42,7 @@ const env = (c, runtime) => {
     workerd: () => c.env,
     // On Fastly Compute, you can use the ConfigStore to manage user-defined data.
     fastly: () => ({}),
-    other: () => ({})
+    other: () => ({}),
   };
   return runtimeEnvHandlers[runtime]();
 };
@@ -46,11 +50,12 @@ const knownUserAgents = {
   deno: "Deno",
   bun: "Bun",
   workerd: "Cloudflare-Workers",
-  node: "Node.js"
+  node: "Node.js",
 };
 const getRuntimeKey = () => {
   const global = globalThis;
-  const userAgentSupported = typeof navigator !== "undefined" && typeof navigator.userAgent === "string";
+  const userAgentSupported =
+    typeof navigator !== "undefined" && typeof navigator.userAgent === "string";
   if (userAgentSupported) {
     for (const [runtimeKey, userAgent] of Object.entries(knownUserAgents)) {
       if (checkUserAgentEquals(userAgent)) {
@@ -74,9 +79,10 @@ const checkUserAgentEquals = (platform) => {
   return userAgent.startsWith(platform);
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  checkUserAgentEquals,
-  env,
-  getRuntimeKey,
-  knownUserAgents
-});
+0 &&
+  (module.exports = {
+    checkUserAgentEquals,
+    env,
+    getRuntimeKey,
+    knownUserAgents,
+  });

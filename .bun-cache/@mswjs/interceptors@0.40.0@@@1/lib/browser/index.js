@@ -1,21 +1,10 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 
+var _chunkLK6DILFKjs = require("./chunk-LK6DILFK.js");
 
-var _chunkLK6DILFKjs = require('./chunk-LK6DILFK.js');
+var _chunk57RIRQUYjs = require("./chunk-57RIRQUY.js");
 
-
-
-
-
-var _chunk57RIRQUYjs = require('./chunk-57RIRQUY.js');
-
-
-
-
-
-
-
-var _chunkJQ2S7G56js = require('./chunk-JQ2S7G56.js');
+var _chunkJQ2S7G56js = require("./chunk-JQ2S7G56.js");
 
 // src/BatchInterceptor.ts
 var BatchInterceptor = class extends _chunkJQ2S7G56js.Interceptor {
@@ -65,19 +54,19 @@ function getCleanUrl(url, isAbsolute = true) {
   return [isAbsolute && url.origin, url.pathname].filter(Boolean).join("");
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-exports.BatchInterceptor = BatchInterceptor; exports.FetchResponse = _chunk57RIRQUYjs.FetchResponse; exports.INTERNAL_REQUEST_ID_HEADER_NAME = _chunkJQ2S7G56js.INTERNAL_REQUEST_ID_HEADER_NAME; exports.IS_PATCHED_MODULE = _chunk57RIRQUYjs.IS_PATCHED_MODULE; exports.Interceptor = _chunkJQ2S7G56js.Interceptor; exports.InterceptorReadyState = _chunkJQ2S7G56js.InterceptorReadyState; exports.RequestController = _chunk57RIRQUYjs.RequestController; exports.createRequestId = _chunkJQ2S7G56js.createRequestId; exports.decodeBuffer = _chunkLK6DILFKjs.decodeBuffer; exports.deleteGlobalSymbol = _chunkJQ2S7G56js.deleteGlobalSymbol; exports.encodeBuffer = _chunkLK6DILFKjs.encodeBuffer; exports.getCleanUrl = getCleanUrl; exports.getGlobalSymbol = _chunkJQ2S7G56js.getGlobalSymbol; exports.getRawRequest = _chunk57RIRQUYjs.getRawRequest;
+exports.BatchInterceptor = BatchInterceptor;
+exports.FetchResponse = _chunk57RIRQUYjs.FetchResponse;
+exports.INTERNAL_REQUEST_ID_HEADER_NAME =
+  _chunkJQ2S7G56js.INTERNAL_REQUEST_ID_HEADER_NAME;
+exports.IS_PATCHED_MODULE = _chunk57RIRQUYjs.IS_PATCHED_MODULE;
+exports.Interceptor = _chunkJQ2S7G56js.Interceptor;
+exports.InterceptorReadyState = _chunkJQ2S7G56js.InterceptorReadyState;
+exports.RequestController = _chunk57RIRQUYjs.RequestController;
+exports.createRequestId = _chunkJQ2S7G56js.createRequestId;
+exports.decodeBuffer = _chunkLK6DILFKjs.decodeBuffer;
+exports.deleteGlobalSymbol = _chunkJQ2S7G56js.deleteGlobalSymbol;
+exports.encodeBuffer = _chunkLK6DILFKjs.encodeBuffer;
+exports.getCleanUrl = getCleanUrl;
+exports.getGlobalSymbol = _chunkJQ2S7G56js.getGlobalSymbol;
+exports.getRawRequest = _chunk57RIRQUYjs.getRawRequest;
 //# sourceMappingURL=index.js.map

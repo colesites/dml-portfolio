@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});// src/utils/emitAsync.ts
+Object.defineProperty(exports, "__esModule", { value: true }); // src/utils/emitAsync.ts
 async function emitAsync(emitter, eventName, ...data) {
   const listeners = emitter.listeners(eventName);
   if (listeners.length === 0) {
@@ -15,7 +15,10 @@ function hasConfigurableGlobal(propertyName) {
   if (typeof descriptor === "undefined") {
     return false;
   }
-  if (typeof descriptor.get === "function" && typeof descriptor.get() === "undefined") {
+  if (
+    typeof descriptor.get === "function" &&
+    typeof descriptor.get() === "undefined"
+  ) {
     return false;
   }
   if (typeof descriptor.get === "undefined" && descriptor.value == null) {
@@ -23,15 +26,13 @@ function hasConfigurableGlobal(propertyName) {
   }
   if (typeof descriptor.set === "undefined" && !descriptor.configurable) {
     console.error(
-      `[MSW] Failed to apply interceptor: the global \`${propertyName}\` property is non-configurable. This is likely an issue with your environment. If you are using a framework, please open an issue about this in their repository.`
+      `[MSW] Failed to apply interceptor: the global \`${propertyName}\` property is non-configurable. This is likely an issue with your environment. If you are using a framework, please open an issue about this in their repository.`,
     );
     return false;
   }
   return true;
 }
 
-
-
-
-exports.emitAsync = emitAsync; exports.hasConfigurableGlobal = hasConfigurableGlobal;
+exports.emitAsync = emitAsync;
+exports.hasConfigurableGlobal = hasConfigurableGlobal;
 //# sourceMappingURL=chunk-2HUMWGRD.js.map

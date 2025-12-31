@@ -1,7 +1,7 @@
-import type {If} from './if.d.ts';
-import type {IfNotAnyOrNever} from './internal/type.d.ts';
-import type {IsNegative} from './numeric.d.ts';
-import type {UnknownArray} from './unknown-array.d.ts';
+import type { If } from "./if.d.ts";
+import type { IfNotAnyOrNever } from "./internal/type.d.ts";
+import type { IsNegative } from "./numeric.d.ts";
+import type { UnknownArray } from "./unknown-array.d.ts";
 
 /**
 Create a tuple type of the specified length with elements of the specified type.
@@ -67,14 +67,19 @@ Note: If you need a readonly tuple, simply wrap this type with `Readonly`, for e
 
 @category Array
 */
-export type TupleOf<Length extends number, Fill = unknown> = IfNotAnyOrNever<Length,
-	_TupleOf<If<IsNegative<Length>, 0, Length>, Fill, []>,
-	Fill[], []>;
+export type TupleOf<Length extends number, Fill = unknown> = IfNotAnyOrNever<
+  Length,
+  _TupleOf<If<IsNegative<Length>, 0, Length>, Fill, []>,
+  Fill[],
+  []
+>;
 
-type _TupleOf<L extends number, Fill, Accumulator extends UnknownArray> = number extends L
-	? Fill[]
-	: L extends Accumulator['length']
-		? Accumulator
-		: _TupleOf<L, Fill, [...Accumulator, Fill]>;
-
-export {};
+type _TupleOf<
+  L extends number,
+  Fill,
+  Accumulator extends UnknownArray,
+> = number extends L
+  ? Fill[]
+  : L extends Accumulator["length"]
+    ? Accumulator
+    : _TupleOf<L, Fill, [...Accumulator, Fill]>;

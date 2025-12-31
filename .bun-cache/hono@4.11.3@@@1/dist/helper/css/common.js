@@ -11,47 +11,53 @@ var CSS_ESCAPED = /* @__PURE__ */ Symbol();
 var IS_CSS_ESCAPED = /* @__PURE__ */ Symbol();
 var rawCssString = (value) => {
   return {
-    [CSS_ESCAPED]: value
+    [CSS_ESCAPED]: value,
   };
 };
 var toHash = (str) => {
-  let i = 0, out = 11;
+  let i = 0,
+    out = 11;
   while (i < str.length) {
-    out = 101 * out + str.charCodeAt(i++) >>> 0;
+    out = (101 * out + str.charCodeAt(i++)) >>> 0;
   }
   return "css-" + out;
 };
 var cssStringReStr = [
   '"(?:(?:\\\\[\\s\\S]|[^"\\\\])*)"',
   // double quoted string
-  "'(?:(?:\\\\[\\s\\S]|[^'\\\\])*)'"
+  "'(?:(?:\\\\[\\s\\S]|[^'\\\\])*)'",
   // single quoted string
 ].join("|");
 var minifyCssRe = new RegExp(
   [
     "(" + cssStringReStr + ")",
     // $1: quoted string
-    "(?:" + [
-      "^\\s+",
-      // head whitespace
-      "\\/\\*.*?\\*\\/\\s*",
-      // multi-line comment
-      "\\/\\/.*\\n\\s*",
-      // single-line comment
-      "\\s+$"
-      // tail whitespace
-    ].join("|") + ")",
+    "(?:" +
+      [
+        "^\\s+",
+        // head whitespace
+        "\\/\\*.*?\\*\\/\\s*",
+        // multi-line comment
+        "\\/\\/.*\\n\\s*",
+        // single-line comment
+        "\\s+$",
+        // tail whitespace
+      ].join("|") +
+      ")",
     "\\s*;\\s*(}|$)\\s*",
     // $2: trailing semicolon
     "\\s*([{};:,])\\s*",
     // $3: whitespace around { } : , ;
-    "(\\s)\\s+"
+    "(\\s)\\s+",
     // $4: 2+ spaces
   ].join("|"),
-  "g"
+  "g",
 );
 var minify = (css) => {
-  return css.replace(minifyCssRe, (_, $1, $2, $3, $4) => $1 || $2 || $3 || $4 || "");
+  return css.replace(
+    minifyCssRe,
+    (_, $1, $2, $3, $4) => $1 || $2 || $3 || $4 || "",
+  );
 };
 var buildStyleString = (strings, values) => {
   const selectors = [];
@@ -73,7 +79,7 @@ var buildStyleString = (strings, values) => {
         continue;
       }
       if (typeof value === "string") {
-        if (/([\\"'\/])/.test(value)) {
+        if (/([\\"'/])/.test(value)) {
           styleString += value.replace(/([\\"']|(?<=<)\/)/g, "\\$1");
         } else {
           styleString += value;
@@ -108,19 +114,26 @@ var buildStyleString = (strings, values) => {
   return [label, minify(styleString), selectors, externalClassNames];
 };
 var cssCommon = (strings, values) => {
-  let [label, thisStyleString, selectors, externalClassNames] = buildStyleString(strings, values);
+  let [label, thisStyleString, selectors, externalClassNames] =
+    buildStyleString(strings, values);
   const isPseudoGlobal = isPseudoGlobalSelectorRe.exec(thisStyleString);
   if (isPseudoGlobal) {
     thisStyleString = isPseudoGlobal[1];
   }
-  const selector = (isPseudoGlobal ? PSEUDO_GLOBAL_SELECTOR : "") + toHash(label + thisStyleString);
-  const className = (isPseudoGlobal ? selectors.map((s) => s[CLASS_NAME]) : [selector, ...externalClassNames]).join(" ");
+  const selector =
+    (isPseudoGlobal ? PSEUDO_GLOBAL_SELECTOR : "") +
+    toHash(label + thisStyleString);
+  const className = (
+    isPseudoGlobal
+      ? selectors.map((s) => s[CLASS_NAME])
+      : [selector, ...externalClassNames]
+  ).join(" ");
   return {
     [SELECTOR]: selector,
     [CLASS_NAME]: className,
     [STYLE_STRING]: thisStyleString,
     [SELECTORS]: selectors,
-    [EXTERNAL_CLASS_NAMES]: externalClassNames
+    [EXTERNAL_CLASS_NAMES]: externalClassNames,
   };
 };
 var cxCommon = (args) => {
@@ -132,7 +145,7 @@ var cxCommon = (args) => {
         [CLASS_NAME]: "",
         [STYLE_STRING]: "",
         [SELECTORS]: [],
-        [EXTERNAL_CLASS_NAMES]: [arg]
+        [EXTERNAL_CLASS_NAMES]: [arg],
       };
     }
   }
@@ -145,11 +158,11 @@ var keyframesCommon = (strings, ...values) => {
     [CLASS_NAME]: `@keyframes ${toHash(label + styleString)}`,
     [STYLE_STRING]: styleString,
     [SELECTORS]: [],
-    [EXTERNAL_CLASS_NAMES]: []
+    [EXTERNAL_CLASS_NAMES]: [],
   };
 };
 var viewTransitionNameIndex = 0;
-var viewTransitionCommon = ((strings, values) => {
+var viewTransitionCommon = (strings, values) => {
   if (!strings) {
     strings = [`/* h-v-t ${viewTransitionNameIndex++} */`];
   }
@@ -159,12 +172,12 @@ var viewTransitionCommon = ((strings, values) => {
   content[CLASS_NAME] = PSEUDO_GLOBAL_SELECTOR + content[CLASS_NAME];
   content[STYLE_STRING] = content[STYLE_STRING].replace(
     /(?<=::view-transition(?:[a-z-]*)\()(?=\))/g,
-    transitionName
+    transitionName,
   );
   res[CLASS_NAME] = res[SELECTOR] = transitionName;
   res[SELECTORS] = [...content[SELECTORS], content];
   return res;
-});
+};
 export {
   CLASS_NAME,
   DEFAULT_STYLE_ID,
@@ -181,5 +194,5 @@ export {
   keyframesCommon,
   minify,
   rawCssString,
-  viewTransitionCommon
+  viewTransitionCommon,
 };

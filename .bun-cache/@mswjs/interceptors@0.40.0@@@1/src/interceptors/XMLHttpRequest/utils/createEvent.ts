@@ -1,22 +1,22 @@
-import { EventPolyfill } from '../polyfills/EventPolyfill'
-import { ProgressEventPolyfill } from '../polyfills/ProgressEventPolyfill'
+import { EventPolyfill } from "../polyfills/EventPolyfill";
+import { ProgressEventPolyfill } from "../polyfills/ProgressEventPolyfill";
 
-const SUPPORTS_PROGRESS_EVENT = typeof ProgressEvent !== 'undefined'
+const SUPPORTS_PROGRESS_EVENT = typeof ProgressEvent !== "undefined";
 
 export function createEvent(
   target: XMLHttpRequest | XMLHttpRequestUpload,
   type: string,
-  init?: ProgressEventInit
+  init?: ProgressEventInit,
 ): EventPolyfill | ProgressEvent {
   const progressEvents = [
-    'error',
-    'progress',
-    'loadstart',
-    'loadend',
-    'load',
-    'timeout',
-    'abort',
-  ]
+    "error",
+    "progress",
+    "loadstart",
+    "loadend",
+    "load",
+    "timeout",
+    "abort",
+  ];
 
   /**
    * `ProgressEvent` is not supported in React Native.
@@ -24,7 +24,7 @@ export function createEvent(
    */
   const ProgressEventClass = SUPPORTS_PROGRESS_EVENT
     ? ProgressEvent
-    : ProgressEventPolyfill
+    : ProgressEventPolyfill;
 
   const event = progressEvents.includes(type)
     ? new ProgressEventClass(type, {
@@ -35,7 +35,7 @@ export function createEvent(
     : new EventPolyfill(type, {
         target,
         currentTarget: target,
-      })
+      });
 
-  return event
+  return event;
 }

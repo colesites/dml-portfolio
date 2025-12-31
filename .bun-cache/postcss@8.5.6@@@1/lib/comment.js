@@ -1,13 +1,11 @@
-'use strict'
-
-let Node = require('./node')
+const Node = require("./node");
 
 class Comment extends Node {
   constructor(defaults) {
-    super(defaults)
-    this.type = 'comment'
+    super(defaults);
+    this.type = "comment";
   }
 }
 
-module.exports = Comment
-Comment.default = Comment
+module.exports = Comment;
+Comment.default = Comment;

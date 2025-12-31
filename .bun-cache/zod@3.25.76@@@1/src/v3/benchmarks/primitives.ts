@@ -113,7 +113,10 @@ numberSuite
 const dateSuite = new Benchmark.Suite("z.date");
 
 const plainDate = z.date();
-const minMaxDate = z.date().min(new Date("2021-01-01")).max(new Date("2030-01-01"));
+const minMaxDate = z
+  .date()
+  .min(new Date("2021-01-01"))
+  .max(new Date("2030-01-01"));
 
 dateSuite
   .add("valid", () => {
@@ -158,5 +161,13 @@ symbolSuite
   });
 
 export default {
-  suites: [enumSuite, longEnumSuite, undefinedSuite, literalSuite, numberSuite, dateSuite, symbolSuite],
+  suites: [
+    enumSuite,
+    longEnumSuite,
+    undefinedSuite,
+    literalSuite,
+    numberSuite,
+    dateSuite,
+    symbolSuite,
+  ],
 };

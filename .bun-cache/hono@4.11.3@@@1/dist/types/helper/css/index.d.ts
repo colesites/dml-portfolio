@@ -2,44 +2,59 @@
  * @module
  * css Helper for Hono.
  */
-import type { HtmlEscapedString } from '../../utils/html';
-import type { CssClassName as CssClassNameCommon, CssVariableType } from './common';
-export { rawCssString } from './common';
+import type { HtmlEscapedString } from "../../utils/html";
+import type {
+  CssClassName as CssClassNameCommon,
+  CssVariableType,
+} from "./common";
+export { rawCssString } from "./common";
 type CssClassName = HtmlEscapedString & CssClassNameCommon;
-interface CssType {
-    (strings: TemplateStringsArray, ...values: CssVariableType[]): Promise<string>;
-}
-interface CxType {
-    (...args: (CssClassName | Promise<string> | string | boolean | null | undefined)[]): Promise<string>;
-}
-interface KeyframesType {
-    (strings: TemplateStringsArray, ...values: CssVariableType[]): CssClassNameCommon;
-}
+type CssType = (
+  strings: TemplateStringsArray,
+  ...values: CssVariableType[]
+) => Promise<string>;
+type CxType = (
+  ...args: (
+    | CssClassName
+    | Promise<string>
+    | string
+    | boolean
+    | null
+    | undefined
+  )[]
+) => Promise<string>;
+type KeyframesType = (
+  strings: TemplateStringsArray,
+  ...values: CssVariableType[]
+) => CssClassNameCommon;
 interface ViewTransitionType {
-    (strings: TemplateStringsArray, ...values: CssVariableType[]): Promise<string>;
-    (content: Promise<string>): Promise<string>;
-    (): Promise<string>;
+  (
+    strings: TemplateStringsArray,
+    ...values: CssVariableType[]
+  ): Promise<string>;
+  (content: Promise<string>): Promise<string>;
+  (): Promise<string>;
 }
-interface StyleType {
-    (args?: {
-        children?: Promise<string>;
-        nonce?: string;
-    }): HtmlEscapedString;
-}
+type StyleType = (args?: {
+  children?: Promise<string>;
+  nonce?: string;
+}) => HtmlEscapedString;
 /**
  * @experimental
  * `createCssContext` is an experimental feature.
  * The API might be changed.
  */
-export declare const createCssContext: ({ id }: {
-    id: Readonly<string>;
+export declare const createCssContext: ({
+  id,
+}: {
+  id: Readonly<string>;
 }) => DefaultContextType;
 interface DefaultContextType {
-    css: CssType;
-    cx: CxType;
-    keyframes: KeyframesType;
-    viewTransition: ViewTransitionType;
-    Style: StyleType;
+  css: CssType;
+  cx: CxType;
+  keyframes: KeyframesType;
+  viewTransition: ViewTransitionType;
+  Style: StyleType;
 }
 /**
  * @experimental

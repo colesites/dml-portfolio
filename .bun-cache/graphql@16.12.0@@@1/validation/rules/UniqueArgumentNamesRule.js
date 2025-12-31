@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.UniqueArgumentNamesRule = UniqueArgumentNamesRule;
 
-var _groupBy = require('../../jsutils/groupBy.js');
+var _groupBy = require("../../jsutils/groupBy.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
 /**
  * Unique argument names

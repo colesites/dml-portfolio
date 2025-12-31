@@ -1,4 +1,3 @@
-"use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -8,21 +7,25 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
   InvariantError: () => InvariantError,
   format: () => format,
-  invariant: () => invariant
+  invariant: () => invariant,
 });
 module.exports = __toCommonJS(src_exports);
 
@@ -64,7 +67,7 @@ function format(message, ...positionals) {
         return value;
       }
       return match;
-    }
+    },
   );
   if (positionalIndex < positionals.length) {
     formattedMessage += ` ${positionals.slice(positionalIndex).join(" ")}`;
@@ -99,12 +102,11 @@ var invariant = (predicate, message, ...positionals) => {
 };
 invariant.as = (ErrorConstructor, predicate, message, ...positionals) => {
   if (!predicate) {
-    const formatMessage = positionals.length === 0 ? message : format(message, ...positionals);
+    const formatMessage =
+      positionals.length === 0 ? message : format(message, ...positionals);
     let error;
     try {
-      error = Reflect.construct(ErrorConstructor, [
-        formatMessage
-      ]);
+      error = Reflect.construct(ErrorConstructor, [formatMessage]);
     } catch (err) {
       error = ErrorConstructor(formatMessage);
     }
@@ -112,9 +114,10 @@ invariant.as = (ErrorConstructor, predicate, message, ...positionals) => {
   }
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  InvariantError,
-  format,
-  invariant
-});
+0 &&
+  (module.exports = {
+    InvariantError,
+    format,
+    invariant,
+  });
 //# sourceMappingURL=index.js.map

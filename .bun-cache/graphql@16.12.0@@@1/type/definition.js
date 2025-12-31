@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.GraphQLUnionType =
@@ -55,37 +53,37 @@ exports.isWrappingType = isWrappingType;
 exports.resolveObjMapThunk = resolveObjMapThunk;
 exports.resolveReadonlyArrayThunk = resolveReadonlyArrayThunk;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _didYouMean = require('../jsutils/didYouMean.js');
+var _didYouMean = require("../jsutils/didYouMean.js");
 
-var _identityFunc = require('../jsutils/identityFunc.js');
+var _identityFunc = require("../jsutils/identityFunc.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _instanceOf = require('../jsutils/instanceOf.js');
+var _instanceOf = require("../jsutils/instanceOf.js");
 
-var _isObjectLike = require('../jsutils/isObjectLike.js');
+var _isObjectLike = require("../jsutils/isObjectLike.js");
 
-var _keyMap = require('../jsutils/keyMap.js');
+var _keyMap = require("../jsutils/keyMap.js");
 
-var _keyValMap = require('../jsutils/keyValMap.js');
+var _keyValMap = require("../jsutils/keyValMap.js");
 
-var _mapValue = require('../jsutils/mapValue.js');
+var _mapValue = require("../jsutils/mapValue.js");
 
-var _suggestionList = require('../jsutils/suggestionList.js');
+var _suggestionList = require("../jsutils/suggestionList.js");
 
-var _toObjMap = require('../jsutils/toObjMap.js');
+var _toObjMap = require("../jsutils/toObjMap.js");
 
-var _GraphQLError = require('../error/GraphQLError.js');
+var _GraphQLError = require("../error/GraphQLError.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _printer = require('../language/printer.js');
+var _printer = require("../language/printer.js");
 
-var _valueFromASTUntyped = require('../utilities/valueFromASTUntyped.js');
+var _valueFromASTUntyped = require("../utilities/valueFromASTUntyped.js");
 
-var _assertName = require('./assertName.js');
+var _assertName = require("./assertName.js");
 
 function isType(type) {
   return (
@@ -354,11 +352,11 @@ class GraphQLList {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLList';
+    return "GraphQLList";
   }
 
   toString() {
-    return '[' + String(this.ofType) + ']';
+    return "[" + String(this.ofType) + "]";
   }
 
   toJSON() {
@@ -402,11 +400,11 @@ class GraphQLNonNull {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLNonNull';
+    return "GraphQLNonNull";
   }
 
   toString() {
-    return String(this.ofType) + '!';
+    return String(this.ofType) + "!";
   }
 
   toJSON() {
@@ -497,11 +495,11 @@ function getNamedType(type) {
  */
 
 function resolveReadonlyArrayThunk(thunk) {
-  return typeof thunk === 'function' ? thunk() : thunk;
+  return typeof thunk === "function" ? thunk() : thunk;
 }
 
 function resolveObjMapThunk(thunk) {
-  return typeof thunk === 'function' ? thunk() : thunk;
+  return typeof thunk === "function" ? thunk() : thunk;
 }
 /**
  * Custom extensions
@@ -581,22 +579,22 @@ class GraphQLScalarType {
         ? _config$extensionASTN
         : [];
     config.specifiedByURL == null ||
-      typeof config.specifiedByURL === 'string' ||
+      typeof config.specifiedByURL === "string" ||
       (0, _devAssert.devAssert)(
         false,
         `${this.name} must provide "specifiedByURL" as a string, ` +
           `but got: ${(0, _inspect.inspect)(config.specifiedByURL)}.`,
       );
     config.serialize == null ||
-      typeof config.serialize === 'function' ||
+      typeof config.serialize === "function" ||
       (0, _devAssert.devAssert)(
         false,
         `${this.name} must provide "serialize" function. If this custom Scalar is also used as an input type, ensure "parseValue" and "parseLiteral" functions are also provided.`,
       );
 
     if (config.parseLiteral) {
-      (typeof config.parseValue === 'function' &&
-        typeof config.parseLiteral === 'function') ||
+      (typeof config.parseValue === "function" &&
+        typeof config.parseLiteral === "function") ||
         (0, _devAssert.devAssert)(
           false,
           `${this.name} must provide both "parseValue" and "parseLiteral" functions.`,
@@ -605,7 +603,7 @@ class GraphQLScalarType {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLScalarType';
+    return "GraphQLScalarType";
   }
 
   toConfig() {
@@ -693,7 +691,7 @@ class GraphQLObjectType {
     this._interfaces = () => defineInterfaces(config);
 
     config.isTypeOf == null ||
-      typeof config.isTypeOf === 'function' ||
+      typeof config.isTypeOf === "function" ||
       (0, _devAssert.devAssert)(
         false,
         `${this.name} must provide "isTypeOf" as a function, ` +
@@ -702,11 +700,11 @@ class GraphQLObjectType {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLObjectType';
+    return "GraphQLObjectType";
   }
 
   getFields() {
-    if (typeof this._fields === 'function') {
+    if (typeof this._fields === "function") {
       this._fields = this._fields();
     }
 
@@ -714,7 +712,7 @@ class GraphQLObjectType {
   }
 
   getInterfaces() {
-    if (typeof this._interfaces === 'function') {
+    if (typeof this._interfaces === "function") {
       this._interfaces = this._interfaces();
     }
 
@@ -778,7 +776,7 @@ function defineFieldMap(config) {
         `${config.name}.${fieldName} field config must be an object.`,
       );
     fieldConfig.resolve == null ||
-      typeof fieldConfig.resolve === 'function' ||
+      typeof fieldConfig.resolve === "function" ||
       (0, _devAssert.devAssert)(
         false,
         `${config.name}.${fieldName} field resolver must be a function if ` +
@@ -895,7 +893,7 @@ class GraphQLInterfaceType {
     this._fields = defineFieldMap.bind(undefined, config);
     this._interfaces = defineInterfaces.bind(undefined, config);
     config.resolveType == null ||
-      typeof config.resolveType === 'function' ||
+      typeof config.resolveType === "function" ||
       (0, _devAssert.devAssert)(
         false,
         `${this.name} must provide "resolveType" as a function, ` +
@@ -904,11 +902,11 @@ class GraphQLInterfaceType {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLInterfaceType';
+    return "GraphQLInterfaceType";
   }
 
   getFields() {
-    if (typeof this._fields === 'function') {
+    if (typeof this._fields === "function") {
       this._fields = this._fields();
     }
 
@@ -916,7 +914,7 @@ class GraphQLInterfaceType {
   }
 
   getInterfaces() {
-    if (typeof this._interfaces === 'function') {
+    if (typeof this._interfaces === "function") {
       this._interfaces = this._interfaces();
     }
 
@@ -987,7 +985,7 @@ class GraphQLUnionType {
         : [];
     this._types = defineTypes.bind(undefined, config);
     config.resolveType == null ||
-      typeof config.resolveType === 'function' ||
+      typeof config.resolveType === "function" ||
       (0, _devAssert.devAssert)(
         false,
         `${this.name} must provide "resolveType" as a function, ` +
@@ -996,11 +994,11 @@ class GraphQLUnionType {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLUnionType';
+    return "GraphQLUnionType";
   }
 
   getTypes() {
-    if (typeof this._types === 'function') {
+    if (typeof this._types === "function") {
       this._types = this._types();
     }
 
@@ -1078,7 +1076,7 @@ class GraphQLEnumType {
         ? _config$extensionASTN5
         : [];
     this._values =
-      typeof config.values === 'function'
+      typeof config.values === "function"
         ? config.values
         : defineEnumValues(this.name, config.values);
     this._valueLookup = null;
@@ -1086,11 +1084,11 @@ class GraphQLEnumType {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLEnumType';
+    return "GraphQLEnumType";
   }
 
   getValues() {
-    if (typeof this._values === 'function') {
+    if (typeof this._values === "function") {
       this._values = defineEnumValues(this.name, this._values());
     }
 
@@ -1128,9 +1126,9 @@ class GraphQLEnumType {
     return enumValue.name;
   }
 
-  parseValue(inputValue) /* T */
-  {
-    if (typeof inputValue !== 'string') {
+  parseValue(inputValue) {
+    /* T */
+    if (typeof inputValue !== "string") {
       const valueStr = (0, _inspect.inspect)(inputValue);
       throw new _GraphQLError.GraphQLError(
         `Enum "${this.name}" cannot represent non-string value: ${valueStr}.` +
@@ -1150,8 +1148,8 @@ class GraphQLEnumType {
     return enumValue.value;
   }
 
-  parseLiteral(valueNode, _variables) /* T */
-  {
+  parseLiteral(valueNode, _variables) {
+    /* T */
     // Note: variables will be resolved to a value before calling this function.
     if (valueNode.kind !== _kinds.Kind.ENUM) {
       const valueStr = (0, _printer.print)(valueNode);
@@ -1219,7 +1217,7 @@ function didYouMeanEnumValue(enumType, unknownValueStr) {
     unknownValueStr,
     allNames,
   );
-  return (0, _didYouMean.didYouMean)('the enum value', suggestedValues);
+  return (0, _didYouMean.didYouMean)("the enum value", suggestedValues);
 }
 
 function defineEnumValues(typeName, valueMap) {
@@ -1290,11 +1288,11 @@ class GraphQLInputObjectType {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLInputObjectType';
+    return "GraphQLInputObjectType";
   }
 
   getFields() {
-    if (typeof this._fields === 'function') {
+    if (typeof this._fields === "function") {
       this._fields = this._fields();
     }
 
@@ -1340,7 +1338,7 @@ function defineInputFieldMap(config) {
       `${config.name} fields must be an object with field names as keys or a function which returns such an object.`,
     );
   return (0, _mapValue.mapValue)(fieldMap, (fieldConfig, fieldName) => {
-    !('resolve' in fieldConfig) ||
+    !("resolve" in fieldConfig) ||
       (0, _devAssert.devAssert)(
         false,
         `${config.name}.${fieldName} field has a resolve property, but Input Types cannot define resolvers.`,

@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.MaxIntrospectionDepthRule = MaxIntrospectionDepthRule;
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
 const MAX_LISTS_DEPTH = 3;
 
@@ -46,10 +44,10 @@ function MaxIntrospectionDepthRule(context) {
 
     if (
       node.kind === _kinds.Kind.FIELD && // check all introspection lists
-      (node.name.value === 'fields' ||
-        node.name.value === 'interfaces' ||
-        node.name.value === 'possibleTypes' ||
-        node.name.value === 'inputFields')
+      (node.name.value === "fields" ||
+        node.name.value === "interfaces" ||
+        node.name.value === "possibleTypes" ||
+        node.name.value === "inputFields")
     ) {
       // eslint-disable-next-line no-param-reassign
       depth++;
@@ -59,7 +57,7 @@ function MaxIntrospectionDepthRule(context) {
       }
     } // handles fields and inline fragments
 
-    if ('selectionSet' in node && node.selectionSet) {
+    if ("selectionSet" in node && node.selectionSet) {
       for (const child of node.selectionSet.selections) {
         if (checkDepth(child, visitedFragments, depth)) {
           return true;
@@ -72,11 +70,11 @@ function MaxIntrospectionDepthRule(context) {
 
   return {
     Field(node) {
-      if (node.name.value === '__schema' || node.name.value === '__type') {
+      if (node.name.value === "__schema" || node.name.value === "__type") {
         if (checkDepth(node)) {
           context.reportError(
             new _GraphQLError.GraphQLError(
-              'Maximum introspection depth exceeded',
+              "Maximum introspection depth exceeded",
               {
                 nodes: [node],
               },

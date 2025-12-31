@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -10,15 +10,24 @@ type booleanRecord = z.infer<typeof booleanRecord>;
 const recordWithEnumKeys = z.record(z.enum(["Tuna", "Salmon"]), z.string());
 type recordWithEnumKeys = z.infer<typeof recordWithEnumKeys>;
 
-const recordWithLiteralKeys = z.record(z.union([z.literal("Tuna"), z.literal("Salmon")]), z.string());
+const recordWithLiteralKeys = z.record(
+  z.union([z.literal("Tuna"), z.literal("Salmon")]),
+  z.string(),
+);
 type recordWithLiteralKeys = z.infer<typeof recordWithLiteralKeys>;
 
 test("type inference", () => {
   util.assertEqual<booleanRecord, Record<string, boolean>>(true);
 
-  util.assertEqual<recordWithEnumKeys, Partial<Record<"Tuna" | "Salmon", string>>>(true);
+  util.assertEqual<
+    recordWithEnumKeys,
+    Partial<Record<"Tuna" | "Salmon", string>>
+  >(true);
 
-  util.assertEqual<recordWithLiteralKeys, Partial<Record<"Tuna" | "Salmon", string>>>(true);
+  util.assertEqual<
+    recordWithLiteralKeys,
+    Partial<Record<"Tuna" | "Salmon", string>>
+  >(true);
 });
 
 test("methods", () => {
@@ -100,7 +109,7 @@ test("key schema", () => {
       Tuna: "asdf",
       Salmon: "asdf",
       Trout: "asdf",
-    })
+    }),
   ).toThrow();
 
   expect(() =>
@@ -109,7 +118,7 @@ test("key schema", () => {
       Salmon: "asdf",
 
       Trout: "asdf",
-    })
+    }),
   ).toThrow();
 });
 
@@ -129,7 +138,7 @@ test("is not vulnerable to prototype pollution", async () => {
   const rec = z.record(
     z.object({
       a: z.string(),
-    })
+    }),
   );
 
   const data = JSON.parse(`

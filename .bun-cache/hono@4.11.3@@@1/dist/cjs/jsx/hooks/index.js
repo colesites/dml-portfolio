@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var hooks_exports = {};
 __export(hooks_exports, {
   STASH_EFFECT: () => STASH_EFFECT,
@@ -38,7 +42,7 @@ __export(hooks_exports, {
   useState: () => useState,
   useSyncExternalStore: () => useSyncExternalStore,
   useTransition: () => useTransition,
-  useViewTransition: () => useViewTransition
+  useViewTransition: () => useViewTransition,
 });
 module.exports = __toCommonJS(hooks_exports);
 var import_constants = require("../constants");
@@ -49,7 +53,11 @@ const STASH_CALLBACK = 2;
 const STASH_MEMO = 3;
 const STASH_REF = 4;
 const resolvedPromiseValueMap = /* @__PURE__ */ new WeakMap();
-const isDepsChanged = (prevDeps, deps) => !prevDeps || !deps || prevDeps.length !== deps.length || deps.some((dep, i) => dep !== prevDeps[i]);
+const isDepsChanged = (prevDeps, deps) =>
+  !prevDeps ||
+  !deps ||
+  prevDeps.length !== deps.length ||
+  deps.some((dep, i) => dep !== prevDeps[i]);
 let viewTransitionState = void 0;
 const documentStartViewTransition = (cb) => {
   if (document?.startViewTransition) {
@@ -90,8 +98,7 @@ const startViewTransition = (callback) => {
 const useViewTransition = () => {
   const buildData = import_render.buildDataStack.at(-1);
   if (!buildData) {
-    return [false, () => {
-    }];
+    return [false, () => {}];
   }
   if (viewTransitionState) {
     viewTransitionState[1] = true;
@@ -101,7 +108,7 @@ const useViewTransition = () => {
 const pendingStack = [];
 const runCallback = (type, callback) => {
   let resolve;
-  const promise = new Promise((r) => resolve = r);
+  const promise = new Promise((r) => (resolve = r));
   pendingStack.push([type, promise]);
   try {
     const res = callback();
@@ -123,8 +130,7 @@ const startTransitionHook = (callback) => {
 const useTransition = () => {
   const buildData = import_render.buildDataStack.at(-1);
   if (!buildData) {
-    return [false, () => {
-    }];
+    return [false, () => {}];
   }
   const [error, setError] = useState();
   const [state, updateState] = useState();
@@ -144,14 +150,14 @@ const useTransition = () => {
         return res;
       });
     },
-    [state]
+    [state],
   );
   const [context] = buildData;
   return [context[0] === 2, startTransitionLocalHook];
 };
 const useDeferredValue = (value, ...rest) => {
   const [values, setValues] = useState(
-    rest.length ? [rest[0], rest[0]] : [value, value]
+    rest.length ? [rest[0], rest[0]] : [value, value],
   );
   if (Object.is(values[1], value)) {
     return values[1];
@@ -167,16 +173,16 @@ const useDeferredValue = (value, ...rest) => {
   return values[0];
 };
 const useState = (initialState) => {
-  const resolveInitialState = () => typeof initialState === "function" ? initialState() : initialState;
+  const resolveInitialState = () =>
+    typeof initialState === "function" ? initialState() : initialState;
   const buildData = import_render.buildDataStack.at(-1);
   if (!buildData) {
-    return [resolveInitialState(), () => {
-    }];
+    return [resolveInitialState(), () => {}];
   }
   const [, node] = buildData;
-  const stateArray = node[import_constants.DOM_STASH][1][STASH_SATE] ||= [];
+  const stateArray = (node[import_constants.DOM_STASH][1][STASH_SATE] ||= []);
   const hookIndex = node[import_constants.DOM_STASH][0]++;
-  return stateArray[hookIndex] ||= [
+  return (stateArray[hookIndex] ||= [
     resolveInitialState(),
     (newState) => {
       const localUpdateHook = updateHook;
@@ -189,8 +195,13 @@ const useState = (initialState) => {
         if (pendingStack.length) {
           const [pendingType, pendingPromise] = pendingStack.at(-1);
           Promise.all([
-            pendingType === 3 ? node : (0, import_render.update)([pendingType, false, localUpdateHook], node),
-            pendingPromise
+            pendingType === 3
+              ? node
+              : (0, import_render.update)(
+                  [pendingType, false, localUpdateHook],
+                  node,
+                ),
+            pendingPromise,
           ]).then(([node2]) => {
             if (!node2 || !(pendingType === 2 || pendingType === 3)) {
               return;
@@ -201,7 +212,10 @@ const useState = (initialState) => {
                 if (lastVC !== node2.vC) {
                   return;
                 }
-                (0, import_render.update)([pendingType === 3 ? 1 : 0, false, localUpdateHook], node2);
+                (0, import_render.update)(
+                  [pendingType === 3 ? 1 : 0, false, localUpdateHook],
+                  node2,
+                );
               });
             };
             requestAnimationFrame(addUpdateTask);
@@ -210,17 +224,19 @@ const useState = (initialState) => {
           (0, import_render.update)([0, false, localUpdateHook], node);
         }
       }
-    }
-  ];
+    },
+  ]);
 };
 const useReducer = (reducer, initialArg, init) => {
   const handler = useCallback(
     (action) => {
       setState((state2) => reducer(state2, action));
     },
-    [reducer]
+    [reducer],
   );
-  const [state, setState] = useState(() => init ? init(initialArg) : initialArg);
+  const [state, setState] = useState(() =>
+    init ? init(initialArg) : initialArg,
+  );
   return [state, handler];
 };
 const useEffectCommon = (index, effect, deps) => {
@@ -229,9 +245,10 @@ const useEffectCommon = (index, effect, deps) => {
     return;
   }
   const [, node] = buildData;
-  const effectDepsArray = node[import_constants.DOM_STASH][1][STASH_EFFECT] ||= [];
+  const effectDepsArray = (node[import_constants.DOM_STASH][1][STASH_EFFECT] ||=
+    []);
   const hookIndex = node[import_constants.DOM_STASH][0]++;
-  const [prevDeps, , prevCleanup] = effectDepsArray[hookIndex] ||= [];
+  const [prevDeps, , prevCleanup] = (effectDepsArray[hookIndex] ||= []);
   if (isDepsChanged(prevDeps, deps)) {
     if (prevCleanup) {
       prevCleanup();
@@ -254,7 +271,8 @@ const useCallback = (callback, deps) => {
     return callback;
   }
   const [, node] = buildData;
-  const callbackArray = node[import_constants.DOM_STASH][1][STASH_CALLBACK] ||= [];
+  const callbackArray = (node[import_constants.DOM_STASH][1][STASH_CALLBACK] ||=
+    []);
   const hookIndex = node[import_constants.DOM_STASH][0]++;
   const prevDeps = callbackArray[hookIndex];
   if (isDepsChanged(prevDeps?.[1], deps)) {
@@ -270,9 +288,9 @@ const useRef = (initialValue) => {
     return { current: initialValue };
   }
   const [, node] = buildData;
-  const refArray = node[import_constants.DOM_STASH][1][STASH_REF] ||= [];
+  const refArray = (node[import_constants.DOM_STASH][1][STASH_REF] ||= []);
   const hookIndex = node[import_constants.DOM_STASH][0]++;
-  return refArray[hookIndex] ||= { current: initialValue };
+  return (refArray[hookIndex] ||= { current: initialValue });
 };
 const use = (promise) => {
   const cachedRes = resolvedPromiseValueMap.get(promise);
@@ -284,7 +302,7 @@ const use = (promise) => {
   }
   promise.then(
     (res) => resolvedPromiseValueMap.set(promise, [res]),
-    (e) => resolvedPromiseValueMap.set(promise, [void 0, e])
+    (e) => resolvedPromiseValueMap.set(promise, [void 0, e]),
   );
   throw promise;
 };
@@ -294,7 +312,7 @@ const useMemo = (factory, deps) => {
     return factory();
   }
   const [, node] = buildData;
-  const memoArray = node[import_constants.DOM_STASH][1][STASH_MEMO] ||= [];
+  const memoArray = (node[import_constants.DOM_STASH][1][STASH_MEMO] ||= []);
   const hookIndex = node[import_constants.DOM_STASH][0]++;
   const prevDeps = memoArray[hookIndex];
   if (isDepsChanged(prevDeps?.[1], deps)) {
@@ -304,8 +322,7 @@ const useMemo = (factory, deps) => {
 };
 let idCounter = 0;
 const useId = () => useMemo(() => `:r${(idCounter++).toString(32)}:`, []);
-const useDebugValue = (_value, _formatter) => {
-};
+const useDebugValue = (_value, _formatter) => {};
 const createRef = () => {
   return { current: null };
 };
@@ -327,13 +344,17 @@ const useSyncExternalStore = (subscribe, getSnapshot, getServerSnapshot) => {
   const buildData = import_render.buildDataStack.at(-1);
   if (!buildData) {
     if (!getServerSnapshot) {
-      throw new Error("getServerSnapshot is required for server side rendering");
+      throw new Error(
+        "getServerSnapshot is required for server side rendering",
+      );
     }
     return getServerSnapshot();
   }
-  const [serverSnapshotIsUsed] = useState(!!(buildData[0][4] && getServerSnapshot));
-  const [state, setState] = useState(
-    () => serverSnapshotIsUsed ? getServerSnapshot() : getSnapshot()
+  const [serverSnapshotIsUsed] = useState(
+    !!(buildData[0][4] && getServerSnapshot),
+  );
+  const [state, setState] = useState(() =>
+    serverSnapshotIsUsed ? getServerSnapshot() : getSnapshot(),
   );
   useEffect(() => {
     if (serverSnapshotIsUsed) {
@@ -346,26 +367,27 @@ const useSyncExternalStore = (subscribe, getSnapshot, getServerSnapshot) => {
   return state;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  STASH_EFFECT,
-  createRef,
-  forwardRef,
-  startTransition,
-  startViewTransition,
-  use,
-  useCallback,
-  useDebugValue,
-  useDeferredValue,
-  useEffect,
-  useId,
-  useImperativeHandle,
-  useInsertionEffect,
-  useLayoutEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  useTransition,
-  useViewTransition
-});
+0 &&
+  (module.exports = {
+    STASH_EFFECT,
+    createRef,
+    forwardRef,
+    startTransition,
+    startViewTransition,
+    use,
+    useCallback,
+    useDebugValue,
+    useDeferredValue,
+    useEffect,
+    useId,
+    useImperativeHandle,
+    useInsertionEffect,
+    useLayoutEffect,
+    useMemo,
+    useReducer,
+    useRef,
+    useState,
+    useSyncExternalStore,
+    useTransition,
+    useViewTransition,
+  });

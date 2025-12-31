@@ -1,1 +1,4 @@
-export declare const getRelativePath: (pathA: string[], pathB: string[]) => string;
+export declare const getRelativePath: (
+  pathA: string[],
+  pathB: string[],
+) => string;

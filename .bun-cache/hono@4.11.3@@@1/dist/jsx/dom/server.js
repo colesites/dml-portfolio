@@ -1,6 +1,7 @@
 // src/jsx/dom/server.ts
 import { renderToReadableStream as renderToReadableStreamHono } from "../streaming.js";
 import version from "./index.js";
+
 var renderToString = (element, options = {}) => {
   if (Object.keys(options).length > 0) {
     console.warn("options are not supported yet");
@@ -23,11 +24,11 @@ var renderToReadableStream = async (element, options = {}) => {
 var server_default = {
   renderToString,
   renderToReadableStream,
-  version
+  version,
 };
 export {
   server_default as default,
   renderToReadableStream,
   renderToString,
-  version
+  version,
 };

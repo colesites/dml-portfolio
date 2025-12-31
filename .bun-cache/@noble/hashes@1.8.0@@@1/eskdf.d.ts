@@ -3,34 +3,41 @@ export declare function pbkdf2(password: string, salt: string): Uint8Array;
 /**
  * Derives main seed. Takes a lot of time. Prefer `eskdf` method instead.
  */
-export declare function deriveMainSeed(username: string, password: string): Uint8Array;
+export declare function deriveMainSeed(
+  username: string,
+  password: string,
+): Uint8Array;
 type AccountID = number | string;
 type OptsLength = {
-    keyLength: number;
+  keyLength: number;
 };
 type OptsMod = {
-    modulus: bigint;
+  modulus: bigint;
 };
 type KeyOpts = undefined | OptsLength | OptsMod;
 export interface ESKDF {
-    /**
-     * Derives a child key. Child key will not be associated with any
-     * other child key because of properties of underlying KDF.
-     *
-     * @param protocol - 3-15 character protocol name
-     * @param accountId - numeric identifier of account
-     * @param options - `keyLength: 64` or `modulus: 41920438n`
-     * @example deriveChildKey('aes', 0)
-     */
-    deriveChildKey: (protocol: string, accountId: AccountID, options?: KeyOpts) => Uint8Array;
-    /**
-     * Deletes the main seed from eskdf instance
-     */
-    expire: () => void;
-    /**
-     * Account fingerprint
-     */
-    fingerprint: string;
+  /**
+   * Derives a child key. Child key will not be associated with any
+   * other child key because of properties of underlying KDF.
+   *
+   * @param protocol - 3-15 character protocol name
+   * @param accountId - numeric identifier of account
+   * @param options - `keyLength: 64` or `modulus: 41920438n`
+   * @example deriveChildKey('aes', 0)
+   */
+  deriveChildKey: (
+    protocol: string,
+    accountId: AccountID,
+    options?: KeyOpts,
+  ) => Uint8Array;
+  /**
+   * Deletes the main seed from eskdf instance
+   */
+  expire: () => void;
+  /**
+   * Account fingerprint
+   */
+  fingerprint: string;
 }
 /**
  * ESKDF
@@ -42,6 +49,8 @@ export interface ESKDF {
  * console.log(kdf.fingerprint);
  * kdf.expire();
  */
-export declare function eskdf(username: string, password: string): Promise<ESKDF>;
-export {};
+export declare function eskdf(
+  username: string,
+  password: string,
+): Promise<ESKDF>;
 //# sourceMappingURL=eskdf.d.ts.map

@@ -1,7 +1,5 @@
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.getDirectory = getDirectory;
 exports.getDirectorySync = getDirectorySync;
@@ -10,7 +8,9 @@ var _path = _interopRequireDefault(require("path"));
 
 var _pathType = require("path-type");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
 async function getDirectory(filepath) {
   const filePathIsDirectory = await (0, _pathType.isDirectory)(filepath);

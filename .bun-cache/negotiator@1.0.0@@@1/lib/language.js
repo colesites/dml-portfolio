@@ -1,14 +1,4 @@
 /**
- * negotiator
- * Copyright(c) 2012 Isaac Z. Schlueter
- * Copyright(c) 2014 Federico Romero
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict';
-
-/**
  * Module exports.
  * @public
  */
@@ -29,7 +19,7 @@ var simpleLanguageRegExp = /^\s*([^\s\-;]+)(?:-([^\s;]+))?\s*(?:;(.*))?$/;
  */
 
 function parseAcceptLanguage(accept) {
-  var accepts = accept.split(',');
+  var accepts = accept.split(",");
 
   for (var i = 0, j = 0; i < accepts.length; i++) {
     var language = parseLanguage(accepts[i].trim(), i);
@@ -54,18 +44,18 @@ function parseLanguage(str, i) {
   var match = simpleLanguageRegExp.exec(str);
   if (!match) return null;
 
-  var prefix = match[1]
-  var suffix = match[2]
-  var full = prefix
+  var prefix = match[1];
+  var suffix = match[2];
+  var full = prefix;
 
   if (suffix) full += "-" + suffix;
 
   var q = 1;
   if (match[3]) {
-    var params = match[3].split(';')
+    var params = match[3].split(";");
     for (var j = 0; j < params.length; j++) {
-      var p = params[j].split('=');
-      if (p[0] === 'q') q = parseFloat(p[1]);
+      var p = params[j].split("=");
+      if (p[0] === "q") q = parseFloat(p[1]);
     }
   }
 
@@ -74,7 +64,7 @@ function parseLanguage(str, i) {
     suffix: suffix,
     q: q,
     i: i,
-    full: full
+    full: full,
   };
 }
 
@@ -84,12 +74,15 @@ function parseLanguage(str, i) {
  */
 
 function getLanguagePriority(language, accepted, index) {
-  var priority = {o: -1, q: 0, s: 0};
+  var priority = { o: -1, q: 0, s: 0 };
 
   for (var i = 0; i < accepted.length; i++) {
     var spec = specify(language, accepted[i], index);
 
-    if (spec && (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0) {
+    if (
+      spec &&
+      (priority.s - spec.s || priority.q - spec.q || priority.o - spec.o) < 0
+    ) {
       priority = spec;
     }
   }
@@ -103,26 +96,26 @@ function getLanguagePriority(language, accepted, index) {
  */
 
 function specify(language, spec, index) {
-  var p = parseLanguage(language)
+  var p = parseLanguage(language);
   if (!p) return null;
   var s = 0;
-  if(spec.full.toLowerCase() === p.full.toLowerCase()){
+  if (spec.full.toLowerCase() === p.full.toLowerCase()) {
     s |= 4;
   } else if (spec.prefix.toLowerCase() === p.full.toLowerCase()) {
     s |= 2;
   } else if (spec.full.toLowerCase() === p.prefix.toLowerCase()) {
     s |= 1;
-  } else if (spec.full !== '*' ) {
-    return null
+  } else if (spec.full !== "*") {
+    return null;
   }
 
   return {
     i: index,
     o: spec.i,
     q: spec.q,
-    s: s
-  }
-};
+    s: s,
+  };
+}
 
 /**
  * Get the preferred languages from an Accept-Language header.
@@ -131,14 +124,11 @@ function specify(language, spec, index) {
 
 function preferredLanguages(accept, provided) {
   // RFC 2616 sec 14.4: no header = *
-  var accepts = parseAcceptLanguage(accept === undefined ? '*' : accept || '');
+  var accepts = parseAcceptLanguage(accept === undefined ? "*" : accept || "");
 
   if (!provided) {
     // sorted list of all languages
-    return accepts
-      .filter(isQuality)
-      .sort(compareSpecs)
-      .map(getFullLanguage);
+    return accepts.filter(isQuality).sort(compareSpecs).map(getFullLanguage);
   }
 
   var priorities = provided.map(function getPriority(type, index) {
@@ -146,9 +136,12 @@ function preferredLanguages(accept, provided) {
   });
 
   // sorted list of accepted languages
-  return priorities.filter(isQuality).sort(compareSpecs).map(function getLanguage(priority) {
-    return provided[priorities.indexOf(priority)];
-  });
+  return priorities
+    .filter(isQuality)
+    .sort(compareSpecs)
+    .map(function getLanguage(priority) {
+      return provided[priorities.indexOf(priority)];
+    });
 }
 
 /**
@@ -157,7 +150,7 @@ function preferredLanguages(accept, provided) {
  */
 
 function compareSpecs(a, b) {
-  return (b.q - a.q) || (b.s - a.s) || (a.o - b.o) || (a.i - b.i) || 0;
+  return b.q - a.q || b.s - a.s || a.o - b.o || a.i - b.i || 0;
 }
 
 /**

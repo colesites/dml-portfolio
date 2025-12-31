@@ -31,7 +31,7 @@ test("continuability", () => {
     z
       .email()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -53,7 +53,7 @@ test("continuability", () => {
     z
       .uuid()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -75,7 +75,7 @@ test("continuability", () => {
     z
       .url()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -95,7 +95,7 @@ test("continuability", () => {
     z
       .jwt()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -115,7 +115,7 @@ test("continuability", () => {
     z
       .cidrv4()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -137,7 +137,7 @@ test("continuability", () => {
     z
       .cidrv6()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -157,7 +157,7 @@ test("continuability", () => {
     z
       .ipv4()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -179,7 +179,7 @@ test("continuability", () => {
     z
       .ipv6()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -199,7 +199,7 @@ test("continuability", () => {
     z
       .emoji()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -221,7 +221,7 @@ test("continuability", () => {
     z
       .nanoid()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -243,7 +243,7 @@ test("continuability", () => {
     z
       .cuid()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -265,7 +265,7 @@ test("continuability", () => {
     z
       .cuid2()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -287,7 +287,7 @@ test("continuability", () => {
     z
       .ulid()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -309,7 +309,7 @@ test("continuability", () => {
     z
       .xid()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {
@@ -331,7 +331,7 @@ test("continuability", () => {
     z
       .ksuid()
       .refine(() => false)
-      .safeParse("invalid_value").error!.issues
+      .safeParse("invalid_value").error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {

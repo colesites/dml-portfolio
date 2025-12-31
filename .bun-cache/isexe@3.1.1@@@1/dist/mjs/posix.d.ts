@@ -4,12 +4,15 @@
  *
  * @module
  */
-import { IsexeOptions } from './options';
+import { IsexeOptions } from "./options";
 /**
  * Determine whether a path is executable according to the mode and
  * current (or specified) user and group IDs.
  */
-export declare const isexe: (path: string, options?: IsexeOptions) => Promise<boolean>;
+export declare const isexe: (
+  path: string,
+  options?: IsexeOptions,
+) => Promise<boolean>;
 /**
  * Synchronously determine whether a path is executable according to
  * the mode and current (or specified) user and group IDs.

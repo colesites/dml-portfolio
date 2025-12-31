@@ -8,10 +8,9 @@ var getConnInfo = (c) => {
     remote: {
       address,
       port,
-      addressType: family === "IPv4" ? "IPv4" : family === "IPv6" ? "IPv6" : void 0
-    }
+      addressType:
+        family === "IPv4" ? "IPv4" : family === "IPv6" ? "IPv6" : void 0,
+    },
   };
 };
-export {
-  getConnInfo
-};
+export { getConnInfo };

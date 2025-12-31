@@ -1,10 +1,10 @@
-import type { Maybe } from '../jsutils/Maybe';
-import type { DirectiveDefinitionNode } from '../language/ast';
-import { DirectiveLocation } from '../language/directiveLocation';
+import type { Maybe } from "../jsutils/Maybe";
+import type { DirectiveDefinitionNode } from "../language/ast";
+import { DirectiveLocation } from "../language/directiveLocation";
 import type {
   GraphQLArgument,
   GraphQLFieldConfigArgumentMap,
-} from './definition';
+} from "./definition";
 /**
  * Test if the given value is a GraphQL directive.
  */
@@ -67,7 +67,7 @@ export declare const GraphQLSkipDirective: GraphQLDirective;
 /**
  * Constant string used for default reason for a deprecation.
  */
-export declare const DEFAULT_DEPRECATION_REASON = 'No longer supported';
+export declare const DEFAULT_DEPRECATION_REASON = "No longer supported";
 /**
  * Used to declare element of a GraphQL schema as deprecated.
  */
@@ -87,4 +87,3 @@ export declare const specifiedDirectives: ReadonlyArray<GraphQLDirective>;
 export declare function isSpecifiedDirective(
   directive: GraphQLDirective,
 ): boolean;
-export {};

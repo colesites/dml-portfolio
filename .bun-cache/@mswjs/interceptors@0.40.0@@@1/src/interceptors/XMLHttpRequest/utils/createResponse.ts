@@ -1,4 +1,4 @@
-import { FetchResponse } from '../../../utils/fetchUtils'
+import { FetchResponse } from "../../../utils/fetchUtils";
 
 /**
  * Creates a Fetch API `Response` instance from the given
@@ -6,7 +6,7 @@ import { FetchResponse } from '../../../utils/fetchUtils'
  */
 export function createResponse(
   request: XMLHttpRequest,
-  body: BodyInit | null
+  body: BodyInit | null,
 ): Response {
   /**
    * Handle XMLHttpRequest responses that must have null as the
@@ -18,32 +18,34 @@ export function createResponse(
    */
   const responseBodyOrNull = FetchResponse.isResponseWithBody(request.status)
     ? body
-    : null
+    : null;
 
   return new FetchResponse(responseBodyOrNull, {
     url: request.responseURL,
     status: request.status,
     statusText: request.statusText,
     headers: createHeadersFromXMLHttpRequestHeaders(
-      request.getAllResponseHeaders()
+      request.getAllResponseHeaders(),
     ),
-  })
+  });
 }
 
-function createHeadersFromXMLHttpRequestHeaders(headersString: string): Headers {
-  const headers = new Headers()
+function createHeadersFromXMLHttpRequestHeaders(
+  headersString: string,
+): Headers {
+  const headers = new Headers();
 
-  const lines = headersString.split(/[\r\n]+/)
+  const lines = headersString.split(/[\r\n]+/);
   for (const line of lines) {
-    if (line.trim() === '') {
-      continue
+    if (line.trim() === "") {
+      continue;
     }
 
-    const [name, ...parts] = line.split(': ')
-    const value = parts.join(': ')
+    const [name, ...parts] = line.split(": ");
+    const value = parts.join(": ");
 
-    headers.append(name, value)
+    headers.append(name, value);
   }
 
-  return headers
+  return headers;
 }

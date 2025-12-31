@@ -1,7 +1,5 @@
-'use strict';
-
 class DatePart {
-  constructor({token, date, parts, locales}) {
+  constructor({ token, date, parts, locales }) {
     this.token = token;
     this.date = date || new Date();
     this.parts = parts || [this];
@@ -14,15 +12,19 @@ class DatePart {
 
   next() {
     const currentIdx = this.parts.indexOf(this);
-    return this.parts.find((part, idx) => idx > currentIdx && part instanceof DatePart);
+    return this.parts.find(
+      (part, idx) => idx > currentIdx && part instanceof DatePart,
+    );
   }
 
   setTo(val) {}
 
   prev() {
-    let parts = [].concat(this.parts).reverse();
+    const parts = [].concat(this.parts).reverse();
     const currentIdx = parts.indexOf(this);
-    return parts.find((part, idx) => idx > currentIdx && part instanceof DatePart);
+    return parts.find(
+      (part, idx) => idx > currentIdx && part instanceof DatePart,
+    );
   }
 
   toString() {
@@ -31,5 +33,3 @@ class DatePart {
 }
 
 module.exports = DatePart;
-
-

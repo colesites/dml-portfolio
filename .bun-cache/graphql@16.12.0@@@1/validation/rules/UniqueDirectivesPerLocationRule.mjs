@@ -1,10 +1,10 @@
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { Kind } from "../../language/kinds.mjs";
 import {
   isTypeDefinitionNode,
   isTypeExtensionNode,
-} from '../../language/predicates.mjs';
-import { specifiedDirectives } from '../../type/directives.mjs';
+} from "../../language/predicates.mjs";
+import { specifiedDirectives } from "../../type/directives.mjs";
 
 /**
  * Unique directive names per location
@@ -40,7 +40,7 @@ export function UniqueDirectivesPerLocationRule(context) {
     // them all, just listen for entering any node, and check to see if it
     // defines any directives.
     enter(node) {
-      if (!('directives' in node) || !node.directives) {
+      if (!("directives" in node) || !node.directives) {
         return;
       }
 

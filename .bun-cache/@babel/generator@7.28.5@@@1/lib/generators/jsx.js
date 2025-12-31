@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.JSXAttribute = JSXAttribute;
 exports.JSXClosingElement = JSXClosingElement;
@@ -80,12 +80,10 @@ function spaceSeparator() {
 function JSXOpeningElement(node) {
   this.tokenChar(60);
   this.print(node.name);
-  {
-    if (node.typeArguments) {
-      this.print(node.typeArguments);
-    }
-    this.print(node.typeParameters);
+  if (node.typeArguments) {
+    this.print(node.typeArguments);
   }
+  this.print(node.typeParameters);
   if (node.attributes.length > 0) {
     this.space();
     this.printJoin(node.attributes, undefined, undefined, spaceSeparator);

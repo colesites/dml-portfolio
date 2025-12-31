@@ -5,7 +5,11 @@
  */
 import { G1s as G1s_n, G2s as G2s_n } from "./_blake.js";
 import { SHA256_IV } from "./_md.js";
-import { BLAKE2s as B2S, blake2s as b2s, compress as compress_n } from "./blake2.js";
+import {
+  BLAKE2s as B2S,
+  blake2s as b2s,
+  compress as compress_n,
+} from "./blake2.js";
 /** @deprecated Use import from `noble/hashes/blake2` module */
 export const B2S_IV = SHA256_IV;
 /** @deprecated Use import from `noble/hashes/blake2` module */

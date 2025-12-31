@@ -1,60 +1,88 @@
-'use strict';
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) {
+  return function () {
+    var args = arguments;
+    return new Promise((resolve, reject) => {
+      var gen = fn.apply(this, args);
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+      _next(undefined);
+    });
+  };
+}
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+const color = require("kleur");
 
-const color = require('kleur');
+const Prompt = require("./prompt");
 
-const Prompt = require('./prompt');
+const _require = require("../util"),
+  style = _require.style,
+  clear = _require.clear,
+  figures = _require.figures;
 
-const _require = require('../util'),
-      style = _require.style,
-      clear = _require.clear,
-      figures = _require.figures;
+const _require2 = require("sisteransi"),
+  erase = _require2.erase,
+  cursor = _require2.cursor;
 
-const _require2 = require('sisteransi'),
-      erase = _require2.erase,
-      cursor = _require2.cursor;
+const _require3 = require("../dateparts"),
+  DatePart = _require3.DatePart,
+  Meridiem = _require3.Meridiem,
+  Day = _require3.Day,
+  Hours = _require3.Hours,
+  Milliseconds = _require3.Milliseconds,
+  Minutes = _require3.Minutes,
+  Month = _require3.Month,
+  Seconds = _require3.Seconds,
+  Year = _require3.Year;
 
-const _require3 = require('../dateparts'),
-      DatePart = _require3.DatePart,
-      Meridiem = _require3.Meridiem,
-      Day = _require3.Day,
-      Hours = _require3.Hours,
-      Milliseconds = _require3.Milliseconds,
-      Minutes = _require3.Minutes,
-      Month = _require3.Month,
-      Seconds = _require3.Seconds,
-      Year = _require3.Year;
-
-const regex = /\\(.)|"((?:\\["\\]|[^"])+)"|(D[Do]?|d{3,4}|d)|(M{1,4})|(YY(?:YY)?)|([aA])|([Hh]{1,2})|(m{1,2})|(s{1,2})|(S{1,4})|./g;
+const regex =
+  /\\(.)|"((?:\\["\\]|[^"])+)"|(D[Do]?|d{3,4}|d)|(M{1,4})|(YY(?:YY)?)|([aA])|([Hh]{1,2})|(m{1,2})|(s{1,2})|(S{1,4})|./g;
 const regexGroups = {
-  1: ({
-    token
-  }) => token.replace(/\\(.)/g, '$1'),
-  2: opts => new Day(opts),
+  1: ({ token }) => token.replace(/\\(.)/g, "$1"),
+  2: (opts) => new Day(opts),
   // Day // TODO
-  3: opts => new Month(opts),
+  3: (opts) => new Month(opts),
   // Month
-  4: opts => new Year(opts),
+  4: (opts) => new Year(opts),
   // Year
-  5: opts => new Meridiem(opts),
+  5: (opts) => new Meridiem(opts),
   // AM/PM // TODO (special)
-  6: opts => new Hours(opts),
+  6: (opts) => new Hours(opts),
   // Hours
-  7: opts => new Minutes(opts),
+  7: (opts) => new Minutes(opts),
   // Minutes
-  8: opts => new Seconds(opts),
+  8: (opts) => new Seconds(opts),
   // Seconds
-  9: opts => new Milliseconds(opts) // Fractional seconds
-
+  9: (opts) => new Milliseconds(opts), // Fractional seconds
 };
 const dfltLocales = {
-  months: 'January,February,March,April,May,June,July,August,September,October,November,December'.split(','),
-  monthsShort: 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec'.split(','),
-  weekdays: 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'.split(','),
-  weekdaysShort: 'Sun,Mon,Tue,Wed,Thu,Fri,Sat'.split(',')
+  months:
+    "January,February,March,April,May,June,July,August,September,October,November,December".split(
+      ",",
+    ),
+  monthsShort: "Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec".split(","),
+  weekdays: "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday".split(
+    ",",
+  ),
+  weekdaysShort: "Sun,Mon,Tue,Wed,Thu,Fri,Sat".split(","),
 };
 /**
  * DatePrompt Base Element
@@ -74,15 +102,15 @@ class DatePrompt extends Prompt {
     super(opts);
     this.msg = opts.message;
     this.cursor = 0;
-    this.typed = '';
+    this.typed = "";
     this.locales = Object.assign(dfltLocales, opts.locales);
     this._date = opts.initial || new Date();
-    this.errorMsg = opts.error || 'Please Enter A Valid Value';
+    this.errorMsg = opts.error || "Please Enter A Valid Value";
 
     this.validator = opts.validate || (() => true);
 
-    this.mask = opts.mask || 'YYYY-MM-DD HH:mm:ss';
-    this.clear = clear('', this.out.columns);
+    this.mask = opts.mask || "YYYY-MM-DD HH:mm:ss";
+    this.clear = clear("", this.out.columns);
     this.render();
   }
 
@@ -102,19 +130,25 @@ class DatePrompt extends Prompt {
     let result;
     this.parts = [];
 
-    while (result = regex.exec(mask)) {
-      let match = result.shift();
-      let idx = result.findIndex(gr => gr != null);
-      this.parts.push(idx in regexGroups ? regexGroups[idx]({
-        token: result[idx] || match,
-        date: this.date,
-        parts: this.parts,
-        locales: this.locales
-      }) : result[idx] || match);
+    while ((result = regex.exec(mask))) {
+      const match = result.shift();
+      const idx = result.findIndex((gr) => gr != null);
+      this.parts.push(
+        idx in regexGroups
+          ? regexGroups[idx]({
+              token: result[idx] || match,
+              date: this.date,
+              parts: this.parts,
+              locales: this.locales,
+            })
+          : result[idx] || match,
+      );
     }
 
-    let parts = this.parts.reduce((arr, i) => {
-      if (typeof i === 'string' && typeof arr[arr.length - 1] === 'string') arr[arr.length - 1] += i;else arr.push(i);
+    const parts = this.parts.reduce((arr, i) => {
+      if (typeof i === "string" && typeof arr[arr.length - 1] === "string")
+        arr[arr.length - 1] += i;
+      else arr.push(i);
       return arr;
     }, []);
     this.parts.splice(0);
@@ -123,13 +157,13 @@ class DatePrompt extends Prompt {
   }
 
   moveCursor(n) {
-    this.typed = '';
+    this.typed = "";
     this.cursor = n;
     this.fire();
   }
 
   reset() {
-    this.moveCursor(this.parts.findIndex(p => p instanceof DatePart));
+    this.moveCursor(this.parts.findIndex((p) => p instanceof DatePart));
     this.fire();
     this.render();
   }
@@ -143,7 +177,7 @@ class DatePrompt extends Prompt {
     this.error = false;
     this.fire();
     this.render();
-    this.out.write('\n');
+    this.out.write("\n");
     this.close();
   }
 
@@ -153,7 +187,7 @@ class DatePrompt extends Prompt {
     return _asyncToGenerator(function* () {
       let valid = yield _this.validator(_this.value);
 
-      if (typeof valid === 'string') {
+      if (typeof valid === "string") {
         _this.errorMsg = valid;
         valid = false;
       }
@@ -169,7 +203,7 @@ class DatePrompt extends Prompt {
       yield _this2.validate();
 
       if (_this2.error) {
-        _this2.color = 'red';
+        _this2.color = "red";
 
         _this2.fire();
 
@@ -185,41 +219,45 @@ class DatePrompt extends Prompt {
 
       _this2.render();
 
-      _this2.out.write('\n');
+      _this2.out.write("\n");
 
       _this2.close();
     })();
   }
 
   up() {
-    this.typed = '';
+    this.typed = "";
     this.parts[this.cursor].up();
     this.render();
   }
 
   down() {
-    this.typed = '';
+    this.typed = "";
     this.parts[this.cursor].down();
     this.render();
   }
 
   left() {
-    let prev = this.parts[this.cursor].prev();
+    const prev = this.parts[this.cursor].prev();
     if (prev == null) return this.bell();
     this.moveCursor(this.parts.indexOf(prev));
     this.render();
   }
 
   right() {
-    let next = this.parts[this.cursor].next();
+    const next = this.parts[this.cursor].next();
     if (next == null) return this.bell();
     this.moveCursor(this.parts.indexOf(next));
     this.render();
   }
 
   next() {
-    let next = this.parts[this.cursor].next();
-    this.moveCursor(next ? this.parts.indexOf(next) : this.parts.findIndex(part => part instanceof DatePart));
+    const next = this.parts[this.cursor].next();
+    this.moveCursor(
+      next
+        ? this.parts.indexOf(next)
+        : this.parts.findIndex((part) => part instanceof DatePart),
+    );
     this.render();
   }
 
@@ -233,18 +271,39 @@ class DatePrompt extends Prompt {
 
   render() {
     if (this.closed) return;
-    if (this.firstRender) this.out.write(cursor.hide);else this.out.write(clear(this.outputText, this.out.columns));
+    if (this.firstRender) this.out.write(cursor.hide);
+    else this.out.write(clear(this.outputText, this.out.columns));
     super.render(); // Print prompt
 
-    this.outputText = [style.symbol(this.done, this.aborted), color.bold(this.msg), style.delimiter(false), this.parts.reduce((arr, p, idx) => arr.concat(idx === this.cursor && !this.done ? color.cyan().underline(p.toString()) : p), []).join('')].join(' '); // Print error
+    this.outputText = [
+      style.symbol(this.done, this.aborted),
+      color.bold(this.msg),
+      style.delimiter(false),
+      this.parts
+        .reduce(
+          (arr, p, idx) =>
+            arr.concat(
+              idx === this.cursor && !this.done
+                ? color.cyan().underline(p.toString())
+                : p,
+            ),
+          [],
+        )
+        .join(""),
+    ].join(" "); // Print error
 
     if (this.error) {
-      this.outputText += this.errorMsg.split('\n').reduce((a, l, i) => a + `\n${i ? ` ` : figures.pointerSmall} ${color.red().italic(l)}`, ``);
+      this.outputText += this.errorMsg
+        .split("\n")
+        .reduce(
+          (a, l, i) =>
+            a + `\n${i ? ` ` : figures.pointerSmall} ${color.red().italic(l)}`,
+          ``,
+        );
     }
 
     this.out.write(erase.line + cursor.to(0) + this.outputText);
   }
-
 }
 
 module.exports = DatePrompt;

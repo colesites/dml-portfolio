@@ -5,11 +5,11 @@
  */
 export declare interface AddEventListenerOptions extends EventListenerOptions {
   /** When `true`, the listener is automatically removed when it is first invoked. Default: `false`. */
-  once?: boolean
+  once?: boolean;
   /** When `true`, serves as a hint that the listener will not call the `Event` object's `preventDefault()` method. Default: false. */
-  passive?: boolean
+  passive?: boolean;
   /** The listener will be removed when the given AbortSignal object's `abort()` method is called. */
-  signal?: AbortSignal
+  signal?: AbortSignal;
 }
 
 /**
@@ -26,14 +26,14 @@ export declare class ErrorEvent extends Event {
    *
    * @public
    */
-  code?: number | undefined
+  code?: number | undefined;
   /**
    * Optional message attached to the error.
    * Note: this is not part of the spec, but is included for better error handling.
    *
    * @public
    */
-  message?: string | undefined
+  message?: string | undefined;
   /**
    * Constructs a new `ErrorEvent` instance. This is typically not called directly,
    * but rather emitted by the `EventSource` object when an error occurs.
@@ -44,10 +44,10 @@ export declare class ErrorEvent extends Event {
   constructor(
     type: string,
     errorEventInitDict?: {
-      message?: string | undefined
-      code?: number | undefined
+      message?: string | undefined;
+      code?: number | undefined;
     },
-  )
+  );
 }
 
 /**
@@ -55,9 +55,7 @@ export declare class ErrorEvent extends Event {
  *
  * @public
  */
-export declare interface EventListener {
-  (evt: Event | MessageEvent): void
-}
+export declare type EventListener = (evt: Event | MessageEvent) => void;
 
 /**
  * Mirrors the official DOM typings.
@@ -65,7 +63,7 @@ export declare interface EventListener {
  * @public
  */
 export declare interface EventListenerObject {
-  handleEvent(object: Event): void
+  handleEvent(object: Event): void;
 }
 
 /**
@@ -75,7 +73,7 @@ export declare interface EventListenerObject {
  */
 export declare interface EventListenerOptions {
   /** Not directly used by Node.js. Added for API completeness. Default: `false`. */
-  capture?: boolean
+  capture?: boolean;
 }
 
 /**
@@ -83,7 +81,9 @@ export declare interface EventListenerOptions {
  *
  * @public
  */
-export declare type EventListenerOrEventListenerObject = EventListener | EventListenerObject
+export declare type EventListenerOrEventListenerObject =
+  | EventListener
+  | EventListenerObject;
 
 /**
  * An `EventSource` instance opens a persistent connection to an HTTP server, which sends events
@@ -102,43 +102,43 @@ export declare type EventListenerOrEventListenerObject = EventListener | EventLi
  * ```
  */
 declare class EventSource_2 extends EventTarget {
-  #private
+  #private;
   /**
    * ReadyState representing an EventSource currently trying to connect
    *
    * @public
    */
-  static CONNECTING: 0
+  static CONNECTING: 0;
   /**
    * ReadyState representing an EventSource connection that is open (eg connected)
    *
    * @public
    */
-  static OPEN: 1
+  static OPEN: 1;
   /**
    * ReadyState representing an EventSource connection that is closed (eg disconnected)
    *
    * @public
    */
-  static CLOSED: 2
+  static CLOSED: 2;
   /**
    * ReadyState representing an EventSource currently trying to connect
    *
    * @public
    */
-  readonly CONNECTING: 0
+  readonly CONNECTING: 0;
   /**
    * ReadyState representing an EventSource connection that is open (eg connected)
    *
    * @public
    */
-  readonly OPEN: 1
+  readonly OPEN: 1;
   /**
    * ReadyState representing an EventSource connection that is closed (eg disconnected)
    *
    * @public
    */
-  readonly CLOSED: 2
+  readonly CLOSED: 2;
   /**
    * Returns the state of this EventSource object's connection. It can have the values described below.
    *
@@ -149,7 +149,7 @@ declare class EventSource_2 extends EventTarget {
    *
    * @public
    */
-  get readyState(): number
+  get readyState(): number;
   /**
    * Returns the URL providing the event stream.
    *
@@ -157,53 +157,53 @@ declare class EventSource_2 extends EventTarget {
    *
    * @public
    */
-  get url(): string
+  get url(): string;
   /**
    * Returns true if the credentials mode for connection requests to the URL providing the event stream is set to "include", and false otherwise.
    *
    * [MDN Reference](https://developer.mozilla.org/docs/Web/API/EventSource/withCredentials)
    */
-  get withCredentials(): boolean
+  get withCredentials(): boolean;
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/EventSource/error_event) */
-  get onerror(): ((ev: ErrorEvent) => unknown) | null
-  set onerror(value: ((ev: ErrorEvent) => unknown) | null)
+  get onerror(): ((ev: ErrorEvent) => unknown) | null;
+  set onerror(value: ((ev: ErrorEvent) => unknown) | null);
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/EventSource/message_event) */
-  get onmessage(): ((ev: MessageEvent) => unknown) | null
-  set onmessage(value: ((ev: MessageEvent) => unknown) | null)
+  get onmessage(): ((ev: MessageEvent) => unknown) | null;
+  set onmessage(value: ((ev: MessageEvent) => unknown) | null);
   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/EventSource/open_event) */
-  get onopen(): ((ev: Event) => unknown) | null
-  set onopen(value: ((ev: Event) => unknown) | null)
+  get onopen(): ((ev: Event) => unknown) | null;
+  set onopen(value: ((ev: Event) => unknown) | null);
   addEventListener<K extends keyof EventSourceEventMap>(
     type: K,
     listener: (this: EventSource_2, ev: EventSourceEventMap[K]) => unknown,
     options?: boolean | AddEventListenerOptions,
-  ): void
+  ): void;
   addEventListener(
     type: string,
     listener: (this: EventSource_2, event: MessageEvent) => unknown,
     options?: boolean | AddEventListenerOptions,
-  ): void
+  ): void;
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions,
-  ): void
+  ): void;
   removeEventListener<K extends keyof EventSourceEventMap>(
     type: K,
     listener: (this: EventSource_2, ev: EventSourceEventMap[K]) => unknown,
     options?: boolean | EventListenerOptions,
-  ): void
+  ): void;
   removeEventListener(
     type: string,
     listener: (this: EventSource_2, event: MessageEvent) => unknown,
     options?: boolean | EventListenerOptions,
-  ): void
+  ): void;
   removeEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions,
-  ): void
-  constructor(url: string | URL, eventSourceInitDict?: EventSourceInit)
+  ): void;
+  constructor(url: string | URL, eventSourceInitDict?: EventSourceInit);
   /**
    * Aborts any instances of the fetch algorithm started for this EventSource object, and sets the readyState attribute to CLOSED.
    *
@@ -211,9 +211,9 @@ declare class EventSource_2 extends EventTarget {
    *
    * @public
    */
-  close(): void
+  close(): void;
 }
-export {EventSource_2 as EventSource}
+export { EventSource_2 as EventSource };
 
 /**
  * Mirrors the official DOM typings, with the exception of the extended ErrorEvent.
@@ -221,9 +221,9 @@ export {EventSource_2 as EventSource}
  * @public
  */
 export declare interface EventSourceEventMap {
-  error: ErrorEvent
-  message: MessageEvent
-  open: Event
+  error: ErrorEvent;
+  message: MessageEvent;
+  open: Event;
 }
 
 /**
@@ -237,22 +237,22 @@ export declare interface EventSourceFetchInit {
   /** An AbortSignal to set request's signal. Typed as `any` because of polyfill inconsistencies. */
   signal:
     | {
-        aborted: boolean
+        aborted: boolean;
       }
-    | any
+    | any;
   /** A Headers object, an object literal, or an array of two-item arrays to set request's headers. */
   headers: {
-    [key: string]: string
-    Accept: 'text/event-stream'
-  }
+    [key: string]: string;
+    Accept: "text/event-stream";
+  };
   /** A string to indicate whether the request will use CORS, or will be restricted to same-origin URLs. Sets request's mode. */
-  mode: 'cors' | 'no-cors' | 'same-origin'
+  mode: "cors" | "no-cors" | "same-origin";
   /** A string indicating whether credentials will be sent with the request always, never, or only when sent to a same-origin URL. Sets request's credentials. */
-  credentials?: 'include' | 'omit' | 'same-origin'
+  credentials?: "include" | "omit" | "same-origin";
   /** Controls how the request is cached. */
-  cache: 'no-store'
+  cache: "no-store";
   /** A string indicating whether request follows redirects, results in an error upon encountering a redirect, or returns the redirect (in an opaque fashion). Sets request's redirect. */
-  redirect: 'error' | 'follow' | 'manual'
+  redirect: "error" | "follow" | "manual";
 }
 
 /**
@@ -264,12 +264,12 @@ export declare interface EventSourceInit {
   /**
    * A boolean value, defaulting to `false`, indicating if CORS should be set to `include` credentials.
    */
-  withCredentials?: boolean
+  withCredentials?: boolean;
   /**
    * Optional fetch implementation to use. Defaults to `globalThis.fetch`.
    * Can also be used for advanced use cases like mocking, proxying, custom certs etc.
    */
-  fetch?: FetchLike
+  fetch?: FetchLike;
 }
 
 /**
@@ -281,14 +281,14 @@ export declare interface EventSourceInit {
 export declare type FetchLike = (
   url: string | URL,
   init: EventSourceFetchInit,
-) => Promise<FetchLikeResponse>
+) => Promise<FetchLikeResponse>;
 
 /**
  * @public
  * @deprecated Use `EventSourceFetchInit` instead.
  * This type is only here for backwards compatibility and will be removed in a future version.
  */
-export declare type FetchLikeInit = EventSourceFetchInit
+export declare type FetchLikeInit = EventSourceFetchInit;
 
 /**
  * Minimal version of the `Response` type returned by `fetch()`.
@@ -298,16 +298,16 @@ export declare type FetchLikeInit = EventSourceFetchInit
 export declare interface FetchLikeResponse {
   readonly body:
     | {
-        getReader(): ReaderLike
+        getReader(): ReaderLike;
       }
-    | Response['body']
-    | null
-  readonly url: string
-  readonly status: number
-  readonly redirected: boolean
+    | Response["body"]
+    | null;
+  readonly url: string;
+  readonly status: number;
+  readonly redirected: boolean;
   readonly headers: {
-    get(name: string): string | null
-  }
+    get(name: string): string | null;
+  };
 }
 
 /**
@@ -318,15 +318,13 @@ export declare interface FetchLikeResponse {
 export declare interface ReaderLike {
   read(): Promise<
     | {
-        done: false
-        value: unknown
+        done: false;
+        value: unknown;
       }
     | {
-        done: true
-        value?: undefined
+        done: true;
+        value?: undefined;
       }
-  >
-  cancel(): Promise<void>
+  >;
+  cancel(): Promise<void>;
 }
-
-export {}

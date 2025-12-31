@@ -15,22 +15,22 @@ export interface ReadJsonSync {
   (packageJsonPath: string): any | undefined;
 }
 
-export interface FileExistsSync {
-  (name: string): boolean;
-}
+export type FileExistsSync = (name: string) => boolean;
 
-export interface FileExistsAsync {
-  (path: string, callback: (err?: Error, exists?: boolean) => void): void;
-}
+export type FileExistsAsync = (
+  path: string,
+  callback: (err?: Error, exists?: boolean) => void,
+) => void;
 
 export interface ReadJsonAsyncCallback {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (err?: Error, content?: any): void;
 }
 
-export interface ReadJsonAsync {
-  (path: string, callback: ReadJsonAsyncCallback): void;
-}
+export type ReadJsonAsync = (
+  path: string,
+  callback: ReadJsonAsyncCallback,
+) => void;
 
 export function fileExistsSync(path: string): boolean {
   // If the file doesn't exist, avoid throwing an exception over the native barrier for every miss
@@ -63,7 +63,7 @@ export function readJsonFromDiskSync(packageJsonPath: string): any | undefined {
 export function readJsonFromDiskAsync(
   path: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  callback: (err?: Error, content?: any) => void
+  callback: (err?: Error, content?: any) => void,
 ): void {
   fs.readFile(path, "utf8", (err, result) => {
     // If error, assume file did not exist
@@ -77,7 +77,7 @@ export function readJsonFromDiskAsync(
 
 export function fileExistsAsync(
   path2: string,
-  callback2: (err?: Error, exists?: boolean) => void
+  callback2: (err?: Error, exists?: boolean) => void,
 ): void {
   fs.stat(path2, (err: Error, stats: fs.Stats) => {
     if (err) {

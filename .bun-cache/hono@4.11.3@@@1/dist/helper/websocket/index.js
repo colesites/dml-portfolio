@@ -23,11 +23,11 @@ var WSContext = class {
 };
 var createWSMessageEvent = (source) => {
   return new MessageEvent("message", {
-    data: source
+    data: source,
   });
 };
 var defineWebSocketHelper = (handler) => {
-  return ((...args) => {
+  return (...args) => {
     if (typeof args[0] === "function") {
       const [createEvents, options] = args;
       return async function upgradeWebSocket(c, next) {
@@ -48,10 +48,6 @@ var defineWebSocketHelper = (handler) => {
         return upgraded;
       })();
     }
-  });
+  };
 };
-export {
-  WSContext,
-  createWSMessageEvent,
-  defineWebSocketHelper
-};
+export { WSContext, createWSMessageEvent, defineWebSocketHelper };

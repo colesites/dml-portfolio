@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _dispose;
 function dispose_SuppressedError(error, suppressed) {
@@ -17,8 +17,8 @@ function dispose_SuppressedError(error, suppressed) {
       constructor: {
         value: dispose_SuppressedError,
         writable: true,
-        configurable: true
-      }
+        configurable: true,
+      },
     });
   }
   return new dispose_SuppressedError(error, suppressed);

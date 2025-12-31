@@ -9,7 +9,8 @@ import {
   concatBytes as concatBytes_,
   hexToBytes as hexToBytes_,
   isBytes as isBytes_,
-} from '@noble/hashes/utils.js';
+} from "@noble/hashes/utils.js";
+
 export {
   abytes,
   anumber,
@@ -20,7 +21,8 @@ export {
   isBytes,
   randomBytes,
   utf8ToBytes,
-} from '@noble/hashes/utils.js';
+} from "@noble/hashes/utils.js";
+
 const _0n = /* @__PURE__ */ BigInt(0);
 const _1n = /* @__PURE__ */ BigInt(1);
 export type Hex = Uint8Array | string; // hex strings are accepted for simplicity
@@ -34,29 +36,34 @@ export type CHash = {
 export type FHash = (message: Uint8Array | string) => Uint8Array;
 
 export function abool(title: string, value: boolean): void {
-  if (typeof value !== 'boolean') throw new Error(title + ' boolean expected, got ' + value);
+  if (typeof value !== "boolean")
+    throw new Error(title + " boolean expected, got " + value);
 }
 
 // tmp name until v2
-export function _abool2(value: boolean, title: string = ''): boolean {
-  if (typeof value !== 'boolean') {
+export function _abool2(value: boolean, title: string = ""): boolean {
+  if (typeof value !== "boolean") {
     const prefix = title && `"${title}"`;
-    throw new Error(prefix + 'expected boolean, got type=' + typeof value);
+    throw new Error(prefix + "expected boolean, got type=" + typeof value);
   }
   return value;
 }
 
 // tmp name until v2
 /** Asserts something is Uint8Array. */
-export function _abytes2(value: Uint8Array, length?: number, title: string = ''): Uint8Array {
+export function _abytes2(
+  value: Uint8Array,
+  length?: number,
+  title: string = "",
+): Uint8Array {
   const bytes = isBytes_(value);
   const len = value?.length;
   const needsLen = length !== undefined;
   if (!bytes || (needsLen && len !== length)) {
     const prefix = title && `"${title}" `;
-    const ofLen = needsLen ? ` of length ${length}` : '';
+    const ofLen = needsLen ? ` of length ${length}` : "";
     const got = bytes ? `length=${len}` : `type=${typeof value}`;
-    throw new Error(prefix + 'expected Uint8Array' + ofLen + ', got ' + got);
+    throw new Error(prefix + "expected Uint8Array" + ofLen + ", got " + got);
   }
   return value;
 }
@@ -64,12 +71,13 @@ export function _abytes2(value: Uint8Array, length?: number, title: string = '')
 // Used in weierstrass, der
 export function numberToHexUnpadded(num: number | bigint): string {
   const hex = num.toString(16);
-  return hex.length & 1 ? '0' + hex : hex;
+  return hex.length & 1 ? "0" + hex : hex;
 }
 
 export function hexToNumber(hex: string): bigint {
-  if (typeof hex !== 'string') throw new Error('hex string expected, got ' + typeof hex);
-  return hex === '' ? _0n : BigInt('0x' + hex); // Big Endian
+  if (typeof hex !== "string")
+    throw new Error("hex string expected, got " + typeof hex);
+  return hex === "" ? _0n : BigInt("0x" + hex); // Big Endian
 }
 
 // BE: Big Endian, LE: Little Endian
@@ -82,7 +90,7 @@ export function bytesToNumberLE(bytes: Uint8Array): bigint {
 }
 
 export function numberToBytesBE(n: number | bigint, len: number): Uint8Array {
-  return hexToBytes_(n.toString(16).padStart(len * 2, '0'));
+  return hexToBytes_(n.toString(16).padStart(len * 2, "0"));
 }
 export function numberToBytesLE(n: number | bigint, len: number): Uint8Array {
   return numberToBytesBE(n, len).reverse();
@@ -101,24 +109,30 @@ export function numberToVarBytesBE(n: number | bigint): Uint8Array {
  * @param expectedLength optional, will compare to result array's length
  * @returns
  */
-export function ensureBytes(title: string, hex: Hex, expectedLength?: number): Uint8Array {
+export function ensureBytes(
+  title: string,
+  hex: Hex,
+  expectedLength?: number,
+): Uint8Array {
   let res: Uint8Array;
-  if (typeof hex === 'string') {
+  if (typeof hex === "string") {
     try {
       res = hexToBytes_(hex);
     } catch (e) {
-      throw new Error(title + ' must be hex string or Uint8Array, cause: ' + e);
+      throw new Error(title + " must be hex string or Uint8Array, cause: " + e);
     }
   } else if (isBytes_(hex)) {
     // Uint8Array.from() instead of hash.slice() because node.js Buffer
     // is instance of Uint8Array, and its slice() creates **mutable** copy
     res = Uint8Array.from(hex);
   } else {
-    throw new Error(title + ' must be hex string or Uint8Array');
+    throw new Error(title + " must be hex string or Uint8Array");
   }
   const len = res.length;
-  if (typeof expectedLength === 'number' && len !== expectedLength)
-    throw new Error(title + ' of length ' + expectedLength + ' expected, got ' + len);
+  if (typeof expectedLength === "number" && len !== expectedLength)
+    throw new Error(
+      title + " of length " + expectedLength + " expected, got " + len,
+    );
   return res;
 }
 
@@ -147,7 +161,7 @@ export function asciiToBytes(ascii: string): Uint8Array {
     const charCode = c.charCodeAt(0);
     if (c.length !== 1 || charCode > 127) {
       throw new Error(
-        `string contains non-ASCII character "${ascii[i]}" with code ${charCode} at position ${i}`
+        `string contains non-ASCII character "${ascii[i]}" with code ${charCode} at position ${i}`,
       );
     }
     return charCode;
@@ -165,7 +179,7 @@ export function asciiToBytes(ascii: string): Uint8Array {
 // export const bytesToUtf8: typeof bytesToUtf8_ = bytesToUtf8_;
 
 // Is positive bigint
-const isPosBig = (n: bigint) => typeof n === 'bigint' && _0n <= n;
+const isPosBig = (n: bigint) => typeof n === "bigint" && _0n <= n;
 
 export function inRange(n: bigint, min: bigint, max: bigint): boolean {
   return isPosBig(n) && isPosBig(min) && isPosBig(max) && min <= n && n < max;
@@ -176,14 +190,21 @@ export function inRange(n: bigint, min: bigint, max: bigint): boolean {
  * @example
  * aInRange('x', x, 1n, 256n); // would assume x is in (1n..255n)
  */
-export function aInRange(title: string, n: bigint, min: bigint, max: bigint): void {
+export function aInRange(
+  title: string,
+  n: bigint,
+  min: bigint,
+  max: bigint,
+): void {
   // Why min <= n < max and not a (min < n < max) OR b (min <= n <= max)?
   // consider P=256n, min=0n, max=P
   // - a for min=0 would require -1:          `inRange('x', x, -1n, P)`
   // - b would commonly require subtraction:  `inRange('x', x, 0n, P - 1n)`
   // - our way is the cleanest:               `inRange('x', x, 0n, P)
   if (!inRange(n, min, max))
-    throw new Error('expected valid ' + title + ': ' + min + ' <= n < ' + max + ', got ' + n);
+    throw new Error(
+      "expected valid " + title + ": " + min + " <= n < " + max + ", got " + n,
+    );
 }
 
 // Bit operations
@@ -234,11 +255,14 @@ type Pred<T> = (v: Uint8Array) => T | undefined;
 export function createHmacDrbg<T>(
   hashLen: number,
   qByteLen: number,
-  hmacFn: (key: Uint8Array, ...messages: Uint8Array[]) => Uint8Array
+  hmacFn: (key: Uint8Array, ...messages: Uint8Array[]) => Uint8Array,
 ): (seed: Uint8Array, predicate: Pred<T>) => T {
-  if (typeof hashLen !== 'number' || hashLen < 2) throw new Error('hashLen must be a number');
-  if (typeof qByteLen !== 'number' || qByteLen < 2) throw new Error('qByteLen must be a number');
-  if (typeof hmacFn !== 'function') throw new Error('hmacFn must be a function');
+  if (typeof hashLen !== "number" || hashLen < 2)
+    throw new Error("hashLen must be a number");
+  if (typeof qByteLen !== "number" || qByteLen < 2)
+    throw new Error("qByteLen must be a number");
+  if (typeof hmacFn !== "function")
+    throw new Error("hmacFn must be a function");
   // Step B, Step C: set hashLen to 8*ceil(hlen/8)
   const u8n = (len: number) => new Uint8Array(len); // creates Uint8Array
   const u8of = (byte: number) => Uint8Array.of(byte); // another shortcut
@@ -261,7 +285,7 @@ export function createHmacDrbg<T>(
   };
   const gen = () => {
     // HMAC-DRBG generate() function
-    if (i++ >= 1000) throw new Error('drbg: tried 1000 values');
+    if (i++ >= 1000) throw new Error("drbg: tried 1000 values");
     let len = 0;
     const out: Uint8Array[] = [];
     while (len < qByteLen) {
@@ -275,7 +299,7 @@ export function createHmacDrbg<T>(
   const genUntil = (seed: Uint8Array, pred: Pred<T>): T => {
     reset();
     reseed(seed); // Steps D-G
-    let res: T | undefined = undefined; // Step H: grind until k is in [1..n-1]
+    let res: T | undefined; // Step H: grind until k is in [1..n-1]
     while (!(res = pred(gen()))) reseed();
     reset();
     return res;
@@ -286,15 +310,17 @@ export function createHmacDrbg<T>(
 // Validating curves and fields
 
 const validatorFns = {
-  bigint: (val: any): boolean => typeof val === 'bigint',
-  function: (val: any): boolean => typeof val === 'function',
-  boolean: (val: any): boolean => typeof val === 'boolean',
-  string: (val: any): boolean => typeof val === 'string',
-  stringOrUint8Array: (val: any): boolean => typeof val === 'string' || isBytes_(val),
+  bigint: (val: any): boolean => typeof val === "bigint",
+  function: (val: any): boolean => typeof val === "function",
+  boolean: (val: any): boolean => typeof val === "boolean",
+  string: (val: any): boolean => typeof val === "string",
+  stringOrUint8Array: (val: any): boolean =>
+    typeof val === "string" || isBytes_(val),
   isSafeInteger: (val: any): boolean => Number.isSafeInteger(val),
   array: (val: any): boolean => Array.isArray(val),
   field: (val: any, object: any): any => (object as any).Fp.isValid(val),
-  hash: (val: any): boolean => typeof val === 'function' && Number.isSafeInteger(val.outputLen),
+  hash: (val: any): boolean =>
+    typeof val === "function" && Number.isSafeInteger(val.outputLen),
 } as const;
 type Validator = keyof typeof validatorFns;
 type ValMap<T extends Record<string, any>> = { [K in keyof T]?: Validator };
@@ -303,22 +329,34 @@ type ValMap<T extends Record<string, any>> = { [K in keyof T]?: Validator };
 export function validateObject<T extends Record<string, any>>(
   object: T,
   validators: ValMap<T>,
-  optValidators: ValMap<T> = {}
+  optValidators: ValMap<T> = {},
 ): T {
-  const checkField = (fieldName: keyof T, type: Validator, isOptional: boolean) => {
+  const checkField = (
+    fieldName: keyof T,
+    type: Validator,
+    isOptional: boolean,
+  ) => {
     const checkVal = validatorFns[type];
-    if (typeof checkVal !== 'function') throw new Error('invalid validator function');
+    if (typeof checkVal !== "function")
+      throw new Error("invalid validator function");
 
     const val = object[fieldName as keyof typeof object];
     if (isOptional && val === undefined) return;
     if (!checkVal(val, object)) {
       throw new Error(
-        'param ' + String(fieldName) + ' is invalid. Expected ' + type + ', got ' + val
+        "param " +
+          String(fieldName) +
+          " is invalid. Expected " +
+          type +
+          ", got " +
+          val,
       );
     }
   };
-  for (const [fieldName, type] of Object.entries(validators)) checkField(fieldName, type!, false);
-  for (const [fieldName, type] of Object.entries(optValidators)) checkField(fieldName, type!, true);
+  for (const [fieldName, type] of Object.entries(validators))
+    checkField(fieldName, type!, false);
+  for (const [fieldName, type] of Object.entries(optValidators))
+    checkField(fieldName, type!, true);
   return object;
 }
 // validate type tests
@@ -331,21 +369,24 @@ export function validateObject<T extends Record<string, any>>(
 // const z4 = validateObject(o, { a: 'boolean', z: 'bug' });
 
 export function isHash(val: CHash): boolean {
-  return typeof val === 'function' && Number.isSafeInteger(val.outputLen);
+  return typeof val === "function" && Number.isSafeInteger(val.outputLen);
 }
 export function _validateObject(
   object: Record<string, any>,
   fields: Record<string, string>,
-  optFields: Record<string, string> = {}
+  optFields: Record<string, string> = {},
 ): void {
-  if (!object || typeof object !== 'object') throw new Error('expected valid options object');
+  if (!object || typeof object !== "object")
+    throw new Error("expected valid options object");
   type Item = keyof typeof object;
   function checkField(fieldName: Item, expectedType: string, isOpt: boolean) {
     const val = object[fieldName];
     if (isOpt && val === undefined) return;
     const current = typeof val;
     if (current !== expectedType || val === null)
-      throw new Error(`param "${fieldName}" is invalid: expected ${expectedType}, got ${current}`);
+      throw new Error(
+        `param "${fieldName}" is invalid: expected ${expectedType}, got ${current}`,
+      );
   }
   Object.entries(fields).forEach(([k, v]) => checkField(k, v, false));
   Object.entries(optFields).forEach(([k, v]) => checkField(k, v, true));
@@ -355,7 +396,7 @@ export function _validateObject(
  * throws not implemented error
  */
 export const notImplemented = (): never => {
-  throw new Error('not implemented');
+  throw new Error("not implemented");
 };
 
 /**
@@ -363,7 +404,7 @@ export const notImplemented = (): never => {
  * Uses WeakMap: the value is going auto-cleaned by GC after last reference is removed.
  */
 export function memoized<T extends object, R, O extends any[]>(
-  fn: (arg: T, ...args: O) => R
+  fn: (arg: T, ...args: O) => R,
 ): (arg: T, ...args: O) => R {
   const map = new WeakMap<T, R>();
   return (arg: T, ...args: O): R => {

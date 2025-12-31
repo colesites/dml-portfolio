@@ -1,6 +1,4 @@
-'use strict';
-
-const DatePart = require('./datepart');
+const DatePart = require("./datepart");
 
 class Seconds extends DatePart {
   constructor(opts = {}) {
@@ -20,10 +18,9 @@ class Seconds extends DatePart {
   }
 
   toString() {
-    let s = this.date.getSeconds();
-    return this.token.length > 1 ? String(s).padStart(2, '0') : s;
+    const s = this.date.getSeconds();
+    return this.token.length > 1 ? String(s).padStart(2, "0") : s;
   }
-
 }
 
 module.exports = Seconds;

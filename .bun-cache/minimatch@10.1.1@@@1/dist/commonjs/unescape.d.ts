@@ -1,4 +1,4 @@
-import { MinimatchOptions } from './index.js';
+import { MinimatchOptions } from "./index.js";
 /**
  * Un-escape a string that has been escaped with {@link escape}.
  *
@@ -18,5 +18,11 @@ import { MinimatchOptions } from './index.js';
  * When `magicalBraces` is not set, escapes of braces (`{` and `}`) will not be
  * unescaped.
  */
-export declare const unescape: (s: string, { windowsPathsNoEscape, magicalBraces, }?: Pick<MinimatchOptions, "windowsPathsNoEscape" | "magicalBraces">) => string;
+export declare const unescape: (
+  s: string,
+  {
+    windowsPathsNoEscape,
+    magicalBraces,
+  }?: Pick<MinimatchOptions, "windowsPathsNoEscape" | "magicalBraces">,
+) => string;
 //# sourceMappingURL=unescape.d.ts.map

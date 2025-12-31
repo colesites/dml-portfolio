@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.anyTypeAnnotation = anyTypeAnnotation;
 exports.argumentPlaceholder = argumentPlaceholder;
@@ -100,7 +100,8 @@ exports.jSXClosingElement = exports.jsxClosingElement = jsxClosingElement;
 exports.jSXClosingFragment = exports.jsxClosingFragment = jsxClosingFragment;
 exports.jSXElement = exports.jsxElement = jsxElement;
 exports.jSXEmptyExpression = exports.jsxEmptyExpression = jsxEmptyExpression;
-exports.jSXExpressionContainer = exports.jsxExpressionContainer = jsxExpressionContainer;
+exports.jSXExpressionContainer = exports.jsxExpressionContainer =
+  jsxExpressionContainer;
 exports.jSXFragment = exports.jsxFragment = jsxFragment;
 exports.jSXIdentifier = exports.jsxIdentifier = jsxIdentifier;
 exports.jSXMemberExpression = exports.jsxMemberExpression = jsxMemberExpression;
@@ -177,9 +178,11 @@ exports.tSArrayType = exports.tsArrayType = tsArrayType;
 exports.tSAsExpression = exports.tsAsExpression = tsAsExpression;
 exports.tSBigIntKeyword = exports.tsBigIntKeyword = tsBigIntKeyword;
 exports.tSBooleanKeyword = exports.tsBooleanKeyword = tsBooleanKeyword;
-exports.tSCallSignatureDeclaration = exports.tsCallSignatureDeclaration = tsCallSignatureDeclaration;
+exports.tSCallSignatureDeclaration = exports.tsCallSignatureDeclaration =
+  tsCallSignatureDeclaration;
 exports.tSConditionalType = exports.tsConditionalType = tsConditionalType;
-exports.tSConstructSignatureDeclaration = exports.tsConstructSignatureDeclaration = tsConstructSignatureDeclaration;
+exports.tSConstructSignatureDeclaration =
+  exports.tsConstructSignatureDeclaration = tsConstructSignatureDeclaration;
 exports.tSConstructorType = exports.tsConstructorType = tsConstructorType;
 exports.tSDeclareFunction = exports.tsDeclareFunction = tsDeclareFunction;
 exports.tSDeclareMethod = exports.tsDeclareMethod = tsDeclareMethod;
@@ -187,17 +190,22 @@ exports.tSEnumBody = exports.tsEnumBody = tsEnumBody;
 exports.tSEnumDeclaration = exports.tsEnumDeclaration = tsEnumDeclaration;
 exports.tSEnumMember = exports.tsEnumMember = tsEnumMember;
 exports.tSExportAssignment = exports.tsExportAssignment = tsExportAssignment;
-exports.tSExpressionWithTypeArguments = exports.tsExpressionWithTypeArguments = tsExpressionWithTypeArguments;
-exports.tSExternalModuleReference = exports.tsExternalModuleReference = tsExternalModuleReference;
+exports.tSExpressionWithTypeArguments = exports.tsExpressionWithTypeArguments =
+  tsExpressionWithTypeArguments;
+exports.tSExternalModuleReference = exports.tsExternalModuleReference =
+  tsExternalModuleReference;
 exports.tSFunctionType = exports.tsFunctionType = tsFunctionType;
-exports.tSImportEqualsDeclaration = exports.tsImportEqualsDeclaration = tsImportEqualsDeclaration;
+exports.tSImportEqualsDeclaration = exports.tsImportEqualsDeclaration =
+  tsImportEqualsDeclaration;
 exports.tSImportType = exports.tsImportType = tsImportType;
 exports.tSIndexSignature = exports.tsIndexSignature = tsIndexSignature;
 exports.tSIndexedAccessType = exports.tsIndexedAccessType = tsIndexedAccessType;
 exports.tSInferType = exports.tsInferType = tsInferType;
-exports.tSInstantiationExpression = exports.tsInstantiationExpression = tsInstantiationExpression;
+exports.tSInstantiationExpression = exports.tsInstantiationExpression =
+  tsInstantiationExpression;
 exports.tSInterfaceBody = exports.tsInterfaceBody = tsInterfaceBody;
-exports.tSInterfaceDeclaration = exports.tsInterfaceDeclaration = tsInterfaceDeclaration;
+exports.tSInterfaceDeclaration = exports.tsInterfaceDeclaration =
+  tsInterfaceDeclaration;
 exports.tSIntersectionType = exports.tsIntersectionType = tsIntersectionType;
 exports.tSIntrinsicKeyword = exports.tsIntrinsicKeyword = tsIntrinsicKeyword;
 exports.tSLiteralType = exports.tsLiteralType = tsLiteralType;
@@ -206,7 +214,8 @@ exports.tSMethodSignature = exports.tsMethodSignature = tsMethodSignature;
 exports.tSModuleBlock = exports.tsModuleBlock = tsModuleBlock;
 exports.tSModuleDeclaration = exports.tsModuleDeclaration = tsModuleDeclaration;
 exports.tSNamedTupleMember = exports.tsNamedTupleMember = tsNamedTupleMember;
-exports.tSNamespaceExportDeclaration = exports.tsNamespaceExportDeclaration = tsNamespaceExportDeclaration;
+exports.tSNamespaceExportDeclaration = exports.tsNamespaceExportDeclaration =
+  tsNamespaceExportDeclaration;
 exports.tSNeverKeyword = exports.tsNeverKeyword = tsNeverKeyword;
 exports.tSNonNullExpression = exports.tsNonNullExpression = tsNonNullExpression;
 exports.tSNullKeyword = exports.tsNullKeyword = tsNullKeyword;
@@ -218,20 +227,25 @@ exports.tSParenthesizedType = exports.tsParenthesizedType = tsParenthesizedType;
 exports.tSPropertySignature = exports.tsPropertySignature = tsPropertySignature;
 exports.tSQualifiedName = exports.tsQualifiedName = tsQualifiedName;
 exports.tSRestType = exports.tsRestType = tsRestType;
-exports.tSSatisfiesExpression = exports.tsSatisfiesExpression = tsSatisfiesExpression;
+exports.tSSatisfiesExpression = exports.tsSatisfiesExpression =
+  tsSatisfiesExpression;
 exports.tSStringKeyword = exports.tsStringKeyword = tsStringKeyword;
 exports.tSSymbolKeyword = exports.tsSymbolKeyword = tsSymbolKeyword;
-exports.tSTemplateLiteralType = exports.tsTemplateLiteralType = tsTemplateLiteralType;
+exports.tSTemplateLiteralType = exports.tsTemplateLiteralType =
+  tsTemplateLiteralType;
 exports.tSThisType = exports.tsThisType = tsThisType;
 exports.tSTupleType = exports.tsTupleType = tsTupleType;
-exports.tSTypeAliasDeclaration = exports.tsTypeAliasDeclaration = tsTypeAliasDeclaration;
+exports.tSTypeAliasDeclaration = exports.tsTypeAliasDeclaration =
+  tsTypeAliasDeclaration;
 exports.tSTypeAnnotation = exports.tsTypeAnnotation = tsTypeAnnotation;
 exports.tSTypeAssertion = exports.tsTypeAssertion = tsTypeAssertion;
 exports.tSTypeLiteral = exports.tsTypeLiteral = tsTypeLiteral;
 exports.tSTypeOperator = exports.tsTypeOperator = tsTypeOperator;
 exports.tSTypeParameter = exports.tsTypeParameter = tsTypeParameter;
-exports.tSTypeParameterDeclaration = exports.tsTypeParameterDeclaration = tsTypeParameterDeclaration;
-exports.tSTypeParameterInstantiation = exports.tsTypeParameterInstantiation = tsTypeParameterInstantiation;
+exports.tSTypeParameterDeclaration = exports.tsTypeParameterDeclaration =
+  tsTypeParameterDeclaration;
+exports.tSTypeParameterInstantiation = exports.tsTypeParameterInstantiation =
+  tsTypeParameterInstantiation;
 exports.tSTypePredicate = exports.tsTypePredicate = tsTypePredicate;
 exports.tSTypeQuery = exports.tsTypeQuery = tsTypeQuery;
 exports.tSTypeReference = exports.tsTypeReference = tsTypeReference;
@@ -263,19 +277,15 @@ exports.yieldExpression = yieldExpression;
 var _validate = require("../../validators/validate.js");
 var _deprecationWarning = require("../../utils/deprecationWarning.js");
 var utils = require("../../definitions/utils.js");
-const {
-  validateInternal: validate
-} = _validate;
-const {
-  NODE_FIELDS
-} = utils;
+const { validateInternal: validate } = _validate;
+const { NODE_FIELDS } = utils;
 function bigIntLiteral(value) {
   if (typeof value === "bigint") {
     value = value.toString();
   }
   const node = {
     type: "BigIntLiteral",
-    value
+    value,
   };
   const defs = NODE_FIELDS.BigIntLiteral;
   validate(defs.value, node, "value", value);
@@ -284,7 +294,7 @@ function bigIntLiteral(value) {
 function arrayExpression(elements = []) {
   const node = {
     type: "ArrayExpression",
-    elements
+    elements,
   };
   const defs = NODE_FIELDS.ArrayExpression;
   validate(defs.elements, node, "elements", elements, 1);
@@ -295,7 +305,7 @@ function assignmentExpression(operator, left, right) {
     type: "AssignmentExpression",
     operator,
     left,
-    right
+    right,
   };
   const defs = NODE_FIELDS.AssignmentExpression;
   validate(defs.operator, node, "operator", operator);
@@ -308,7 +318,7 @@ function binaryExpression(operator, left, right) {
     type: "BinaryExpression",
     operator,
     left,
-    right
+    right,
   };
   const defs = NODE_FIELDS.BinaryExpression;
   validate(defs.operator, node, "operator", operator);
@@ -319,7 +329,7 @@ function binaryExpression(operator, left, right) {
 function interpreterDirective(value) {
   const node = {
     type: "InterpreterDirective",
-    value
+    value,
   };
   const defs = NODE_FIELDS.InterpreterDirective;
   validate(defs.value, node, "value", value);
@@ -328,7 +338,7 @@ function interpreterDirective(value) {
 function directive(value) {
   const node = {
     type: "Directive",
-    value
+    value,
   };
   const defs = NODE_FIELDS.Directive;
   validate(defs.value, node, "value", value, 1);
@@ -337,7 +347,7 @@ function directive(value) {
 function directiveLiteral(value) {
   const node = {
     type: "DirectiveLiteral",
-    value
+    value,
   };
   const defs = NODE_FIELDS.DirectiveLiteral;
   validate(defs.value, node, "value", value);
@@ -347,7 +357,7 @@ function blockStatement(body, directives = []) {
   const node = {
     type: "BlockStatement",
     body,
-    directives
+    directives,
   };
   const defs = NODE_FIELDS.BlockStatement;
   validate(defs.body, node, "body", body, 1);
@@ -357,7 +367,7 @@ function blockStatement(body, directives = []) {
 function breakStatement(label = null) {
   const node = {
     type: "BreakStatement",
-    label
+    label,
   };
   const defs = NODE_FIELDS.BreakStatement;
   validate(defs.label, node, "label", label, 1);
@@ -367,7 +377,7 @@ function callExpression(callee, _arguments) {
   const node = {
     type: "CallExpression",
     callee,
-    arguments: _arguments
+    arguments: _arguments,
   };
   const defs = NODE_FIELDS.CallExpression;
   validate(defs.callee, node, "callee", callee, 1);
@@ -378,7 +388,7 @@ function catchClause(param = null, body) {
   const node = {
     type: "CatchClause",
     param,
-    body
+    body,
   };
   const defs = NODE_FIELDS.CatchClause;
   validate(defs.param, node, "param", param, 1);
@@ -390,7 +400,7 @@ function conditionalExpression(test, consequent, alternate) {
     type: "ConditionalExpression",
     test,
     consequent,
-    alternate
+    alternate,
   };
   const defs = NODE_FIELDS.ConditionalExpression;
   validate(defs.test, node, "test", test, 1);
@@ -401,7 +411,7 @@ function conditionalExpression(test, consequent, alternate) {
 function continueStatement(label = null) {
   const node = {
     type: "ContinueStatement",
-    label
+    label,
   };
   const defs = NODE_FIELDS.ContinueStatement;
   validate(defs.label, node, "label", label, 1);
@@ -409,14 +419,14 @@ function continueStatement(label = null) {
 }
 function debuggerStatement() {
   return {
-    type: "DebuggerStatement"
+    type: "DebuggerStatement",
   };
 }
 function doWhileStatement(test, body) {
   const node = {
     type: "DoWhileStatement",
     test,
-    body
+    body,
   };
   const defs = NODE_FIELDS.DoWhileStatement;
   validate(defs.test, node, "test", test, 1);
@@ -425,13 +435,13 @@ function doWhileStatement(test, body) {
 }
 function emptyStatement() {
   return {
-    type: "EmptyStatement"
+    type: "EmptyStatement",
   };
 }
 function expressionStatement(expression) {
   const node = {
     type: "ExpressionStatement",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.ExpressionStatement;
   validate(defs.expression, node, "expression", expression, 1);
@@ -442,7 +452,7 @@ function file(program, comments = null, tokens = null) {
     type: "File",
     program,
     comments,
-    tokens
+    tokens,
   };
   const defs = NODE_FIELDS.File;
   validate(defs.program, node, "program", program, 1);
@@ -455,7 +465,7 @@ function forInStatement(left, right, body) {
     type: "ForInStatement",
     left,
     right,
-    body
+    body,
   };
   const defs = NODE_FIELDS.ForInStatement;
   validate(defs.left, node, "left", left, 1);
@@ -469,7 +479,7 @@ function forStatement(init = null, test = null, update = null, body) {
     init,
     test,
     update,
-    body
+    body,
   };
   const defs = NODE_FIELDS.ForStatement;
   validate(defs.init, node, "init", init, 1);
@@ -478,14 +488,20 @@ function forStatement(init = null, test = null, update = null, body) {
   validate(defs.body, node, "body", body, 1);
   return node;
 }
-function functionDeclaration(id = null, params, body, generator = false, async = false) {
+function functionDeclaration(
+  id = null,
+  params,
+  body,
+  generator = false,
+  async = false,
+) {
   const node = {
     type: "FunctionDeclaration",
     id,
     params,
     body,
     generator,
-    async
+    async,
   };
   const defs = NODE_FIELDS.FunctionDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -495,14 +511,20 @@ function functionDeclaration(id = null, params, body, generator = false, async =
   validate(defs.async, node, "async", async);
   return node;
 }
-function functionExpression(id = null, params, body, generator = false, async = false) {
+function functionExpression(
+  id = null,
+  params,
+  body,
+  generator = false,
+  async = false,
+) {
   const node = {
     type: "FunctionExpression",
     id,
     params,
     body,
     generator,
-    async
+    async,
   };
   const defs = NODE_FIELDS.FunctionExpression;
   validate(defs.id, node, "id", id, 1);
@@ -515,7 +537,7 @@ function functionExpression(id = null, params, body, generator = false, async = 
 function identifier(name) {
   const node = {
     type: "Identifier",
-    name
+    name,
   };
   const defs = NODE_FIELDS.Identifier;
   validate(defs.name, node, "name", name);
@@ -526,7 +548,7 @@ function ifStatement(test, consequent, alternate = null) {
     type: "IfStatement",
     test,
     consequent,
-    alternate
+    alternate,
   };
   const defs = NODE_FIELDS.IfStatement;
   validate(defs.test, node, "test", test, 1);
@@ -538,7 +560,7 @@ function labeledStatement(label, body) {
   const node = {
     type: "LabeledStatement",
     label,
-    body
+    body,
   };
   const defs = NODE_FIELDS.LabeledStatement;
   validate(defs.label, node, "label", label, 1);
@@ -548,7 +570,7 @@ function labeledStatement(label, body) {
 function stringLiteral(value) {
   const node = {
     type: "StringLiteral",
-    value
+    value,
   };
   const defs = NODE_FIELDS.StringLiteral;
   validate(defs.value, node, "value", value);
@@ -557,7 +579,7 @@ function stringLiteral(value) {
 function numericLiteral(value) {
   const node = {
     type: "NumericLiteral",
-    value
+    value,
   };
   const defs = NODE_FIELDS.NumericLiteral;
   validate(defs.value, node, "value", value);
@@ -565,13 +587,13 @@ function numericLiteral(value) {
 }
 function nullLiteral() {
   return {
-    type: "NullLiteral"
+    type: "NullLiteral",
   };
 }
 function booleanLiteral(value) {
   const node = {
     type: "BooleanLiteral",
-    value
+    value,
   };
   const defs = NODE_FIELDS.BooleanLiteral;
   validate(defs.value, node, "value", value);
@@ -581,7 +603,7 @@ function regExpLiteral(pattern, flags = "") {
   const node = {
     type: "RegExpLiteral",
     pattern,
-    flags
+    flags,
   };
   const defs = NODE_FIELDS.RegExpLiteral;
   validate(defs.pattern, node, "pattern", pattern);
@@ -593,7 +615,7 @@ function logicalExpression(operator, left, right) {
     type: "LogicalExpression",
     operator,
     left,
-    right
+    right,
   };
   const defs = NODE_FIELDS.LogicalExpression;
   validate(defs.operator, node, "operator", operator);
@@ -607,7 +629,7 @@ function memberExpression(object, property, computed = false, optional = null) {
     object,
     property,
     computed,
-    optional
+    optional,
   };
   const defs = NODE_FIELDS.MemberExpression;
   validate(defs.object, node, "object", object, 1);
@@ -620,20 +642,25 @@ function newExpression(callee, _arguments) {
   const node = {
     type: "NewExpression",
     callee,
-    arguments: _arguments
+    arguments: _arguments,
   };
   const defs = NODE_FIELDS.NewExpression;
   validate(defs.callee, node, "callee", callee, 1);
   validate(defs.arguments, node, "arguments", _arguments, 1);
   return node;
 }
-function program(body, directives = [], sourceType = "script", interpreter = null) {
+function program(
+  body,
+  directives = [],
+  sourceType = "script",
+  interpreter = null,
+) {
   const node = {
     type: "Program",
     body,
     directives,
     sourceType,
-    interpreter
+    interpreter,
   };
   const defs = NODE_FIELDS.Program;
   validate(defs.body, node, "body", body, 1);
@@ -645,13 +672,21 @@ function program(body, directives = [], sourceType = "script", interpreter = nul
 function objectExpression(properties) {
   const node = {
     type: "ObjectExpression",
-    properties
+    properties,
   };
   const defs = NODE_FIELDS.ObjectExpression;
   validate(defs.properties, node, "properties", properties, 1);
   return node;
 }
-function objectMethod(kind = "method", key, params, body, computed = false, generator = false, async = false) {
+function objectMethod(
+  kind = "method",
+  key,
+  params,
+  body,
+  computed = false,
+  generator = false,
+  async = false,
+) {
   const node = {
     type: "ObjectMethod",
     kind,
@@ -660,7 +695,7 @@ function objectMethod(kind = "method", key, params, body, computed = false, gene
     body,
     computed,
     generator,
-    async
+    async,
   };
   const defs = NODE_FIELDS.ObjectMethod;
   validate(defs.kind, node, "kind", kind);
@@ -672,14 +707,20 @@ function objectMethod(kind = "method", key, params, body, computed = false, gene
   validate(defs.async, node, "async", async);
   return node;
 }
-function objectProperty(key, value, computed = false, shorthand = false, decorators = null) {
+function objectProperty(
+  key,
+  value,
+  computed = false,
+  shorthand = false,
+  decorators = null,
+) {
   const node = {
     type: "ObjectProperty",
     key,
     value,
     computed,
     shorthand,
-    decorators
+    decorators,
   };
   const defs = NODE_FIELDS.ObjectProperty;
   validate(defs.key, node, "key", key, 1);
@@ -692,7 +733,7 @@ function objectProperty(key, value, computed = false, shorthand = false, decorat
 function restElement(argument) {
   const node = {
     type: "RestElement",
-    argument
+    argument,
   };
   const defs = NODE_FIELDS.RestElement;
   validate(defs.argument, node, "argument", argument, 1);
@@ -701,7 +742,7 @@ function restElement(argument) {
 function returnStatement(argument = null) {
   const node = {
     type: "ReturnStatement",
-    argument
+    argument,
   };
   const defs = NODE_FIELDS.ReturnStatement;
   validate(defs.argument, node, "argument", argument, 1);
@@ -710,7 +751,7 @@ function returnStatement(argument = null) {
 function sequenceExpression(expressions) {
   const node = {
     type: "SequenceExpression",
-    expressions
+    expressions,
   };
   const defs = NODE_FIELDS.SequenceExpression;
   validate(defs.expressions, node, "expressions", expressions, 1);
@@ -719,7 +760,7 @@ function sequenceExpression(expressions) {
 function parenthesizedExpression(expression) {
   const node = {
     type: "ParenthesizedExpression",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.ParenthesizedExpression;
   validate(defs.expression, node, "expression", expression, 1);
@@ -729,7 +770,7 @@ function switchCase(test = null, consequent) {
   const node = {
     type: "SwitchCase",
     test,
-    consequent
+    consequent,
   };
   const defs = NODE_FIELDS.SwitchCase;
   validate(defs.test, node, "test", test, 1);
@@ -740,7 +781,7 @@ function switchStatement(discriminant, cases) {
   const node = {
     type: "SwitchStatement",
     discriminant,
-    cases
+    cases,
   };
   const defs = NODE_FIELDS.SwitchStatement;
   validate(defs.discriminant, node, "discriminant", discriminant, 1);
@@ -749,13 +790,13 @@ function switchStatement(discriminant, cases) {
 }
 function thisExpression() {
   return {
-    type: "ThisExpression"
+    type: "ThisExpression",
   };
 }
 function throwStatement(argument) {
   const node = {
     type: "ThrowStatement",
-    argument
+    argument,
   };
   const defs = NODE_FIELDS.ThrowStatement;
   validate(defs.argument, node, "argument", argument, 1);
@@ -766,7 +807,7 @@ function tryStatement(block, handler = null, finalizer = null) {
     type: "TryStatement",
     block,
     handler,
-    finalizer
+    finalizer,
   };
   const defs = NODE_FIELDS.TryStatement;
   validate(defs.block, node, "block", block, 1);
@@ -779,7 +820,7 @@ function unaryExpression(operator, argument, prefix = true) {
     type: "UnaryExpression",
     operator,
     argument,
-    prefix
+    prefix,
   };
   const defs = NODE_FIELDS.UnaryExpression;
   validate(defs.operator, node, "operator", operator);
@@ -792,7 +833,7 @@ function updateExpression(operator, argument, prefix = false) {
     type: "UpdateExpression",
     operator,
     argument,
-    prefix
+    prefix,
   };
   const defs = NODE_FIELDS.UpdateExpression;
   validate(defs.operator, node, "operator", operator);
@@ -804,7 +845,7 @@ function variableDeclaration(kind, declarations) {
   const node = {
     type: "VariableDeclaration",
     kind,
-    declarations
+    declarations,
   };
   const defs = NODE_FIELDS.VariableDeclaration;
   validate(defs.kind, node, "kind", kind);
@@ -815,7 +856,7 @@ function variableDeclarator(id, init = null) {
   const node = {
     type: "VariableDeclarator",
     id,
-    init
+    init,
   };
   const defs = NODE_FIELDS.VariableDeclarator;
   validate(defs.id, node, "id", id, 1);
@@ -826,7 +867,7 @@ function whileStatement(test, body) {
   const node = {
     type: "WhileStatement",
     test,
-    body
+    body,
   };
   const defs = NODE_FIELDS.WhileStatement;
   validate(defs.test, node, "test", test, 1);
@@ -837,7 +878,7 @@ function withStatement(object, body) {
   const node = {
     type: "WithStatement",
     object,
-    body
+    body,
   };
   const defs = NODE_FIELDS.WithStatement;
   validate(defs.object, node, "object", object, 1);
@@ -848,7 +889,7 @@ function assignmentPattern(left, right) {
   const node = {
     type: "AssignmentPattern",
     left,
-    right
+    right,
   };
   const defs = NODE_FIELDS.AssignmentPattern;
   validate(defs.left, node, "left", left, 1);
@@ -858,7 +899,7 @@ function assignmentPattern(left, right) {
 function arrayPattern(elements) {
   const node = {
     type: "ArrayPattern",
-    elements
+    elements,
   };
   const defs = NODE_FIELDS.ArrayPattern;
   validate(defs.elements, node, "elements", elements, 1);
@@ -870,7 +911,7 @@ function arrowFunctionExpression(params, body, async = false) {
     params,
     body,
     async,
-    expression: null
+    expression: null,
   };
   const defs = NODE_FIELDS.ArrowFunctionExpression;
   validate(defs.params, node, "params", params, 1);
@@ -881,19 +922,24 @@ function arrowFunctionExpression(params, body, async = false) {
 function classBody(body) {
   const node = {
     type: "ClassBody",
-    body
+    body,
   };
   const defs = NODE_FIELDS.ClassBody;
   validate(defs.body, node, "body", body, 1);
   return node;
 }
-function classExpression(id = null, superClass = null, body, decorators = null) {
+function classExpression(
+  id = null,
+  superClass = null,
+  body,
+  decorators = null,
+) {
   const node = {
     type: "ClassExpression",
     id,
     superClass,
     body,
-    decorators
+    decorators,
   };
   const defs = NODE_FIELDS.ClassExpression;
   validate(defs.id, node, "id", id, 1);
@@ -902,13 +948,18 @@ function classExpression(id = null, superClass = null, body, decorators = null) 
   validate(defs.decorators, node, "decorators", decorators, 1);
   return node;
 }
-function classDeclaration(id = null, superClass = null, body, decorators = null) {
+function classDeclaration(
+  id = null,
+  superClass = null,
+  body,
+  decorators = null,
+) {
   const node = {
     type: "ClassDeclaration",
     id,
     superClass,
     body,
-    decorators
+    decorators,
   };
   const defs = NODE_FIELDS.ClassDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -920,7 +971,7 @@ function classDeclaration(id = null, superClass = null, body, decorators = null)
 function exportAllDeclaration(source) {
   const node = {
     type: "ExportAllDeclaration",
-    source
+    source,
   };
   const defs = NODE_FIELDS.ExportAllDeclaration;
   validate(defs.source, node, "source", source, 1);
@@ -929,18 +980,22 @@ function exportAllDeclaration(source) {
 function exportDefaultDeclaration(declaration) {
   const node = {
     type: "ExportDefaultDeclaration",
-    declaration
+    declaration,
   };
   const defs = NODE_FIELDS.ExportDefaultDeclaration;
   validate(defs.declaration, node, "declaration", declaration, 1);
   return node;
 }
-function exportNamedDeclaration(declaration = null, specifiers = [], source = null) {
+function exportNamedDeclaration(
+  declaration = null,
+  specifiers = [],
+  source = null,
+) {
   const node = {
     type: "ExportNamedDeclaration",
     declaration,
     specifiers,
-    source
+    source,
   };
   const defs = NODE_FIELDS.ExportNamedDeclaration;
   validate(defs.declaration, node, "declaration", declaration, 1);
@@ -952,7 +1007,7 @@ function exportSpecifier(local, exported) {
   const node = {
     type: "ExportSpecifier",
     local,
-    exported
+    exported,
   };
   const defs = NODE_FIELDS.ExportSpecifier;
   validate(defs.local, node, "local", local, 1);
@@ -965,7 +1020,7 @@ function forOfStatement(left, right, body, _await = false) {
     left,
     right,
     body,
-    await: _await
+    await: _await,
   };
   const defs = NODE_FIELDS.ForOfStatement;
   validate(defs.left, node, "left", left, 1);
@@ -978,7 +1033,7 @@ function importDeclaration(specifiers, source) {
   const node = {
     type: "ImportDeclaration",
     specifiers,
-    source
+    source,
   };
   const defs = NODE_FIELDS.ImportDeclaration;
   validate(defs.specifiers, node, "specifiers", specifiers, 1);
@@ -988,7 +1043,7 @@ function importDeclaration(specifiers, source) {
 function importDefaultSpecifier(local) {
   const node = {
     type: "ImportDefaultSpecifier",
-    local
+    local,
   };
   const defs = NODE_FIELDS.ImportDefaultSpecifier;
   validate(defs.local, node, "local", local, 1);
@@ -997,7 +1052,7 @@ function importDefaultSpecifier(local) {
 function importNamespaceSpecifier(local) {
   const node = {
     type: "ImportNamespaceSpecifier",
-    local
+    local,
   };
   const defs = NODE_FIELDS.ImportNamespaceSpecifier;
   validate(defs.local, node, "local", local, 1);
@@ -1007,7 +1062,7 @@ function importSpecifier(local, imported) {
   const node = {
     type: "ImportSpecifier",
     local,
-    imported
+    imported,
   };
   const defs = NODE_FIELDS.ImportSpecifier;
   validate(defs.local, node, "local", local, 1);
@@ -1018,7 +1073,7 @@ function importExpression(source, options = null) {
   const node = {
     type: "ImportExpression",
     source,
-    options
+    options,
   };
   const defs = NODE_FIELDS.ImportExpression;
   validate(defs.source, node, "source", source, 1);
@@ -1029,14 +1084,23 @@ function metaProperty(meta, property) {
   const node = {
     type: "MetaProperty",
     meta,
-    property
+    property,
   };
   const defs = NODE_FIELDS.MetaProperty;
   validate(defs.meta, node, "meta", meta, 1);
   validate(defs.property, node, "property", property, 1);
   return node;
 }
-function classMethod(kind = "method", key, params, body, computed = false, _static = false, generator = false, async = false) {
+function classMethod(
+  kind = "method",
+  key,
+  params,
+  body,
+  computed = false,
+  _static = false,
+  generator = false,
+  async = false,
+) {
   const node = {
     type: "ClassMethod",
     kind,
@@ -1046,7 +1110,7 @@ function classMethod(kind = "method", key, params, body, computed = false, _stat
     computed,
     static: _static,
     generator,
-    async
+    async,
   };
   const defs = NODE_FIELDS.ClassMethod;
   validate(defs.kind, node, "kind", kind);
@@ -1062,7 +1126,7 @@ function classMethod(kind = "method", key, params, body, computed = false, _stat
 function objectPattern(properties) {
   const node = {
     type: "ObjectPattern",
-    properties
+    properties,
   };
   const defs = NODE_FIELDS.ObjectPattern;
   validate(defs.properties, node, "properties", properties, 1);
@@ -1071,7 +1135,7 @@ function objectPattern(properties) {
 function spreadElement(argument) {
   const node = {
     type: "SpreadElement",
-    argument
+    argument,
   };
   const defs = NODE_FIELDS.SpreadElement;
   validate(defs.argument, node, "argument", argument, 1);
@@ -1079,14 +1143,14 @@ function spreadElement(argument) {
 }
 function _super() {
   return {
-    type: "Super"
+    type: "Super",
   };
 }
 function taggedTemplateExpression(tag, quasi) {
   const node = {
     type: "TaggedTemplateExpression",
     tag,
-    quasi
+    quasi,
   };
   const defs = NODE_FIELDS.TaggedTemplateExpression;
   validate(defs.tag, node, "tag", tag, 1);
@@ -1097,7 +1161,7 @@ function templateElement(value, tail = false) {
   const node = {
     type: "TemplateElement",
     value,
-    tail
+    tail,
   };
   const defs = NODE_FIELDS.TemplateElement;
   validate(defs.value, node, "value", value);
@@ -1108,7 +1172,7 @@ function templateLiteral(quasis, expressions) {
   const node = {
     type: "TemplateLiteral",
     quasis,
-    expressions
+    expressions,
   };
   const defs = NODE_FIELDS.TemplateLiteral;
   validate(defs.quasis, node, "quasis", quasis, 1);
@@ -1119,7 +1183,7 @@ function yieldExpression(argument = null, delegate = false) {
   const node = {
     type: "YieldExpression",
     argument,
-    delegate
+    delegate,
   };
   const defs = NODE_FIELDS.YieldExpression;
   validate(defs.argument, node, "argument", argument, 1);
@@ -1129,7 +1193,7 @@ function yieldExpression(argument = null, delegate = false) {
 function awaitExpression(argument) {
   const node = {
     type: "AwaitExpression",
-    argument
+    argument,
   };
   const defs = NODE_FIELDS.AwaitExpression;
   validate(defs.argument, node, "argument", argument, 1);
@@ -1137,25 +1201,30 @@ function awaitExpression(argument) {
 }
 function _import() {
   return {
-    type: "Import"
+    type: "Import",
   };
 }
 function exportNamespaceSpecifier(exported) {
   const node = {
     type: "ExportNamespaceSpecifier",
-    exported
+    exported,
   };
   const defs = NODE_FIELDS.ExportNamespaceSpecifier;
   validate(defs.exported, node, "exported", exported, 1);
   return node;
 }
-function optionalMemberExpression(object, property, computed = false, optional) {
+function optionalMemberExpression(
+  object,
+  property,
+  computed = false,
+  optional,
+) {
   const node = {
     type: "OptionalMemberExpression",
     object,
     property,
     computed,
-    optional
+    optional,
   };
   const defs = NODE_FIELDS.OptionalMemberExpression;
   validate(defs.object, node, "object", object, 1);
@@ -1169,7 +1238,7 @@ function optionalCallExpression(callee, _arguments, optional) {
     type: "OptionalCallExpression",
     callee,
     arguments: _arguments,
-    optional
+    optional,
   };
   const defs = NODE_FIELDS.OptionalCallExpression;
   validate(defs.callee, node, "callee", callee, 1);
@@ -1177,7 +1246,14 @@ function optionalCallExpression(callee, _arguments, optional) {
   validate(defs.optional, node, "optional", optional);
   return node;
 }
-function classProperty(key, value = null, typeAnnotation = null, decorators = null, computed = false, _static = false) {
+function classProperty(
+  key,
+  value = null,
+  typeAnnotation = null,
+  decorators = null,
+  computed = false,
+  _static = false,
+) {
   const node = {
     type: "ClassProperty",
     key,
@@ -1185,7 +1261,7 @@ function classProperty(key, value = null, typeAnnotation = null, decorators = nu
     typeAnnotation,
     decorators,
     computed,
-    static: _static
+    static: _static,
   };
   const defs = NODE_FIELDS.ClassProperty;
   validate(defs.key, node, "key", key, 1);
@@ -1196,7 +1272,14 @@ function classProperty(key, value = null, typeAnnotation = null, decorators = nu
   validate(defs.static, node, "static", _static);
   return node;
 }
-function classAccessorProperty(key, value = null, typeAnnotation = null, decorators = null, computed = false, _static = false) {
+function classAccessorProperty(
+  key,
+  value = null,
+  typeAnnotation = null,
+  decorators = null,
+  computed = false,
+  _static = false,
+) {
   const node = {
     type: "ClassAccessorProperty",
     key,
@@ -1204,7 +1287,7 @@ function classAccessorProperty(key, value = null, typeAnnotation = null, decorat
     typeAnnotation,
     decorators,
     computed,
-    static: _static
+    static: _static,
   };
   const defs = NODE_FIELDS.ClassAccessorProperty;
   validate(defs.key, node, "key", key, 1);
@@ -1215,13 +1298,18 @@ function classAccessorProperty(key, value = null, typeAnnotation = null, decorat
   validate(defs.static, node, "static", _static);
   return node;
 }
-function classPrivateProperty(key, value = null, decorators = null, _static = false) {
+function classPrivateProperty(
+  key,
+  value = null,
+  decorators = null,
+  _static = false,
+) {
   const node = {
     type: "ClassPrivateProperty",
     key,
     value,
     decorators,
-    static: _static
+    static: _static,
   };
   const defs = NODE_FIELDS.ClassPrivateProperty;
   validate(defs.key, node, "key", key, 1);
@@ -1230,14 +1318,20 @@ function classPrivateProperty(key, value = null, decorators = null, _static = fa
   validate(defs.static, node, "static", _static);
   return node;
 }
-function classPrivateMethod(kind = "method", key, params, body, _static = false) {
+function classPrivateMethod(
+  kind = "method",
+  key,
+  params,
+  body,
+  _static = false,
+) {
   const node = {
     type: "ClassPrivateMethod",
     kind,
     key,
     params,
     body,
-    static: _static
+    static: _static,
   };
   const defs = NODE_FIELDS.ClassPrivateMethod;
   validate(defs.kind, node, "kind", kind);
@@ -1250,7 +1344,7 @@ function classPrivateMethod(kind = "method", key, params, body, _static = false)
 function privateName(id) {
   const node = {
     type: "PrivateName",
-    id
+    id,
   };
   const defs = NODE_FIELDS.PrivateName;
   validate(defs.id, node, "id", id, 1);
@@ -1259,7 +1353,7 @@ function privateName(id) {
 function staticBlock(body) {
   const node = {
     type: "StaticBlock",
-    body
+    body,
   };
   const defs = NODE_FIELDS.StaticBlock;
   validate(defs.body, node, "body", body, 1);
@@ -1269,7 +1363,7 @@ function importAttribute(key, value) {
   const node = {
     type: "ImportAttribute",
     key,
-    value
+    value,
   };
   const defs = NODE_FIELDS.ImportAttribute;
   validate(defs.key, node, "key", key, 1);
@@ -1278,13 +1372,13 @@ function importAttribute(key, value) {
 }
 function anyTypeAnnotation() {
   return {
-    type: "AnyTypeAnnotation"
+    type: "AnyTypeAnnotation",
   };
 }
 function arrayTypeAnnotation(elementType) {
   const node = {
     type: "ArrayTypeAnnotation",
-    elementType
+    elementType,
   };
   const defs = NODE_FIELDS.ArrayTypeAnnotation;
   validate(defs.elementType, node, "elementType", elementType, 1);
@@ -1292,13 +1386,13 @@ function arrayTypeAnnotation(elementType) {
 }
 function booleanTypeAnnotation() {
   return {
-    type: "BooleanTypeAnnotation"
+    type: "BooleanTypeAnnotation",
   };
 }
 function booleanLiteralTypeAnnotation(value) {
   const node = {
     type: "BooleanLiteralTypeAnnotation",
-    value
+    value,
   };
   const defs = NODE_FIELDS.BooleanLiteralTypeAnnotation;
   validate(defs.value, node, "value", value);
@@ -1306,14 +1400,14 @@ function booleanLiteralTypeAnnotation(value) {
 }
 function nullLiteralTypeAnnotation() {
   return {
-    type: "NullLiteralTypeAnnotation"
+    type: "NullLiteralTypeAnnotation",
   };
 }
 function classImplements(id, typeParameters = null) {
   const node = {
     type: "ClassImplements",
     id,
-    typeParameters
+    typeParameters,
   };
   const defs = NODE_FIELDS.ClassImplements;
   validate(defs.id, node, "id", id, 1);
@@ -1326,7 +1420,7 @@ function declareClass(id, typeParameters = null, _extends = null, body) {
     id,
     typeParameters,
     extends: _extends,
-    body
+    body,
   };
   const defs = NODE_FIELDS.DeclareClass;
   validate(defs.id, node, "id", id, 1);
@@ -1338,7 +1432,7 @@ function declareClass(id, typeParameters = null, _extends = null, body) {
 function declareFunction(id) {
   const node = {
     type: "DeclareFunction",
-    id
+    id,
   };
   const defs = NODE_FIELDS.DeclareFunction;
   validate(defs.id, node, "id", id, 1);
@@ -1350,7 +1444,7 @@ function declareInterface(id, typeParameters = null, _extends = null, body) {
     id,
     typeParameters,
     extends: _extends,
-    body
+    body,
   };
   const defs = NODE_FIELDS.DeclareInterface;
   validate(defs.id, node, "id", id, 1);
@@ -1364,7 +1458,7 @@ function declareModule(id, body, kind = null) {
     type: "DeclareModule",
     id,
     body,
-    kind
+    kind,
   };
   const defs = NODE_FIELDS.DeclareModule;
   validate(defs.id, node, "id", id, 1);
@@ -1375,7 +1469,7 @@ function declareModule(id, body, kind = null) {
 function declareModuleExports(typeAnnotation) {
   const node = {
     type: "DeclareModuleExports",
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.DeclareModuleExports;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -1386,7 +1480,7 @@ function declareTypeAlias(id, typeParameters = null, right) {
     type: "DeclareTypeAlias",
     id,
     typeParameters,
-    right
+    right,
   };
   const defs = NODE_FIELDS.DeclareTypeAlias;
   validate(defs.id, node, "id", id, 1);
@@ -1399,7 +1493,7 @@ function declareOpaqueType(id, typeParameters = null, supertype = null) {
     type: "DeclareOpaqueType",
     id,
     typeParameters,
-    supertype
+    supertype,
   };
   const defs = NODE_FIELDS.DeclareOpaqueType;
   validate(defs.id, node, "id", id, 1);
@@ -1410,19 +1504,24 @@ function declareOpaqueType(id, typeParameters = null, supertype = null) {
 function declareVariable(id) {
   const node = {
     type: "DeclareVariable",
-    id
+    id,
   };
   const defs = NODE_FIELDS.DeclareVariable;
   validate(defs.id, node, "id", id, 1);
   return node;
 }
-function declareExportDeclaration(declaration = null, specifiers = null, source = null, attributes = null) {
+function declareExportDeclaration(
+  declaration = null,
+  specifiers = null,
+  source = null,
+  attributes = null,
+) {
   const node = {
     type: "DeclareExportDeclaration",
     declaration,
     specifiers,
     source,
-    attributes
+    attributes,
   };
   const defs = NODE_FIELDS.DeclareExportDeclaration;
   validate(defs.declaration, node, "declaration", declaration, 1);
@@ -1435,7 +1534,7 @@ function declareExportAllDeclaration(source, attributes = null) {
   const node = {
     type: "DeclareExportAllDeclaration",
     source,
-    attributes
+    attributes,
   };
   const defs = NODE_FIELDS.DeclareExportAllDeclaration;
   validate(defs.source, node, "source", source, 1);
@@ -1445,7 +1544,7 @@ function declareExportAllDeclaration(source, attributes = null) {
 function declaredPredicate(value) {
   const node = {
     type: "DeclaredPredicate",
-    value
+    value,
   };
   const defs = NODE_FIELDS.DeclaredPredicate;
   validate(defs.value, node, "value", value, 1);
@@ -1453,16 +1552,21 @@ function declaredPredicate(value) {
 }
 function existsTypeAnnotation() {
   return {
-    type: "ExistsTypeAnnotation"
+    type: "ExistsTypeAnnotation",
   };
 }
-function functionTypeAnnotation(typeParameters = null, params, rest = null, returnType) {
+function functionTypeAnnotation(
+  typeParameters = null,
+  params,
+  rest = null,
+  returnType,
+) {
   const node = {
     type: "FunctionTypeAnnotation",
     typeParameters,
     params,
     rest,
-    returnType
+    returnType,
   };
   const defs = NODE_FIELDS.FunctionTypeAnnotation;
   validate(defs.typeParameters, node, "typeParameters", typeParameters, 1);
@@ -1475,7 +1579,7 @@ function functionTypeParam(name = null, typeAnnotation) {
   const node = {
     type: "FunctionTypeParam",
     name,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.FunctionTypeParam;
   validate(defs.name, node, "name", name, 1);
@@ -1486,7 +1590,7 @@ function genericTypeAnnotation(id, typeParameters = null) {
   const node = {
     type: "GenericTypeAnnotation",
     id,
-    typeParameters
+    typeParameters,
   };
   const defs = NODE_FIELDS.GenericTypeAnnotation;
   validate(defs.id, node, "id", id, 1);
@@ -1495,27 +1599,32 @@ function genericTypeAnnotation(id, typeParameters = null) {
 }
 function inferredPredicate() {
   return {
-    type: "InferredPredicate"
+    type: "InferredPredicate",
   };
 }
 function interfaceExtends(id, typeParameters = null) {
   const node = {
     type: "InterfaceExtends",
     id,
-    typeParameters
+    typeParameters,
   };
   const defs = NODE_FIELDS.InterfaceExtends;
   validate(defs.id, node, "id", id, 1);
   validate(defs.typeParameters, node, "typeParameters", typeParameters, 1);
   return node;
 }
-function interfaceDeclaration(id, typeParameters = null, _extends = null, body) {
+function interfaceDeclaration(
+  id,
+  typeParameters = null,
+  _extends = null,
+  body,
+) {
   const node = {
     type: "InterfaceDeclaration",
     id,
     typeParameters,
     extends: _extends,
-    body
+    body,
   };
   const defs = NODE_FIELDS.InterfaceDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -1528,7 +1637,7 @@ function interfaceTypeAnnotation(_extends = null, body) {
   const node = {
     type: "InterfaceTypeAnnotation",
     extends: _extends,
-    body
+    body,
   };
   const defs = NODE_FIELDS.InterfaceTypeAnnotation;
   validate(defs.extends, node, "extends", _extends, 1);
@@ -1538,7 +1647,7 @@ function interfaceTypeAnnotation(_extends = null, body) {
 function intersectionTypeAnnotation(types) {
   const node = {
     type: "IntersectionTypeAnnotation",
-    types
+    types,
   };
   const defs = NODE_FIELDS.IntersectionTypeAnnotation;
   validate(defs.types, node, "types", types, 1);
@@ -1546,18 +1655,18 @@ function intersectionTypeAnnotation(types) {
 }
 function mixedTypeAnnotation() {
   return {
-    type: "MixedTypeAnnotation"
+    type: "MixedTypeAnnotation",
   };
 }
 function emptyTypeAnnotation() {
   return {
-    type: "EmptyTypeAnnotation"
+    type: "EmptyTypeAnnotation",
   };
 }
 function nullableTypeAnnotation(typeAnnotation) {
   const node = {
     type: "NullableTypeAnnotation",
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.NullableTypeAnnotation;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -1566,7 +1675,7 @@ function nullableTypeAnnotation(typeAnnotation) {
 function numberLiteralTypeAnnotation(value) {
   const node = {
     type: "NumberLiteralTypeAnnotation",
-    value
+    value,
   };
   const defs = NODE_FIELDS.NumberLiteralTypeAnnotation;
   validate(defs.value, node, "value", value);
@@ -1574,17 +1683,23 @@ function numberLiteralTypeAnnotation(value) {
 }
 function numberTypeAnnotation() {
   return {
-    type: "NumberTypeAnnotation"
+    type: "NumberTypeAnnotation",
   };
 }
-function objectTypeAnnotation(properties, indexers = [], callProperties = [], internalSlots = [], exact = false) {
+function objectTypeAnnotation(
+  properties,
+  indexers = [],
+  callProperties = [],
+  internalSlots = [],
+  exact = false,
+) {
   const node = {
     type: "ObjectTypeAnnotation",
     properties,
     indexers,
     callProperties,
     internalSlots,
-    exact
+    exact,
   };
   const defs = NODE_FIELDS.ObjectTypeAnnotation;
   validate(defs.properties, node, "properties", properties, 1);
@@ -1601,7 +1716,7 @@ function objectTypeInternalSlot(id, value, optional, _static, method) {
     value,
     optional,
     static: _static,
-    method
+    method,
   };
   const defs = NODE_FIELDS.ObjectTypeInternalSlot;
   validate(defs.id, node, "id", id, 1);
@@ -1615,7 +1730,7 @@ function objectTypeCallProperty(value) {
   const node = {
     type: "ObjectTypeCallProperty",
     value,
-    static: null
+    static: null,
   };
   const defs = NODE_FIELDS.ObjectTypeCallProperty;
   validate(defs.value, node, "value", value, 1);
@@ -1628,7 +1743,7 @@ function objectTypeIndexer(id = null, key, value, variance = null) {
     key,
     value,
     variance,
-    static: null
+    static: null,
   };
   const defs = NODE_FIELDS.ObjectTypeIndexer;
   validate(defs.id, node, "id", id, 1);
@@ -1647,7 +1762,7 @@ function objectTypeProperty(key, value, variance = null) {
     method: null,
     optional: null,
     proto: null,
-    static: null
+    static: null,
   };
   const defs = NODE_FIELDS.ObjectTypeProperty;
   validate(defs.key, node, "key", key, 1);
@@ -1658,7 +1773,7 @@ function objectTypeProperty(key, value, variance = null) {
 function objectTypeSpreadProperty(argument) {
   const node = {
     type: "ObjectTypeSpreadProperty",
-    argument
+    argument,
   };
   const defs = NODE_FIELDS.ObjectTypeSpreadProperty;
   validate(defs.argument, node, "argument", argument, 1);
@@ -1670,7 +1785,7 @@ function opaqueType(id, typeParameters = null, supertype = null, impltype) {
     id,
     typeParameters,
     supertype,
-    impltype
+    impltype,
   };
   const defs = NODE_FIELDS.OpaqueType;
   validate(defs.id, node, "id", id, 1);
@@ -1683,7 +1798,7 @@ function qualifiedTypeIdentifier(id, qualification) {
   const node = {
     type: "QualifiedTypeIdentifier",
     id,
-    qualification
+    qualification,
   };
   const defs = NODE_FIELDS.QualifiedTypeIdentifier;
   validate(defs.id, node, "id", id, 1);
@@ -1693,7 +1808,7 @@ function qualifiedTypeIdentifier(id, qualification) {
 function stringLiteralTypeAnnotation(value) {
   const node = {
     type: "StringLiteralTypeAnnotation",
-    value
+    value,
   };
   const defs = NODE_FIELDS.StringLiteralTypeAnnotation;
   validate(defs.value, node, "value", value);
@@ -1701,23 +1816,23 @@ function stringLiteralTypeAnnotation(value) {
 }
 function stringTypeAnnotation() {
   return {
-    type: "StringTypeAnnotation"
+    type: "StringTypeAnnotation",
   };
 }
 function symbolTypeAnnotation() {
   return {
-    type: "SymbolTypeAnnotation"
+    type: "SymbolTypeAnnotation",
   };
 }
 function thisTypeAnnotation() {
   return {
-    type: "ThisTypeAnnotation"
+    type: "ThisTypeAnnotation",
   };
 }
 function tupleTypeAnnotation(types) {
   const node = {
     type: "TupleTypeAnnotation",
-    types
+    types,
   };
   const defs = NODE_FIELDS.TupleTypeAnnotation;
   validate(defs.types, node, "types", types, 1);
@@ -1726,7 +1841,7 @@ function tupleTypeAnnotation(types) {
 function typeofTypeAnnotation(argument) {
   const node = {
     type: "TypeofTypeAnnotation",
-    argument
+    argument,
   };
   const defs = NODE_FIELDS.TypeofTypeAnnotation;
   validate(defs.argument, node, "argument", argument, 1);
@@ -1737,7 +1852,7 @@ function typeAlias(id, typeParameters = null, right) {
     type: "TypeAlias",
     id,
     typeParameters,
-    right
+    right,
   };
   const defs = NODE_FIELDS.TypeAlias;
   validate(defs.id, node, "id", id, 1);
@@ -1748,7 +1863,7 @@ function typeAlias(id, typeParameters = null, right) {
 function typeAnnotation(typeAnnotation) {
   const node = {
     type: "TypeAnnotation",
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TypeAnnotation;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -1758,7 +1873,7 @@ function typeCastExpression(expression, typeAnnotation) {
   const node = {
     type: "TypeCastExpression",
     expression,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TypeCastExpression;
   validate(defs.expression, node, "expression", expression, 1);
@@ -1771,7 +1886,7 @@ function typeParameter(bound = null, _default = null, variance = null) {
     bound,
     default: _default,
     variance,
-    name: null
+    name: null,
   };
   const defs = NODE_FIELDS.TypeParameter;
   validate(defs.bound, node, "bound", bound, 1);
@@ -1782,7 +1897,7 @@ function typeParameter(bound = null, _default = null, variance = null) {
 function typeParameterDeclaration(params) {
   const node = {
     type: "TypeParameterDeclaration",
-    params
+    params,
   };
   const defs = NODE_FIELDS.TypeParameterDeclaration;
   validate(defs.params, node, "params", params, 1);
@@ -1791,7 +1906,7 @@ function typeParameterDeclaration(params) {
 function typeParameterInstantiation(params) {
   const node = {
     type: "TypeParameterInstantiation",
-    params
+    params,
   };
   const defs = NODE_FIELDS.TypeParameterInstantiation;
   validate(defs.params, node, "params", params, 1);
@@ -1800,7 +1915,7 @@ function typeParameterInstantiation(params) {
 function unionTypeAnnotation(types) {
   const node = {
     type: "UnionTypeAnnotation",
-    types
+    types,
   };
   const defs = NODE_FIELDS.UnionTypeAnnotation;
   validate(defs.types, node, "types", types, 1);
@@ -1809,7 +1924,7 @@ function unionTypeAnnotation(types) {
 function variance(kind) {
   const node = {
     type: "Variance",
-    kind
+    kind,
   };
   const defs = NODE_FIELDS.Variance;
   validate(defs.kind, node, "kind", kind);
@@ -1817,14 +1932,14 @@ function variance(kind) {
 }
 function voidTypeAnnotation() {
   return {
-    type: "VoidTypeAnnotation"
+    type: "VoidTypeAnnotation",
   };
 }
 function enumDeclaration(id, body) {
   const node = {
     type: "EnumDeclaration",
     id,
-    body
+    body,
   };
   const defs = NODE_FIELDS.EnumDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -1836,7 +1951,7 @@ function enumBooleanBody(members) {
     type: "EnumBooleanBody",
     members,
     explicitType: null,
-    hasUnknownMembers: null
+    hasUnknownMembers: null,
   };
   const defs = NODE_FIELDS.EnumBooleanBody;
   validate(defs.members, node, "members", members, 1);
@@ -1847,7 +1962,7 @@ function enumNumberBody(members) {
     type: "EnumNumberBody",
     members,
     explicitType: null,
-    hasUnknownMembers: null
+    hasUnknownMembers: null,
   };
   const defs = NODE_FIELDS.EnumNumberBody;
   validate(defs.members, node, "members", members, 1);
@@ -1858,7 +1973,7 @@ function enumStringBody(members) {
     type: "EnumStringBody",
     members,
     explicitType: null,
-    hasUnknownMembers: null
+    hasUnknownMembers: null,
   };
   const defs = NODE_FIELDS.EnumStringBody;
   validate(defs.members, node, "members", members, 1);
@@ -1868,7 +1983,7 @@ function enumSymbolBody(members) {
   const node = {
     type: "EnumSymbolBody",
     members,
-    hasUnknownMembers: null
+    hasUnknownMembers: null,
   };
   const defs = NODE_FIELDS.EnumSymbolBody;
   validate(defs.members, node, "members", members, 1);
@@ -1878,7 +1993,7 @@ function enumBooleanMember(id) {
   const node = {
     type: "EnumBooleanMember",
     id,
-    init: null
+    init: null,
   };
   const defs = NODE_FIELDS.EnumBooleanMember;
   validate(defs.id, node, "id", id, 1);
@@ -1888,7 +2003,7 @@ function enumNumberMember(id, init) {
   const node = {
     type: "EnumNumberMember",
     id,
-    init
+    init,
   };
   const defs = NODE_FIELDS.EnumNumberMember;
   validate(defs.id, node, "id", id, 1);
@@ -1899,7 +2014,7 @@ function enumStringMember(id, init) {
   const node = {
     type: "EnumStringMember",
     id,
-    init
+    init,
   };
   const defs = NODE_FIELDS.EnumStringMember;
   validate(defs.id, node, "id", id, 1);
@@ -1909,7 +2024,7 @@ function enumStringMember(id, init) {
 function enumDefaultedMember(id) {
   const node = {
     type: "EnumDefaultedMember",
-    id
+    id,
   };
   const defs = NODE_FIELDS.EnumDefaultedMember;
   validate(defs.id, node, "id", id, 1);
@@ -1919,7 +2034,7 @@ function indexedAccessType(objectType, indexType) {
   const node = {
     type: "IndexedAccessType",
     objectType,
-    indexType
+    indexType,
   };
   const defs = NODE_FIELDS.IndexedAccessType;
   validate(defs.objectType, node, "objectType", objectType, 1);
@@ -1931,7 +2046,7 @@ function optionalIndexedAccessType(objectType, indexType) {
     type: "OptionalIndexedAccessType",
     objectType,
     indexType,
-    optional: null
+    optional: null,
   };
   const defs = NODE_FIELDS.OptionalIndexedAccessType;
   validate(defs.objectType, node, "objectType", objectType, 1);
@@ -1942,7 +2057,7 @@ function jsxAttribute(name, value = null) {
   const node = {
     type: "JSXAttribute",
     name,
-    value
+    value,
   };
   const defs = NODE_FIELDS.JSXAttribute;
   validate(defs.name, node, "name", name, 1);
@@ -1952,19 +2067,24 @@ function jsxAttribute(name, value = null) {
 function jsxClosingElement(name) {
   const node = {
     type: "JSXClosingElement",
-    name
+    name,
   };
   const defs = NODE_FIELDS.JSXClosingElement;
   validate(defs.name, node, "name", name, 1);
   return node;
 }
-function jsxElement(openingElement, closingElement = null, children, selfClosing = null) {
+function jsxElement(
+  openingElement,
+  closingElement = null,
+  children,
+  selfClosing = null,
+) {
   const node = {
     type: "JSXElement",
     openingElement,
     closingElement,
     children,
-    selfClosing
+    selfClosing,
   };
   const defs = NODE_FIELDS.JSXElement;
   validate(defs.openingElement, node, "openingElement", openingElement, 1);
@@ -1975,13 +2095,13 @@ function jsxElement(openingElement, closingElement = null, children, selfClosing
 }
 function jsxEmptyExpression() {
   return {
-    type: "JSXEmptyExpression"
+    type: "JSXEmptyExpression",
   };
 }
 function jsxExpressionContainer(expression) {
   const node = {
     type: "JSXExpressionContainer",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.JSXExpressionContainer;
   validate(defs.expression, node, "expression", expression, 1);
@@ -1990,7 +2110,7 @@ function jsxExpressionContainer(expression) {
 function jsxSpreadChild(expression) {
   const node = {
     type: "JSXSpreadChild",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.JSXSpreadChild;
   validate(defs.expression, node, "expression", expression, 1);
@@ -1999,7 +2119,7 @@ function jsxSpreadChild(expression) {
 function jsxIdentifier(name) {
   const node = {
     type: "JSXIdentifier",
-    name
+    name,
   };
   const defs = NODE_FIELDS.JSXIdentifier;
   validate(defs.name, node, "name", name);
@@ -2009,7 +2129,7 @@ function jsxMemberExpression(object, property) {
   const node = {
     type: "JSXMemberExpression",
     object,
-    property
+    property,
   };
   const defs = NODE_FIELDS.JSXMemberExpression;
   validate(defs.object, node, "object", object, 1);
@@ -2020,7 +2140,7 @@ function jsxNamespacedName(namespace, name) {
   const node = {
     type: "JSXNamespacedName",
     namespace,
-    name
+    name,
   };
   const defs = NODE_FIELDS.JSXNamespacedName;
   validate(defs.namespace, node, "namespace", namespace, 1);
@@ -2032,7 +2152,7 @@ function jsxOpeningElement(name, attributes, selfClosing = false) {
     type: "JSXOpeningElement",
     name,
     attributes,
-    selfClosing
+    selfClosing,
   };
   const defs = NODE_FIELDS.JSXOpeningElement;
   validate(defs.name, node, "name", name, 1);
@@ -2043,7 +2163,7 @@ function jsxOpeningElement(name, attributes, selfClosing = false) {
 function jsxSpreadAttribute(argument) {
   const node = {
     type: "JSXSpreadAttribute",
-    argument
+    argument,
   };
   const defs = NODE_FIELDS.JSXSpreadAttribute;
   validate(defs.argument, node, "argument", argument, 1);
@@ -2052,7 +2172,7 @@ function jsxSpreadAttribute(argument) {
 function jsxText(value) {
   const node = {
     type: "JSXText",
-    value
+    value,
   };
   const defs = NODE_FIELDS.JSXText;
   validate(defs.value, node, "value", value);
@@ -2063,7 +2183,7 @@ function jsxFragment(openingFragment, closingFragment, children) {
     type: "JSXFragment",
     openingFragment,
     closingFragment,
-    children
+    children,
   };
   const defs = NODE_FIELDS.JSXFragment;
   validate(defs.openingFragment, node, "openingFragment", openingFragment, 1);
@@ -2073,24 +2193,24 @@ function jsxFragment(openingFragment, closingFragment, children) {
 }
 function jsxOpeningFragment() {
   return {
-    type: "JSXOpeningFragment"
+    type: "JSXOpeningFragment",
   };
 }
 function jsxClosingFragment() {
   return {
-    type: "JSXClosingFragment"
+    type: "JSXClosingFragment",
   };
 }
 function noop() {
   return {
-    type: "Noop"
+    type: "Noop",
   };
 }
 function placeholder(expectedNode, name) {
   const node = {
     type: "Placeholder",
     expectedNode,
-    name
+    name,
   };
   const defs = NODE_FIELDS.Placeholder;
   validate(defs.expectedNode, node, "expectedNode", expectedNode);
@@ -2100,7 +2220,7 @@ function placeholder(expectedNode, name) {
 function v8IntrinsicIdentifier(name) {
   const node = {
     type: "V8IntrinsicIdentifier",
-    name
+    name,
   };
   const defs = NODE_FIELDS.V8IntrinsicIdentifier;
   validate(defs.name, node, "name", name);
@@ -2108,14 +2228,14 @@ function v8IntrinsicIdentifier(name) {
 }
 function argumentPlaceholder() {
   return {
-    type: "ArgumentPlaceholder"
+    type: "ArgumentPlaceholder",
   };
 }
 function bindExpression(object, callee) {
   const node = {
     type: "BindExpression",
     object,
-    callee
+    callee,
   };
   const defs = NODE_FIELDS.BindExpression;
   validate(defs.object, node, "object", object, 1);
@@ -2125,7 +2245,7 @@ function bindExpression(object, callee) {
 function decorator(expression) {
   const node = {
     type: "Decorator",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.Decorator;
   validate(defs.expression, node, "expression", expression, 1);
@@ -2135,7 +2255,7 @@ function doExpression(body, async = false) {
   const node = {
     type: "DoExpression",
     body,
-    async
+    async,
   };
   const defs = NODE_FIELDS.DoExpression;
   validate(defs.body, node, "body", body, 1);
@@ -2145,7 +2265,7 @@ function doExpression(body, async = false) {
 function exportDefaultSpecifier(exported) {
   const node = {
     type: "ExportDefaultSpecifier",
-    exported
+    exported,
   };
   const defs = NODE_FIELDS.ExportDefaultSpecifier;
   validate(defs.exported, node, "exported", exported, 1);
@@ -2154,7 +2274,7 @@ function exportDefaultSpecifier(exported) {
 function recordExpression(properties) {
   const node = {
     type: "RecordExpression",
-    properties
+    properties,
   };
   const defs = NODE_FIELDS.RecordExpression;
   validate(defs.properties, node, "properties", properties, 1);
@@ -2163,7 +2283,7 @@ function recordExpression(properties) {
 function tupleExpression(elements = []) {
   const node = {
     type: "TupleExpression",
-    elements
+    elements,
   };
   const defs = NODE_FIELDS.TupleExpression;
   validate(defs.elements, node, "elements", elements, 1);
@@ -2172,7 +2292,7 @@ function tupleExpression(elements = []) {
 function decimalLiteral(value) {
   const node = {
     type: "DecimalLiteral",
-    value
+    value,
   };
   const defs = NODE_FIELDS.DecimalLiteral;
   validate(defs.value, node, "value", value);
@@ -2181,7 +2301,7 @@ function decimalLiteral(value) {
 function moduleExpression(body) {
   const node = {
     type: "ModuleExpression",
-    body
+    body,
   };
   const defs = NODE_FIELDS.ModuleExpression;
   validate(defs.body, node, "body", body, 1);
@@ -2189,13 +2309,13 @@ function moduleExpression(body) {
 }
 function topicReference() {
   return {
-    type: "TopicReference"
+    type: "TopicReference",
   };
 }
 function pipelineTopicExpression(expression) {
   const node = {
     type: "PipelineTopicExpression",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.PipelineTopicExpression;
   validate(defs.expression, node, "expression", expression, 1);
@@ -2204,7 +2324,7 @@ function pipelineTopicExpression(expression) {
 function pipelineBareFunction(callee) {
   const node = {
     type: "PipelineBareFunction",
-    callee
+    callee,
   };
   const defs = NODE_FIELDS.PipelineBareFunction;
   validate(defs.callee, node, "callee", callee, 1);
@@ -2212,30 +2332,35 @@ function pipelineBareFunction(callee) {
 }
 function pipelinePrimaryTopicReference() {
   return {
-    type: "PipelinePrimaryTopicReference"
+    type: "PipelinePrimaryTopicReference",
   };
 }
 function voidPattern() {
   return {
-    type: "VoidPattern"
+    type: "VoidPattern",
   };
 }
 function tsParameterProperty(parameter) {
   const node = {
     type: "TSParameterProperty",
-    parameter
+    parameter,
   };
   const defs = NODE_FIELDS.TSParameterProperty;
   validate(defs.parameter, node, "parameter", parameter, 1);
   return node;
 }
-function tsDeclareFunction(id = null, typeParameters = null, params, returnType = null) {
+function tsDeclareFunction(
+  id = null,
+  typeParameters = null,
+  params,
+  returnType = null,
+) {
   const node = {
     type: "TSDeclareFunction",
     id,
     typeParameters,
     params,
-    returnType
+    returnType,
   };
   const defs = NODE_FIELDS.TSDeclareFunction;
   validate(defs.id, node, "id", id, 1);
@@ -2244,14 +2369,20 @@ function tsDeclareFunction(id = null, typeParameters = null, params, returnType 
   validate(defs.returnType, node, "returnType", returnType, 1);
   return node;
 }
-function tsDeclareMethod(decorators = null, key, typeParameters = null, params, returnType = null) {
+function tsDeclareMethod(
+  decorators = null,
+  key,
+  typeParameters = null,
+  params,
+  returnType = null,
+) {
   const node = {
     type: "TSDeclareMethod",
     decorators,
     key,
     typeParameters,
     params,
-    returnType
+    returnType,
   };
   const defs = NODE_FIELDS.TSDeclareMethod;
   validate(defs.decorators, node, "decorators", decorators, 1);
@@ -2265,19 +2396,23 @@ function tsQualifiedName(left, right) {
   const node = {
     type: "TSQualifiedName",
     left,
-    right
+    right,
   };
   const defs = NODE_FIELDS.TSQualifiedName;
   validate(defs.left, node, "left", left, 1);
   validate(defs.right, node, "right", right, 1);
   return node;
 }
-function tsCallSignatureDeclaration(typeParameters = null, parameters, typeAnnotation = null) {
+function tsCallSignatureDeclaration(
+  typeParameters = null,
+  parameters,
+  typeAnnotation = null,
+) {
   const node = {
     type: "TSCallSignatureDeclaration",
     typeParameters,
     parameters,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSCallSignatureDeclaration;
   validate(defs.typeParameters, node, "typeParameters", typeParameters, 1);
@@ -2285,12 +2420,16 @@ function tsCallSignatureDeclaration(typeParameters = null, parameters, typeAnnot
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
   return node;
 }
-function tsConstructSignatureDeclaration(typeParameters = null, parameters, typeAnnotation = null) {
+function tsConstructSignatureDeclaration(
+  typeParameters = null,
+  parameters,
+  typeAnnotation = null,
+) {
   const node = {
     type: "TSConstructSignatureDeclaration",
     typeParameters,
     parameters,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSConstructSignatureDeclaration;
   validate(defs.typeParameters, node, "typeParameters", typeParameters, 1);
@@ -2302,21 +2441,26 @@ function tsPropertySignature(key, typeAnnotation = null) {
   const node = {
     type: "TSPropertySignature",
     key,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSPropertySignature;
   validate(defs.key, node, "key", key, 1);
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
   return node;
 }
-function tsMethodSignature(key, typeParameters = null, parameters, typeAnnotation = null) {
+function tsMethodSignature(
+  key,
+  typeParameters = null,
+  parameters,
+  typeAnnotation = null,
+) {
   const node = {
     type: "TSMethodSignature",
     key,
     typeParameters,
     parameters,
     typeAnnotation,
-    kind: null
+    kind: null,
   };
   const defs = NODE_FIELDS.TSMethodSignature;
   validate(defs.key, node, "key", key, 1);
@@ -2329,7 +2473,7 @@ function tsIndexSignature(parameters, typeAnnotation = null) {
   const node = {
     type: "TSIndexSignature",
     parameters,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSIndexSignature;
   validate(defs.parameters, node, "parameters", parameters, 1);
@@ -2338,80 +2482,84 @@ function tsIndexSignature(parameters, typeAnnotation = null) {
 }
 function tsAnyKeyword() {
   return {
-    type: "TSAnyKeyword"
+    type: "TSAnyKeyword",
   };
 }
 function tsBooleanKeyword() {
   return {
-    type: "TSBooleanKeyword"
+    type: "TSBooleanKeyword",
   };
 }
 function tsBigIntKeyword() {
   return {
-    type: "TSBigIntKeyword"
+    type: "TSBigIntKeyword",
   };
 }
 function tsIntrinsicKeyword() {
   return {
-    type: "TSIntrinsicKeyword"
+    type: "TSIntrinsicKeyword",
   };
 }
 function tsNeverKeyword() {
   return {
-    type: "TSNeverKeyword"
+    type: "TSNeverKeyword",
   };
 }
 function tsNullKeyword() {
   return {
-    type: "TSNullKeyword"
+    type: "TSNullKeyword",
   };
 }
 function tsNumberKeyword() {
   return {
-    type: "TSNumberKeyword"
+    type: "TSNumberKeyword",
   };
 }
 function tsObjectKeyword() {
   return {
-    type: "TSObjectKeyword"
+    type: "TSObjectKeyword",
   };
 }
 function tsStringKeyword() {
   return {
-    type: "TSStringKeyword"
+    type: "TSStringKeyword",
   };
 }
 function tsSymbolKeyword() {
   return {
-    type: "TSSymbolKeyword"
+    type: "TSSymbolKeyword",
   };
 }
 function tsUndefinedKeyword() {
   return {
-    type: "TSUndefinedKeyword"
+    type: "TSUndefinedKeyword",
   };
 }
 function tsUnknownKeyword() {
   return {
-    type: "TSUnknownKeyword"
+    type: "TSUnknownKeyword",
   };
 }
 function tsVoidKeyword() {
   return {
-    type: "TSVoidKeyword"
+    type: "TSVoidKeyword",
   };
 }
 function tsThisType() {
   return {
-    type: "TSThisType"
+    type: "TSThisType",
   };
 }
-function tsFunctionType(typeParameters = null, parameters, typeAnnotation = null) {
+function tsFunctionType(
+  typeParameters = null,
+  parameters,
+  typeAnnotation = null,
+) {
   const node = {
     type: "TSFunctionType",
     typeParameters,
     parameters,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSFunctionType;
   validate(defs.typeParameters, node, "typeParameters", typeParameters, 1);
@@ -2419,12 +2567,16 @@ function tsFunctionType(typeParameters = null, parameters, typeAnnotation = null
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
   return node;
 }
-function tsConstructorType(typeParameters = null, parameters, typeAnnotation = null) {
+function tsConstructorType(
+  typeParameters = null,
+  parameters,
+  typeAnnotation = null,
+) {
   const node = {
     type: "TSConstructorType",
     typeParameters,
     parameters,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSConstructorType;
   validate(defs.typeParameters, node, "typeParameters", typeParameters, 1);
@@ -2436,7 +2588,7 @@ function tsTypeReference(typeName, typeParameters = null) {
   const node = {
     type: "TSTypeReference",
     typeName,
-    typeParameters
+    typeParameters,
   };
   const defs = NODE_FIELDS.TSTypeReference;
   validate(defs.typeName, node, "typeName", typeName, 1);
@@ -2448,7 +2600,7 @@ function tsTypePredicate(parameterName, typeAnnotation = null, asserts = null) {
     type: "TSTypePredicate",
     parameterName,
     typeAnnotation,
-    asserts
+    asserts,
   };
   const defs = NODE_FIELDS.TSTypePredicate;
   validate(defs.parameterName, node, "parameterName", parameterName, 1);
@@ -2460,7 +2612,7 @@ function tsTypeQuery(exprName, typeParameters = null) {
   const node = {
     type: "TSTypeQuery",
     exprName,
-    typeParameters
+    typeParameters,
   };
   const defs = NODE_FIELDS.TSTypeQuery;
   validate(defs.exprName, node, "exprName", exprName, 1);
@@ -2470,7 +2622,7 @@ function tsTypeQuery(exprName, typeParameters = null) {
 function tsTypeLiteral(members) {
   const node = {
     type: "TSTypeLiteral",
-    members
+    members,
   };
   const defs = NODE_FIELDS.TSTypeLiteral;
   validate(defs.members, node, "members", members, 1);
@@ -2479,7 +2631,7 @@ function tsTypeLiteral(members) {
 function tsArrayType(elementType) {
   const node = {
     type: "TSArrayType",
-    elementType
+    elementType,
   };
   const defs = NODE_FIELDS.TSArrayType;
   validate(defs.elementType, node, "elementType", elementType, 1);
@@ -2488,7 +2640,7 @@ function tsArrayType(elementType) {
 function tsTupleType(elementTypes) {
   const node = {
     type: "TSTupleType",
-    elementTypes
+    elementTypes,
   };
   const defs = NODE_FIELDS.TSTupleType;
   validate(defs.elementTypes, node, "elementTypes", elementTypes, 1);
@@ -2497,7 +2649,7 @@ function tsTupleType(elementTypes) {
 function tsOptionalType(typeAnnotation) {
   const node = {
     type: "TSOptionalType",
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSOptionalType;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -2506,7 +2658,7 @@ function tsOptionalType(typeAnnotation) {
 function tsRestType(typeAnnotation) {
   const node = {
     type: "TSRestType",
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSRestType;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -2517,7 +2669,7 @@ function tsNamedTupleMember(label, elementType, optional = false) {
     type: "TSNamedTupleMember",
     label,
     elementType,
-    optional
+    optional,
   };
   const defs = NODE_FIELDS.TSNamedTupleMember;
   validate(defs.label, node, "label", label, 1);
@@ -2528,7 +2680,7 @@ function tsNamedTupleMember(label, elementType, optional = false) {
 function tsUnionType(types) {
   const node = {
     type: "TSUnionType",
-    types
+    types,
   };
   const defs = NODE_FIELDS.TSUnionType;
   validate(defs.types, node, "types", types, 1);
@@ -2537,7 +2689,7 @@ function tsUnionType(types) {
 function tsIntersectionType(types) {
   const node = {
     type: "TSIntersectionType",
-    types
+    types,
   };
   const defs = NODE_FIELDS.TSIntersectionType;
   validate(defs.types, node, "types", types, 1);
@@ -2549,7 +2701,7 @@ function tsConditionalType(checkType, extendsType, trueType, falseType) {
     checkType,
     extendsType,
     trueType,
-    falseType
+    falseType,
   };
   const defs = NODE_FIELDS.TSConditionalType;
   validate(defs.checkType, node, "checkType", checkType, 1);
@@ -2561,7 +2713,7 @@ function tsConditionalType(checkType, extendsType, trueType, falseType) {
 function tsInferType(typeParameter) {
   const node = {
     type: "TSInferType",
-    typeParameter
+    typeParameter,
   };
   const defs = NODE_FIELDS.TSInferType;
   validate(defs.typeParameter, node, "typeParameter", typeParameter, 1);
@@ -2570,7 +2722,7 @@ function tsInferType(typeParameter) {
 function tsParenthesizedType(typeAnnotation) {
   const node = {
     type: "TSParenthesizedType",
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSParenthesizedType;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -2580,7 +2732,7 @@ function tsTypeOperator(typeAnnotation, operator = "keyof") {
   const node = {
     type: "TSTypeOperator",
     typeAnnotation,
-    operator
+    operator,
   };
   const defs = NODE_FIELDS.TSTypeOperator;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -2591,7 +2743,7 @@ function tsIndexedAccessType(objectType, indexType) {
   const node = {
     type: "TSIndexedAccessType",
     objectType,
-    indexType
+    indexType,
   };
   const defs = NODE_FIELDS.TSIndexedAccessType;
   validate(defs.objectType, node, "objectType", objectType, 1);
@@ -2603,7 +2755,7 @@ function tsMappedType(typeParameter, typeAnnotation = null, nameType = null) {
     type: "TSMappedType",
     typeParameter,
     typeAnnotation,
-    nameType
+    nameType,
   };
   const defs = NODE_FIELDS.TSMappedType;
   validate(defs.typeParameter, node, "typeParameter", typeParameter, 1);
@@ -2615,7 +2767,7 @@ function tsTemplateLiteralType(quasis, types) {
   const node = {
     type: "TSTemplateLiteralType",
     quasis,
-    types
+    types,
   };
   const defs = NODE_FIELDS.TSTemplateLiteralType;
   validate(defs.quasis, node, "quasis", quasis, 1);
@@ -2625,7 +2777,7 @@ function tsTemplateLiteralType(quasis, types) {
 function tsLiteralType(literal) {
   const node = {
     type: "TSLiteralType",
-    literal
+    literal,
   };
   const defs = NODE_FIELDS.TSLiteralType;
   validate(defs.literal, node, "literal", literal, 1);
@@ -2635,20 +2787,25 @@ function tsExpressionWithTypeArguments(expression, typeParameters = null) {
   const node = {
     type: "TSExpressionWithTypeArguments",
     expression,
-    typeParameters
+    typeParameters,
   };
   const defs = NODE_FIELDS.TSExpressionWithTypeArguments;
   validate(defs.expression, node, "expression", expression, 1);
   validate(defs.typeParameters, node, "typeParameters", typeParameters, 1);
   return node;
 }
-function tsInterfaceDeclaration(id, typeParameters = null, _extends = null, body) {
+function tsInterfaceDeclaration(
+  id,
+  typeParameters = null,
+  _extends = null,
+  body,
+) {
   const node = {
     type: "TSInterfaceDeclaration",
     id,
     typeParameters,
     extends: _extends,
-    body
+    body,
   };
   const defs = NODE_FIELDS.TSInterfaceDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -2660,7 +2817,7 @@ function tsInterfaceDeclaration(id, typeParameters = null, _extends = null, body
 function tsInterfaceBody(body) {
   const node = {
     type: "TSInterfaceBody",
-    body
+    body,
   };
   const defs = NODE_FIELDS.TSInterfaceBody;
   validate(defs.body, node, "body", body, 1);
@@ -2671,7 +2828,7 @@ function tsTypeAliasDeclaration(id, typeParameters = null, typeAnnotation) {
     type: "TSTypeAliasDeclaration",
     id,
     typeParameters,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSTypeAliasDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -2683,7 +2840,7 @@ function tsInstantiationExpression(expression, typeParameters = null) {
   const node = {
     type: "TSInstantiationExpression",
     expression,
-    typeParameters
+    typeParameters,
   };
   const defs = NODE_FIELDS.TSInstantiationExpression;
   validate(defs.expression, node, "expression", expression, 1);
@@ -2694,7 +2851,7 @@ function tsAsExpression(expression, typeAnnotation) {
   const node = {
     type: "TSAsExpression",
     expression,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSAsExpression;
   validate(defs.expression, node, "expression", expression, 1);
@@ -2705,7 +2862,7 @@ function tsSatisfiesExpression(expression, typeAnnotation) {
   const node = {
     type: "TSSatisfiesExpression",
     expression,
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSSatisfiesExpression;
   validate(defs.expression, node, "expression", expression, 1);
@@ -2716,7 +2873,7 @@ function tsTypeAssertion(typeAnnotation, expression) {
   const node = {
     type: "TSTypeAssertion",
     typeAnnotation,
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.TSTypeAssertion;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -2726,7 +2883,7 @@ function tsTypeAssertion(typeAnnotation, expression) {
 function tsEnumBody(members) {
   const node = {
     type: "TSEnumBody",
-    members
+    members,
   };
   const defs = NODE_FIELDS.TSEnumBody;
   validate(defs.members, node, "members", members, 1);
@@ -2736,7 +2893,7 @@ function tsEnumDeclaration(id, members) {
   const node = {
     type: "TSEnumDeclaration",
     id,
-    members
+    members,
   };
   const defs = NODE_FIELDS.TSEnumDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -2747,7 +2904,7 @@ function tsEnumMember(id, initializer = null) {
   const node = {
     type: "TSEnumMember",
     id,
-    initializer
+    initializer,
   };
   const defs = NODE_FIELDS.TSEnumMember;
   validate(defs.id, node, "id", id, 1);
@@ -2759,7 +2916,7 @@ function tsModuleDeclaration(id, body) {
     type: "TSModuleDeclaration",
     id,
     body,
-    kind: null
+    kind: null,
   };
   const defs = NODE_FIELDS.TSModuleDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -2769,7 +2926,7 @@ function tsModuleDeclaration(id, body) {
 function tsModuleBlock(body) {
   const node = {
     type: "TSModuleBlock",
-    body
+    body,
   };
   const defs = NODE_FIELDS.TSModuleBlock;
   validate(defs.body, node, "body", body, 1);
@@ -2780,7 +2937,7 @@ function tsImportType(argument, qualifier = null, typeParameters = null) {
     type: "TSImportType",
     argument,
     qualifier,
-    typeParameters
+    typeParameters,
   };
   const defs = NODE_FIELDS.TSImportType;
   validate(defs.argument, node, "argument", argument, 1);
@@ -2793,7 +2950,7 @@ function tsImportEqualsDeclaration(id, moduleReference) {
     type: "TSImportEqualsDeclaration",
     id,
     moduleReference,
-    isExport: null
+    isExport: null,
   };
   const defs = NODE_FIELDS.TSImportEqualsDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -2803,7 +2960,7 @@ function tsImportEqualsDeclaration(id, moduleReference) {
 function tsExternalModuleReference(expression) {
   const node = {
     type: "TSExternalModuleReference",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.TSExternalModuleReference;
   validate(defs.expression, node, "expression", expression, 1);
@@ -2812,7 +2969,7 @@ function tsExternalModuleReference(expression) {
 function tsNonNullExpression(expression) {
   const node = {
     type: "TSNonNullExpression",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.TSNonNullExpression;
   validate(defs.expression, node, "expression", expression, 1);
@@ -2821,7 +2978,7 @@ function tsNonNullExpression(expression) {
 function tsExportAssignment(expression) {
   const node = {
     type: "TSExportAssignment",
-    expression
+    expression,
   };
   const defs = NODE_FIELDS.TSExportAssignment;
   validate(defs.expression, node, "expression", expression, 1);
@@ -2830,7 +2987,7 @@ function tsExportAssignment(expression) {
 function tsNamespaceExportDeclaration(id) {
   const node = {
     type: "TSNamespaceExportDeclaration",
-    id
+    id,
   };
   const defs = NODE_FIELDS.TSNamespaceExportDeclaration;
   validate(defs.id, node, "id", id, 1);
@@ -2839,7 +2996,7 @@ function tsNamespaceExportDeclaration(id) {
 function tsTypeAnnotation(typeAnnotation) {
   const node = {
     type: "TSTypeAnnotation",
-    typeAnnotation
+    typeAnnotation,
   };
   const defs = NODE_FIELDS.TSTypeAnnotation;
   validate(defs.typeAnnotation, node, "typeAnnotation", typeAnnotation, 1);
@@ -2848,7 +3005,7 @@ function tsTypeAnnotation(typeAnnotation) {
 function tsTypeParameterInstantiation(params) {
   const node = {
     type: "TSTypeParameterInstantiation",
-    params
+    params,
   };
   const defs = NODE_FIELDS.TSTypeParameterInstantiation;
   validate(defs.params, node, "params", params, 1);
@@ -2857,7 +3014,7 @@ function tsTypeParameterInstantiation(params) {
 function tsTypeParameterDeclaration(params) {
   const node = {
     type: "TSTypeParameterDeclaration",
-    params
+    params,
   };
   const defs = NODE_FIELDS.TSTypeParameterDeclaration;
   validate(defs.params, node, "params", params, 1);
@@ -2868,7 +3025,7 @@ function tsTypeParameter(constraint = null, _default = null, name) {
     type: "TSTypeParameter",
     constraint,
     default: _default,
-    name
+    name,
   };
   const defs = NODE_FIELDS.TSTypeParameter;
   validate(defs.constraint, node, "constraint", constraint, 1);
@@ -2877,19 +3034,35 @@ function tsTypeParameter(constraint = null, _default = null, name) {
   return node;
 }
 function NumberLiteral(value) {
-  (0, _deprecationWarning.default)("NumberLiteral", "NumericLiteral", "The node type ");
+  (0, _deprecationWarning.default)(
+    "NumberLiteral",
+    "NumericLiteral",
+    "The node type ",
+  );
   return numericLiteral(value);
 }
 function RegexLiteral(pattern, flags = "") {
-  (0, _deprecationWarning.default)("RegexLiteral", "RegExpLiteral", "The node type ");
+  (0, _deprecationWarning.default)(
+    "RegexLiteral",
+    "RegExpLiteral",
+    "The node type ",
+  );
   return regExpLiteral(pattern, flags);
 }
 function RestProperty(argument) {
-  (0, _deprecationWarning.default)("RestProperty", "RestElement", "The node type ");
+  (0, _deprecationWarning.default)(
+    "RestProperty",
+    "RestElement",
+    "The node type ",
+  );
   return restElement(argument);
 }
 function SpreadProperty(argument) {
-  (0, _deprecationWarning.default)("SpreadProperty", "SpreadElement", "The node type ");
+  (0, _deprecationWarning.default)(
+    "SpreadProperty",
+    "SpreadElement",
+    "The node type ",
+  );
   return spreadElement(argument);
 }
 

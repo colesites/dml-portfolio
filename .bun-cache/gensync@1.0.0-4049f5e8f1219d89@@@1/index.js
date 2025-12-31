@@ -1,5 +1,3 @@
-"use strict";
-
 // These use the global symbol registry so that multiple copies of this
 // library can work together in case they are not deduped.
 const GENSYNC_START = Symbol.for("gensync:v1:start");
@@ -26,11 +24,11 @@ module.exports = Object.assign(
     all: buildOperation({
       name: "all",
       arity: 1,
-      sync: function(args) {
+      sync: (args) => {
         const items = Array.from(args[0]);
-        return items.map(item => evaluateSync(item));
+        return items.map((item) => evaluateSync(item));
       },
-      async: function(args, resolve, reject) {
+      async: (args, resolve, reject) => {
         const items = Array.from(args[0]);
 
         if (items.length === 0) {
@@ -43,13 +41,13 @@ module.exports = Object.assign(
         items.forEach((item, i) => {
           evaluateAsync(
             item,
-            val => {
+            (val) => {
               results[i] = val;
               count += 1;
 
               if (count === results.length) resolve(results);
             },
-            reject
+            reject,
           );
         });
       },
@@ -57,7 +55,7 @@ module.exports = Object.assign(
     race: buildOperation({
       name: "race",
       arity: 1,
-      sync: function(args) {
+      sync: (args) => {
         const items = Array.from(args[0]);
         if (items.length === 0) {
           throw makeError("Must race at least 1 item", GENSYNC_RACE_NONEMPTY);
@@ -65,7 +63,7 @@ module.exports = Object.assign(
 
         return evaluateSync(items[0]);
       },
-      async: function(args, resolve, reject) {
+      async: (args, resolve, reject) => {
         const items = Array.from(args[0]);
         if (items.length === 0) {
           throw makeError("Must race at least 1 item", GENSYNC_RACE_NONEMPTY);
@@ -76,7 +74,7 @@ module.exports = Object.assign(
         }
       },
     }),
-  }
+  },
 );
 
 /**
@@ -85,20 +83,20 @@ module.exports = Object.assign(
  */
 function makeFunctionAPI(genFn) {
   const fns = {
-    sync: function(...args) {
+    sync: function (...args) {
       return evaluateSync(genFn.apply(this, args));
     },
-    async: function(...args) {
+    async: function (...args) {
       return new Promise((resolve, reject) => {
         evaluateAsync(genFn.apply(this, args), resolve, reject);
       });
     },
-    errback: function(...args) {
+    errback: function (...args) {
       const cb = args.pop();
       if (typeof cb !== "function") {
         throw makeError(
           "Asynchronous function called without callback",
-          GENSYNC_ERRBACK_NO_CALLBACK
+          GENSYNC_ERRBACK_NO_CALLBACK,
         );
       }
 
@@ -110,7 +108,11 @@ function makeFunctionAPI(genFn) {
         return;
       }
 
-      evaluateAsync(gen, val => cb(undefined, val), err => cb(err));
+      evaluateAsync(
+        gen,
+        (val) => cb(undefined, val),
+        (err) => cb(err),
+      );
     },
   };
   return fns;
@@ -150,7 +152,7 @@ function newGenerator({ name, arity, sync, async, errback }) {
   if (async && errback) {
     throw makeError(
       "Expected one of either opts.async or opts.errback, but got _both_.",
-      GENSYNC_OPTIONS_ERROR
+      GENSYNC_OPTIONS_ERROR,
     );
   }
 
@@ -178,10 +180,10 @@ function newGenerator({ name, arity, sync, async, errback }) {
   return buildOperation({
     name,
     arity,
-    sync: function(args) {
+    sync: function (args) {
       return sync.apply(this, args);
     },
-    async: function(args, resolve, reject) {
+    async: function (args, resolve, reject) {
       if (async) {
         async.apply(this, args).then(resolve, reject);
       } else if (errback) {
@@ -197,13 +199,13 @@ function newGenerator({ name, arity, sync, async, errback }) {
 }
 
 function wrapGenerator(genFn) {
-  return setFunctionMetadata(genFn.name, genFn.length, function(...args) {
+  return setFunctionMetadata(genFn.name, genFn.length, function (...args) {
     return genFn.apply(this, args);
   });
 }
 
 function buildOperation({ name, arity, sync, async }) {
-  return setFunctionMetadata(name, arity, function*(...args) {
+  return setFunctionMetadata(name, arity, function* (...args) {
     const resume = yield GENSYNC_START;
     if (!resume) {
       // Break the tail call to avoid a bug in V8 v6.X with --harmony enabled.
@@ -216,18 +218,18 @@ function buildOperation({ name, arity, sync, async }) {
       async.call(
         this,
         args,
-        value => {
+        (value) => {
           if (result) return;
 
           result = { value };
           resume();
         },
-        err => {
+        (err) => {
           if (result) return;
 
           result = { err };
           resume();
-        }
+        },
       );
     } catch (err) {
       result = { err };
@@ -238,7 +240,7 @@ function buildOperation({ name, arity, sync, async }) {
     // callback was already called.
     yield GENSYNC_SUSPEND;
 
-    if (result.hasOwnProperty("err")) {
+    if (Object.hasOwn(result, "err")) {
       throw result.err;
     }
 
@@ -298,10 +300,10 @@ function assertStart(value, gen) {
     gen,
     makeError(
       `Got unexpected yielded value in gensync generator: ${JSON.stringify(
-        value
+        value,
       )}. Did you perhaps mean to use 'yield*' instead of 'yield'?`,
-      GENSYNC_EXPECTED_START
-    )
+      GENSYNC_EXPECTED_START,
+    ),
   );
 }
 function assertSuspend({ value, done }, gen) {
@@ -313,10 +315,10 @@ function assertSuspend({ value, done }, gen) {
       done
         ? "Unexpected generator completion. If you get this, it is probably a gensync bug."
         : `Expected GENSYNC_SUSPEND, got ${JSON.stringify(
-            value
+            value,
           )}. If you get this, it is probably a gensync bug.`,
-      GENSYNC_EXPECTED_SUSPEND
-    )
+      GENSYNC_EXPECTED_SUSPEND,
+    ),
   );
 }
 
@@ -350,7 +352,7 @@ function setFunctionMetadata(name, arity, fn) {
         Object.assign(nameDesc || {}, {
           configurable: true,
           value: name,
-        })
+        }),
       );
     }
   }
@@ -364,7 +366,7 @@ function setFunctionMetadata(name, arity, fn) {
         Object.assign(lengthDesc || {}, {
           configurable: true,
           value: arity,
-        })
+        }),
       );
     }
   }

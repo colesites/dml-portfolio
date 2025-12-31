@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = gatherSequenceExpressions;
 var _getBindingIdentifiers = require("../retrievers/getBindingIdentifiers.js");
@@ -9,7 +9,6 @@ var _index = require("../validators/generated/index.js");
 var _index2 = require("../builders/generated/index.js");
 var _productions = require("../builders/productions.js");
 var _cloneNode = require("../clone/cloneNode.js");
-;
 function gatherSequenceExpressions(nodes, declars) {
   const exprs = [];
   let ensureLastUndefined = true;
@@ -28,19 +27,27 @@ function gatherSequenceExpressions(nodes, declars) {
         for (const key of Object.keys(bindings)) {
           declars.push({
             kind: node.kind,
-            id: (0, _cloneNode.default)(bindings[key])
+            id: (0, _cloneNode.default)(bindings[key]),
           });
         }
         if (declar.init) {
-          exprs.push((0, _index2.assignmentExpression)("=", declar.id, declar.init));
+          exprs.push(
+            (0, _index2.assignmentExpression)("=", declar.id, declar.init),
+          );
         }
       }
       ensureLastUndefined = true;
     } else if ((0, _index.isIfStatement)(node)) {
-      const consequent = node.consequent ? gatherSequenceExpressions([node.consequent], declars) : (0, _productions.buildUndefinedNode)();
-      const alternate = node.alternate ? gatherSequenceExpressions([node.alternate], declars) : (0, _productions.buildUndefinedNode)();
+      const consequent = node.consequent
+        ? gatherSequenceExpressions([node.consequent], declars)
+        : (0, _productions.buildUndefinedNode)();
+      const alternate = node.alternate
+        ? gatherSequenceExpressions([node.alternate], declars)
+        : (0, _productions.buildUndefinedNode)();
       if (!consequent || !alternate) return;
-      exprs.push((0, _index2.conditionalExpression)(node.test, consequent, alternate));
+      exprs.push(
+        (0, _index2.conditionalExpression)(node.test, consequent, alternate),
+      );
     } else if ((0, _index.isBlockStatement)(node)) {
       const body = gatherSequenceExpressions(node.body, declars);
       if (!body) return;

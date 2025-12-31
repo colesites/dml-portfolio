@@ -37,12 +37,15 @@ var getPattern = (label, next) => {
   if (label === "*") {
     return "*";
   }
-  const match = label.match(/^\:([^\{\}]+)(?:\{(.+)\})?$/);
+  const match = label.match(/^:([^{}]+)(?:\{(.+)\})?$/);
   if (match) {
     const cacheKey = `${label}#${next}`;
     if (!patternCache[cacheKey]) {
       if (match[2]) {
-        patternCache[cacheKey] = next && next[0] !== ":" && next[0] !== "*" ? [cacheKey, match[1], new RegExp(`^${match[2]}(?=/${next})`)] : [label, match[1], new RegExp(`^${match[2]}$`)];
+        patternCache[cacheKey] =
+          next && next[0] !== ":" && next[0] !== "*"
+            ? [cacheKey, match[1], new RegExp(`^${match[2]}(?=/${next})`)]
+            : [label, match[1], new RegExp(`^${match[2]}$`)];
       } else {
         patternCache[cacheKey] = [label, match[1], true];
       }
@@ -74,7 +77,9 @@ var getPath = (request) => {
     if (charCode === 37) {
       const queryIndex = url.indexOf("?", i);
       const path = url.slice(start, queryIndex === -1 ? void 0 : queryIndex);
-      return tryDecodeURI(path.includes("%25") ? path.replace(/%25/g, "%2525") : path);
+      return tryDecodeURI(
+        path.includes("%25") ? path.replace(/%25/g, "%2525") : path,
+      );
     } else if (charCode === 63) {
       break;
     }
@@ -87,7 +92,9 @@ var getQueryStrings = (url) => {
 };
 var getPathNoStrict = (request) => {
   const result = getPath(request);
-  return result.length > 1 && result.at(-1) === "/" ? result.slice(0, -1) : result;
+  return result.length > 1 && result.at(-1) === "/"
+    ? result.slice(0, -1)
+    : result;
 };
 var mergePath = (base, sub, ...rest) => {
   if (rest.length) {
@@ -103,9 +110,9 @@ var checkOptionalParameter = (path) => {
   const results = [];
   let basePath = "";
   segments.forEach((segment) => {
-    if (segment !== "" && !/\:/.test(segment)) {
+    if (segment !== "" && !/:/.test(segment)) {
       basePath += "/" + segment;
-    } else if (/\:/.test(segment)) {
+    } else if (/:/.test(segment)) {
       if (/\?/.test(segment)) {
         if (results.length === 0 && basePath === "") {
           results.push("/");
@@ -129,7 +136,9 @@ var _decodeURI = (value) => {
   if (value.indexOf("+") !== -1) {
     value = value.replace(/\+/g, " ");
   }
-  return value.indexOf("%") !== -1 ? tryDecode(value, decodeURIComponent_) : value;
+  return value.indexOf("%") !== -1
+    ? tryDecode(value, decodeURIComponent_)
+    : value;
 };
 var _getQueryParam = (url, key, multiple) => {
   let encoded;
@@ -146,7 +155,9 @@ var _getQueryParam = (url, key, multiple) => {
       if (trailingKeyCode === 61) {
         const valueIndex = keyIndex2 + key.length + 2;
         const endIndex = url.indexOf("&", valueIndex);
-        return _decodeURI(url.slice(valueIndex, endIndex === -1 ? void 0 : endIndex));
+        return _decodeURI(
+          url.slice(valueIndex, endIndex === -1 ? void 0 : endIndex),
+        );
       } else if (trailingKeyCode == 38 || isNaN(trailingKeyCode)) {
         return "";
       }
@@ -168,7 +179,11 @@ var _getQueryParam = (url, key, multiple) => {
     }
     let name = url.slice(
       keyIndex + 1,
-      valueIndex === -1 ? nextKeyIndex === -1 ? void 0 : nextKeyIndex : valueIndex
+      valueIndex === -1
+        ? nextKeyIndex === -1
+          ? void 0
+          : nextKeyIndex
+        : valueIndex,
     );
     if (encoded) {
       name = _decodeURI(name);
@@ -181,7 +196,10 @@ var _getQueryParam = (url, key, multiple) => {
     if (valueIndex === -1) {
       value = "";
     } else {
-      value = url.slice(valueIndex + 1, nextKeyIndex === -1 ? void 0 : nextKeyIndex);
+      value = url.slice(
+        valueIndex + 1,
+        nextKeyIndex === -1 ? void 0 : nextKeyIndex,
+      );
       if (encoded) {
         value = _decodeURI(value);
       }
@@ -190,7 +208,6 @@ var _getQueryParam = (url, key, multiple) => {
       if (!(results[name] && Array.isArray(results[name]))) {
         results[name] = [];
       }
-      ;
       results[name].push(value);
     } else {
       results[name] ??= value;
@@ -215,5 +232,5 @@ export {
   mergePath,
   splitPath,
   splitRoutingPath,
-  tryDecode
+  tryDecode,
 };

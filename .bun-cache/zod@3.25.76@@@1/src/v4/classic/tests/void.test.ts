@@ -1,5 +1,6 @@
 import { expect, expectTypeOf, test } from "vitest";
 import * as z from "zod/v4";
+
 test("void", () => {
   const v = z.void();
   v.parse(undefined);

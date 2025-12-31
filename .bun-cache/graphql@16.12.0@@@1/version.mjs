@@ -4,7 +4,7 @@
 /**
  * A string containing the version of the GraphQL.js library
  */
-export const version = '16.12.0';
+export const version = "16.12.0";
 /**
  * An object containing the components of the GraphQL.js version string
  */

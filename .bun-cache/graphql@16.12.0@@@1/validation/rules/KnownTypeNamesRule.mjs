@@ -1,13 +1,13 @@
-import { didYouMean } from '../../jsutils/didYouMean.mjs';
-import { suggestionList } from '../../jsutils/suggestionList.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { didYouMean } from "../../jsutils/didYouMean.mjs";
+import { suggestionList } from "../../jsutils/suggestionList.mjs";
 import {
   isTypeDefinitionNode,
   isTypeSystemDefinitionNode,
   isTypeSystemExtensionNode,
-} from '../../language/predicates.mjs';
-import { introspectionTypes } from '../../type/introspection.mjs';
-import { specifiedScalarTypes } from '../../type/scalars.mjs';
+} from "../../language/predicates.mjs";
+import { introspectionTypes } from "../../type/introspection.mjs";
+import { specifiedScalarTypes } from "../../type/scalars.mjs";
 
 /**
  * Known type names
@@ -71,7 +71,7 @@ const standardTypeNames = [...specifiedScalarTypes, ...introspectionTypes].map(
 
 function isSDLNode(value) {
   return (
-    'kind' in value &&
+    "kind" in value &&
     (isTypeSystemDefinitionNode(value) || isTypeSystemExtensionNode(value))
   );
 }

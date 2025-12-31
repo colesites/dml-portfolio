@@ -9,7 +9,7 @@ type Key = string | number | symbol;
  * and there are never duplicates.
  */
 export class SetArray<T extends Key = Key> {
-  declare private _indexes: Record<T, number | undefined>;
+  private declare _indexes: Record<T, number | undefined>;
   declare array: readonly T[];
 
   constructor() {
@@ -20,7 +20,7 @@ export class SetArray<T extends Key = Key> {
 
 interface PublicSet<T extends Key> {
   array: T[];
-  _indexes: SetArray<T>['_indexes'];
+  _indexes: SetArray<T>["_indexes"];
 }
 
 /**
@@ -34,7 +34,10 @@ function cast<T extends Key>(set: SetArray<T>): PublicSet<T> {
 /**
  * Gets the index associated with `key` in the backing array, if it is already present.
  */
-export function get<T extends Key>(setarr: SetArray<T>, key: T): number | undefined {
+export function get<T extends Key>(
+  setarr: SetArray<T>,
+  key: T,
+): number | undefined {
   return cast(setarr)._indexes[key];
 }
 

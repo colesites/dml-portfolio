@@ -3,7 +3,13 @@ import { replaceUrlParam } from "../../client/utils.js";
 import { createPool } from "../../utils/concurrent.js";
 import { getExtension } from "../../utils/mime.js";
 import { SSG_CONTEXT, X_HONO_DISABLE_SSG_HEADER_KEY } from "./middleware.js";
-import { dirname, filterStaticGenerateRoutes, isDynamicRoute, joinPaths } from "./utils.js";
+import {
+  dirname,
+  filterStaticGenerateRoutes,
+  isDynamicRoute,
+  joinPaths,
+} from "./utils.js";
+
 var DEFAULT_CONCURRENCY = 2;
 var DEFAULT_CONTENT_TYPE = "text/plain";
 var DEFAULT_OUTPUT_DIR = "./static";
@@ -30,7 +36,7 @@ var parseResponseContent = async (response) => {
     }
   } catch (error) {
     throw new Error(
-      `Error processing response: ${error instanceof Error ? error.message : "Unknown error"}`
+      `Error processing response: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
   }
 };
@@ -38,7 +44,7 @@ var defaultExtensionMap = {
   "text/html": "html",
   "text/xml": "xml",
   "application/xml": "xml",
-  "application/yaml": "yaml"
+  "application/yaml": "yaml",
 };
 var determineExtension = (mimeType, userExtensionMap) => {
   const extensionMap = userExtensionMap || defaultExtensionMap;
@@ -93,7 +99,12 @@ var combineAfterGenerateHooks = (hooks, fsModule, options) => {
     }
   };
 };
-var fetchRoutesContent = function* (app, beforeRequestHook, afterResponseHook, concurrency) {
+var fetchRoutesContent = function* (
+  app,
+  beforeRequestHook,
+  afterResponseHook,
+  concurrency,
+) {
   const baseURL = "http://localhost";
   const pool = createPool({ concurrency });
   for (const route of filterStaticGenerateRoutes(app)) {
@@ -119,7 +130,7 @@ var fetchRoutesContent = function* (app, beforeRequestHook, afterResponseHook, c
         }
         const requestInit = {
           method: forGetInfoURLRequest.method,
-          headers: forGetInfoURLRequest.headers
+          headers: forGetInfoURLRequest.headers,
         };
         resolveGetInfo(
           (function* () {
@@ -127,10 +138,10 @@ var fetchRoutesContent = function* (app, beforeRequestHook, afterResponseHook, c
               yield new Promise(async (resolveReq, rejectReq) => {
                 try {
                   const replacedUrlParam = replaceUrlParam(route.path, param);
-                  let response = await pool.run(
-                    () => app.request(replacedUrlParam, requestInit, {
-                      [SSG_CONTEXT]: true
-                    })
+                  let response = await pool.run(() =>
+                    app.request(replacedUrlParam, requestInit, {
+                      [SSG_CONTEXT]: true,
+                    }),
                   );
                   if (response.headers.get(X_HONO_DISABLE_SSG_HEADER_KEY)) {
                     resolveReq(void 0);
@@ -144,19 +155,21 @@ var fetchRoutesContent = function* (app, beforeRequestHook, afterResponseHook, c
                     }
                     response = maybeResponse;
                   }
-                  const mimeType = response.headers.get("Content-Type")?.split(";")[0] || DEFAULT_CONTENT_TYPE;
+                  const mimeType =
+                    response.headers.get("Content-Type")?.split(";")[0] ||
+                    DEFAULT_CONTENT_TYPE;
                   const content = await parseResponseContent(response);
                   resolveReq({
                     routePath: replacedUrlParam,
                     mimeType,
-                    content
+                    content,
                   });
                 } catch (error) {
                   rejectReq(error);
                 }
               });
             }
-          })()
+          })(),
         );
       } catch (error) {
         rejectGetInfo(error);
@@ -190,7 +203,7 @@ var defaultPlugin = {
       return false;
     }
     return res;
-  }
+  },
 };
 var toSSG = async (app, fs, options) => {
   let result;
@@ -202,33 +215,45 @@ var toSSG = async (app, fs, options) => {
   const afterGenerateHooks = [];
   if (options?.beforeRequestHook) {
     beforeRequestHooks.push(
-      ...Array.isArray(options.beforeRequestHook) ? options.beforeRequestHook : [options.beforeRequestHook]
+      ...(Array.isArray(options.beforeRequestHook)
+        ? options.beforeRequestHook
+        : [options.beforeRequestHook]),
     );
   }
   if (options?.afterResponseHook) {
     afterResponseHooks.push(
-      ...Array.isArray(options.afterResponseHook) ? options.afterResponseHook : [options.afterResponseHook]
+      ...(Array.isArray(options.afterResponseHook)
+        ? options.afterResponseHook
+        : [options.afterResponseHook]),
     );
   }
   if (options?.afterGenerateHook) {
     afterGenerateHooks.push(
-      ...Array.isArray(options.afterGenerateHook) ? options.afterGenerateHook : [options.afterGenerateHook]
+      ...(Array.isArray(options.afterGenerateHook)
+        ? options.afterGenerateHook
+        : [options.afterGenerateHook]),
     );
   }
   for (const plugin of plugins) {
     if (plugin.beforeRequestHook) {
       beforeRequestHooks.push(
-        ...Array.isArray(plugin.beforeRequestHook) ? plugin.beforeRequestHook : [plugin.beforeRequestHook]
+        ...(Array.isArray(plugin.beforeRequestHook)
+          ? plugin.beforeRequestHook
+          : [plugin.beforeRequestHook]),
       );
     }
     if (plugin.afterResponseHook) {
       afterResponseHooks.push(
-        ...Array.isArray(plugin.afterResponseHook) ? plugin.afterResponseHook : [plugin.afterResponseHook]
+        ...(Array.isArray(plugin.afterResponseHook)
+          ? plugin.afterResponseHook
+          : [plugin.afterResponseHook]),
       );
     }
     if (plugin.afterGenerateHook) {
       afterGenerateHooks.push(
-        ...Array.isArray(plugin.afterGenerateHook) ? plugin.afterGenerateHook : [plugin.afterGenerateHook]
+        ...(Array.isArray(plugin.afterGenerateHook)
+          ? plugin.afterGenerateHook
+          : [plugin.afterGenerateHook]),
       );
     }
   }
@@ -236,16 +261,16 @@ var toSSG = async (app, fs, options) => {
     const outputDir = options?.dir ?? DEFAULT_OUTPUT_DIR;
     const concurrency = options?.concurrency ?? DEFAULT_CONCURRENCY;
     const combinedBeforeRequestHook = combineBeforeRequestHooks(
-      beforeRequestHooks.length > 0 ? beforeRequestHooks : [(req) => req]
+      beforeRequestHooks.length > 0 ? beforeRequestHooks : [(req) => req],
     );
     const combinedAfterResponseHook = combineAfterResponseHooks(
-      afterResponseHooks.length > 0 ? afterResponseHooks : [(req) => req]
+      afterResponseHooks.length > 0 ? afterResponseHooks : [(req) => req],
     );
     const getInfoGen = fetchRoutesContent(
       app,
       combinedBeforeRequestHook,
       combinedAfterResponseHook,
-      concurrency
+      concurrency,
     );
     for (const getInfo of getInfoGen) {
       getInfoPromises.push(
@@ -255,10 +280,15 @@ var toSSG = async (app, fs, options) => {
           }
           for (const content of getContentGen) {
             savePromises.push(
-              saveContentToFile(content, fs, outputDir, options?.extensionMap).catch((e) => e)
+              saveContentToFile(
+                content,
+                fs,
+                outputDir,
+                options?.extensionMap,
+              ).catch((e) => e),
             );
           }
-        })
+        }),
       );
     }
     await Promise.all(getInfoPromises);
@@ -277,7 +307,11 @@ var toSSG = async (app, fs, options) => {
     result = { success: false, files: [], error: errorObj };
   }
   if (afterGenerateHooks.length > 0) {
-    const combinedAfterGenerateHooks = combineAfterGenerateHooks(afterGenerateHooks, fs, options);
+    const combinedAfterGenerateHooks = combineAfterGenerateHooks(
+      afterGenerateHooks,
+      fs,
+      options,
+    );
     await combinedAfterGenerateHooks(result, fs, options);
   }
   return result;
@@ -291,5 +325,5 @@ export {
   defaultPlugin,
   fetchRoutesContent,
   saveContentToFile,
-  toSSG
+  toSSG,
 };

@@ -44,7 +44,7 @@ test("invalid_literal should return default message", () => {
   const result = literalTuna.safeParse(data);
 
   const issue = result.error!.issues[0];
-  expect(issue.message).toEqual(`Invalid input: expected \"tuna\"`);
+  expect(issue.message).toEqual(`Invalid input: expected "tuna"`);
 });
 
 test("invalid_literal should return custom message", () => {
@@ -78,7 +78,9 @@ test("literal bigint default error message", () => {
   expect(result.success).toBe(false);
 
   expect(result.error!.issues.length).toEqual(1);
-  expect(result.error!.issues[0].message).toEqual(`Invalid input: expected 12n`);
+  expect(result.error!.issues[0].message).toEqual(
+    `Invalid input: expected 12n`,
+  );
 });
 
 test(".value getter", () => {

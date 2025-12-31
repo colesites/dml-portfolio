@@ -1,9 +1,9 @@
-import { devAssert } from './jsutils/devAssert.mjs';
-import { isPromise } from './jsutils/isPromise.mjs';
-import { parse } from './language/parser.mjs';
-import { validateSchema } from './type/validate.mjs';
-import { validate } from './validation/validate.mjs';
-import { execute } from './execution/execute.mjs';
+import { execute } from "./execution/execute.mjs";
+import { devAssert } from "./jsutils/devAssert.mjs";
+import { isPromise } from "./jsutils/isPromise.mjs";
+import { parse } from "./language/parser.mjs";
+import { validateSchema } from "./type/validate.mjs";
+import { validate } from "./validation/validate.mjs";
 /**
  * This is the primary entry point function for fulfilling GraphQL operations
  * by parsing, validating, and executing a GraphQL document along side a
@@ -59,7 +59,7 @@ export function graphqlSync(args) {
   const result = graphqlImpl(args); // Assert that the execution was synchronous.
 
   if (isPromise(result)) {
-    throw new Error('GraphQL execution failed to complete synchronously.');
+    throw new Error("GraphQL execution failed to complete synchronously.");
   }
 
   return result;
@@ -70,7 +70,7 @@ function graphqlImpl(args) {
   arguments.length < 2 ||
     devAssert(
       false,
-      'graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.',
+      "graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.",
     );
   const {
     schema,

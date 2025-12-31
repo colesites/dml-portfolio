@@ -1,5 +1,5 @@
-import type { WebSocketData } from '@mswjs/interceptors/WebSocket'
-import { isObject } from '../../utils/internal/isObject'
+import type { WebSocketData } from "@mswjs/interceptors/WebSocket";
+import { isObject } from "../../utils/internal/isObject";
 
 /**
  * Returns the byte length of the given WebSocket message.
@@ -9,12 +9,12 @@ import { isObject } from '../../utils/internal/isObject'
  */
 export function getMessageLength(data: WebSocketData): number {
   if (data instanceof Blob) {
-    return data.size
+    return data.size;
   }
 
-  if (isObject(data) && 'byteLength' in data) {
-    return data.byteLength
+  if (isObject(data) && "byteLength" in data) {
+    return data.byteLength;
   }
 
-  return new Blob([data as any]).size
+  return new Blob([data as any]).size;
 }

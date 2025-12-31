@@ -3,7 +3,7 @@ export function invariant(condition, message) {
 
   if (!booleanCondition) {
     throw new Error(
-      message != null ? message : 'Unexpected invariant triggered.',
+      message != null ? message : "Unexpected invariant triggered.",
     );
   }
 }

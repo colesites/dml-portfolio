@@ -1,42 +1,42 @@
 #!/usr/bin/env node
 
-let { readFileSync } = require('fs')
-let { join } = require('path')
+const { readFileSync } = require("fs");
+const { join } = require("path");
 
-require('./check-npm-version')
-let updateDb = require('./')
+require("./check-npm-version");
+const updateDb = require("./");
 
-const ROOT = __dirname
+const ROOT = __dirname;
 
 function getPackage() {
-  return JSON.parse(readFileSync(join(ROOT, 'package.json')))
+  return JSON.parse(readFileSync(join(ROOT, "package.json")));
 }
 
-let args = process.argv.slice(2)
+const args = process.argv.slice(2);
 
-let USAGE = 'Usage:\n  npx update-browserslist-db\n'
+const USAGE = "Usage:\n  npx update-browserslist-db\n";
 
 function isArg(arg) {
-  return args.some(i => i === arg)
+  return args.some((i) => i === arg);
 }
 
 function error(msg) {
-  process.stderr.write('update-browserslist-db: ' + msg + '\n')
-  process.exit(1)
+  process.stderr.write("update-browserslist-db: " + msg + "\n");
+  process.exit(1);
 }
 
-if (isArg('--help') || isArg('-h')) {
-  process.stdout.write(getPackage().description + '.\n\n' + USAGE + '\n')
-} else if (isArg('--version') || isArg('-v')) {
-  process.stdout.write('browserslist-lint ' + getPackage().version + '\n')
+if (isArg("--help") || isArg("-h")) {
+  process.stdout.write(getPackage().description + ".\n\n" + USAGE + "\n");
+} else if (isArg("--version") || isArg("-v")) {
+  process.stdout.write("browserslist-lint " + getPackage().version + "\n");
 } else {
   try {
-    updateDb()
+    updateDb();
   } catch (e) {
-    if (e.name === 'BrowserslistUpdateError') {
-      error(e.message)
+    if (e.name === "BrowserslistUpdateError") {
+      error(e.message);
     } else {
-      throw e
+      throw e;
     }
   }
 }

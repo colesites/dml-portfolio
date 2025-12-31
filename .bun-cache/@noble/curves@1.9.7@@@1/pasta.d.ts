@@ -2,7 +2,7 @@
  * @deprecated
  * @module
  */
-import { pallas as pn, vesta as vn } from './misc.ts';
+import { pallas as pn, vesta as vn } from "./misc.ts";
 /** @deprecated */
 export declare const pallas: typeof pn;
 /** @deprecated */

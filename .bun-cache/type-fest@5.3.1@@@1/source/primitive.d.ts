@@ -4,12 +4,10 @@ Matches any [primitive value](https://developer.mozilla.org/en-US/docs/Glossary/
 @category Type
 */
 export type Primitive =
-	| null
-	| undefined
-	| string
-	| number
-	| boolean
-	| symbol
-	| bigint;
-
-export {};
+  | null
+  | undefined
+  | string
+  | number
+  | boolean
+  | symbol
+  | bigint;

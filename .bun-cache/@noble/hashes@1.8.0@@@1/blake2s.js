@@ -1,6 +1,11 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blake2s = exports.BLAKE2s = exports.compress = exports.G2s = exports.G1s = exports.B2S_IV = void 0;
+exports.blake2s =
+  exports.BLAKE2s =
+  exports.compress =
+  exports.G2s =
+  exports.G1s =
+  exports.B2S_IV =
+    void 0;
 /**
  * Blake2s hash function. Focuses on 8-bit to 32-bit platforms. blake2b for 64-bit, but in JS it is slower.
  * @module

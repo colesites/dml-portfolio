@@ -1,13 +1,13 @@
-import { inspect } from '../../jsutils/inspect.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { inspect } from "../../jsutils/inspect.mjs";
+import { Kind } from "../../language/kinds.mjs";
 import {
   isInputObjectType,
   isNonNullType,
   isNullableType,
-} from '../../type/definition.mjs';
-import { isTypeSubTypeOf } from '../../utilities/typeComparators.mjs';
-import { typeFromAST } from '../../utilities/typeFromAST.mjs';
+} from "../../type/definition.mjs";
+import { isTypeSubTypeOf } from "../../utilities/typeComparators.mjs";
+import { typeFromAST } from "../../utilities/typeFromAST.mjs";
 
 /**
  * Variables in allowed position

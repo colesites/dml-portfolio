@@ -1,8 +1,11 @@
 // src/adapter/service-worker/handler.ts
-var handle = (app, opts = {
-  // To use `fetch` on a Service Worker correctly, bind it to `globalThis`.
-  fetch: globalThis.fetch.bind(globalThis)
-}) => {
+var handle = (
+  app,
+  opts = {
+    // To use `fetch` on a Service Worker correctly, bind it to `globalThis`.
+    fetch: globalThis.fetch.bind(globalThis),
+  },
+) => {
   return (evt) => {
     evt.respondWith(
       (async () => {
@@ -11,10 +14,8 @@ var handle = (app, opts = {
           return await opts.fetch(evt.request);
         }
         return res;
-      })()
+      })(),
     );
   };
 };
-export {
-  handle
-};
+export { handle };

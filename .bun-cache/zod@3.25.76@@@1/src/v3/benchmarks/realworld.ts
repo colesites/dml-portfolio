@@ -17,7 +17,7 @@ const People = z.array(
       zip: z.string(),
       country: z.string(),
     }),
-  })
+  }),
 );
 
 let i = 0;

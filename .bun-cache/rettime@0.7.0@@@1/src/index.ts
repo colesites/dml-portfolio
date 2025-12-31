@@ -1,18 +1,18 @@
 export type DefaultEventMap = {
-  [eventType: string]: TypedEvent<any, any>
-}
+  [eventType: string]: TypedEvent<any, any>;
+};
 
 export interface TypedEvent<
   DataType = void,
   ReturnType = any,
   EventType extends string = string,
-> extends Omit<MessageEvent<DataType>, 'type'> {
-  type: EventType
+> extends Omit<MessageEvent<DataType>, "type"> {
+  type: EventType;
 }
 
-const kDefaultPrevented = Symbol('kDefaultPrevented')
-const kPropagationStopped = Symbol('kPropagationStopped')
-const kImmediatePropagationStopped = Symbol('kImmediatePropagationStopped')
+const kDefaultPrevented = Symbol("kDefaultPrevented");
+const kPropagationStopped = Symbol("kPropagationStopped");
+const kImmediatePropagationStopped = Symbol("kImmediatePropagationStopped");
 
 export class TypedEvent<
     DataType = void,
@@ -31,24 +31,24 @@ export class TypedEvent<
 
   [kDefaultPrevented]: boolean;
   [kPropagationStopped]?: Emitter<any>;
-  [kImmediatePropagationStopped]?: boolean
+  [kImmediatePropagationStopped]?: boolean;
 
   constructor(
     ...args: [DataType] extends [void]
       ? [type: EventType]
       : [type: EventType, init: { data: DataType }]
   ) {
-    super(args[0], args[1])
-    this[kDefaultPrevented] = false
+    super(args[0], args[1]);
+    this[kDefaultPrevented] = false;
   }
 
   get defaultPrevented(): boolean {
-    return this[kDefaultPrevented]
+    return this[kDefaultPrevented];
   }
 
   public preventDefault(): void {
-    super.preventDefault()
-    this[kDefaultPrevented] = true
+    super.preventDefault();
+    this[kDefaultPrevented] = true;
   }
 
   public stopImmediatePropagation(): void {
@@ -56,8 +56,8 @@ export class TypedEvent<
      * @note Despite `.stopPropagation()` and `.stopImmediatePropagation()` being defined
      * in Node.js, they do nothing. It is safe to re-define them.
      */
-    super.stopImmediatePropagation()
-    this[kImmediatePropagationStopped] = true
+    super.stopImmediatePropagation();
+    this[kImmediatePropagationStopped] = true;
   }
 }
 
@@ -65,14 +65,14 @@ export class TypedEvent<
  * Brands a TypedEvent or its subclass while preserving its (narrower) type.
  */
 type Brand<Event extends TypedEvent, EventType extends string> = Event & {
-  type: EventType
-}
+  type: EventType;
+};
 
 type InferEventMap<Target extends Emitter<any>> = Target extends Emitter<
   infer EventMap
 >
   ? EventMap
-  : never
+  : never;
 
 type InternalListenersMap<
   Target extends Emitter<any>,
@@ -81,14 +81,14 @@ type InternalListenersMap<
 > = Record<
   keyof EventMap,
   Array<Emitter.ListenerType<Target, EventType, EventMap>>
->
+>;
 
 export type TypedListenerOptions = {
-  once?: boolean
-  signal?: AbortSignal
-}
+  once?: boolean;
+  signal?: AbortSignal;
+};
 
-const kListenerOptions = Symbol('kListenerOptions')
+const kListenerOptions = Symbol("kListenerOptions");
 
 export namespace Emitter {
   /**
@@ -103,13 +103,13 @@ export namespace Emitter {
     Target extends Emitter<any>,
     EventType extends keyof EventMap & string,
     EventMap extends DefaultEventMap = InferEventMap<Target>,
-  > = Brand<EventMap[EventType], EventType>
+  > = Brand<EventMap[EventType], EventType>;
 
   export type EventDataType<
     Target extends Emitter<any>,
     EventType extends keyof EventMap & string,
     EventMap extends DefaultEventMap = InferEventMap<Target>,
-  > = EventMap[EventType] extends TypedEvent<infer DataType> ? DataType : never
+  > = EventMap[EventType] extends TypedEvent<infer DataType> ? DataType : never;
 
   /**
    * Returns the listener type for the given event type.
@@ -127,7 +127,7 @@ export namespace Emitter {
     event: Emitter.EventType<Target, Type, EventMap>,
   ) => Emitter.ListenerReturnType<Target, Type, EventMap> extends [void]
     ? void
-    : Emitter.ListenerReturnType<Target, Type, EventMap>
+    : Emitter.ListenerReturnType<Target, Type, EventMap>;
 
   /**
    * Returns the return type of the listener for the given event type.
@@ -143,14 +143,14 @@ export namespace Emitter {
     EventMap extends DefaultEventMap = InferEventMap<Target>,
   > = EventMap[EventType] extends TypedEvent<unknown, infer ReturnType>
     ? ReturnType
-    : never
+    : never;
 }
 
 export class Emitter<EventMap extends DefaultEventMap> {
-  #listeners: InternalListenersMap<typeof this, EventMap>
+  #listeners: InternalListenersMap<typeof this, EventMap>;
 
   constructor() {
-    this.#listeners = {} as InternalListenersMap<typeof this, EventMap>
+    this.#listeners = {} as InternalListenersMap<typeof this, EventMap>;
   }
 
   /**
@@ -163,7 +163,7 @@ export class Emitter<EventMap extends DefaultEventMap> {
     listener: Emitter.ListenerType<typeof this, EventType, EventMap>,
     options?: TypedListenerOptions,
   ): typeof this {
-    return this.#addListener(type, listener, options)
+    return this.#addListener(type, listener, options);
   }
 
   /**
@@ -174,9 +174,9 @@ export class Emitter<EventMap extends DefaultEventMap> {
   public once<EventType extends keyof EventMap & string>(
     type: EventType,
     listener: Emitter.ListenerType<typeof this, EventType, EventMap>,
-    options?: Omit<TypedListenerOptions, 'once'>,
+    options?: Omit<TypedListenerOptions, "once">,
   ): typeof this {
-    return this.on(type, listener, { ...(options || {}), once: true })
+    return this.on(type, listener, { ...(options || {}), once: true });
   }
 
   /**
@@ -189,7 +189,7 @@ export class Emitter<EventMap extends DefaultEventMap> {
     listener: Emitter.ListenerType<typeof this, EventType, EventMap>,
     options?: TypedListenerOptions,
   ): typeof this {
-    return this.#addListener(type, listener, options, 'prepend')
+    return this.#addListener(type, listener, options, "prepend");
   }
 
   /**
@@ -198,9 +198,9 @@ export class Emitter<EventMap extends DefaultEventMap> {
   public earlyOnce<EventType extends keyof EventMap & string>(
     type: EventType,
     listener: Emitter.ListenerType<typeof this, EventType, EventMap>,
-    options?: Omit<TypedListenerOptions, 'once'>,
+    options?: Omit<TypedListenerOptions, "once">,
   ): typeof this {
-    return this.earlyOn(type, listener, { ...(options || {}), once: true })
+    return this.earlyOn(type, listener, { ...(options || {}), once: true });
   }
 
   /**
@@ -212,29 +212,29 @@ export class Emitter<EventMap extends DefaultEventMap> {
     event: Brand<EventMap[EventType], EventType>,
   ): boolean {
     if (this.listenerCount(event.type) === 0) {
-      return false
+      return false;
     }
 
-    const proxiedEvent = this.#proxyEvent(event)
+    const proxiedEvent = this.#proxyEvent(event);
 
     for (const listener of this.#listeners[event.type]) {
       if (
         proxiedEvent.event[kPropagationStopped] != null &&
         proxiedEvent.event[kPropagationStopped] !== this
       ) {
-        return false
+        return false;
       }
 
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
-        break
+        break;
       }
 
-      this.#callListener(proxiedEvent.event, listener)
+      this.#callListener(proxiedEvent.event, listener);
     }
 
-    proxiedEvent.revoke()
+    proxiedEvent.revoke();
 
-    return true
+    return true;
   }
 
   /**
@@ -250,40 +250,40 @@ export class Emitter<EventMap extends DefaultEventMap> {
     Array<Emitter.ListenerReturnType<typeof this, EventType, EventMap>>
   > {
     if (this.listenerCount(event.type) === 0) {
-      return []
+      return [];
     }
 
     const pendingListeners: Array<
       Promise<Emitter.ListenerReturnType<typeof this, EventType, EventMap>>
-    > = []
+    > = [];
 
-    const proxiedEvent = this.#proxyEvent(event)
+    const proxiedEvent = this.#proxyEvent(event);
 
     for (const listener of this.#listeners[event.type]) {
       if (
         proxiedEvent.event[kPropagationStopped] != null &&
         proxiedEvent.event[kPropagationStopped] !== this
       ) {
-        return []
+        return [];
       }
 
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
-        break
+        break;
       }
 
       pendingListeners.push(
         // Awaiting individual listeners guarantees their call order.
         await Promise.resolve(this.#callListener(proxiedEvent.event, listener)),
-      )
+      );
     }
 
-    proxiedEvent.revoke()
+    proxiedEvent.revoke();
 
     return Promise.allSettled(pendingListeners).then((results) => {
       return results.map((result) =>
-        result.status === 'fulfilled' ? result.value : result.reason,
-      )
-    })
+        result.status === "fulfilled" ? result.value : result.reason,
+      );
+    });
   }
 
   /**
@@ -295,27 +295,27 @@ export class Emitter<EventMap extends DefaultEventMap> {
     event: Brand<EventMap[EventType], EventType>,
   ): Generator<Emitter.ListenerReturnType<typeof this, EventType, EventMap>> {
     if (this.listenerCount(event.type) === 0) {
-      return
+      return;
     }
 
-    const proxiedEvent = this.#proxyEvent(event)
+    const proxiedEvent = this.#proxyEvent(event);
 
     for (const listener of this.#listeners[event.type]) {
       if (
         proxiedEvent.event[kPropagationStopped] != null &&
         proxiedEvent.event[kPropagationStopped] !== this
       ) {
-        return
+        return;
       }
 
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
-        break
+        break;
       }
 
-      yield this.#callListener(proxiedEvent.event, listener)
+      yield this.#callListener(proxiedEvent.event, listener);
     }
 
-    proxiedEvent.revoke()
+    proxiedEvent.revoke();
   }
 
   /**
@@ -326,20 +326,20 @@ export class Emitter<EventMap extends DefaultEventMap> {
     listener: Emitter.ListenerType<typeof this, EventType, EventMap>,
   ): void {
     if (this.listenerCount(type) === 0) {
-      return
+      return;
     }
 
     const nextListeners: Array<
       Emitter.ListenerType<typeof this, EventType, EventMap>
-    > = []
+    > = [];
 
     for (const existingListener of this.#listeners[type]) {
       if (existingListener !== listener) {
-        nextListeners.push(existingListener)
+        nextListeners.push(existingListener);
       }
     }
 
-    this.#listeners[type] = nextListeners
+    this.#listeners[type] = nextListeners;
   }
 
   /**
@@ -350,11 +350,11 @@ export class Emitter<EventMap extends DefaultEventMap> {
     type?: EventType,
   ): void {
     if (type == null) {
-      this.#listeners = {} as InternalListenersMap<typeof this>
-      return
+      this.#listeners = {} as InternalListenersMap<typeof this>;
+      return;
     }
 
-    this.#listeners[type] = []
+    this.#listeners[type] = [];
   }
 
   /**
@@ -365,10 +365,10 @@ export class Emitter<EventMap extends DefaultEventMap> {
     type?: EventType,
   ): Array<Emitter.ListenerType<typeof this, EventType, EventMap>> {
     if (type == null) {
-      return Object.values(this.#listeners).flat()
+      return Object.values(this.#listeners).flat();
     }
 
-    return this.#listeners[type] || []
+    return this.#listeners[type] || [];
   }
 
   /**
@@ -378,21 +378,21 @@ export class Emitter<EventMap extends DefaultEventMap> {
   public listenerCount<EventType extends keyof EventMap & string>(
     type?: EventType,
   ): number {
-    return this.listeners(type).length
+    return this.listeners(type).length;
   }
 
   #addListener<EventType extends keyof EventMap & string>(
     type: EventType,
     listener: Emitter.ListenerType<typeof this, EventType, EventMap>,
     options: TypedListenerOptions | undefined,
-    insertMode: 'append' | 'prepend' = 'append',
+    insertMode: "append" | "prepend" = "append",
   ): typeof this {
-    this.#listeners[type] ??= []
+    this.#listeners[type] ??= [];
 
-    if (insertMode === 'prepend') {
-      this.#listeners[type].unshift(listener)
+    if (insertMode === "prepend") {
+      this.#listeners[type].unshift(listener);
     } else {
-      this.#listeners[type].push(listener)
+      this.#listeners[type].push(listener);
     }
 
     if (options) {
@@ -400,54 +400,54 @@ export class Emitter<EventMap extends DefaultEventMap> {
         value: options,
         enumerable: false,
         writable: false,
-      })
+      });
 
       if (options.signal) {
         options.signal.addEventListener(
-          'abort',
+          "abort",
           () => {
-            this.removeListener(type, listener)
+            this.removeListener(type, listener);
           },
           { once: true },
-        )
+        );
       }
     }
 
-    return this
+    return this;
   }
 
   #proxyEvent<Event extends TypedEvent>(
     event: Event,
   ): { event: Event; revoke: () => void } {
-    const { stopPropagation } = event
+    const { stopPropagation } = event;
 
     event.stopPropagation = new Proxy(event.stopPropagation, {
       apply: (target, thisArg, argArray) => {
-        event[kPropagationStopped] = this
-        return Reflect.apply(target, thisArg, argArray)
+        event[kPropagationStopped] = this;
+        return Reflect.apply(target, thisArg, argArray);
       },
-    })
+    });
 
     return {
       event,
       revoke() {
-        event.stopPropagation = stopPropagation
+        event.stopPropagation = stopPropagation;
       },
-    }
+    };
   }
 
   #callListener<EventType extends keyof EventMap & string>(
     event: Event,
     listener: Emitter.ListenerType<typeof this, EventType, EventMap> & {
-      [kListenerOptions]?: TypedListenerOptions
+      [kListenerOptions]?: TypedListenerOptions;
     },
   ) {
-    const returnValue = listener.call(this, event)
+    const returnValue = listener.call(this, event);
 
     if (listener[kListenerOptions]?.once) {
-      this.removeListener(event.type, listener)
+      this.removeListener(event.type, listener);
     }
 
-    return returnValue
+    return returnValue;
   }
 }

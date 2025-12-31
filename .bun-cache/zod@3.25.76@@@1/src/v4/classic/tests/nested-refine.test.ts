@@ -21,7 +21,7 @@ test("nested refinements", () => {
           {
             path: ["confirm"],
             error: 'Value must be "bar"',
-          }
+          },
         ),
     })
     .refine(
@@ -31,7 +31,7 @@ test("nested refinements", () => {
       {
         path: ["nested", "confirm"],
         error: "Password and confirm must match",
-      }
+      },
     );
 
   const DATA = {

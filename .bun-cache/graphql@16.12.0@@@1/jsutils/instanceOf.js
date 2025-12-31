@@ -1,16 +1,14 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.instanceOf = void 0;
 
-var _inspect = require('./inspect.js');
+var _inspect = require("./inspect.js");
 
 /* c8 ignore next 3 */
 const isProduction =
   globalThis.process && // eslint-disable-next-line no-undef
-  process.env.NODE_ENV === 'production';
+  process.env.NODE_ENV === "production";
 /**
  * A replacement for instanceof which includes an error warning when multi-realm
  * constructors are detected.
@@ -30,7 +28,7 @@ const instanceOf =
           return true;
         }
 
-        if (typeof value === 'object' && value !== null) {
+        if (typeof value === "object" && value !== null) {
           var _value$constructor;
 
           // Prefer Symbol.toStringTag since it is immune to minification.
@@ -39,9 +37,9 @@ const instanceOf =
             Symbol.toStringTag in value // @ts-expect-error TS bug see, https://github.com/microsoft/TypeScript/issues/38009
               ? value[Symbol.toStringTag]
               : (_value$constructor = value.constructor) === null ||
-                _value$constructor === void 0
-              ? void 0
-              : _value$constructor.name;
+                  _value$constructor === void 0
+                ? void 0
+                : _value$constructor.name;
 
           if (className === valueClassName) {
             const stringifiedValue = (0, _inspect.inspect)(value);

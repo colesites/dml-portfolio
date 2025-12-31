@@ -12,22 +12,22 @@ export function getIntrospectionQuery(options) {
     oneOf: false,
     ...options,
   };
-  const descriptions = optionsWithDefault.descriptions ? 'description' : '';
+  const descriptions = optionsWithDefault.descriptions ? "description" : "";
   const specifiedByUrl = optionsWithDefault.specifiedByUrl
-    ? 'specifiedByURL'
-    : '';
+    ? "specifiedByURL"
+    : "";
   const directiveIsRepeatable = optionsWithDefault.directiveIsRepeatable
-    ? 'isRepeatable'
-    : '';
+    ? "isRepeatable"
+    : "";
   const schemaDescription = optionsWithDefault.schemaDescription
     ? descriptions
-    : '';
+    : "";
 
   function inputDeprecation(str) {
-    return optionsWithDefault.inputValueDeprecation ? str : '';
+    return optionsWithDefault.inputValueDeprecation ? str : "";
   }
 
-  const oneOf = optionsWithDefault.oneOf ? 'isOneOf' : '';
+  const oneOf = optionsWithDefault.oneOf ? "isOneOf" : "";
   return `
     query IntrospectionQuery {
       __schema {
@@ -43,7 +43,7 @@ export function getIntrospectionQuery(options) {
           ${descriptions}
           ${directiveIsRepeatable}
           locations
-          args${inputDeprecation('(includeDeprecated: true)')} {
+          args${inputDeprecation("(includeDeprecated: true)")} {
             ...InputValue
           }
         }
@@ -59,7 +59,7 @@ export function getIntrospectionQuery(options) {
       fields(includeDeprecated: true) {
         name
         ${descriptions}
-        args${inputDeprecation('(includeDeprecated: true)')} {
+        args${inputDeprecation("(includeDeprecated: true)")} {
           ...InputValue
         }
         type {
@@ -68,7 +68,7 @@ export function getIntrospectionQuery(options) {
         isDeprecated
         deprecationReason
       }
-      inputFields${inputDeprecation('(includeDeprecated: true)')} {
+      inputFields${inputDeprecation("(includeDeprecated: true)")} {
         ...InputValue
       }
       interfaces {
@@ -90,8 +90,8 @@ export function getIntrospectionQuery(options) {
       ${descriptions}
       type { ...TypeRef }
       defaultValue
-      ${inputDeprecation('isDeprecated')}
-      ${inputDeprecation('deprecationReason')}
+      ${inputDeprecation("isDeprecated")}
+      ${inputDeprecation("deprecationReason")}
     }
 
     fragment TypeRef on __Type {

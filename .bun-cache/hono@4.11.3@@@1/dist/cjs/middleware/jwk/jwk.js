@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var jwk_exports = {};
 __export(jwk_exports, {
-  jwk: () => jwk
+  jwk: () => jwk,
 });
 module.exports = __toCommonJS(jwk_exports);
 var import_cookie = require("../../helper/cookie");
@@ -28,10 +32,14 @@ var import_context = require("../../context");
 const jwk = (options, init) => {
   const verifyOpts = options.verification || {};
   if (!options || !(options.keys || options.jwks_uri)) {
-    throw new Error('JWK auth middleware requires options for either "keys" or "jwks_uri" or both');
+    throw new Error(
+      'JWK auth middleware requires options for either "keys" or "jwks_uri" or both',
+    );
   }
   if (!crypto.subtle || !crypto.subtle.importKey) {
-    throw new Error("`crypto.subtle.importKey` is undefined. JWK auth middleware requires it.");
+    throw new Error(
+      "`crypto.subtle.importKey` is undefined. JWK auth middleware requires it.",
+    );
   }
   return async function jwk2(ctx, next) {
     const headerName = options.headerName || "Authorization";
@@ -46,8 +54,8 @@ const jwk = (options, init) => {
           res: unauthorizedResponse({
             ctx,
             error: "invalid_request",
-            errDescription
-          })
+            errDescription,
+          }),
         });
       } else {
         token = parts[1];
@@ -61,14 +69,22 @@ const jwk = (options, init) => {
             ctx,
             options.cookie.secret,
             options.cookie.key,
-            options.cookie.prefixOptions
+            options.cookie.prefixOptions,
           );
         } else {
-          token = await (0, import_cookie.getSignedCookie)(ctx, options.cookie.secret, options.cookie.key);
+          token = await (0, import_cookie.getSignedCookie)(
+            ctx,
+            options.cookie.secret,
+            options.cookie.key,
+          );
         }
       } else {
         if (options.cookie.prefixOptions) {
-          token = (0, import_cookie.getCookie)(ctx, options.cookie.key, options.cookie.prefixOptions);
+          token = (0, import_cookie.getCookie)(
+            ctx,
+            options.cookie.key,
+            options.cookie.prefixOptions,
+          );
         } else {
           token = (0, import_cookie.getCookie)(ctx, options.cookie.key);
         }
@@ -84,16 +100,26 @@ const jwk = (options, init) => {
         res: unauthorizedResponse({
           ctx,
           error: "invalid_request",
-          errDescription
-        })
+          errDescription,
+        }),
       });
     }
     let payload;
     let cause;
     try {
-      const keys = typeof options.keys === "function" ? await options.keys(ctx) : options.keys;
-      const jwks_uri = typeof options.jwks_uri === "function" ? await options.jwks_uri(ctx) : options.jwks_uri;
-      payload = await import_jwt.Jwt.verifyWithJwks(token, { keys, jwks_uri, verification: verifyOpts }, init);
+      const keys =
+        typeof options.keys === "function"
+          ? await options.keys(ctx)
+          : options.keys;
+      const jwks_uri =
+        typeof options.jwks_uri === "function"
+          ? await options.jwks_uri(ctx)
+          : options.jwks_uri;
+      payload = await import_jwt.Jwt.verifyWithJwks(
+        token,
+        { keys, jwks_uri, verification: verifyOpts },
+        init,
+      );
     } catch (e) {
       cause = e;
     }
@@ -107,9 +133,9 @@ const jwk = (options, init) => {
           ctx,
           error: "invalid_token",
           statusText: "Unauthorized",
-          errDescription: "token verification failure"
+          errDescription: "token verification failure",
         }),
-        cause
+        cause,
       });
     }
     ctx.set("jwtPayload", payload);
@@ -121,11 +147,12 @@ function unauthorizedResponse(opts) {
     status: 401,
     statusText: opts.statusText,
     headers: {
-      "WWW-Authenticate": `Bearer realm="${opts.ctx.req.url}",error="${opts.error}",error_description="${opts.errDescription}"`
-    }
+      "WWW-Authenticate": `Bearer realm="${opts.ctx.req.url}",error="${opts.error}",error_description="${opts.errDescription}"`,
+    },
   });
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  jwk
-});
+0 &&
+  (module.exports = {
+    jwk,
+  });

@@ -86,10 +86,15 @@ test("assignability", () => {
   z._default(z.string(), "default") satisfies z.core.$ZodDefault;
 
   // $ZodTemplateLiteral
-  z.templateLiteral([z.literal("a"), z.literal("b")]) satisfies z.core.$ZodTemplateLiteral;
+  z.templateLiteral([
+    z.literal("a"),
+    z.literal("b"),
+  ]) satisfies z.core.$ZodTemplateLiteral;
 
   // $ZodCustom
-  z.custom<string>((val) => typeof val === "string") satisfies z.core.$ZodCustom;
+  z.custom<string>(
+    (val) => typeof val === "string",
+  ) satisfies z.core.$ZodCustom;
 
   // $ZodTransform
   z.transform((val) => val as string) satisfies z.core.$ZodTransform;
@@ -117,11 +122,12 @@ test("assignability", () => {
 });
 
 test("assignability with type narrowing", () => {
-  type _RefinedSchema<T extends z.ZodMiniType<object> | z.ZodMiniUnion> = T extends z.ZodMiniUnion
-    ? RefinedUnionSchema<T> // <-- Type instantiation is excessively deep and possibly infinite.
-    : T extends z.ZodMiniType<object>
-      ? RefinedTypeSchema<z.output<T>> // <-- Type instantiation is excessively deep and possibly infinite.
-      : never;
+  type _RefinedSchema<T extends z.ZodMiniType<object> | z.ZodMiniUnion> =
+    T extends z.ZodMiniUnion
+      ? RefinedUnionSchema<T> // <-- Type instantiation is excessively deep and possibly infinite.
+      : T extends z.ZodMiniType<object>
+        ? RefinedTypeSchema<z.output<T>> // <-- Type instantiation is excessively deep and possibly infinite.
+        : never;
 
   type RefinedTypeSchema<T extends object> = T;
 

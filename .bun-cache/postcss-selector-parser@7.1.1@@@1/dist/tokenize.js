@@ -1,14 +1,85 @@
-"use strict";
-
 exports.__esModule = true;
 exports.FIELDS = void 0;
 exports["default"] = tokenize;
 var t = _interopRequireWildcard(require("./tokenTypes"));
 var _unescapable, _wordDelimiters;
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-var unescapable = (_unescapable = {}, _unescapable[t.tab] = true, _unescapable[t.newline] = true, _unescapable[t.cr] = true, _unescapable[t.feed] = true, _unescapable);
-var wordDelimiters = (_wordDelimiters = {}, _wordDelimiters[t.space] = true, _wordDelimiters[t.tab] = true, _wordDelimiters[t.newline] = true, _wordDelimiters[t.cr] = true, _wordDelimiters[t.feed] = true, _wordDelimiters[t.ampersand] = true, _wordDelimiters[t.asterisk] = true, _wordDelimiters[t.bang] = true, _wordDelimiters[t.comma] = true, _wordDelimiters[t.colon] = true, _wordDelimiters[t.semicolon] = true, _wordDelimiters[t.openParenthesis] = true, _wordDelimiters[t.closeParenthesis] = true, _wordDelimiters[t.openSquare] = true, _wordDelimiters[t.closeSquare] = true, _wordDelimiters[t.singleQuote] = true, _wordDelimiters[t.doubleQuote] = true, _wordDelimiters[t.plus] = true, _wordDelimiters[t.pipe] = true, _wordDelimiters[t.tilde] = true, _wordDelimiters[t.greaterThan] = true, _wordDelimiters[t.equals] = true, _wordDelimiters[t.dollar] = true, _wordDelimiters[t.caret] = true, _wordDelimiters[t.slash] = true, _wordDelimiters);
+function _getRequireWildcardCache(nodeInterop) {
+  if (typeof WeakMap !== "function") return null;
+  var cacheBabelInterop = new WeakMap();
+  var cacheNodeInterop = new WeakMap();
+  return (_getRequireWildcardCache = function _getRequireWildcardCache(
+    nodeInterop,
+  ) {
+    return nodeInterop ? cacheNodeInterop : cacheBabelInterop;
+  })(nodeInterop);
+}
+function _interopRequireWildcard(obj, nodeInterop) {
+  if (!nodeInterop && obj && obj.__esModule) {
+    return obj;
+  }
+  if (obj === null || (typeof obj !== "object" && typeof obj !== "function")) {
+    return { default: obj };
+  }
+  var cache = _getRequireWildcardCache(nodeInterop);
+  if (cache && cache.has(obj)) {
+    return cache.get(obj);
+  }
+  var newObj = {};
+  var hasPropertyDescriptor =
+    Object.defineProperty && Object.getOwnPropertyDescriptor;
+  for (var key in obj) {
+    if (key !== "default" && Object.hasOwn(obj, key)) {
+      var desc = hasPropertyDescriptor
+        ? Object.getOwnPropertyDescriptor(obj, key)
+        : null;
+      if (desc && (desc.get || desc.set)) {
+        Object.defineProperty(newObj, key, desc);
+      } else {
+        newObj[key] = obj[key];
+      }
+    }
+  }
+  newObj["default"] = obj;
+  if (cache) {
+    cache.set(obj, newObj);
+  }
+  return newObj;
+}
+var unescapable =
+  ((_unescapable = {}),
+  (_unescapable[t.tab] = true),
+  (_unescapable[t.newline] = true),
+  (_unescapable[t.cr] = true),
+  (_unescapable[t.feed] = true),
+  _unescapable);
+var wordDelimiters =
+  ((_wordDelimiters = {}),
+  (_wordDelimiters[t.space] = true),
+  (_wordDelimiters[t.tab] = true),
+  (_wordDelimiters[t.newline] = true),
+  (_wordDelimiters[t.cr] = true),
+  (_wordDelimiters[t.feed] = true),
+  (_wordDelimiters[t.ampersand] = true),
+  (_wordDelimiters[t.asterisk] = true),
+  (_wordDelimiters[t.bang] = true),
+  (_wordDelimiters[t.comma] = true),
+  (_wordDelimiters[t.colon] = true),
+  (_wordDelimiters[t.semicolon] = true),
+  (_wordDelimiters[t.openParenthesis] = true),
+  (_wordDelimiters[t.closeParenthesis] = true),
+  (_wordDelimiters[t.openSquare] = true),
+  (_wordDelimiters[t.closeSquare] = true),
+  (_wordDelimiters[t.singleQuote] = true),
+  (_wordDelimiters[t.doubleQuote] = true),
+  (_wordDelimiters[t.plus] = true),
+  (_wordDelimiters[t.pipe] = true),
+  (_wordDelimiters[t.tilde] = true),
+  (_wordDelimiters[t.greaterThan] = true),
+  (_wordDelimiters[t.equals] = true),
+  (_wordDelimiters[t.dollar] = true),
+  (_wordDelimiters[t.caret] = true),
+  (_wordDelimiters[t.slash] = true),
+  _wordDelimiters);
 var hex = {};
 var hexChars = "0123456789abcdefABCDEF";
 for (var i = 0; i < hexChars.length; i++) {
@@ -72,7 +143,7 @@ var FIELDS = {
   END_LINE: 3,
   END_COL: 4,
   START_POS: 5,
-  END_POS: 6
+  END_POS: 6,
 };
 exports.FIELDS = FIELDS;
 function tokenize(input) {
@@ -84,14 +155,26 @@ function tokenize(input) {
   var line = 1;
   var start = 0;
   var end = 0;
-  var code, content, endColumn, endLine, escaped, escapePos, last, lines, next, nextLine, nextOffset, quote, tokenType;
+  var code,
+    content,
+    endColumn,
+    endLine,
+    escaped,
+    escapePos,
+    last,
+    lines,
+    next,
+    nextLine,
+    nextOffset,
+    quote,
+    tokenType;
   function unclosed(what, fix) {
     if (input.safe) {
       // fyi: this is never set to true.
       css += fix;
       next = css.length - 1;
     } else {
-      throw input.error('Unclosed ' + what, line, start - offset, start);
+      throw input.error("Unclosed " + what, line, start - offset, start);
     }
   }
   while (start < length) {
@@ -114,7 +197,13 @@ function tokenize(input) {
             offset = next;
             line += 1;
           }
-        } while (code === t.space || code === t.newline || code === t.tab || code === t.cr || code === t.feed);
+        } while (
+          code === t.space ||
+          code === t.newline ||
+          code === t.tab ||
+          code === t.cr ||
+          code === t.feed
+        );
         tokenType = t.space;
         endLine = line;
         endColumn = next - offset - 1;
@@ -128,7 +217,12 @@ function tokenize(input) {
         do {
           next += 1;
           code = css.charCodeAt(next);
-        } while (code === t.plus || code === t.greaterThan || code === t.tilde || code === t.pipe);
+        } while (
+          code === t.plus ||
+          code === t.greaterThan ||
+          code === t.tilde ||
+          code === t.pipe
+        );
         tokenType = t.combinator;
         endLine = line;
         endColumn = start - offset;
@@ -163,7 +257,7 @@ function tokenize(input) {
           escaped = false;
           next = css.indexOf(quote, next + 1);
           if (next === -1) {
-            unclosed('quote', quote);
+            unclosed("quote", quote);
           }
           escapePos = next;
           while (css.charCodeAt(escapePos - 1) === t.backslash) {
@@ -178,12 +272,12 @@ function tokenize(input) {
         break;
       default:
         if (code === t.slash && css.charCodeAt(start + 1) === t.asterisk) {
-          next = css.indexOf('*/', start + 2) + 1;
+          next = css.indexOf("*/", start + 2) + 1;
           if (next === 0) {
-            unclosed('comment', '*/');
+            unclosed("comment", "*/");
           }
           content = css.slice(start, next + 1);
-          lines = content.split('\n');
+          lines = content.split("\n");
           last = lines.length - 1;
           if (last > 0) {
             nextLine = line + last;
@@ -213,19 +307,20 @@ function tokenize(input) {
     }
 
     // Ensure that the token structure remains consistent
-    tokens.push([tokenType,
-    // [0] Token type
-    line,
-    // [1] Starting line
-    start - offset,
-    // [2] Starting column
-    endLine,
-    // [3] Ending line
-    endColumn,
-    // [4] Ending column
-    start,
-    // [5] Start position / Source index
-    end // [6] End position
+    tokens.push([
+      tokenType,
+      // [0] Token type
+      line,
+      // [1] Starting line
+      start - offset,
+      // [2] Starting column
+      endLine,
+      // [3] Ending line
+      endColumn,
+      // [4] Ending column
+      start,
+      // [5] Start position / Source index
+      end, // [6] End position
     ]);
 
     // Reset offset for the next token

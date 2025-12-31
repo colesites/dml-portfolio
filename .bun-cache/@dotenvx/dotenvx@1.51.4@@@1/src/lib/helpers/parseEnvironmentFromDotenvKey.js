@@ -1,19 +1,19 @@
-function parseEnvironmentFromDotenvKey (dotenvKey) {
+function parseEnvironmentFromDotenvKey(dotenvKey) {
   // Parse DOTENV_KEY. Format is a URI
-  let uri
+  let uri;
   try {
-    uri = new URL(dotenvKey)
+    uri = new URL(dotenvKey);
   } catch (e) {
-    throw new Error(`INVALID_DOTENV_KEY: ${e.message}`)
+    throw new Error(`INVALID_DOTENV_KEY: ${e.message}`);
   }
 
   // Get environment
-  const environment = uri.searchParams.get('environment')
+  const environment = uri.searchParams.get("environment");
   if (!environment) {
-    throw new Error('INVALID_DOTENV_KEY: Missing environment part')
+    throw new Error("INVALID_DOTENV_KEY: Missing environment part");
   }
 
-  return environment
+  return environment;
 }
 
-module.exports = parseEnvironmentFromDotenvKey
+module.exports = parseEnvironmentFromDotenvKey;

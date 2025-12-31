@@ -5,20 +5,21 @@ import {
   DOM_INTERNAL_TAG,
   DOM_MEMO,
   DOM_RENDERER,
-  DOM_STASH
+  DOM_STASH,
 } from "../constants.js";
 import { globalContexts as globalJSXContexts, useContext } from "../context.js";
 import { STASH_EFFECT } from "../hooks/index.js";
 import { normalizeIntrinsicElementKey, styleObjectForEach } from "../utils.js";
 import { createContext } from "./context.js";
+
 var HONO_PORTAL_ELEMENT = "_hp";
 var eventAliasMap = {
   Change: "Input",
-  DoubleClick: "DblClick"
+  DoubleClick: "DblClick",
 };
 var nameSpaceMap = {
   svg: "2000/svg",
-  math: "1998/Math/MathML"
+  math: "1998/Math/MathML",
 };
 var buildDataStack = [];
 var refCleanupMap = /* @__PURE__ */ new WeakMap();
@@ -27,7 +28,7 @@ var getNameSpaceContext = () => nameSpaceContext;
 var isNodeString = (node) => "t" in node;
 var eventCache = {
   // pre-define events that are used very frequently
-  onClick: ["click", false]
+  onClick: ["click", false],
 };
 var getEventSpec = (key) => {
   if (!key.startsWith("on")) {
@@ -39,23 +40,39 @@ var getEventSpec = (key) => {
   const match = key.match(/^on([A-Z][a-zA-Z]+?(?:PointerCapture)?)(Capture)?$/);
   if (match) {
     const [, eventName, capture] = match;
-    return eventCache[key] = [(eventAliasMap[eventName] || eventName).toLowerCase(), !!capture];
+    return (eventCache[key] = [
+      (eventAliasMap[eventName] || eventName).toLowerCase(),
+      !!capture,
+    ]);
   }
   return void 0;
 };
-var toAttributeName = (element, key) => nameSpaceContext && element instanceof SVGElement && /[A-Z]/.test(key) && (key in element.style || // Presentation attributes are findable in style object. "clip-path", "font-size", "stroke-width", etc.
-key.match(/^(?:o|pai|str|u|ve)/)) ? key.replace(/([A-Z])/g, "-$1").toLowerCase() : key;
+var toAttributeName = (element, key) =>
+  nameSpaceContext &&
+  element instanceof SVGElement &&
+  /[A-Z]/.test(key) &&
+  (key in element.style || // Presentation attributes are findable in style object. "clip-path", "font-size", "stroke-width", etc.
+    key.match(/^(?:o|pai|str|u|ve)/))
+    ? key.replace(/([A-Z])/g, "-$1").toLowerCase()
+    : key;
 var applyProps = (container, attributes, oldAttributes) => {
   attributes ||= {};
   for (let key in attributes) {
     const value = attributes[key];
-    if (key !== "children" && (!oldAttributes || oldAttributes[key] !== value)) {
+    if (
+      key !== "children" &&
+      (!oldAttributes || oldAttributes[key] !== value)
+    ) {
       key = normalizeIntrinsicElementKey(key);
       const eventSpec = getEventSpec(key);
       if (eventSpec) {
         if (oldAttributes?.[key] !== value) {
           if (oldAttributes) {
-            container.removeEventListener(eventSpec[0], oldAttributes[key], eventSpec[1]);
+            container.removeEventListener(
+              eventSpec[0],
+              oldAttributes[key],
+              eventSpec[1],
+            );
           }
           if (value != null) {
             if (typeof value !== "function") {
@@ -72,7 +89,7 @@ var applyProps = (container, attributes, oldAttributes) => {
           cleanup = value(container) || (() => value(null));
         } else if (value && "current" in value) {
           value.current = container;
-          cleanup = () => value.current = null;
+          cleanup = () => (value.current = null);
         }
         refCleanupMap.set(container, cleanup);
       } else if (key === "style") {
@@ -88,22 +105,29 @@ var applyProps = (container, attributes, oldAttributes) => {
       } else {
         if (key === "value") {
           const nodeName = container.nodeName;
-          if (nodeName === "INPUT" || nodeName === "TEXTAREA" || nodeName === "SELECT") {
-            ;
-            container.value = value === null || value === void 0 || value === false ? null : value;
+          if (
+            nodeName === "INPUT" ||
+            nodeName === "TEXTAREA" ||
+            nodeName === "SELECT"
+          ) {
+            container.value =
+              value === null || value === void 0 || value === false
+                ? null
+                : value;
             if (nodeName === "TEXTAREA") {
               container.textContent = value;
               continue;
             } else if (nodeName === "SELECT") {
               if (container.selectedIndex === -1) {
-                ;
                 container.selectedIndex = 0;
               }
               continue;
             }
           }
-        } else if (key === "checked" && container.nodeName === "INPUT" || key === "selected" && container.nodeName === "OPTION") {
-          ;
+        } else if (
+          (key === "checked" && container.nodeName === "INPUT") ||
+          (key === "selected" && container.nodeName === "OPTION")
+        ) {
           container[key] = value;
         }
         const k = toAttributeName(container, key);
@@ -140,18 +164,26 @@ var invokeTag = (context, node) => {
   node[DOM_STASH][0] = 0;
   buildDataStack.push([context, node]);
   const func = node.tag[DOM_RENDERER] || node.tag;
-  const props = func.defaultProps ? {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...func.defaultProps,
-    ...node.props
-  } : node.props;
+  const props = func.defaultProps
+    ? {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ...func.defaultProps,
+        ...node.props,
+      }
+    : node.props;
   try {
     return [func.call(null, props)];
   } finally {
     buildDataStack.pop();
   }
 };
-var getNextChildren = (node, container, nextChildren, childrenToRemove, callbacks) => {
+var getNextChildren = (
+  node,
+  container,
+  nextChildren,
+  childrenToRemove,
+  callbacks,
+) => {
   if (node.vR?.length) {
     childrenToRemove.push(...node.vR);
     delete node.vR;
@@ -166,7 +198,13 @@ var getNextChildren = (node, container, nextChildren, childrenToRemove, callback
       if (typeof child.tag === "function" || child.tag === "") {
         child.c = container;
         const currentNextChildrenIndex = nextChildren.length;
-        getNextChildren(child, container, nextChildren, childrenToRemove, callbacks);
+        getNextChildren(
+          child,
+          container,
+          nextChildren,
+          childrenToRemove,
+          callbacks,
+        );
         if (child.s) {
           for (let i = currentNextChildrenIndex; i < nextChildren.length; i++) {
             nextChildren[i].s = true;
@@ -184,7 +222,14 @@ var getNextChildren = (node, container, nextChildren, childrenToRemove, callback
   });
 };
 var findInsertBefore = (node) => {
-  for (; ; node = node.tag === HONO_PORTAL_ELEMENT || !node.vC || !node.pP ? node.nN : node.vC[0]) {
+  for (
+    ;
+    ;
+    node =
+      node.tag === HONO_PORTAL_ELEMENT || !node.vC || !node.pP
+        ? node.nN
+        : node.vC[0]
+  ) {
     if (!node) {
       return null;
     }
@@ -198,7 +243,7 @@ var removeNode = (node) => {
     node[DOM_STASH]?.[1][STASH_EFFECT]?.forEach((data) => data[2]?.());
     refCleanupMap.get(node.e)?.();
     if (node.p === 2) {
-      node.vC?.forEach((n) => n.p = 2);
+      node.vC?.forEach((n) => (n.p = 2));
     }
     node.vC?.forEach(removeNode);
   }
@@ -243,12 +288,19 @@ var applyNodeObject = (node, container, isNew) => {
   } else if (!childNodes.length) {
     offset = 0;
   } else {
-    const offsetByNextNode = findChildNodeIndex(childNodes, findInsertBefore(node.nN));
+    const offsetByNextNode = findChildNodeIndex(
+      childNodes,
+      findInsertBefore(node.nN),
+    );
     if (offsetByNextNode !== void 0) {
       insertBeforeNode = childNodes[offsetByNextNode];
       offset = offsetByNextNode;
     } else {
-      offset = findChildNodeIndex(childNodes, next.find((n) => n.tag !== HONO_PORTAL_ELEMENT && n.e)?.e) ?? -1;
+      offset =
+        findChildNodeIndex(
+          childNodes,
+          next.find((n) => n.tag !== HONO_PORTAL_ELEMENT && n.e)?.e,
+        ) ?? -1;
     }
     if (offset === -1) {
       isNew = true;
@@ -269,7 +321,9 @@ var applyNodeObject = (node, container, isNew) => {
         child.d = false;
         el = child.e ||= document.createTextNode(child.t);
       } else {
-        el = child.e ||= child.n ? document.createElementNS(child.n, child.tag) : document.createElement(child.tag);
+        el = child.e ||= child.n
+          ? document.createElementNS(child.n, child.tag)
+          : document.createElement(child.tag);
         applyProps(el, child.props, child.pP);
         applyNodeObject(child, el, isNewLocal);
       }
@@ -284,7 +338,10 @@ var applyNodeObject = (node, container, isNew) => {
       if (childNodes[offset + 1] === el) {
         container.appendChild(childNodes[offset]);
       } else {
-        container.insertBefore(el, insertBeforeNode || childNodes[offset] || null);
+        container.insertBefore(
+          el,
+          insertBeforeNode || childNodes[offset] || null,
+        );
       }
     }
   }
@@ -294,15 +351,17 @@ var applyNodeObject = (node, container, isNew) => {
   if (callbacks.length) {
     const useLayoutEffectCbs = [];
     const useEffectCbs = [];
-    callbacks.forEach(([, useLayoutEffectCb, , useEffectCb, useInsertionEffectCb]) => {
-      if (useLayoutEffectCb) {
-        useLayoutEffectCbs.push(useLayoutEffectCb);
-      }
-      if (useEffectCb) {
-        useEffectCbs.push(useEffectCb);
-      }
-      useInsertionEffectCb?.();
-    });
+    callbacks.forEach(
+      ([, useLayoutEffectCb, , useEffectCb, useInsertionEffectCb]) => {
+        if (useLayoutEffectCb) {
+          useLayoutEffectCbs.push(useLayoutEffectCb);
+        }
+        if (useEffectCb) {
+          useEffectCbs.push(useEffectCb);
+        }
+        useInsertionEffectCb?.();
+      },
+    );
     useLayoutEffectCbs.forEach((cb) => cb());
     if (useEffectCbs.length) {
       requestAnimationFrame(() => {
@@ -311,7 +370,12 @@ var applyNodeObject = (node, container, isNew) => {
     }
   }
 };
-var isSameContext = (oldContexts, newContexts) => !!(oldContexts && oldContexts.length === newContexts.length && oldContexts.every((ctx, i) => ctx[1] === newContexts[i][1]));
+var isSameContext = (oldContexts, newContexts) =>
+  !!(
+    oldContexts &&
+    oldContexts.length === newContexts.length &&
+    oldContexts.every((ctx, i) => ctx[1] === newContexts[i][1])
+  );
 var fallbackUpdateFnArrayMap = /* @__PURE__ */ new WeakMap();
 var build = (context, node, children) => {
   const buildWithPreviousChildren = !children && node.pC;
@@ -320,12 +384,19 @@ var build = (context, node, children) => {
   }
   let foundErrorHandler;
   try {
-    children ||= typeof node.tag == "function" ? invokeTag(context, node) : toArray(node.props.children);
+    children ||=
+      typeof node.tag == "function"
+        ? invokeTag(context, node)
+        : toArray(node.props.children);
     if (children[0]?.tag === "" && children[0][DOM_ERROR_HANDLER]) {
       foundErrorHandler = children[0][DOM_ERROR_HANDLER];
       context[5].push([context, foundErrorHandler, node]);
     }
-    const oldVChildren = buildWithPreviousChildren ? [...node.pC] : node.vC ? [...node.vC] : void 0;
+    const oldVChildren = buildWithPreviousChildren
+      ? [...node.pC]
+      : node.vC
+        ? [...node.vC]
+        : void 0;
     const vChildren = [];
     let prevNode;
     for (let i = 0; i < children.length; i++) {
@@ -334,10 +405,15 @@ var build = (context, node, children) => {
       }
       let child = buildNode(children[i]);
       if (child) {
-        if (typeof child.tag === "function" && // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        !child.tag[DOM_INTERNAL_TAG]) {
+        if (
+          typeof child.tag === "function" && // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          !child.tag[DOM_INTERNAL_TAG]
+        ) {
           if (globalJSXContexts.length > 0) {
-            child[DOM_STASH][2] = globalJSXContexts.map((c) => [c, c.values.at(-1)]);
+            child[DOM_STASH][2] = globalJSXContexts.map((c) => [
+              c,
+              c.values.at(-1),
+            ]);
           }
           if (context[5]?.length) {
             child[DOM_STASH][3] = context[5].at(-1);
@@ -346,7 +422,11 @@ var build = (context, node, children) => {
         let oldChild;
         if (oldVChildren && oldVChildren.length) {
           const i2 = oldVChildren.findIndex(
-            isNodeString(child) ? (c) => isNodeString(c) : child.key !== void 0 ? (c) => c.key === child.key && c.tag === child.tag : (c) => c.tag === child.tag
+            isNodeString(child)
+              ? (c) => isNodeString(c)
+              : child.key !== void 0
+                ? (c) => c.key === child.key && c.tag === child.tag
+                : (c) => c.tag === child.tag,
           );
           if (i2 !== -1) {
             oldChild = oldVChildren[i2];
@@ -356,22 +436,24 @@ var build = (context, node, children) => {
         if (oldChild) {
           if (isNodeString(child)) {
             if (oldChild.t !== child.t) {
-              ;
               oldChild.t = child.t;
               oldChild.d = true;
             }
             child = oldChild;
           } else {
-            const pP = oldChild.pP = oldChild.props;
+            const pP = (oldChild.pP = oldChild.props);
             oldChild.props = child.props;
             oldChild.f ||= child.f || node.f;
             if (typeof child.tag === "function") {
               const oldContexts = oldChild[DOM_STASH][2];
               oldChild[DOM_STASH][2] = child[DOM_STASH][2] || [];
               oldChild[DOM_STASH][3] = child[DOM_STASH][3];
-              if (!oldChild.f && ((oldChild.o || oldChild) === child.o || // The code generated by the react compiler is memoized under this condition.
-              oldChild.tag[DOM_MEMO]?.(pP, oldChild.props)) && // The `memo` function is memoized under this condition.
-              isSameContext(oldContexts, oldChild[DOM_STASH][2])) {
+              if (
+                !oldChild.f &&
+                ((oldChild.o || oldChild) === child.o || // The code generated by the react compiler is memoized under this condition.
+                  oldChild.tag[DOM_MEMO]?.(pP, oldChild.props)) && // The `memo` function is memoized under this condition.
+                isSameContext(oldContexts, oldChild[DOM_STASH][2])
+              ) {
                 oldChild.s = true;
               }
             }
@@ -396,7 +478,9 @@ var build = (context, node, children) => {
         prevNode = child;
       }
     }
-    node.vR = buildWithPreviousChildren ? [...node.vC, ...oldVChildren || []] : oldVChildren || [];
+    node.vR = buildWithPreviousChildren
+      ? [...node.vC, ...(oldVChildren || [])]
+      : oldVChildren || [];
     node.vC = vChildren;
     if (buildWithPreviousChildren) {
       delete node.pC;
@@ -410,10 +494,13 @@ var build = (context, node, children) => {
         throw e;
       }
     }
-    const [errorHandlerContext, errorHandler, errorHandlerNode] = node[DOM_STASH]?.[3] || [];
+    const [errorHandlerContext, errorHandler, errorHandlerNode] =
+      node[DOM_STASH]?.[3] || [];
     if (errorHandler) {
-      const fallbackUpdateFn = () => update([0, false, context[2]], errorHandlerNode);
-      const fallbackUpdateFnArray = fallbackUpdateFnArrayMap.get(errorHandlerNode) || [];
+      const fallbackUpdateFn = () =>
+        update([0, false, context[2]], errorHandlerNode);
+      const fallbackUpdateFnArray =
+        fallbackUpdateFnArrayMap.get(errorHandlerNode) || [];
       fallbackUpdateFnArray.push(fallbackUpdateFn);
       fallbackUpdateFnArrayMap.set(errorHandlerNode, fallbackUpdateFnArray);
       const fallback = errorHandler(e, () => {
@@ -431,7 +518,10 @@ var build = (context, node, children) => {
           context[1] = true;
         } else {
           build(context, errorHandlerNode, [fallback]);
-          if ((errorHandler.length === 1 || context !== errorHandlerContext) && errorHandlerNode.c) {
+          if (
+            (errorHandler.length === 1 || context !== errorHandlerContext) &&
+            errorHandlerNode.c
+          ) {
             apply(errorHandlerNode, errorHandlerNode.c, false);
             return;
           }
@@ -460,12 +550,11 @@ var buildNode = (node) => {
         f: node.f,
         type: node.tag,
         ref: node.props.ref,
-        o: node.o || node
+        o: node.o || node,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       };
     }
     if (typeof node.tag === "function") {
-      ;
       node[DOM_STASH] = [0, []];
     } else {
       const ns = nameSpaceMap[node.tag];
@@ -475,10 +564,10 @@ var buildNode = (node) => {
           {
             tag: nameSpaceContext,
             props: {
-              value: node.n = `http://www.w3.org/${ns}`,
-              children: node.props.children
-            }
-          }
+              value: (node.n = `http://www.w3.org/${ns}`),
+              children: node.props.children,
+            },
+          },
         ];
       }
     }
@@ -520,7 +609,7 @@ var update = async (context, node) => {
     existing[0](void 0);
   }
   let resolve;
-  const promise = new Promise((r) => resolve = r);
+  const promise = new Promise((r) => (resolve = r));
   updateMap.set(node, [
     resolve,
     () => {
@@ -532,10 +621,9 @@ var update = async (context, node) => {
         updateSync(context, node);
         resolve(node);
       }
-    }
+    },
   ]);
   if (currentUpdateSets.length) {
-    ;
     currentUpdateSets.at(-1).add(node);
   } else {
     await Promise.resolve();
@@ -577,11 +665,11 @@ var flushSync = (callback) => {
 var createPortal = (children, container, key) => ({
   tag: HONO_PORTAL_ELEMENT,
   props: {
-    children
+    children,
   },
   key,
   e: container,
-  p: 1
+  p: 1,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 });
 export {
@@ -593,5 +681,5 @@ export {
   getNameSpaceContext,
   render,
   renderNode,
-  update
+  update,
 };

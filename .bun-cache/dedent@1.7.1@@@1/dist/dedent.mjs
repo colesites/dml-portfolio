@@ -1,19 +1,77 @@
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    enumerableOnly &&
+      (symbols = symbols.filter(
+        (sym) => Object.getOwnPropertyDescriptor(object, sym).enumerable,
+      )),
+      keys.push.apply(keys, symbols);
+  }
+  return keys;
+}
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = null != arguments[i] ? arguments[i] : {};
+    i % 2
+      ? ownKeys(Object(source), !0).forEach((key) => {
+          _defineProperty(target, key, source[key]);
+        })
+      : Object.getOwnPropertyDescriptors
+        ? Object.defineProperties(
+            target,
+            Object.getOwnPropertyDescriptors(source),
+          )
+        : ownKeys(Object(source)).forEach((key) => {
+            Object.defineProperty(
+              target,
+              key,
+              Object.getOwnPropertyDescriptor(source, key),
+            );
+          });
+  }
+  return target;
+}
+function _defineProperty(obj, key, value) {
+  key = _toPropertyKey(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey(arg) {
+  var key = _toPrimitive(arg, "string");
+  return typeof key === "symbol" ? key : String(key);
+}
+function _toPrimitive(input, hint) {
+  if (typeof input !== "object" || input === null) return input;
+  var prim = input[Symbol.toPrimitive];
+  if (prim !== undefined) {
+    var res = prim.call(input, hint || "default");
+    if (typeof res !== "object") return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return (hint === "string" ? String : Number)(input);
+}
 const dedent = createDedent({});
 export default dedent;
 function createDedent(options) {
-  dedent.withOptions = newOptions => createDedent(_objectSpread(_objectSpread({}, options), newOptions));
+  dedent.withOptions = (newOptions) =>
+    createDedent(_objectSpread(_objectSpread({}, options), newOptions));
   return dedent;
   function dedent(strings, ...values) {
     const raw = typeof strings === "string" ? [strings] : strings.raw;
     const {
       alignValues = false,
       escapeSpecialCharacters = Array.isArray(strings),
-      trimWhitespace = true
+      trimWhitespace = true,
     } = options;
 
     // first, perform interpolation
@@ -22,7 +80,11 @@ function createDedent(options) {
       let next = raw[i];
       if (escapeSpecialCharacters) {
         // handle escaped newlines, backticks, and interpolation characters
-        next = next.replace(/\\\n[ \t]*/g, "").replace(/\\`/g, "`").replace(/\\\$/g, "$").replace(/\\\{/g, "{");
+        next = next
+          .replace(/\\\n[ \t]*/g, "")
+          .replace(/\\`/g, "`")
+          .replace(/\\\$/g, "$")
+          .replace(/\\\{/g, "{");
       }
       result += next;
       if (i < values.length) {
@@ -51,9 +113,10 @@ function createDedent(options) {
     if (mindent !== null) {
       const m = mindent; // appease TypeScript
       result = lines
-      // https://github.com/typescript-eslint/typescript-eslint/issues/7140
-      // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
-      .map(l => l[0] === " " || l[0] === "\t" ? l.slice(m) : l).join("\n");
+        // https://github.com/typescript-eslint/typescript-eslint/issues/7140
+        // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+        .map((l) => (l[0] === " " || l[0] === "\t" ? l.slice(m) : l))
+        .join("\n");
     }
 
     // dedent eats leading and trailing whitespace too
@@ -70,12 +133,19 @@ function createDedent(options) {
     // https://github.com/oven-sh/bun/issues/8745
     if (typeof Bun !== "undefined") {
       result = result.replace(
-      // Matches e.g. \\u{1f60a} or \\u5F1F
-      /\\u(?:\{([\da-fA-F]{1,6})\}|([\da-fA-F]{4}))/g, (_, braced, unbraced) => {
-        var _ref;
-        const hex = (_ref = braced !== null && braced !== void 0 ? braced : unbraced) !== null && _ref !== void 0 ? _ref : "";
-        return String.fromCodePoint(parseInt(hex, 16));
-      });
+        // Matches e.g. \\u{1f60a} or \\u5F1F
+        /\\u(?:\{([\da-fA-F]{1,6})\}|([\da-fA-F]{4}))/g,
+        (_, braced, unbraced) => {
+          var _ref;
+          const hex =
+            (_ref =
+              braced !== null && braced !== void 0 ? braced : unbraced) !==
+              null && _ref !== void 0
+              ? _ref
+              : "";
+          return String.fromCodePoint(parseInt(hex, 16));
+        },
+      );
     }
     return result;
   }

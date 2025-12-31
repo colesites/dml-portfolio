@@ -1,6 +1,6 @@
-import type {SyncOptions} from '../arguments/options.js';
-import type {SyncResult} from '../return/result.js';
-import type {TemplateString} from './template.js';
+import type { SyncOptions } from "../arguments/options.js";
+import type { SyncResult } from "../return/result.js";
+import type { TemplateString } from "./template.js";
 
 /**
 Same as `execa()` but synchronous.
@@ -33,27 +33,36 @@ export declare const execaSync: ExecaSyncMethod<{}>;
 // For the moment, we purposely do not export `ExecaSyncMethod` and `ExecaScriptSyncMethod`.
 // This is because synchronous invocation is discouraged.
 export type ExecaSyncMethod<OptionsType extends SyncOptions = SyncOptions> =
-	& ExecaSyncBind<OptionsType>
-	& ExecaSyncTemplate<OptionsType>
-	& ExecaSyncArrayLong<OptionsType>
-	& ExecaSyncArrayShort<OptionsType>;
+  ExecaSyncBind<OptionsType> &
+    ExecaSyncTemplate<OptionsType> &
+    ExecaSyncArrayLong<OptionsType> &
+    ExecaSyncArrayShort<OptionsType>;
 
 // `execaSync(options)` binding
-type ExecaSyncBind<OptionsType extends SyncOptions> =
-	<NewOptionsType extends SyncOptions = {}>(options: NewOptionsType)
-	=> ExecaSyncMethod<OptionsType & NewOptionsType>;
+type ExecaSyncBind<OptionsType extends SyncOptions> = <
+  NewOptionsType extends SyncOptions = {},
+>(
+  options: NewOptionsType,
+) => ExecaSyncMethod<OptionsType & NewOptionsType>;
 
 // `execaSync`command`` template syntax
-type ExecaSyncTemplate<OptionsType extends SyncOptions> =
-	(...templateString: TemplateString)
-	=> SyncResult<OptionsType>;
+type ExecaSyncTemplate<OptionsType extends SyncOptions> = (
+  ...templateString: TemplateString
+) => SyncResult<OptionsType>;
 
 // `execaSync('file', ['argument'], {})` array syntax
-type ExecaSyncArrayLong<OptionsType extends SyncOptions> =
-	<NewOptionsType extends SyncOptions = {}>(file: string | URL, arguments?: readonly string[], options?: NewOptionsType)
-	=> SyncResult<OptionsType & NewOptionsType>;
+type ExecaSyncArrayLong<OptionsType extends SyncOptions> = <
+  NewOptionsType extends SyncOptions = {},
+>(
+  file: string | URL,
+  arguments?: readonly string[],
+  options?: NewOptionsType,
+) => SyncResult<OptionsType & NewOptionsType>;
 
 // `execaSync('file', {})` array syntax
-type ExecaSyncArrayShort<OptionsType extends SyncOptions> =
-	<NewOptionsType extends SyncOptions = {}>(file: string | URL, options?: NewOptionsType)
-	=> SyncResult<OptionsType & NewOptionsType>;
+type ExecaSyncArrayShort<OptionsType extends SyncOptions> = <
+  NewOptionsType extends SyncOptions = {},
+>(
+  file: string | URL,
+  options?: NewOptionsType,
+) => SyncResult<OptionsType & NewOptionsType>;

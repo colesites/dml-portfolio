@@ -1,4 +1,8 @@
-import { d as DetectOptions, e as DetectResult, a as AgentName } from './shared/package-manager-detector.DksAilYA.mjs';
+import {
+  d as DetectOptions,
+  e as DetectResult,
+  a as AgentName,
+} from "./shared/package-manager-detector.DksAilYA.mjs";
 
 /**
  * Detects the package manager used in the running process.

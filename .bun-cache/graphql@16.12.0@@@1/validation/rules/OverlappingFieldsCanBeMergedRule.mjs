@@ -1,7 +1,7 @@
-import { inspect } from '../../jsutils/inspect.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
-import { print } from '../../language/printer.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { inspect } from "../../jsutils/inspect.mjs";
+import { Kind } from "../../language/kinds.mjs";
+import { print } from "../../language/printer.mjs";
 import {
   getNamedType,
   isInterfaceType,
@@ -9,9 +9,9 @@ import {
   isListType,
   isNonNullType,
   isObjectType,
-} from '../../type/definition.mjs';
-import { sortValueNode } from '../../utilities/sortValueNode.mjs';
-import { typeFromAST } from '../../utilities/typeFromAST.mjs';
+} from "../../type/definition.mjs";
+import { sortValueNode } from "../../utilities/sortValueNode.mjs";
+import { typeFromAST } from "../../utilities/typeFromAST.mjs";
 
 function reasonMessage(reason) {
   if (Array.isArray(reason)) {
@@ -21,7 +21,7 @@ function reasonMessage(reason) {
           `subfields "${responseName}" conflict because ` +
           reasonMessage(subReason),
       )
-      .join(' and ');
+      .join(" and ");
   }
 
   return reason;
@@ -563,7 +563,7 @@ function findConflict(
 
     if (!sameArguments(node1, node2)) {
       return [
-        [responseName, 'they have differing arguments'],
+        [responseName, "they have differing arguments"],
         [node1],
         [node2],
       ];
@@ -783,8 +783,8 @@ function subfieldConflicts(conflicts, responseName, node1, node2) {
   if (conflicts.length > 0) {
     return [
       [responseName, conflicts.map(([reason]) => reason)],
-      [node1, ...conflicts.map(([, fields1]) => fields1).flat()],
-      [node2, ...conflicts.map(([, , fields2]) => fields2).flat()],
+      [node1, ...conflicts.flatMap(([, fields1]) => fields1)],
+      [node2, ...conflicts.flatMap(([, , fields2]) => fields2)],
     ];
   }
 }

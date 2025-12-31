@@ -5,7 +5,5 @@
     "noEmit": true,
     "strict": true
   },
-  "files": [
-    "./reusify.d.ts"
-  ]
+  "files": ["./reusify.d.ts"]
 }

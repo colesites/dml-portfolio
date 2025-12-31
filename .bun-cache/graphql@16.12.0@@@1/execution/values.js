@@ -1,31 +1,29 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.getArgumentValues = getArgumentValues;
 exports.getDirectiveValues = getDirectiveValues;
 exports.getVariableValues = getVariableValues;
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _keyMap = require('../jsutils/keyMap.js');
+var _keyMap = require("../jsutils/keyMap.js");
 
-var _printPathArray = require('../jsutils/printPathArray.js');
+var _printPathArray = require("../jsutils/printPathArray.js");
 
-var _GraphQLError = require('../error/GraphQLError.js');
+var _GraphQLError = require("../error/GraphQLError.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _printer = require('../language/printer.js');
+var _printer = require("../language/printer.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _coerceInputValue = require('../utilities/coerceInputValue.js');
+var _coerceInputValue = require("../utilities/coerceInputValue.js");
 
-var _typeFromAST = require('../utilities/typeFromAST.js');
+var _typeFromAST = require("../utilities/typeFromAST.js");
 
-var _valueFromAST = require('../utilities/valueFromAST.js');
+var _valueFromAST = require("../utilities/valueFromAST.js");
 
 /**
  * Prepares an object map of variableValues of the correct type based on the
@@ -49,7 +47,7 @@ function getVariableValues(schema, varDefNodes, inputs, options) {
       (error) => {
         if (maxErrors != null && errors.length >= maxErrors) {
           throw new _GraphQLError.GraphQLError(
-            'Too many errors processing variables, error limit reached. Execution aborted.',
+            "Too many errors processing variables, error limit reached. Execution aborted.",
           );
         }
 
@@ -144,7 +142,7 @@ function coerceVariableValues(schema, varDefNodes, inputs, onError) {
         }
 
         onError(
-          new _GraphQLError.GraphQLError(prefix + '; ' + error.message, {
+          new _GraphQLError.GraphQLError(prefix + "; " + error.message, {
             nodes: varDefNode,
             originalError: error,
           }),
@@ -192,7 +190,7 @@ function getArgumentValues(def, node, variableValues) {
         throw new _GraphQLError.GraphQLError(
           `Argument "${name}" of required type "${(0, _inspect.inspect)(
             argType,
-          )}" ` + 'was not provided.',
+          )}" ` + "was not provided.",
           {
             nodes: node,
           },
@@ -236,7 +234,7 @@ function getArgumentValues(def, node, variableValues) {
       throw new _GraphQLError.GraphQLError(
         `Argument "${name}" of non-null type "${(0, _inspect.inspect)(
           argType,
-        )}" ` + 'must not be null.',
+        )}" ` + "must not be null.",
         {
           nodes: valueNode,
         },
@@ -296,5 +294,5 @@ function getDirectiveValues(directiveDef, node, variableValues) {
 }
 
 function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
+  return Object.hasOwn(obj, prop);
 }

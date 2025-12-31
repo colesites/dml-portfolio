@@ -1,5 +1,6 @@
 // src/middleware/context-storage/index.ts
 import { AsyncLocalStorage } from "node:async_hooks";
+
 var asyncLocalStorage = new AsyncLocalStorage();
 var contextStorage = () => {
   return async function contextStorage2(c, next) {
@@ -16,8 +17,4 @@ var getContext = () => {
   }
   return context;
 };
-export {
-  contextStorage,
-  getContext,
-  tryGetContext
-};
+export { contextStorage, getContext, tryGetContext };

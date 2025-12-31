@@ -2,4 +2,4 @@
  * @module
  * TrieRouter for Hono.
  */
-export { TrieRouter } from './router';
+export { TrieRouter } from "./router";

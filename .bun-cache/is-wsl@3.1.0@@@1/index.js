@@ -1,27 +1,31 @@
-import process from 'node:process';
-import os from 'node:os';
-import fs from 'node:fs';
-import isInsideContainer from 'is-inside-container';
+import fs from "node:fs";
+import os from "node:os";
+import process from "node:process";
+import isInsideContainer from "is-inside-container";
 
 const isWsl = () => {
-	if (process.platform !== 'linux') {
-		return false;
-	}
+  if (process.platform !== "linux") {
+    return false;
+  }
 
-	if (os.release().toLowerCase().includes('microsoft')) {
-		if (isInsideContainer()) {
-			return false;
-		}
+  if (os.release().toLowerCase().includes("microsoft")) {
+    if (isInsideContainer()) {
+      return false;
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	try {
-		return fs.readFileSync('/proc/version', 'utf8').toLowerCase().includes('microsoft')
-			? !isInsideContainer() : false;
-	} catch {
-		return false;
-	}
+  try {
+    return fs
+      .readFileSync("/proc/version", "utf8")
+      .toLowerCase()
+      .includes("microsoft")
+      ? !isInsideContainer()
+      : false;
+  } catch {
+    return false;
+  }
 };
 
 export default process.env.__IS_WSL_TEST__ ? isWsl : isWsl();

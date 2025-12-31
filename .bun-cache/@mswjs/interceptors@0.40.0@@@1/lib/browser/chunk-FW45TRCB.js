@@ -1,14 +1,14 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 
+var _chunk57RIRQUYjs = require("./chunk-57RIRQUY.js");
 
-var _chunk57RIRQUYjs = require('./chunk-57RIRQUY.js');
-
-
-var _chunk2HUMWGRDjs = require('./chunk-2HUMWGRD.js');
+var _chunk2HUMWGRDjs = require("./chunk-2HUMWGRD.js");
 
 // src/utils/isObject.ts
 function isObject(value, loose = false) {
-  return loose ? Object.prototype.toString.call(value).startsWith("[object ") : Object.prototype.toString.call(value) === "[object Object]";
+  return loose
+    ? Object.prototype.toString.call(value).startsWith("[object ")
+    : Object.prototype.toString.call(value) === "[object Object]";
 }
 
 // src/utils/isPropertyAccessible.ts
@@ -25,31 +25,43 @@ function isPropertyAccessible(obj, key) {
 function createServerErrorResponse(body) {
   return new Response(
     JSON.stringify(
-      body instanceof Error ? {
-        name: body.name,
-        message: body.message,
-        stack: body.stack
-      } : body
+      body instanceof Error
+        ? {
+            name: body.name,
+            message: body.message,
+            stack: body.stack,
+          }
+        : body,
     ),
     {
       status: 500,
       statusText: "Unhandled Exception",
       headers: {
-        "Content-Type": "application/json"
-      }
-    }
+        "Content-Type": "application/json",
+      },
+    },
   );
 }
 function isResponseError(response) {
-  return response != null && response instanceof Response && isPropertyAccessible(response, "type") && response.type === "error";
+  return (
+    response != null &&
+    response instanceof Response &&
+    isPropertyAccessible(response, "type") &&
+    response.type === "error"
+  );
 }
 function isResponseLike(value) {
-  return isObject(value, true) && isPropertyAccessible(value, "status") && isPropertyAccessible(value, "statusText") && isPropertyAccessible(value, "bodyUsed");
+  return (
+    isObject(value, true) &&
+    isPropertyAccessible(value, "status") &&
+    isPropertyAccessible(value, "statusText") &&
+    isPropertyAccessible(value, "bodyUsed")
+  );
 }
 
 // src/utils/handleRequest.ts
-var _deferredpromise = require('@open-draft/deferred-promise');
-var _until = require('@open-draft/until');
+var _deferredpromise = require("@open-draft/deferred-promise");
+var _until = require("@open-draft/until");
 
 // src/utils/isNodeLikeError.ts
 function isNodeLikeError(error) {
@@ -107,20 +119,25 @@ async function handleRequest(options) {
       () => {
         requestAbortPromise.reject(options.request.signal.reason);
       },
-      { once: true }
+      { once: true },
     );
   }
   const result = await _until.until.call(void 0, async () => {
-    const requestListenersPromise = _chunk2HUMWGRDjs.emitAsync.call(void 0, options.emitter, "request", {
-      requestId: options.requestId,
-      request: options.request,
-      controller: options.controller
-    });
+    const requestListenersPromise = _chunk2HUMWGRDjs.emitAsync.call(
+      void 0,
+      options.emitter,
+      "request",
+      {
+        requestId: options.requestId,
+        request: options.request,
+        controller: options.controller,
+      },
+    );
     await Promise.race([
       // Short-circuit the request handling promise if the request gets aborted.
       requestAbortPromise,
       requestListenersPromise,
-      options.controller.handled
+      options.controller.handled,
     ]);
   });
   if (requestAbortPromise.state === "rejected") {
@@ -132,47 +149,52 @@ async function handleRequest(options) {
       return;
     }
     if (options.emitter.listenerCount("unhandledException") > 0) {
-      const unhandledExceptionController = new (0, _chunk57RIRQUYjs.RequestController)(
-        options.request,
-        {
-          /**
-           * @note Intentionally empty passthrough handle.
-           * This controller is created within another controller and we only need
-           * to know if `unhandledException` listeners handled the request.
-           */
-          passthrough() {
-          },
-          async respondWith(response) {
-            await handleResponse(response);
-          },
-          async errorWith(reason) {
-            await options.controller.errorWith(reason);
-          }
-        }
-      );
-      await _chunk2HUMWGRDjs.emitAsync.call(void 0, options.emitter, "unhandledException", {
-        error: result.error,
-        request: options.request,
-        requestId: options.requestId,
-        controller: unhandledExceptionController
+      const unhandledExceptionController = new (0,
+      _chunk57RIRQUYjs.RequestController)(options.request, {
+        /**
+         * @note Intentionally empty passthrough handle.
+         * This controller is created within another controller and we only need
+         * to know if `unhandledException` listeners handled the request.
+         */
+        passthrough() {},
+        async respondWith(response) {
+          await handleResponse(response);
+        },
+        async errorWith(reason) {
+          await options.controller.errorWith(reason);
+        },
       });
-      if (unhandledExceptionController.readyState !== _chunk57RIRQUYjs.RequestController.PENDING) {
+      await _chunk2HUMWGRDjs.emitAsync.call(
+        void 0,
+        options.emitter,
+        "unhandledException",
+        {
+          error: result.error,
+          request: options.request,
+          requestId: options.requestId,
+          controller: unhandledExceptionController,
+        },
+      );
+      if (
+        unhandledExceptionController.readyState !==
+        _chunk57RIRQUYjs.RequestController.PENDING
+      ) {
         return;
       }
     }
     await options.controller.respondWith(
-      createServerErrorResponse(result.error)
+      createServerErrorResponse(result.error),
     );
     return;
   }
-  if (options.controller.readyState === _chunk57RIRQUYjs.RequestController.PENDING) {
+  if (
+    options.controller.readyState === _chunk57RIRQUYjs.RequestController.PENDING
+  ) {
     return await options.controller.passthrough();
   }
   return options.controller.handled;
 }
 
-
-
-
-exports.isResponseError = isResponseError; exports.handleRequest = handleRequest;
+exports.isResponseError = isResponseError;
+exports.handleRequest = handleRequest;
 //# sourceMappingURL=chunk-FW45TRCB.js.map

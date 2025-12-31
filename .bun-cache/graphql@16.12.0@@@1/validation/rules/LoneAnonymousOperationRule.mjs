@@ -1,5 +1,5 @@
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { Kind } from "../../language/kinds.mjs";
 
 /**
  * Lone anonymous operation
@@ -22,7 +22,7 @@ export function LoneAnonymousOperationRule(context) {
       if (!node.name && operationCount > 1) {
         context.reportError(
           new GraphQLError(
-            'This anonymous operation must be the only defined operation.',
+            "This anonymous operation must be the only defined operation.",
             {
               nodes: node,
             },

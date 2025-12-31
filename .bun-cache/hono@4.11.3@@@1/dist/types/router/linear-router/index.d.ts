@@ -2,4 +2,4 @@
  * @module
  * LinearRouter for Hono.
  */
-export { LinearRouter } from './router';
+export { LinearRouter } from "./router";

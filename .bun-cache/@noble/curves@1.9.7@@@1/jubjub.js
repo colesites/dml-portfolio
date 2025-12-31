@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.groupHash = exports.findGroupHash = exports.jubjub = void 0;
 /**

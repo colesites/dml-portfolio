@@ -21,14 +21,37 @@ import { JsonSchema7UndefinedType } from "./parsers/undefined.js";
 import { JsonSchema7UnionType } from "./parsers/union.js";
 import { JsonSchema7UnknownType } from "./parsers/unknown.js";
 type JsonSchema7RefType = {
-    $ref: string;
+  $ref: string;
 };
 type JsonSchema7Meta = {
-    title?: string;
-    default?: any;
-    description?: string;
-    markdownDescription?: string;
+  title?: string;
+  default?: any;
+  description?: string;
+  markdownDescription?: string;
 };
-export type JsonSchema7TypeUnion = JsonSchema7StringType | JsonSchema7ArrayType | JsonSchema7NumberType | JsonSchema7BigintType | JsonSchema7BooleanType | JsonSchema7DateType | JsonSchema7EnumType | JsonSchema7LiteralType | JsonSchema7NativeEnumType | JsonSchema7NullType | JsonSchema7NumberType | JsonSchema7ObjectType | JsonSchema7RecordType | JsonSchema7TupleType | JsonSchema7UnionType | JsonSchema7UndefinedType | JsonSchema7RefType | JsonSchema7NeverType | JsonSchema7MapType | JsonSchema7AnyType | JsonSchema7NullableType | JsonSchema7AllOfType | JsonSchema7UnknownType | JsonSchema7SetType;
+export type JsonSchema7TypeUnion =
+  | JsonSchema7StringType
+  | JsonSchema7ArrayType
+  | JsonSchema7NumberType
+  | JsonSchema7BigintType
+  | JsonSchema7BooleanType
+  | JsonSchema7DateType
+  | JsonSchema7EnumType
+  | JsonSchema7LiteralType
+  | JsonSchema7NativeEnumType
+  | JsonSchema7NullType
+  | JsonSchema7NumberType
+  | JsonSchema7ObjectType
+  | JsonSchema7RecordType
+  | JsonSchema7TupleType
+  | JsonSchema7UnionType
+  | JsonSchema7UndefinedType
+  | JsonSchema7RefType
+  | JsonSchema7NeverType
+  | JsonSchema7MapType
+  | JsonSchema7AnyType
+  | JsonSchema7NullableType
+  | JsonSchema7AllOfType
+  | JsonSchema7UnknownType
+  | JsonSchema7SetType;
 export type JsonSchema7Type = JsonSchema7TypeUnion & JsonSchema7Meta;
-export {};

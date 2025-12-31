@@ -1,7 +1,36 @@
-"use strict";
-
 exports.__esModule = true;
-exports.word = exports.tilde = exports.tab = exports.str = exports.space = exports.slash = exports.singleQuote = exports.semicolon = exports.plus = exports.pipe = exports.openSquare = exports.openParenthesis = exports.newline = exports.greaterThan = exports.feed = exports.equals = exports.doubleQuote = exports.dollar = exports.cr = exports.comment = exports.comma = exports.combinator = exports.colon = exports.closeSquare = exports.closeParenthesis = exports.caret = exports.bang = exports.backslash = exports.at = exports.asterisk = exports.ampersand = void 0;
+exports.word =
+  exports.tilde =
+  exports.tab =
+  exports.str =
+  exports.space =
+  exports.slash =
+  exports.singleQuote =
+  exports.semicolon =
+  exports.plus =
+  exports.pipe =
+  exports.openSquare =
+  exports.openParenthesis =
+  exports.newline =
+  exports.greaterThan =
+  exports.feed =
+  exports.equals =
+  exports.doubleQuote =
+  exports.dollar =
+  exports.cr =
+  exports.comment =
+  exports.comma =
+  exports.combinator =
+  exports.colon =
+  exports.closeSquare =
+  exports.closeParenthesis =
+  exports.caret =
+  exports.bang =
+  exports.backslash =
+  exports.at =
+  exports.asterisk =
+  exports.ampersand =
+    void 0;
 var ampersand = 38; // `&`.charCodeAt(0);
 exports.ampersand = ampersand;
 var asterisk = 42; // `*`.charCodeAt(0);

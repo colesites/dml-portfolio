@@ -1,28 +1,19 @@
-/*!
- * body-parser
- * Copyright(c) 2014 Jonathan Ong
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict'
-
 /**
  * Module dependencies.
  * @private
  */
 
-var createError = require('http-errors')
-var debug = require('debug')('body-parser:urlencoded')
-var read = require('../read')
-var qs = require('qs')
-var { normalizeOptions } = require('../utils')
+var createError = require("http-errors");
+var debug = require("debug")("body-parser:urlencoded");
+var read = require("../read");
+var qs = require("qs");
+var { normalizeOptions } = require("../utils");
 
 /**
  * Module exports.
  */
 
-module.exports = urlencoded
+module.exports = urlencoded;
 
 /**
  * Create a middleware to parse urlencoded bodies.
@@ -32,31 +23,38 @@ module.exports = urlencoded
  * @public
  */
 
-function urlencoded (options) {
-  const normalizedOptions = normalizeOptions(options, 'application/x-www-form-urlencoded')
+function urlencoded(options) {
+  const normalizedOptions = normalizeOptions(
+    options,
+    "application/x-www-form-urlencoded",
+  );
 
-  if (normalizedOptions.defaultCharset !== 'utf-8' && normalizedOptions.defaultCharset !== 'iso-8859-1') {
-    throw new TypeError('option defaultCharset must be either utf-8 or iso-8859-1')
+  if (
+    normalizedOptions.defaultCharset !== "utf-8" &&
+    normalizedOptions.defaultCharset !== "iso-8859-1"
+  ) {
+    throw new TypeError(
+      "option defaultCharset must be either utf-8 or iso-8859-1",
+    );
   }
 
   // create the appropriate query parser
-  var queryparse = createQueryParser(options)
+  var queryparse = createQueryParser(options);
 
-  function parse (body, encoding) {
-    return body.length
-      ? queryparse(body, encoding)
-      : {}
+  function parse(body, encoding) {
+    return body.length ? queryparse(body, encoding) : {};
   }
 
   const readOptions = {
     ...normalizedOptions,
     // assert charset
-    isValidCharset: (charset) => charset === 'utf-8' || charset === 'iso-8859-1'
-  }
+    isValidCharset: (charset) =>
+      charset === "utf-8" || charset === "iso-8859-1",
+  };
 
-  return function urlencodedParser (req, res, next) {
-    read(req, res, next, parse, debug, readOptions)
-  }
+  return function urlencodedParser(req, res, next) {
+    read(req, res, next, parse, debug, readOptions);
+  };
 }
 
 /**
@@ -65,40 +63,43 @@ function urlencoded (options) {
  * @param {object} options
  */
 
-function createQueryParser (options) {
-  var extended = Boolean(options?.extended)
-  var parameterLimit = options?.parameterLimit !== undefined
-    ? options?.parameterLimit
-    : 1000
-  var charsetSentinel = options?.charsetSentinel
-  var interpretNumericEntities = options?.interpretNumericEntities
-  var depth = extended ? (options?.depth !== undefined ? options?.depth : 32) : 0
+function createQueryParser(options) {
+  var extended = Boolean(options?.extended);
+  var parameterLimit =
+    options?.parameterLimit !== undefined ? options?.parameterLimit : 1000;
+  var charsetSentinel = options?.charsetSentinel;
+  var interpretNumericEntities = options?.interpretNumericEntities;
+  var depth = extended
+    ? options?.depth !== undefined
+      ? options?.depth
+      : 32
+    : 0;
 
   if (isNaN(parameterLimit) || parameterLimit < 1) {
-    throw new TypeError('option parameterLimit must be a positive number')
+    throw new TypeError("option parameterLimit must be a positive number");
   }
 
   if (isNaN(depth) || depth < 0) {
-    throw new TypeError('option depth must be a zero or a positive number')
+    throw new TypeError("option depth must be a zero or a positive number");
   }
 
   if (isFinite(parameterLimit)) {
-    parameterLimit = parameterLimit | 0
+    parameterLimit = parameterLimit | 0;
   }
 
-  return function queryparse (body, encoding) {
-    var paramCount = parameterCount(body, parameterLimit)
+  return function queryparse(body, encoding) {
+    var paramCount = parameterCount(body, parameterLimit);
 
     if (paramCount === undefined) {
-      debug('too many parameters')
-      throw createError(413, 'too many parameters', {
-        type: 'parameters.too.many'
-      })
+      debug("too many parameters");
+      throw createError(413, "too many parameters", {
+        type: "parameters.too.many",
+      });
     }
 
-    var arrayLimit = extended ? Math.max(100, paramCount) : 0
+    var arrayLimit = extended ? Math.max(100, paramCount) : 0;
 
-    debug('parse ' + (extended ? 'extended ' : '') + 'urlencoding')
+    debug("parse " + (extended ? "extended " : "") + "urlencoding");
     try {
       return qs.parse(body, {
         allowPrototypes: true,
@@ -108,18 +109,18 @@ function createQueryParser (options) {
         interpretNumericEntities: interpretNumericEntities,
         charset: encoding,
         parameterLimit: parameterLimit,
-        strictDepth: true
-      })
+        strictDepth: true,
+      });
     } catch (err) {
       if (err instanceof RangeError) {
-        throw createError(400, 'The input exceeded the depth', {
-          type: 'querystring.parse.rangeError'
-        })
+        throw createError(400, "The input exceeded the depth", {
+          type: "querystring.parse.rangeError",
+        });
       } else {
-        throw err
+        throw err;
       }
     }
-  }
+  };
 }
 
 /**
@@ -130,13 +131,13 @@ function createQueryParser (options) {
  * @return {number|undefined} Returns undefined if limit exceeded
  * @api private
  */
-function parameterCount (body, limit) {
-  let count = 0
-  let index = -1
+function parameterCount(body, limit) {
+  let count = 0;
+  let index = -1;
   do {
-    count++
-    if (count > limit) return undefined // Early exit if limit exceeded
-    index = body.indexOf('&', index + 1)
-  } while (index !== -1)
-  return count
+    count++;
+    if (count > limit) return undefined; // Early exit if limit exceeded
+    index = body.indexOf("&", index + 1);
+  } while (index !== -1);
+  return count;
 }

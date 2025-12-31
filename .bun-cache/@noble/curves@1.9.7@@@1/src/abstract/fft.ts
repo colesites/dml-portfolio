@@ -3,7 +3,7 @@
  * API may change at any time. The code has not been audited. Feature requests are welcome.
  * @module
  */
-import type { IField } from './modular.ts';
+import type { IField } from "./modular.ts";
 
 export interface MutableArrayLike<T> {
   [index: number]: T;
@@ -15,7 +15,7 @@ export interface MutableArrayLike<T> {
 function checkU32(n: number) {
   // 0xff_ff_ff_ff
   if (!Number.isSafeInteger(n) || n < 0 || n > 0xffffffff)
-    throw new Error('wrong u32 integer:' + n);
+    throw new Error("wrong u32 integer:" + n);
   return n;
 }
 
@@ -49,10 +49,12 @@ export function log2(n: number): number {
  * array on even and odd indices, then it applied again to each part,
  * which is core of fft
  */
-export function bitReversalInplace<T extends MutableArrayLike<any>>(values: T): T {
+export function bitReversalInplace<T extends MutableArrayLike<any>>(
+  values: T,
+): T {
   const n = values.length;
   if (n < 2 || !isPowerOfTwo(n))
-    throw new Error('n must be a power of 2 and greater than 1. Got ' + n);
+    throw new Error("n must be a power of 2 and greater than 1. Got " + n);
   const bits = log2(n);
   for (let i = 0; i < n; i++) {
     const j = reverseBits(i, bits);
@@ -84,14 +86,17 @@ export type RootsOfUnity = {
   clear: () => void;
 };
 /** We limit roots up to 2**31, which is a lot: 2-billion polynomimal should be rare. */
-export function rootsOfUnity(field: IField<bigint>, generator?: bigint): RootsOfUnity {
+export function rootsOfUnity(
+  field: IField<bigint>,
+  generator?: bigint,
+): RootsOfUnity {
   // Factor field.ORDER-1 as oddFactor * 2^powerOfTwo
   let oddFactor = field.ORDER - _1n;
   let powerOfTwo = 0;
   for (; (oddFactor & _1n) !== _1n; powerOfTwo++, oddFactor >>= _1n);
 
   // Find non quadratic residue
-  let G = generator !== undefined ? BigInt(generator) : findGenerator(field);
+  const G = generator !== undefined ? BigInt(generator) : findGenerator(field);
   // Powers of generator
   const omegas: bigint[] = new Array(powerOfTwo + 1);
   omegas[powerOfTwo] = field.pow(G, oddFactor);
@@ -101,7 +106,9 @@ export function rootsOfUnity(field: IField<bigint>, generator?: bigint): RootsOf
   const checkBits = (bits: number) => {
     checkU32(bits);
     if (bits > 31 || bits > powerOfTwo)
-      throw new Error('rootsOfUnity: wrong bits ' + bits + ' powerOfTwo=' + powerOfTwo);
+      throw new Error(
+        "rootsOfUnity: wrong bits " + bits + " powerOfTwo=" + powerOfTwo,
+      );
     return bits;
   };
   const precomputeRoots = (maxPower: number) => {
@@ -109,7 +116,11 @@ export function rootsOfUnity(field: IField<bigint>, generator?: bigint): RootsOf
     for (let power = maxPower; power >= 0; power--) {
       if (rootsCache[power]) continue; // Skip if we've already computed roots for this power
       const rootsAtPower: bigint[] = [];
-      for (let j = 0, cur = field.ONE; j < 2 ** power; j++, cur = field.mul(cur, omegas[power]))
+      for (
+        let j = 0, cur = field.ONE;
+        j < 2 ** power;
+        j++, cur = field.mul(cur, omegas[power])
+      )
         rootsAtPower.push(cur);
       rootsCache[power] = rootsAtPower;
     }
@@ -193,14 +204,25 @@ export type FFTCoreLoop<T> = <P extends Polynomial<T>>(values: P) => P;
  * Cyclic NTT: Rq = Zq[x]/(x^n-1). butterfly_DIT+loop_DIT OR butterfly_DIF+loop_DIT, roots are omega
  * Negacyclic NTT: Rq = Zq[x]/(x^n+1). butterfly_DIT+loop_DIF, at least for mlkem / mldsa
  */
-export const FFTCore = <T, R>(F: FFTOpts<T, R>, coreOpts: FFTCoreOpts<R>): FFTCoreLoop<T> => {
-  const { N, roots, dit, invertButterflies = false, skipStages = 0, brp = true } = coreOpts;
+export const FFTCore = <T, R>(
+  F: FFTOpts<T, R>,
+  coreOpts: FFTCoreOpts<R>,
+): FFTCoreLoop<T> => {
+  const {
+    N,
+    roots,
+    dit,
+    invertButterflies = false,
+    skipStages = 0,
+    brp = true,
+  } = coreOpts;
   const bits = log2(N);
-  if (!isPowerOfTwo(N)) throw new Error('FFT: Polynomial size should be power of two');
+  if (!isPowerOfTwo(N))
+    throw new Error("FFT: Polynomial size should be power of two");
   const isDit = dit !== invertButterflies;
   isDit;
   return <P extends Polynomial<T>>(values: P): P => {
-    if (values.length !== N) throw new Error('FFT: wrong Polynomial length');
+    if (values.length !== N) throw new Error("FFT: wrong Polynomial length");
     if (dit && brp) bitReversalInplace(values);
     for (let i = 0, g = 1; i < bits - skipStages; i++) {
       // For each stage s (sub-FFT length m = 2^s)
@@ -212,7 +234,11 @@ export const FFTCore = <T, R>(F: FFTOpts<T, R>, coreOpts: FFTCoreOpts<R>): FFTCo
       for (let k = 0; k < N; k += m) {
         // Loop over each butterfly within the subarray
         for (let j = 0, grp = g++; j < m2; j++) {
-          const rootPos = invertButterflies ? (dit ? N - grp : grp) : j * stride;
+          const rootPos = invertButterflies
+            ? dit
+              ? N - grp
+              : grp
+            : j * stride;
           const i0 = k + j;
           const i1 = k + j + m2;
           const omega = roots[rootPos];
@@ -239,41 +265,73 @@ export const FFTCore = <T, R>(F: FFTOpts<T, R>, coreOpts: FFTCoreOpts<R>): FFTCo
 };
 
 export type FFTMethods<T> = {
-  direct<P extends Polynomial<T>>(values: P, brpInput?: boolean, brpOutput?: boolean): P;
-  inverse<P extends Polynomial<T>>(values: P, brpInput?: boolean, brpOutput?: boolean): P;
+  direct<P extends Polynomial<T>>(
+    values: P,
+    brpInput?: boolean,
+    brpOutput?: boolean,
+  ): P;
+  inverse<P extends Polynomial<T>>(
+    values: P,
+    brpInput?: boolean,
+    brpOutput?: boolean,
+  ): P;
 };
 
 /**
  * NTT aka FFT over finite field (NOT over complex numbers).
  * Naming mirrors other libraries.
  */
-export function FFT<T>(roots: RootsOfUnity, opts: FFTOpts<T, bigint>): FFTMethods<T> {
+export function FFT<T>(
+  roots: RootsOfUnity,
+  opts: FFTOpts<T, bigint>,
+): FFTMethods<T> {
   const getLoop = (
     N: number,
     roots: Polynomial<bigint>,
     brpInput = false,
-    brpOutput = false
+    brpOutput = false,
   ): (<P extends Polynomial<T>>(values: P) => P) => {
     if (brpInput && brpOutput) {
       // we cannot optimize this case, but lets support it anyway
       return (values) =>
-        FFTCore(opts, { N, roots, dit: false, brp: false })(bitReversalInplace(values));
+        FFTCore(opts, { N, roots, dit: false, brp: false })(
+          bitReversalInplace(values),
+        );
     }
     if (brpInput) return FFTCore(opts, { N, roots, dit: true, brp: false });
     if (brpOutput) return FFTCore(opts, { N, roots, dit: false, brp: false });
     return FFTCore(opts, { N, roots, dit: true, brp: true }); // all natural
   };
   return {
-    direct<P extends Polynomial<T>>(values: P, brpInput = false, brpOutput = false): P {
+    direct<P extends Polynomial<T>>(
+      values: P,
+      brpInput = false,
+      brpOutput = false,
+    ): P {
       const N = values.length;
-      if (!isPowerOfTwo(N)) throw new Error('FFT: Polynomial size should be power of two');
+      if (!isPowerOfTwo(N))
+        throw new Error("FFT: Polynomial size should be power of two");
       const bits = log2(N);
-      return getLoop(N, roots.roots(bits), brpInput, brpOutput)<P>(values.slice());
+      return getLoop(
+        N,
+        roots.roots(bits),
+        brpInput,
+        brpOutput,
+      )<P>(values.slice());
     },
-    inverse<P extends Polynomial<T>>(values: P, brpInput = false, brpOutput = false): P {
+    inverse<P extends Polynomial<T>>(
+      values: P,
+      brpInput = false,
+      brpOutput = false,
+    ): P {
       const N = values.length;
       const bits = log2(N);
-      const res = getLoop(N, roots.inverse(bits), brpInput, brpOutput)(values.slice());
+      const res = getLoop(
+        N,
+        roots.inverse(bits),
+        brpInput,
+        brpOutput,
+      )(values.slice());
       const ivm = opts.inv(BigInt(values.length)); // scale
       // we can get brp output if we use dif instead of dit!
       for (let i = 0; i < res.length; i++) res[i] = opts.mul(res[i], ivm);
@@ -285,7 +343,10 @@ export function FFT<T>(roots: RootsOfUnity, opts: FFTOpts<T, bigint>): FFTMethod
   };
 }
 
-export type CreatePolyFn<P extends Polynomial<T>, T> = (len: number, elm?: T) => P;
+export type CreatePolyFn<P extends Polynomial<T>, T> = (
+  len: number,
+  elm?: T,
+) => P;
 
 export type PolyFn<P extends Polynomial<T>, T> = {
   roots: RootsOfUnity;
@@ -332,37 +393,37 @@ export function poly<T>(
   roots: RootsOfUnity,
   create?: undefined,
   fft?: FFTMethods<T>,
-  length?: number
+  length?: number,
 ): PolyFn<T[], T>;
 export function poly<T, P extends Polynomial<T>>(
   field: IField<T>,
   roots: RootsOfUnity,
   create: CreatePolyFn<P, T>,
   fft?: FFTMethods<T>,
-  length?: number
+  length?: number,
 ): PolyFn<P, T>;
 export function poly<T, P extends Polynomial<T>>(
   field: IField<T>,
   roots: RootsOfUnity,
   create?: CreatePolyFn<P, T>,
   fft?: FFTMethods<T>,
-  length?: number
+  length?: number,
 ): PolyFn<any, T> {
   const F = field;
   const _create =
     create ||
-    (((len: number, elm?: T): Polynomial<T> => new Array(len).fill(elm ?? F.ZERO)) as CreatePolyFn<
-      P,
-      T
-    >);
+    (((len: number, elm?: T): Polynomial<T> =>
+      new Array(len).fill(elm ?? F.ZERO)) as CreatePolyFn<P, T>);
 
   const isPoly = (x: any): x is P => Array.isArray(x) || ArrayBuffer.isView(x);
   const checkLength = (...lst: P[]): number => {
     if (!lst.length) return 0;
-    for (const i of lst) if (!isPoly(i)) throw new Error('poly: not polynomial: ' + i);
+    for (const i of lst)
+      if (!isPoly(i)) throw new Error("poly: not polynomial: " + i);
     const L = lst[0].length;
     for (let i = 1; i < lst.length; i++)
-      if (lst[i].length !== L) throw new Error(`poly: mismatched lengths ${L} vs ${lst[i].length}`);
+      if (lst[i].length !== L)
+        throw new Error(`poly: mismatched lengths ${L} vs ${lst[i].length}`);
     if (length !== undefined && L !== length)
       throw new Error(`poly: expected fixed length ${length}, got ${L}`);
     return L;
@@ -454,7 +515,8 @@ export function poly<T, P extends Polynomial<T>>(
     eval: (a: P, basis: P): T => {
       checkLength(a);
       let acc = F.ZERO;
-      for (let i = 0; i < a.length; i++) acc = F.add(acc, F.mul(a[i], basis[i]));
+      for (let i = 0; i < a.length; i++)
+        acc = F.add(acc, F.mul(a[i], basis[i]));
       return acc;
     },
     monomial: {
@@ -471,7 +533,8 @@ export function poly<T, P extends Polynomial<T>>(
         checkLength(a);
         // Same as eval(a, monomialBasis(x, a.length)), but it is faster this way
         let acc = F.ZERO;
-        for (let i = a.length - 1; i >= 0; i--) acc = F.add(F.mul(acc, x), a[i]);
+        for (let i = a.length - 1; i >= 0; i--)
+          acc = F.add(F.mul(acc, x), a[i]);
         return acc;
       },
     },
@@ -491,7 +554,8 @@ export function poly<T, P extends Polynomial<T>>(
         const denom = _create(n);
         for (let i = 0; i < n; i++) denom[i] = F.sub(x, cache[i] as T);
         const inv = F.invertBatch(denom as any as T[]);
-        for (let i = 0; i < n; i++) out[i] = F.mul(c, F.mul(cache[i] as T, inv[i]));
+        for (let i = 0; i < n; i++)
+          out[i] = F.mul(c, F.mul(cache[i] as T, inv[i]));
         return out;
       },
       eval(a: P, x: T, brp = false): T {
@@ -500,7 +564,8 @@ export function poly<T, P extends Polynomial<T>>(
         if (idx !== -1) return a[idx]; // fast path
         const L = this.basis(x, a.length, brp); // Lᵢ(x)
         let acc = F.ZERO;
-        for (let i = 0; i < a.length; i++) if (!F.is0(a[i])) acc = F.add(acc, F.mul(a[i], L[i]));
+        for (let i = 0; i < a.length; i++)
+          if (!F.is0(a[i])) acc = F.add(acc, F.mul(a[i], L[i]));
         return acc;
       },
     },
@@ -510,7 +575,8 @@ export function poly<T, P extends Polynomial<T>>(
       out[0] = F.ONE;
       for (const r of roots) {
         const neg = F.neg(r);
-        for (let j = out.length - 1; j > 0; j--) out[j] = F.add(F.mul(out[j], neg), out[j - 1]);
+        for (let j = out.length - 1; j > 0; j--)
+          out[j] = F.add(F.mul(out[j], neg), out[j - 1]);
         out[0] = F.mul(out[0], neg);
       }
       return out;

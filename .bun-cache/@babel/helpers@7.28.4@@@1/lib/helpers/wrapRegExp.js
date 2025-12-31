@@ -1,15 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _wrapRegExp;
 var _setPrototypeOf = require("./setPrototypeOf.js");
 var _inherits = require("./inherits.js");
 function _wrapRegExp() {
-  exports.default = _wrapRegExp = function (re, groups) {
-    return new BabelRegExp(re, undefined, groups);
-  };
+  exports.default = _wrapRegExp = (re, groups) =>
+    new BabelRegExp(re, undefined, groups);
   var _super = RegExp.prototype;
   var _groups = new WeakMap();
   function BabelRegExp(re, flags, groups) {
@@ -30,14 +29,22 @@ function _wrapRegExp() {
   BabelRegExp.prototype[Symbol.replace] = function (str, substitution) {
     if (typeof substitution === "string") {
       var groups = _groups.get(this);
-      return _super[Symbol.replace].call(this, str, substitution.replace(/\$<([^>]+)(>|$)/g, function (match, name, end) {
-        if (end === "") {
-          return match;
-        } else {
-          var group = groups[name];
-          return Array.isArray(group) ? "$" + group.join("$") : typeof group === "number" ? "$" + group : "";
-        }
-      }));
+      return _super[Symbol.replace].call(
+        this,
+        str,
+        substitution.replace(/\$<([^>]+)(>|$)/g, (match, name, end) => {
+          if (end === "") {
+            return match;
+          } else {
+            var group = groups[name];
+            return Array.isArray(group)
+              ? "$" + group.join("$")
+              : typeof group === "number"
+                ? "$" + group
+                : "";
+          }
+        }),
+      );
     } else if (typeof substitution === "function") {
       var _this = this;
       return _super[Symbol.replace].call(this, str, function () {
@@ -54,9 +61,10 @@ function _wrapRegExp() {
   };
   function buildGroups(result, re) {
     var g = _groups.get(re);
-    return Object.keys(g).reduce(function (groups, name) {
+    return Object.keys(g).reduce((groups, name) => {
       var i = g[name];
-      if (typeof i === "number") groups[name] = result[i];else {
+      if (typeof i === "number") groups[name] = result[i];
+      else {
         var k = 0;
         while (result[i[k]] === undefined && k + 1 < i.length) {
           k++;

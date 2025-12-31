@@ -1,28 +1,26 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.assertEnumValueName = assertEnumValueName;
 exports.assertName = assertName;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _GraphQLError = require('../error/GraphQLError.js');
+var _GraphQLError = require("../error/GraphQLError.js");
 
-var _characterClasses = require('../language/characterClasses.js');
+var _characterClasses = require("../language/characterClasses.js");
 
 /**
  * Upholds the spec rules about naming.
  */
 function assertName(name) {
-  name != null || (0, _devAssert.devAssert)(false, 'Must provide name.');
-  typeof name === 'string' ||
-    (0, _devAssert.devAssert)(false, 'Expected name to be a string.');
+  name != null || (0, _devAssert.devAssert)(false, "Must provide name.");
+  typeof name === "string" ||
+    (0, _devAssert.devAssert)(false, "Expected name to be a string.");
 
   if (name.length === 0) {
     throw new _GraphQLError.GraphQLError(
-      'Expected name to be a non-empty string.',
+      "Expected name to be a non-empty string.",
     );
   }
 
@@ -49,7 +47,7 @@ function assertName(name) {
  */
 
 function assertEnumValueName(name) {
-  if (name === 'true' || name === 'false' || name === 'null') {
+  if (name === "true" || name === "false" || name === "null") {
     throw new _GraphQLError.GraphQLError(
       `Enum values cannot be named: ${name}`,
     );

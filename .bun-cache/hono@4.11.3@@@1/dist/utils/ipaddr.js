@@ -5,7 +5,9 @@ var expandIPv6 = (ipV6) => {
     sections.splice(
       -1,
       1,
-      ...convertIPv6BinaryToString(convertIPv4ToBinary(sections.at(-1))).substring(2).split(":")
+      ...convertIPv6BinaryToString(convertIPv4ToBinary(sections.at(-1)))
+        .substring(2)
+        .split(":"),
       // => ['7f00', '0001']
     );
   }
@@ -50,7 +52,7 @@ var convertIPv6ToBinary = (ipv6) => {
 var convertIPv4BinaryToString = (ipV4) => {
   const sections = [];
   for (let i = 0; i < 4; i++) {
-    sections.push(ipV4 >> BigInt(8 * (3 - i)) & 0xffn);
+    sections.push((ipV4 >> BigInt(8 * (3 - i))) & 0xffn);
   }
   return sections.join(".");
 };
@@ -60,7 +62,7 @@ var convertIPv6BinaryToString = (ipV6) => {
   }
   const sections = [];
   for (let i = 0; i < 8; i++) {
-    sections.push((ipV6 >> BigInt(16 * (7 - i)) & 0xffffn).toString(16));
+    sections.push(((ipV6 >> BigInt(16 * (7 - i))) & 0xffffn).toString(16));
   }
   let currentZeroStart = -1;
   let maxZeroStart = -1;
@@ -97,5 +99,5 @@ export {
   convertIPv6BinaryToString,
   convertIPv6ToBinary,
   distinctRemoteAddr,
-  expandIPv6
+  expandIPv6,
 };

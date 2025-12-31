@@ -1,16 +1,16 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { GraphQLError } from '../error/GraphQLError.mjs';
-import { isNameContinue, isNameStart } from '../language/characterClasses.mjs';
+import { GraphQLError } from "../error/GraphQLError.mjs";
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { isNameContinue, isNameStart } from "../language/characterClasses.mjs";
 /**
  * Upholds the spec rules about naming.
  */
 
 export function assertName(name) {
-  name != null || devAssert(false, 'Must provide name.');
-  typeof name === 'string' || devAssert(false, 'Expected name to be a string.');
+  name != null || devAssert(false, "Must provide name.");
+  typeof name === "string" || devAssert(false, "Expected name to be a string.");
 
   if (name.length === 0) {
-    throw new GraphQLError('Expected name to be a non-empty string.');
+    throw new GraphQLError("Expected name to be a non-empty string.");
   }
 
   for (let i = 1; i < name.length; ++i) {
@@ -36,7 +36,7 @@ export function assertName(name) {
  */
 
 export function assertEnumValueName(name) {
-  if (name === 'true' || name === 'false' || name === 'null') {
+  if (name === "true" || name === "false" || name === "null") {
     throw new GraphQLError(`Enum values cannot be named: ${name}`);
   }
 

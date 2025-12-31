@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 class PluginPass {
@@ -37,14 +37,12 @@ class PluginPass {
   }
 }
 exports.default = PluginPass;
-{
-  PluginPass.prototype.getModuleName = function getModuleName() {
-    return this.file.getModuleName();
-  };
-  PluginPass.prototype.addImport = function addImport() {
-    this.file.addImport();
-  };
-}
+PluginPass.prototype.getModuleName = function getModuleName() {
+  return this.file.getModuleName();
+};
+PluginPass.prototype.addImport = function addImport() {
+  this.file.addImport();
+};
 0 && 0;
 
 //# sourceMappingURL=plugin-pass.js.map

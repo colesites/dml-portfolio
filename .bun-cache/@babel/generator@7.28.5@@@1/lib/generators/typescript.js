@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.TSAnyKeyword = TSAnyKeyword;
 exports.TSArrayType = TSArrayType;
@@ -60,7 +60,8 @@ exports.TSTypeAssertion = TSTypeAssertion;
 exports.TSTypeLiteral = TSTypeLiteral;
 exports.TSTypeOperator = TSTypeOperator;
 exports.TSTypeParameter = TSTypeParameter;
-exports.TSTypeParameterDeclaration = exports.TSTypeParameterInstantiation = TSTypeParameterInstantiation;
+exports.TSTypeParameterDeclaration = exports.TSTypeParameterInstantiation =
+  TSTypeParameterInstantiation;
 exports.TSTypePredicate = TSTypePredicate;
 exports.TSTypeQuery = TSTypeQuery;
 exports.TSTypeReference = TSTypeReference;
@@ -73,17 +74,27 @@ exports.tsPrintFunctionOrConstructorType = tsPrintFunctionOrConstructorType;
 exports.tsPrintPropertyOrMethodName = tsPrintPropertyOrMethodName;
 exports.tsPrintSignatureDeclarationBase = tsPrintSignatureDeclarationBase;
 function TSTypeAnnotation(node, parent) {
-  this.token((parent.type === "TSFunctionType" || parent.type === "TSConstructorType") && parent.typeAnnotation === node ? "=>" : ":");
+  this.token(
+    (parent.type === "TSFunctionType" || parent.type === "TSConstructorType") &&
+      parent.typeAnnotation === node
+      ? "=>"
+      : ":",
+  );
   this.space();
   if (node.optional) this.tokenChar(63);
   this.print(node.typeAnnotation);
 }
 function TSTypeParameterInstantiation(node, parent) {
   this.tokenChar(60);
-  let printTrailingSeparator = parent.type === "ArrowFunctionExpression" && node.params.length === 1;
+  let printTrailingSeparator =
+    parent.type === "ArrowFunctionExpression" && node.params.length === 1;
   if (this.tokenMap && node.start != null && node.end != null) {
-    printTrailingSeparator && (printTrailingSeparator = !!this.tokenMap.find(node, t => this.tokenMap.matchesOriginal(t, ",")));
-    printTrailingSeparator || (printTrailingSeparator = this.shouldPrintTrailingComma(">"));
+    printTrailingSeparator &&
+      (printTrailingSeparator = !!this.tokenMap.find(node, (t) =>
+        this.tokenMap.matchesOriginal(t, ","),
+      ));
+    printTrailingSeparator ||
+      (printTrailingSeparator = this.shouldPrintTrailingComma(">"));
   }
   this.printList(node.params, printTrailingSeparator);
   this.tokenChar(62);
@@ -165,9 +176,7 @@ function TSConstructSignatureDeclaration(node) {
   maybePrintTrailingCommaOrSemicolon(this, node);
 }
 function TSPropertySignature(node) {
-  const {
-    readonly
-  } = node;
+  const { readonly } = node;
   if (readonly) {
     this.word("readonly");
     this.space();
@@ -189,9 +198,7 @@ function tsPrintPropertyOrMethodName(node) {
   }
 }
 function TSMethodSignature(node) {
-  const {
-    kind
-  } = node;
+  const { kind } = node;
   if (kind === "set" || kind === "get") {
     this.word(kind);
     this.space();
@@ -201,10 +208,7 @@ function TSMethodSignature(node) {
   maybePrintTrailingCommaOrSemicolon(this, node);
 }
 function TSIndexSignature(node) {
-  const {
-    readonly,
-    static: isStatic
-  } = node;
+  const { readonly, static: isStatic } = node;
   if (isStatic) {
     this.word("static");
     this.space();
@@ -273,9 +277,7 @@ function TSConstructorType(node) {
   this.tsPrintFunctionOrConstructorType(node);
 }
 function tsPrintFunctionOrConstructorType(node) {
-  const {
-    typeParameters
-  } = node;
+  const { typeParameters } = node;
   const parameters = node.parameters;
   this.print(typeParameters);
   this.tokenChar(40);
@@ -348,7 +350,10 @@ function TSIntersectionType(node) {
 function tsPrintUnionOrIntersectionType(printer, node, sep) {
   var _printer$tokenMap;
   let hasLeadingToken = 0;
-  if ((_printer$tokenMap = printer.tokenMap) != null && _printer$tokenMap.startMatches(node, sep)) {
+  if (
+    (_printer$tokenMap = printer.tokenMap) != null &&
+    _printer$tokenMap.startMatches(node, sep)
+  ) {
     hasLeadingToken = 1;
     printer.token(sep);
   }
@@ -394,12 +399,7 @@ function TSIndexedAccessType(node) {
   this.tokenChar(93);
 }
 function TSMappedType(node) {
-  const {
-    nameType,
-    optional,
-    readonly,
-    typeAnnotation
-  } = node;
+  const { nameType, optional, readonly, typeAnnotation } = node;
   this.tokenChar(123);
   const exit = this.enterDelimited();
   this.space();
@@ -409,15 +409,11 @@ function TSMappedType(node) {
     this.space();
   }
   this.tokenChar(91);
-  {
-    this.word(node.typeParameter.name);
-  }
+  this.word(node.typeParameter.name);
   this.space();
   this.word("in");
   this.space();
-  {
-    this.print(node.typeParameter.constraint);
-  }
+  this.print(node.typeParameter.constraint);
   if (nameType) {
     this.space();
     this.word("as");
@@ -454,13 +450,7 @@ function TSClassImplements(node) {
   this.print(node.typeArguments);
 }
 function TSInterfaceDeclaration(node) {
-  const {
-    declare,
-    id,
-    typeParameters,
-    extends: extendz,
-    body
-  } = node;
+  const { declare, id, typeParameters, extends: extendz, body } = node;
   if (declare) {
     this.word("declare");
     this.space();
@@ -482,12 +472,7 @@ function TSInterfaceBody(node) {
   printBraced(this, node, () => this.printJoin(node.body, true, true));
 }
 function TSTypeAliasDeclaration(node) {
-  const {
-    declare,
-    id,
-    typeParameters,
-    typeAnnotation
-  } = node;
+  const { declare, id, typeParameters, typeAnnotation } = node;
   if (declare) {
     this.word("declare");
     this.space();
@@ -503,11 +488,7 @@ function TSTypeAliasDeclaration(node) {
   this.semicolon();
 }
 function TSTypeExpression(node) {
-  const {
-    type,
-    expression,
-    typeAnnotation
-  } = node;
+  const { type, expression, typeAnnotation } = node;
   this.print(expression, true);
   this.space();
   this.word(type === "TSAsExpression" ? "as" : "satisfies");
@@ -515,10 +496,7 @@ function TSTypeExpression(node) {
   this.print(typeAnnotation);
 }
 function TSTypeAssertion(node) {
-  const {
-    typeAnnotation,
-    expression
-  } = node;
+  const { typeAnnotation, expression } = node;
   this.tokenChar(60);
   this.print(typeAnnotation);
   this.tokenChar(62);
@@ -527,16 +505,10 @@ function TSTypeAssertion(node) {
 }
 function TSInstantiationExpression(node) {
   this.print(node.expression);
-  {
-    this.print(node.typeParameters);
-  }
+  this.print(node.typeParameters);
 }
 function TSEnumDeclaration(node) {
-  const {
-    declare,
-    const: isConst,
-    id
-  } = node;
+  const { declare, const: isConst, id } = node;
   if (declare) {
     this.word("declare");
     this.space();
@@ -549,21 +521,23 @@ function TSEnumDeclaration(node) {
   this.space();
   this.print(id);
   this.space();
-  {
-    TSEnumBody.call(this, node);
-  }
+  TSEnumBody.call(this, node);
 }
 function TSEnumBody(node) {
   printBraced(this, node, () => {
     var _this$shouldPrintTrai;
-    return this.printList(node.members, (_this$shouldPrintTrai = this.shouldPrintTrailingComma("}")) != null ? _this$shouldPrintTrai : true, true, true);
+    return this.printList(
+      node.members,
+      (_this$shouldPrintTrai = this.shouldPrintTrailingComma("}")) != null
+        ? _this$shouldPrintTrai
+        : true,
+      true,
+      true,
+    );
   });
 }
 function TSEnumMember(node) {
-  const {
-    id,
-    initializer
-  } = node;
+  const { id, initializer } = node;
   this.print(id);
   if (initializer) {
     this.space();
@@ -573,18 +547,16 @@ function TSEnumMember(node) {
   }
 }
 function TSModuleDeclaration(node) {
-  const {
-    declare,
-    id,
-    kind
-  } = node;
+  const { declare, id, kind } = node;
   if (declare) {
     this.word("declare");
     this.space();
   }
   {
     if (!node.global) {
-      this.word(kind != null ? kind : id.type === "Identifier" ? "namespace" : "module");
+      this.word(
+        kind != null ? kind : id.type === "Identifier" ? "namespace" : "module",
+      );
       this.space();
     }
     this.print(id);
@@ -606,11 +578,7 @@ function TSModuleBlock(node) {
   printBraced(this, node, () => this.printSequence(node.body, true));
 }
 function TSImportType(node) {
-  const {
-    argument,
-    qualifier,
-    options
-  } = node;
+  const { argument, qualifier, options } = node;
   this.word("import");
   this.tokenChar(40);
   this.print(argument);
@@ -629,10 +597,7 @@ function TSImportType(node) {
   }
 }
 function TSImportEqualsDeclaration(node) {
-  const {
-    id,
-    moduleReference
-  } = node;
+  const { id, moduleReference } = node;
   if (node.isExport) {
     this.word("export");
     this.space();
@@ -674,9 +639,7 @@ function TSNamespaceExportDeclaration(node) {
   this.semicolon();
 }
 function tsPrintSignatureDeclarationBase(node) {
-  const {
-    typeParameters
-  } = node;
+  const { typeParameters } = node;
   const parameters = node.parameters;
   this.print(typeParameters);
   this.tokenChar(40);
@@ -686,13 +649,21 @@ function tsPrintSignatureDeclarationBase(node) {
 }
 function tsPrintClassMemberModifiers(node) {
   const isPrivateField = node.type === "ClassPrivateProperty";
-  const isPublicField = node.type === "ClassAccessorProperty" || node.type === "ClassProperty";
-  printModifiersList(this, node, [isPublicField && node.declare && "declare", !isPrivateField && node.accessibility]);
+  const isPublicField =
+    node.type === "ClassAccessorProperty" || node.type === "ClassProperty";
+  printModifiersList(this, node, [
+    isPublicField && node.declare && "declare",
+    !isPrivateField && node.accessibility,
+  ]);
   if (node.static) {
     this.word("static");
     this.space();
   }
-  printModifiersList(this, node, [!isPrivateField && node.abstract && "abstract", !isPrivateField && node.override && "override", (isPublicField || isPrivateField) && node.readonly && "readonly"]);
+  printModifiersList(this, node, [
+    !isPrivateField && node.abstract && "abstract",
+    !isPrivateField && node.override && "override",
+    (isPublicField || isPrivateField) && node.readonly && "readonly",
+  ]);
 }
 function printBraced(printer, node, cb) {
   printer.token("{");
@@ -707,15 +678,16 @@ function printModifiersList(printer, node, modifiers) {
   for (const modifier of modifiers) {
     if (modifier) modifiersSet.add(modifier);
   }
-  (_printer$tokenMap2 = printer.tokenMap) == null || _printer$tokenMap2.find(node, tok => {
-    if (modifiersSet.has(tok.value)) {
-      printer.token(tok.value);
-      printer.space();
-      modifiersSet.delete(tok.value);
-      return modifiersSet.size === 0;
-    }
-    return false;
-  });
+  (_printer$tokenMap2 = printer.tokenMap) == null ||
+    _printer$tokenMap2.find(node, (tok) => {
+      if (modifiersSet.has(tok.value)) {
+        printer.token(tok.value);
+        printer.space();
+        modifiersSet.delete(tok.value);
+        return modifiersSet.size === 0;
+      }
+      return false;
+    });
   for (const modifier of modifiersSet) {
     printer.word(modifier);
     printer.space();

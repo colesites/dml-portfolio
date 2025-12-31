@@ -1,4 +1,5 @@
 import { format } from "outvariant";
+
 const LIBRARY_PREFIX = "[MSW]";
 function formatMessage(message, ...positionals) {
   const interpolatedMessage = format(message, ...positionals);
@@ -13,7 +14,7 @@ function error(message, ...positionals) {
 const devUtils = {
   formatMessage,
   warn,
-  error
+  error,
 };
 class InternalError extends Error {
   constructor(message) {
@@ -21,8 +22,5 @@ class InternalError extends Error {
     this.name = "InternalError";
   }
 }
-export {
-  InternalError,
-  devUtils
-};
+export { InternalError, devUtils };
 //# sourceMappingURL=devUtils.mjs.map

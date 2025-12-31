@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _genMapping = require("@jridgewell/gen-mapping");
@@ -16,10 +16,13 @@ class SourceMap {
     this._lastSourceLine = 0;
     this._lastSourceColumn = 0;
     this._inputMap = null;
-    const map = this._map = new _genMapping.GenMapping({
-      sourceRoot: opts.sourceRoot
-    });
-    this._sourceFileName = (_opts$sourceFileName = opts.sourceFileName) == null ? void 0 : _opts$sourceFileName.replace(/\\/g, "/");
+    const map = (this._map = new _genMapping.GenMapping({
+      sourceRoot: opts.sourceRoot,
+    }));
+    this._sourceFileName =
+      (_opts$sourceFileName = opts.sourceFileName) == null
+        ? void 0
+        : _opts$sourceFileName.replace(/\\/g, "/");
     this._rawMappings = undefined;
     if (opts.inputSourceMap) {
       this._inputMap = new _traceMapping.TraceMap(opts.inputSourceMap);
@@ -27,7 +30,13 @@ class SourceMap {
       if (resolvedSources.length) {
         for (let i = 0; i < resolvedSources.length; i++) {
           var _this$_inputMap$sourc;
-          (0, _genMapping.setSourceContent)(map, resolvedSources[i], (_this$_inputMap$sourc = this._inputMap.sourcesContent) == null ? void 0 : _this$_inputMap$sourc[i]);
+          (0, _genMapping.setSourceContent)(
+            map,
+            resolvedSources[i],
+            (_this$_inputMap$sourc = this._inputMap.sourcesContent) == null
+              ? void 0
+              : _this$_inputMap$sourc[i],
+          );
         }
       }
     }
@@ -35,7 +44,11 @@ class SourceMap {
       (0, _genMapping.setSourceContent)(map, this._sourceFileName, code);
     } else if (typeof code === "object") {
       for (const sourceFileName of Object.keys(code)) {
-        (0, _genMapping.setSourceContent)(map, sourceFileName.replace(/\\/g, "/"), code[sourceFileName]);
+        (0, _genMapping.setSourceContent)(
+          map,
+          sourceFileName.replace(/\\/g, "/"),
+          code[sourceFileName],
+        );
       }
     }
   }
@@ -46,7 +59,10 @@ class SourceMap {
     return (0, _genMapping.toDecodedMap)(this._map);
   }
   getRawMappings() {
-    return this._rawMappings || (this._rawMappings = (0, _genMapping.allMappings)(this._map));
+    return (
+      this._rawMappings ||
+      (this._rawMappings = (0, _genMapping.allMappings)(this._map))
+    );
   }
   mark(generated, line, column, identifierName, identifierNamePos, filename) {
     var _originalMapping;
@@ -54,12 +70,16 @@ class SourceMap {
     let originalMapping;
     if (line != null) {
       if (this._inputMap) {
-        originalMapping = (0, _traceMapping.originalPositionFor)(this._inputMap, {
-          line,
-          column: column
-        });
+        originalMapping = (0, _traceMapping.originalPositionFor)(
+          this._inputMap,
+          {
+            line,
+            column: column,
+          },
+        );
         if (!originalMapping.name && identifierNamePos) {
-          const originalIdentifierMapping = (0, _traceMapping.originalPositionFor)(this._inputMap, identifierNamePos);
+          const originalIdentifierMapping = (0,
+          _traceMapping.originalPositionFor)(this._inputMap, identifierNamePos);
           if (originalIdentifierMapping.name) {
             identifierName = originalIdentifierMapping.name;
           }
@@ -67,17 +87,22 @@ class SourceMap {
       } else {
         originalMapping = {
           name: null,
-          source: (filename == null ? void 0 : filename.replace(/\\/g, "/")) || this._sourceFileName,
+          source:
+            (filename == null ? void 0 : filename.replace(/\\/g, "/")) ||
+            this._sourceFileName,
           line: line,
-          column: column
+          column: column,
         };
       }
     }
     (0, _genMapping.maybeAddMapping)(this._map, {
       name: identifierName,
       generated,
-      source: (_originalMapping = originalMapping) == null ? void 0 : _originalMapping.source,
-      original: originalMapping
+      source:
+        (_originalMapping = originalMapping) == null
+          ? void 0
+          : _originalMapping.source,
+      original: originalMapping,
     });
   }
 }

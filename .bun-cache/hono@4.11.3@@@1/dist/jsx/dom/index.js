@@ -1,5 +1,9 @@
 // src/jsx/dom/index.ts
-import { isValidElement, reactAPICompatVersion, shallowEqual } from "../base.js";
+import {
+  isValidElement,
+  reactAPICompatVersion,
+  shallowEqual,
+} from "../base.js";
 import { Children } from "../children.js";
 import { DOM_MEMO } from "../constants.js";
 import { useContext } from "../context.js";
@@ -23,14 +27,14 @@ import {
   useState,
   useSyncExternalStore,
   useTransition,
-  useViewTransition
+  useViewTransition,
 } from "../hooks/index.js";
 import { ErrorBoundary, Suspense } from "./components.js";
 import { createContext } from "./context.js";
 import { useActionState, useFormStatus, useOptimistic } from "./hooks/index.js";
 import { Fragment, jsx } from "./jsx-runtime.js";
-import { createPortal, flushSync } from "./render.js";
-import { render } from "./render.js";
+import { createPortal, flushSync, render } from "./render.js";
+
 var createElement = (tag, props, ...children) => {
   const jsxProps = props ? { ...props } : {};
   if (children.length) {
@@ -49,13 +53,13 @@ var cloneElement = (element, props, ...children) => {
     {
       ...element.props,
       ...props,
-      children: children.length ? children : element.props.children
+      children: children.length ? children : element.props.children,
     },
-    element.key
+    element.key,
   );
 };
 var memo = (component, propsAreEqual = shallowEqual) => {
-  const wrapper = ((props) => component(props));
+  const wrapper = (props) => component(props);
   wrapper[DOM_MEMO] = propsAreEqual;
   return wrapper;
 };
@@ -96,7 +100,7 @@ var dom_default = {
   Fragment,
   StrictMode: Fragment,
   flushSync,
-  createPortal
+  createPortal,
 };
 export {
   Children,
@@ -138,5 +142,5 @@ export {
   useSyncExternalStore,
   useTransition,
   useViewTransition,
-  reactAPICompatVersion as version
+  reactAPICompatVersion as version,
 };

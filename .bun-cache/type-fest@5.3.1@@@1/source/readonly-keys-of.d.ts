@@ -1,4 +1,4 @@
-import type {IsReadonlyKeyOf} from './is-readonly-key-of.d.ts';
+import type { IsReadonlyKeyOf } from "./is-readonly-key-of.d.ts";
 
 /**
 Extract all readonly keys from the given type.
@@ -25,14 +25,11 @@ const update1: UpdateResponse<User> = {
 
 @category Utilities
 */
-export type ReadonlyKeysOf<Type extends object> =
-	Type extends unknown // For distributing `Type`
-		? (keyof {[Key in keyof Type as
-			IsReadonlyKeyOf<Type, Key> extends false
-				? never
-				: Key
-			]: never
-		}) & keyof Type // Intersect with `keyof Type` to ensure result of `ReadonlyKeysOf<Type>` is always assignable to `keyof Type`
-		: never; // Should never happen
-
-export {};
+export type ReadonlyKeysOf<Type extends object> = Type extends unknown // For distributing `Type`
+  ? keyof {
+      [Key in keyof Type as IsReadonlyKeyOf<Type, Key> extends false
+        ? never
+        : Key]: never;
+    } &
+      keyof Type // Intersect with `keyof Type` to ensure result of `ReadonlyKeysOf<Type>` is always assignable to `keyof Type`
+  : never; // Should never happen

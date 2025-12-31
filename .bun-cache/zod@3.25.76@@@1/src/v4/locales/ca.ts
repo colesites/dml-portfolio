@@ -29,7 +29,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -76,7 +79,8 @@ const error: () => errors.$ZodErrorMap = () => {
         return `Tipus invàlid: s'esperava ${issue.expected}, s'ha rebut ${parsedType(issue.input)}`;
       // return `Tipus invàlid: s'esperava ${issue.expected}, s'ha rebut ${util.getParsedType(issue.input)}`;
       case "invalid_value":
-        if (issue.values.length === 1) return `Valor invàlid: s'esperava ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `Valor invàlid: s'esperava ${util.stringifyPrimitive(issue.values[0])}`;
         return `Opció invàlida: s'esperava una de ${util.joinValues(issue.values, " o ")}`;
       case "too_big": {
         const adj = issue.inclusive ? "com a màxim" : "menys de";
@@ -99,9 +103,12 @@ const error: () => errors.$ZodErrorMap = () => {
         if (_issue.format === "starts_with") {
           return `Format invàlid: ha de començar amb "${_issue.prefix}"`;
         }
-        if (_issue.format === "ends_with") return `Format invàlid: ha d'acabar amb "${_issue.suffix}"`;
-        if (_issue.format === "includes") return `Format invàlid: ha d'incloure "${_issue.includes}"`;
-        if (_issue.format === "regex") return `Format invàlid: ha de coincidir amb el patró ${_issue.pattern}`;
+        if (_issue.format === "ends_with")
+          return `Format invàlid: ha d'acabar amb "${_issue.suffix}"`;
+        if (_issue.format === "includes")
+          return `Format invàlid: ha d'incloure "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `Format invàlid: ha de coincidir amb el patró ${_issue.pattern}`;
         return `Format invàlid per a ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

@@ -38,14 +38,22 @@ xchacha [^2] uses the subkey and remaining 8 byte nonce with ChaCha20 as normal
  */
 // prettier-ignore
 import {
-  type XorStream, abool, abytes, anumber, checkOpts, clean, copyBytes, u32
-} from './utils.ts';
+  abool,
+  abytes,
+  anumber,
+  checkOpts,
+  clean,
+  copyBytes,
+  u32,
+  type XorStream,
+} from "./utils.ts";
 
 // We can't make top-level var depend on utils.utf8ToBytes
 // because it's not present in all envs. Creating a similar fn here
-const _utf8ToBytes = (str: string) => Uint8Array.from(str.split('').map((c) => c.charCodeAt(0)));
-const sigma16 = _utf8ToBytes('expand 16-byte k');
-const sigma32 = _utf8ToBytes('expand 32-byte k');
+const _utf8ToBytes = (str: string) =>
+  Uint8Array.from(str.split("").map((c) => c.charCodeAt(0)));
+const sigma16 = _utf8ToBytes("expand 16-byte k");
+const sigma32 = _utf8ToBytes("expand 32-byte k");
 const sigma16_32 = u32(sigma16);
 const sigma32_32 = u32(sigma32);
 
@@ -60,7 +68,7 @@ export type CipherCoreFn = (
   nonce: Uint32Array,
   output: Uint32Array,
   counter: number,
-  rounds?: number
+  rounds?: number,
 ) => void;
 
 /** Method which extends key + short nonce into larger nonce / diff key. */
@@ -68,7 +76,7 @@ export type ExtendNonceFn = (
   sigma: Uint32Array,
   key: Uint32Array,
   input: Uint32Array,
-  output: Uint32Array
+  output: Uint32Array,
 ) => void;
 
 /** ARX cipher options.
@@ -106,7 +114,7 @@ function runCipher(
   data: Uint8Array,
   output: Uint8Array,
   counter: number,
-  rounds: number
+  rounds: number,
 ): void {
   const len = data.length;
   const block = new Uint8Array(BLOCK_LEN);
@@ -117,12 +125,12 @@ function runCipher(
   const o32 = isAligned ? u32(output) : U32_EMPTY;
   for (let pos = 0; pos < len; counter++) {
     core(sigma, key, nonce, b32, counter, rounds);
-    if (counter >= MAX_COUNTER) throw new Error('arx: counter overflow');
+    if (counter >= MAX_COUNTER) throw new Error("arx: counter overflow");
     const take = Math.min(BLOCK_LEN, len - pos);
     // aligned to 4 bytes
     if (isAligned && take === BLOCK_LEN) {
       const pos32 = pos / 4;
-      if (pos % 4 !== 0) throw new Error('arx: invalid block position');
+      if (pos % 4 !== 0) throw new Error("arx: invalid block position");
       for (let j = 0, posj: number; j < BLOCK_LEN32; j++) {
         posj = pos32 + j;
         o32[posj] = d32[posj] ^ b32[j];
@@ -140,11 +148,17 @@ function runCipher(
 
 /** Creates ARX-like (ChaCha, Salsa) cipher stream from core function. */
 export function createCipher(core: CipherCoreFn, opts: CipherOpts): XorStream {
-  const { allowShortKeys, extendNonceFn, counterLength, counterRight, rounds } = checkOpts(
-    { allowShortKeys: false, counterLength: 8, counterRight: false, rounds: 20 },
-    opts
-  );
-  if (typeof core !== 'function') throw new Error('core must be a function');
+  const { allowShortKeys, extendNonceFn, counterLength, counterRight, rounds } =
+    checkOpts(
+      {
+        allowShortKeys: false,
+        counterLength: 8,
+        counterRight: false,
+        rounds: 20,
+      },
+      opts,
+    );
+  if (typeof core !== "function") throw new Error("core must be a function");
   anumber(counterLength);
   anumber(rounds);
   abool(counterRight);
@@ -154,7 +168,7 @@ export function createCipher(core: CipherCoreFn, opts: CipherOpts): XorStream {
     nonce: Uint8Array,
     data: Uint8Array,
     output?: Uint8Array,
-    counter = 0
+    counter = 0,
   ): Uint8Array => {
     abytes(key);
     abytes(nonce);
@@ -163,15 +177,18 @@ export function createCipher(core: CipherCoreFn, opts: CipherOpts): XorStream {
     if (output === undefined) output = new Uint8Array(len);
     abytes(output);
     anumber(counter);
-    if (counter < 0 || counter >= MAX_COUNTER) throw new Error('arx: counter overflow');
+    if (counter < 0 || counter >= MAX_COUNTER)
+      throw new Error("arx: counter overflow");
     if (output.length < len)
-      throw new Error(`arx: output (${output.length}) is shorter than data (${len})`);
+      throw new Error(
+        `arx: output (${output.length}) is shorter than data (${len})`,
+      );
     const toClean = [];
 
     // Key & sigma
     // key=16 -> sigma16, k=key|key
     // key=32 -> sigma32, k=key
-    let l = key.length;
+    const l = key.length;
     let k: Uint8Array;
     let sigma: Uint32Array;
     if (l === 32) {
@@ -199,7 +216,8 @@ export function createCipher(core: CipherCoreFn, opts: CipherOpts): XorStream {
     const k32 = u32(k);
     // hsalsa & hchacha: handle extended nonce
     if (extendNonceFn) {
-      if (nonce.length !== 24) throw new Error(`arx: extended nonce must be 24 bytes`);
+      if (nonce.length !== 24)
+        throw new Error(`arx: extended nonce must be 24 bytes`);
       extendNonceFn(sigma, k32, u32(nonce.subarray(0, 16)), k32);
       nonce = nonce.subarray(16);
     }

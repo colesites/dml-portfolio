@@ -8,29 +8,42 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var accept_exports = {};
 __export(accept_exports, {
-  parseAccept: () => parseAccept
+  parseAccept: () => parseAccept,
 });
 module.exports = __toCommonJS(accept_exports);
 const parseAccept = (acceptHeader) => {
   if (!acceptHeader) {
     return [];
   }
-  const acceptValues = acceptHeader.split(",").map((value, index) => ({ value, index }));
-  return acceptValues.map(parseAcceptValue).filter((item) => Boolean(item)).sort(sortByQualityAndIndex).map(({ type, params, q }) => ({ type, params, q }));
+  const acceptValues = acceptHeader
+    .split(",")
+    .map((value, index) => ({ value, index }));
+  return acceptValues
+    .map(parseAcceptValue)
+    .filter((item) => Boolean(item))
+    .sort(sortByQualityAndIndex)
+    .map(({ type, params, q }) => ({ type, params, q }));
 };
 const parseAcceptValueRegex = /;(?=(?:(?:[^"]*"){2})*[^"]*$)/;
 const parseAcceptValue = ({ value, index }) => {
-  const parts = value.trim().split(parseAcceptValueRegex).map((s) => s.trim());
+  const parts = value
+    .trim()
+    .split(parseAcceptValueRegex)
+    .map((s) => s.trim());
   const type = parts[0];
   if (!type) {
     return null;
@@ -81,6 +94,7 @@ const sortByQualityAndIndex = (a, b) => {
   return a.index - b.index;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  parseAccept
-});
+0 &&
+  (module.exports = {
+    parseAccept,
+  });

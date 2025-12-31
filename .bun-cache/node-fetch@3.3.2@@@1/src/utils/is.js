@@ -12,18 +12,18 @@ const NAME = Symbol.toStringTag;
  * @param {*} object - Object to check for
  * @return {boolean}
  */
-export const isURLSearchParameters = object => {
-	return (
-		typeof object === 'object' &&
-		typeof object.append === 'function' &&
-		typeof object.delete === 'function' &&
-		typeof object.get === 'function' &&
-		typeof object.getAll === 'function' &&
-		typeof object.has === 'function' &&
-		typeof object.set === 'function' &&
-		typeof object.sort === 'function' &&
-		object[NAME] === 'URLSearchParams'
-	);
+export const isURLSearchParameters = (object) => {
+  return (
+    typeof object === "object" &&
+    typeof object.append === "function" &&
+    typeof object.delete === "function" &&
+    typeof object.get === "function" &&
+    typeof object.getAll === "function" &&
+    typeof object.has === "function" &&
+    typeof object.set === "function" &&
+    typeof object.sort === "function" &&
+    object[NAME] === "URLSearchParams"
+  );
 };
 
 /**
@@ -31,16 +31,16 @@ export const isURLSearchParameters = object => {
  * @param {*} object - Object to check for
  * @return {boolean}
  */
-export const isBlob = object => {
-	return (
-		object &&
-		typeof object === 'object' &&
-		typeof object.arrayBuffer === 'function' &&
-		typeof object.type === 'string' &&
-		typeof object.stream === 'function' &&
-		typeof object.constructor === 'function' &&
-		/^(Blob|File)$/.test(object[NAME])
-	);
+export const isBlob = (object) => {
+  return (
+    object &&
+    typeof object === "object" &&
+    typeof object.arrayBuffer === "function" &&
+    typeof object.type === "string" &&
+    typeof object.stream === "function" &&
+    typeof object.constructor === "function" &&
+    /^(Blob|File)$/.test(object[NAME])
+  );
 };
 
 /**
@@ -48,13 +48,11 @@ export const isBlob = object => {
  * @param {*} object - Object to check for
  * @return {boolean}
  */
-export const isAbortSignal = object => {
-	return (
-		typeof object === 'object' && (
-			object[NAME] === 'AbortSignal' ||
-			object[NAME] === 'EventTarget'
-		)
-	);
+export const isAbortSignal = (object) => {
+  return (
+    typeof object === "object" &&
+    (object[NAME] === "AbortSignal" || object[NAME] === "EventTarget")
+  );
 };
 
 /**
@@ -66,10 +64,10 @@ export const isAbortSignal = object => {
  * @param {string|URL} destination
  */
 export const isDomainOrSubdomain = (destination, original) => {
-	const orig = new URL(original).hostname;
-	const dest = new URL(destination).hostname;
+  const orig = new URL(original).hostname;
+  const dest = new URL(destination).hostname;
 
-	return orig === dest || orig.endsWith(`.${dest}`);
+  return orig === dest || orig.endsWith(`.${dest}`);
 };
 
 /**
@@ -80,8 +78,8 @@ export const isDomainOrSubdomain = (destination, original) => {
  * @param {string|URL} destination
  */
 export const isSameProtocol = (destination, original) => {
-	const orig = new URL(original).protocol;
-	const dest = new URL(destination).protocol;
+  const orig = new URL(original).protocol;
+  const dest = new URL(destination).protocol;
 
-	return orig === dest;
+  return orig === dest;
 };

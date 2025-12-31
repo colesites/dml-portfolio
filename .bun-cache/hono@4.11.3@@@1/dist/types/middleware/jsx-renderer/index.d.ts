@@ -2,18 +2,23 @@
  * @module
  * JSX Renderer Middleware for Hono.
  */
-import type { Context, PropsForRenderer } from '../../context';
-import type { FC, Context as JSXContext, PropsWithChildren } from '../../jsx';
-import type { Env, Input, MiddlewareHandler } from '../../types';
-import type { HtmlEscapedString } from '../../utils/html';
+import type { Context, PropsForRenderer } from "../../context";
+import type { FC, Context as JSXContext, PropsWithChildren } from "../../jsx";
+import type { Env, Input, MiddlewareHandler } from "../../types";
+import type { HtmlEscapedString } from "../../utils/html";
 export declare const RequestContext: JSXContext<Context<any, any, {}> | null>;
 type RendererOptions = {
-    docType?: boolean | string;
-    stream?: boolean | Record<string, string>;
+  docType?: boolean | string;
+  stream?: boolean | Record<string, string>;
 };
-type ComponentWithChildren = (props: PropsWithChildren<PropsForRenderer & {
-    Layout: FC;
-}>, c: Context) => HtmlEscapedString | Promise<HtmlEscapedString>;
+type ComponentWithChildren = (
+  props: PropsWithChildren<
+    PropsForRenderer & {
+      Layout: FC;
+    }
+  >,
+  c: Context,
+) => HtmlEscapedString | Promise<HtmlEscapedString>;
 /**
  * JSX Renderer Middleware for hono.
  *
@@ -48,7 +53,10 @@ type ComponentWithChildren = (props: PropsWithChildren<PropsForRenderer & {
  * })
  * ```
  */
-export declare const jsxRenderer: (component?: ComponentWithChildren, options?: RendererOptions) => MiddlewareHandler;
+export declare const jsxRenderer: (
+  component?: ComponentWithChildren,
+  options?: RendererOptions,
+) => MiddlewareHandler;
 /**
  * useRequestContext for Hono.
  *
@@ -73,5 +81,8 @@ export declare const jsxRenderer: (component?: ComponentWithChildren, options?: 
  * })
  * ```
  */
-export declare const useRequestContext: <E extends Env = any, P extends string = any, I extends Input = {}>() => Context<E, P, I>;
-export {};
+export declare const useRequestContext: <
+  E extends Env = any,
+  P extends string = any,
+  I extends Input = {},
+>() => Context<E, P, I>;

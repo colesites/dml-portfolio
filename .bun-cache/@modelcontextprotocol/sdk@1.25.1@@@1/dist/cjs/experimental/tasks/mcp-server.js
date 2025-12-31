@@ -18,19 +18,31 @@ exports.ExperimentalMcpServerTasks = void 0;
  * @experimental
  */
 class ExperimentalMcpServerTasks {
-    constructor(_mcpServer) {
-        this._mcpServer = _mcpServer;
+  constructor(_mcpServer) {
+    this._mcpServer = _mcpServer;
+  }
+  registerToolTask(name, config, handler) {
+    // Validate that taskSupport is not 'forbidden' for task-based tools
+    const execution = { taskSupport: "required", ...config.execution };
+    if (execution.taskSupport === "forbidden") {
+      throw new Error(
+        `Cannot register task-based tool '${name}' with taskSupport 'forbidden'. Use registerTool() instead.`,
+      );
     }
-    registerToolTask(name, config, handler) {
-        // Validate that taskSupport is not 'forbidden' for task-based tools
-        const execution = { taskSupport: 'required', ...config.execution };
-        if (execution.taskSupport === 'forbidden') {
-            throw new Error(`Cannot register task-based tool '${name}' with taskSupport 'forbidden'. Use registerTool() instead.`);
-        }
-        // Access McpServer's internal _createRegisteredTool method
-        const mcpServerInternal = this._mcpServer;
-        return mcpServerInternal._createRegisteredTool(name, config.title, config.description, config.inputSchema, config.outputSchema, config.annotations, execution, config._meta, handler);
-    }
+    // Access McpServer's internal _createRegisteredTool method
+    const mcpServerInternal = this._mcpServer;
+    return mcpServerInternal._createRegisteredTool(
+      name,
+      config.title,
+      config.description,
+      config.inputSchema,
+      config.outputSchema,
+      config.annotations,
+      execution,
+      config._meta,
+      handler,
+    );
+  }
 }
 exports.ExperimentalMcpServerTasks = ExperimentalMcpServerTasks;
 //# sourceMappingURL=mcp-server.js.map

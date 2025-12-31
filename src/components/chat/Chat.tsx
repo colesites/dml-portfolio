@@ -1,22 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { SparklesIcon, XIcon } from "lucide-react";
 import { nanoid } from "nanoid";
+import { useEffect, useRef, useState } from "react";
 
 import {
-  createSession,
   type ChatSessionBootstrap,
+  createSession,
 } from "@/app/actions/create-session";
-import {
-  CHAT_DISCLAIMER,
-  CHAT_GREETING_FALLBACK,
-  CHAT_PLACEHOLDER_INPUT,
-  CHAT_STARTER_PROMPTS,
-  CHAT_TONE_OPTIONS,
-  DEFAULT_CHAT_TONE_ID,
-  type ChatStarterPrompt,
-} from "@/lib/config";
 import {
   Conversation,
   ConversationContent,
@@ -43,15 +34,24 @@ import {
   PromptInputTools,
   usePromptInputController,
 } from "@/components/ai-elements/prompt-input";
-import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import {
   Reasoning,
   ReasoningContent,
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
-import type { CHAT_PROFILE_QUERY_RESULT } from "../../../sanity.types";
-import type { ChatMessage, ChatStatus } from "@/types/chat";
+import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import { Button } from "@/components/ui/button";
+import {
+  CHAT_DISCLAIMER,
+  CHAT_GREETING_FALLBACK,
+  CHAT_PLACEHOLDER_INPUT,
+  CHAT_STARTER_PROMPTS,
+  CHAT_TONE_OPTIONS,
+  type ChatStarterPrompt,
+  DEFAULT_CHAT_TONE_ID,
+} from "@/lib/config";
+import type { ChatMessage, ChatStatus } from "@/types/chat";
+import type { CHAT_PROFILE_QUERY_RESULT } from "../../../sanity.types";
 import { useSidebar } from "../ui/sidebar";
 
 type ChatApiResponse = {
@@ -79,7 +79,7 @@ export function Chat({ profile }: ChatProps) {
     useState<ChatStarterPrompt[]>(CHAT_STARTER_PROMPTS);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(
-    null
+    null,
   );
   const [typingMessageId, setTypingMessageId] = useState<string | null>(null);
   const [displayedContent, setDisplayedContent] = useState<string>("");
@@ -228,8 +228,8 @@ export function Chat({ profile }: ChatProps) {
                   content: answerContent,
                   reasoning: payload.reasoning ?? null,
                 }
-              : msg
-          )
+              : msg,
+          ),
         );
 
         setStreamingMessageId(null);
@@ -243,7 +243,7 @@ export function Chat({ profile }: ChatProps) {
               id: `follow-up-${index}`,
               label: prompt,
               prompt,
-            }))
+            })),
           );
         } else {
           setSuggestions(CHAT_STARTER_PROMPTS);
@@ -278,8 +278,8 @@ export function Chat({ profile }: ChatProps) {
                 content: parsed.answer,
                 reasoning: parsed.reasoning ?? null,
               }
-            : msg
-        )
+            : msg,
+        ),
       );
 
       setStreamingMessageId(null);
@@ -293,7 +293,7 @@ export function Chat({ profile }: ChatProps) {
             id: `follow-up-${index}`,
             label: prompt,
             prompt,
-          }))
+          })),
         );
       } else {
         setSuggestions(CHAT_STARTER_PROMPTS);
@@ -307,7 +307,7 @@ export function Chat({ profile }: ChatProps) {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "Something went wrong. Please try again."
+          : "Something went wrong. Please try again.",
       );
     }
   };

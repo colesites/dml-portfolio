@@ -1,13 +1,27 @@
-import { type Cipher, type XorStream } from './utils.ts';
-export type ARXCipherN = ((key: Uint8Array, nonce: Uint8Array, AAD?: Uint8Array) => Cipher) & {
-    blockSize: number;
-    nonceLength: number;
-    tagLength: number;
+import { type Cipher, type XorStream } from "./utils.ts";
+export type ARXCipherN = ((
+  key: Uint8Array,
+  nonce: Uint8Array,
+  AAD?: Uint8Array,
+) => Cipher) & {
+  blockSize: number;
+  nonceLength: number;
+  tagLength: number;
 };
 /** hsalsa hashes key and nonce into key' and nonce'. */
-export declare function hsalsa(s: Uint32Array, k: Uint32Array, i: Uint32Array, o32: Uint32Array): void;
+export declare function hsalsa(
+  s: Uint32Array,
+  k: Uint32Array,
+  i: Uint32Array,
+  o32: Uint32Array,
+): void;
 /** hchacha hashes key and nonce into key' and nonce'. */
-export declare function hchacha(s: Uint32Array, k: Uint32Array, i: Uint32Array, o32: Uint32Array): void;
+export declare function hchacha(
+  s: Uint32Array,
+  k: Uint32Array,
+  i: Uint32Array,
+  o32: Uint32Array,
+): void;
 /** salsa20, 12-byte nonce. */
 export declare const salsa20: XorStream;
 /** xsalsa20, 24-byte nonce. */
@@ -27,11 +41,16 @@ export declare function poly1305(msg: Uint8Array, key: Uint8Array): Uint8Array;
 /** xsalsa20-poly1305 eXtended-nonce (24 bytes) salsa. */
 export declare const xsalsa20poly1305: ARXCipherN;
 /** Alias to `xsalsa20poly1305`. */
-export declare function secretbox(key: Uint8Array, nonce: Uint8Array): {
-    seal: (plaintext: Uint8Array) => Uint8Array;
-    open: (ciphertext: Uint8Array) => Uint8Array;
+export declare function secretbox(
+  key: Uint8Array,
+  nonce: Uint8Array,
+): {
+  seal: (plaintext: Uint8Array) => Uint8Array;
+  open: (ciphertext: Uint8Array) => Uint8Array;
 };
-export declare const _poly1305_aead: (fn: XorStream) => (key: Uint8Array, nonce: Uint8Array, AAD?: Uint8Array) => Cipher;
+export declare const _poly1305_aead: (
+  fn: XorStream,
+) => (key: Uint8Array, nonce: Uint8Array, AAD?: Uint8Array) => Cipher;
 /** chacha20-poly1305 12-byte-nonce chacha. */
 export declare const chacha20poly1305: ARXCipherN;
 /**

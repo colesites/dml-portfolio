@@ -20,5 +20,3 @@ const globalToken = (globalThis as ExtraGlobals).GLOBAL_TOKEN;
 @category Type
 */
 export type GlobalThis = typeof globalThis;
-
-export {};

@@ -1,7 +1,7 @@
 import * as path from "path";
-import { MappingEntry } from "./mapping-entry";
 import { dirname } from "path";
 import { removeExtension } from "./filesystem";
+import type { MappingEntry } from "./mapping-entry";
 
 export interface TryPath {
   readonly type: "file" | "extension" | "index" | "package";
@@ -18,7 +18,7 @@ export interface TryPath {
 export function getPathsToTry(
   extensions: ReadonlyArray<string>,
   absolutePathMappings: ReadonlyArray<MappingEntry>,
-  requestedModule: string
+  requestedModule: string,
 ): ReadonlyArray<TryPath> | undefined {
   if (!absolutePathMappings || !requestedModule || requestedModule[0] === ".") {
     return undefined;
@@ -36,8 +36,8 @@ export function getPathsToTry(
         pathsToTry.push({ type: "file", path: physicalPath });
         pathsToTry.push(
           ...extensions.map(
-            (e) => ({ type: "extension", path: physicalPath + e } as TryPath)
-          )
+            (e) => ({ type: "extension", path: physicalPath + e }) as TryPath,
+          ),
         );
         pathsToTry.push({
           type: "package",
@@ -46,8 +46,8 @@ export function getPathsToTry(
         const indexPath = path.join(physicalPath, "/index");
         pathsToTry.push(
           ...extensions.map(
-            (e) => ({ type: "index", path: indexPath + e } as TryPath)
-          )
+            (e) => ({ type: "index", path: indexPath + e }) as TryPath,
+          ),
         );
       }
     }
@@ -60,12 +60,12 @@ export function getStrippedPath(tryPath: TryPath): string {
   return tryPath.type === "index"
     ? dirname(tryPath.path)
     : tryPath.type === "file"
-    ? tryPath.path
-    : tryPath.type === "extension"
-    ? removeExtension(tryPath.path)
-    : tryPath.type === "package"
-    ? tryPath.path
-    : exhaustiveTypeException(tryPath.type);
+      ? tryPath.path
+      : tryPath.type === "extension"
+        ? removeExtension(tryPath.path)
+        : tryPath.type === "package"
+          ? tryPath.path
+          : exhaustiveTypeException(tryPath.type);
 }
 
 export function exhaustiveTypeException(check: never): never {

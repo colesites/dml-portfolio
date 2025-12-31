@@ -8,32 +8,32 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // source/index.ts
 var index_exports = {};
 __export(index_exports, {
   MemoryStore: () => MemoryStore,
   default: () => lib_default,
-  rateLimit: () => lib_default
+  rateLimit: () => lib_default,
 });
 module.exports = __toCommonJS(index_exports);
 
 // source/headers.ts
 var import_node_buffer = require("node:buffer");
 var import_node_crypto = require("node:crypto");
-var SUPPORTED_DRAFT_VERSIONS = [
-  "draft-6",
-  "draft-7",
-  "draft-8"
-];
+var SUPPORTED_DRAFT_VERSIONS = ["draft-6", "draft-7", "draft-8"];
 var getResetSeconds = (resetTime, windowMs) => {
   let resetSeconds = void 0;
   if (resetTime) {
@@ -55,10 +55,10 @@ var setLegacyHeaders = (response, info) => {
   response.setHeader("X-RateLimit-Limit", info.limit.toString());
   response.setHeader("X-RateLimit-Remaining", info.remaining.toString());
   if (info.resetTime instanceof Date) {
-    response.setHeader("Date", (/* @__PURE__ */ new Date()).toUTCString());
+    response.setHeader("Date", /* @__PURE__ */ new Date().toUTCString());
     response.setHeader(
       "X-RateLimit-Reset",
-      Math.ceil(info.resetTime.getTime() / 1e3).toString()
+      Math.ceil(info.resetTime.getTime() / 1e3).toString(),
     );
   }
 };
@@ -79,7 +79,7 @@ var setDraft7Headers = (response, info, windowMs) => {
   response.setHeader("RateLimit-Policy", `${info.limit};w=${windowSeconds}`);
   response.setHeader(
     "RateLimit",
-    `limit=${info.limit}, remaining=${info.remaining}, reset=${resetSeconds}`
+    `limit=${info.limit}, remaining=${info.remaining}, reset=${resetSeconds}`,
   );
 };
 var setDraft8Headers = (response, info, windowMs, name, key) => {
@@ -116,14 +116,13 @@ var ValidationError = class extends Error {
     this.help = url;
   }
 };
-var ChangeWarning = class extends ValidationError {
-};
+var ChangeWarning = class extends ValidationError {};
 var usedStores = /* @__PURE__ */ new Set();
 var singleCountKeys = /* @__PURE__ */ new WeakMap();
 var validations = {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   enabled: {
-    default: true
+    default: true,
   },
   // Should be EnabledValidations type, but that's a circular reference
   disable() {
@@ -143,13 +142,13 @@ var validations = {
     if (ip === void 0) {
       throw new ValidationError(
         "ERR_ERL_UNDEFINED_IP_ADDRESS",
-        `An undefined 'request.ip' was detected. This might indicate a misconfiguration or the connection being destroyed prematurely.`
+        `An undefined 'request.ip' was detected. This might indicate a misconfiguration or the connection being destroyed prematurely.`,
       );
     }
     if (!(0, import_node_net.isIP)(ip)) {
       throw new ValidationError(
         "ERR_ERL_INVALID_IP_ADDRESS",
-        `An invalid 'request.ip' (${ip}) was detected. Consider passing a custom 'keyGenerator' function to the rate limiter.`
+        `An invalid 'request.ip' (${ip}) was detected. Consider passing a custom 'keyGenerator' function to the rate limiter.`,
       );
     }
   },
@@ -166,7 +165,7 @@ var validations = {
     if (request.app.get("trust proxy") === true) {
       throw new ValidationError(
         "ERR_ERL_PERMISSIVE_TRUST_PROXY",
-        `The Express 'trust proxy' setting is true, which allows anyone to trivially bypass IP-based rate limiting.`
+        `The Express 'trust proxy' setting is true, which allows anyone to trivially bypass IP-based rate limiting.`,
       );
     }
   },
@@ -181,10 +180,13 @@ var validations = {
    * @returns {void}
    */
   xForwardedForHeader(request) {
-    if (request.headers["x-forwarded-for"] && request.app.get("trust proxy") === false) {
+    if (
+      request.headers["x-forwarded-for"] &&
+      request.app.get("trust proxy") === false
+    ) {
       throw new ValidationError(
         "ERR_ERL_UNEXPECTED_X_FORWARDED_FOR",
-        `The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users.`
+        `The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users.`,
       );
     }
   },
@@ -197,7 +199,7 @@ var validations = {
     if (typeof hits !== "number" || hits < 1 || hits !== Math.round(hits)) {
       throw new ValidationError(
         "ERR_ERL_INVALID_HITS",
-        `The totalHits value returned from the store must be a positive integer, got ${hits}`
+        `The totalHits value returned from the store must be a positive integer, got ${hits}`,
       );
     }
   },
@@ -206,10 +208,12 @@ var validations = {
    */
   unsharedStore(store) {
     if (usedStores.has(store)) {
-      const maybeUniquePrefix = store?.localKeys ? "" : " (with a unique prefix)";
+      const maybeUniquePrefix = store?.localKeys
+        ? ""
+        : " (with a unique prefix)";
       throw new ValidationError(
         "ERR_ERL_STORE_REUSE",
-        `A Store instance must not be shared across multiple rate limiters. Create a new instance of ${store.constructor.name}${maybeUniquePrefix} for each limiter instead.`
+        `A Store instance must not be shared across multiple rate limiters. Create a new instance of ${store.constructor.name}${maybeUniquePrefix} for each limiter instead.`,
       );
     }
     usedStores.add(store);
@@ -239,7 +243,7 @@ var validations = {
     if (keys.includes(prefixedKey)) {
       throw new ValidationError(
         "ERR_ERL_DOUBLE_COUNT",
-        `The hit count for ${key} was incremented more than once for a single request.`
+        `The hit count for ${key} was incremented more than once for a single request.`,
       );
     }
     keys.push(prefixedKey);
@@ -256,7 +260,7 @@ var validations = {
     if (limit === 0) {
       throw new ChangeWarning(
         "WRN_ERL_MAX_ZERO",
-        `Setting limit or max to 0 disables rate limiting in express-rate-limit v6 and older, but will cause all requests to be blocked in v7`
+        `Setting limit or max to 0 disables rate limiting in express-rate-limit v6 and older, but will cause all requests to be blocked in v7`,
       );
     }
   },
@@ -272,7 +276,7 @@ var validations = {
     if (draft_polli_ratelimit_headers) {
       throw new ChangeWarning(
         "WRN_ERL_DEPRECATED_DRAFT_POLLI_HEADERS",
-        `The draft_polli_ratelimit_headers configuration option is deprecated and has been removed in express-rate-limit v7, please set standardHeaders: 'draft-6' instead.`
+        `The draft_polli_ratelimit_headers configuration option is deprecated and has been removed in express-rate-limit v7, please set standardHeaders: 'draft-6' instead.`,
       );
     }
   },
@@ -288,7 +292,7 @@ var validations = {
     if (onLimitReached) {
       throw new ChangeWarning(
         "WRN_ERL_DEPRECATED_ON_LIMIT_REACHED",
-        `The onLimitReached configuration option is deprecated and has been removed in express-rate-limit v7.`
+        `The onLimitReached configuration option is deprecated and has been removed in express-rate-limit v7.`,
       );
     }
   },
@@ -300,12 +304,14 @@ var validations = {
    * @returns {void}
    */
   headersDraftVersion(version) {
-    if (typeof version !== "string" || // @ts-expect-error This is fine. If version is not in the array, it will just return false.
-    !SUPPORTED_DRAFT_VERSIONS.includes(version)) {
+    if (
+      typeof version !== "string" || // @ts-expect-error This is fine. If version is not in the array, it will just return false.
+      !SUPPORTED_DRAFT_VERSIONS.includes(version)
+    ) {
       const versionString = SUPPORTED_DRAFT_VERSIONS.join(", ");
       throw new ValidationError(
         "ERR_ERL_HEADERS_UNSUPPORTED_DRAFT_VERSION",
-        `standardHeaders: only the following versions of the IETF draft specification are supported: ${versionString}.`
+        `standardHeaders: only the following versions of the IETF draft specification are supported: ${versionString}.`,
       );
     }
   },
@@ -321,7 +327,7 @@ var validations = {
     if (!resetTime) {
       throw new ValidationError(
         "ERR_ERL_HEADERS_NO_RESET",
-        `standardHeaders:  'draft-7' requires a 'resetTime', but the store did not provide one. The 'windowMs' value will be used instead, which may cause clients to wait longer than necessary.`
+        `standardHeaders:  'draft-7' requires a 'resetTime', but the store did not provide one. The 'windowMs' value will be used instead, which may cause clients to wait longer than necessary.`,
       );
     }
   },
@@ -334,7 +340,7 @@ var validations = {
    */
   validationsConfig() {
     const supportedValidations = Object.keys(this).filter(
-      (k) => !["enabled", "disable"].includes(k)
+      (k) => !["enabled", "disable"].includes(k),
     );
     supportedValidations.push("default");
     for (const key of Object.keys(this.enabled)) {
@@ -342,8 +348,8 @@ var validations = {
         throw new ValidationError(
           "ERR_ERL_UNKNOWN_VALIDATION",
           `options.validate.${key} is not recognized. Supported validate options are: ${supportedValidations.join(
-            ", "
-          )}.`
+            ", ",
+          )}.`,
         );
       }
     }
@@ -355,36 +361,36 @@ var validations = {
    */
   creationStack(store) {
     const { stack } = new Error(
-      "express-rate-limit validation check (set options.validate.creationStack=false to disable)"
+      "express-rate-limit validation check (set options.validate.creationStack=false to disable)",
     );
     if (stack?.includes("Layer.handle [as handle_request]")) {
       if (!store.localKeys) {
         throw new ValidationError(
           "ERR_ERL_CREATED_IN_REQUEST_HANDLER",
-          "express-rate-limit instance should *usually* be created at app initialization, not when responding to a request."
+          "express-rate-limit instance should *usually* be created at app initialization, not when responding to a request.",
         );
       }
       throw new ValidationError(
         "ERR_ERL_CREATED_IN_REQUEST_HANDLER",
-        `express-rate-limit instance should be created at app initialization, not when responding to a request.`
+        `express-rate-limit instance should be created at app initialization, not when responding to a request.`,
       );
     }
-  }
+  },
 };
 var getValidations = (_enabled) => {
   let enabled;
   if (typeof _enabled === "boolean") {
     enabled = {
-      default: _enabled
+      default: _enabled,
     };
   } else {
     enabled = {
       default: true,
-      ..._enabled
+      ..._enabled,
     };
   }
   const wrappedValidations = {
-    enabled
+    enabled,
   };
   for (const [name, validation] of Object.entries(validations)) {
     if (typeof validation === "function")
@@ -393,11 +399,7 @@ var getValidations = (_enabled) => {
           return;
         }
         try {
-          ;
-          validation.apply(
-            wrappedValidations,
-            args
-          );
+          validation.apply(wrappedValidations, args);
         } catch (error) {
           if (error instanceof ChangeWarning) console.warn(error);
           else console.error(error);
@@ -562,11 +564,10 @@ var MemoryStore = class {
 };
 
 // source/lib.ts
-var isLegacyStore = (store) => (
+var isLegacyStore = (store) =>
   // Check that `incr` exists but `increment` does not - store authors might want
   // to keep both around for backwards compatibility.
-  typeof store.incr === "function" && typeof store.increment !== "function"
-);
+  typeof store.incr === "function" && typeof store.increment !== "function";
 var promisifyStore = (passedStore) => {
   if (!isLegacyStore(passedStore)) {
     return passedStore;
@@ -575,13 +576,10 @@ var promisifyStore = (passedStore) => {
   class PromisifiedStore {
     async increment(key) {
       return new Promise((resolve, reject) => {
-        legacyStore.incr(
-          key,
-          (error, totalHits, resetTime) => {
-            if (error) reject(error);
-            resolve({ totalHits, resetTime });
-          }
-        );
+        legacyStore.incr(key, (error, totalHits, resetTime) => {
+          if (error) reject(error);
+          resolve({ totalHits, resetTime });
+        });
       });
     }
     async decrement(key) {
@@ -602,7 +600,7 @@ var getOptionsFromConfig = (config) => {
   const { validations: validations2, ...directlyPassableEntries } = config;
   return {
     ...directlyPassableEntries,
-    validate: validations2.enabled
+    validate: validations2.enabled,
   };
 };
 var omitUndefinedOptions = (passedOptions) => {
@@ -621,7 +619,7 @@ var parseOptions = (passedOptions) => {
   validations2.validationsConfig();
   validations2.draftPolliHeaders(
     // @ts-expect-error see the note above.
-    notUndefinedOptions.draft_polli_ratelimit_headers
+    notUndefinedOptions.draft_polli_ratelimit_headers,
   );
   validations2.onLimitReached(notUndefinedOptions.onLimitReached);
   let standardHeaders = notUndefinedOptions.standardHeaders ?? false;
@@ -660,10 +658,10 @@ var parseOptions = (passedOptions) => {
     },
     async handler(request, response, _next, _optionsUsed) {
       response.status(config.statusCode);
-      const message = typeof config.message === "function" ? await config.message(
-        request,
-        response
-      ) : config.message;
+      const message =
+        typeof config.message === "function"
+          ? await config.message(request, response)
+          : config.message;
       if (!response.writableEnded) {
         response.send(message);
       }
@@ -677,11 +675,18 @@ var parseOptions = (passedOptions) => {
     // so that this field doesn't get overridden with an un-promisified store!
     store: promisifyStore(notUndefinedOptions.store ?? new MemoryStore()),
     // Print an error to the console if a few known misconfigurations are detected.
-    validations: validations2
+    validations: validations2,
   };
-  if (typeof config.store.increment !== "function" || typeof config.store.decrement !== "function" || typeof config.store.resetKey !== "function" || config.store.resetAll !== void 0 && typeof config.store.resetAll !== "function" || config.store.init !== void 0 && typeof config.store.init !== "function") {
+  if (
+    typeof config.store.increment !== "function" ||
+    typeof config.store.decrement !== "function" ||
+    typeof config.store.resetKey !== "function" ||
+    (config.store.resetAll !== void 0 &&
+      typeof config.store.resetAll !== "function") ||
+    (config.store.init !== void 0 && typeof config.store.init !== "function")
+  ) {
     throw new TypeError(
-      "An invalid store was passed. Please ensure that the store is a class that implements the `Store` interface."
+      "An invalid store was passed. Please ensure that the store is a class that implements the `Store` interface.",
     );
   }
   return config;
@@ -699,125 +704,136 @@ var rateLimit = (passedOptions) => {
   config.validations.creationStack(config.store);
   config.validations.unsharedStore(config.store);
   if (typeof config.store.init === "function") config.store.init(options);
-  const middleware = handleAsyncErrors(
-    async (request, response, next) => {
-      const skip = await config.skip(request, response);
-      if (skip) {
+  const middleware = handleAsyncErrors(async (request, response, next) => {
+    const skip = await config.skip(request, response);
+    if (skip) {
+      next();
+      return;
+    }
+    const augmentedRequest = request;
+    const key = await config.keyGenerator(request, response);
+    let totalHits = 0;
+    let resetTime;
+    try {
+      const incrementResult = await config.store.increment(key);
+      totalHits = incrementResult.totalHits;
+      resetTime = incrementResult.resetTime;
+    } catch (error) {
+      if (config.passOnStoreError) {
+        console.error(
+          "express-rate-limit: error from store, allowing request without rate-limiting.",
+          error,
+        );
         next();
         return;
       }
-      const augmentedRequest = request;
-      const key = await config.keyGenerator(request, response);
-      let totalHits = 0;
-      let resetTime;
-      try {
-        const incrementResult = await config.store.increment(key);
-        totalHits = incrementResult.totalHits;
-        resetTime = incrementResult.resetTime;
-      } catch (error) {
-        if (config.passOnStoreError) {
-          console.error(
-            "express-rate-limit: error from store, allowing request without rate-limiting.",
-            error
-          );
-          next();
-          return;
-        }
-        throw error;
-      }
-      config.validations.positiveHits(totalHits);
-      config.validations.singleCount(request, config.store, key);
-      const retrieveLimit = typeof config.limit === "function" ? config.limit(request, response) : config.limit;
-      const limit = await retrieveLimit;
-      config.validations.limit(limit);
-      const info = {
-        limit,
-        used: totalHits,
-        remaining: Math.max(limit - totalHits, 0),
-        resetTime
-      };
-      Object.defineProperty(info, "current", {
-        configurable: false,
-        enumerable: false,
-        value: totalHits
-      });
-      augmentedRequest[config.requestPropertyName] = info;
-      if (config.legacyHeaders && !response.headersSent) {
-        setLegacyHeaders(response, info);
-      }
-      if (config.standardHeaders && !response.headersSent) {
-        switch (config.standardHeaders) {
-          case "draft-6": {
-            setDraft6Headers(response, info, config.windowMs);
-            break;
-          }
-          case "draft-7": {
-            config.validations.headersResetTime(info.resetTime);
-            setDraft7Headers(response, info, config.windowMs);
-            break;
-          }
-          case "draft-8": {
-            const retrieveName = typeof config.identifier === "function" ? config.identifier(request, response) : config.identifier;
-            const name = await retrieveName;
-            config.validations.headersResetTime(info.resetTime);
-            setDraft8Headers(response, info, config.windowMs, name, key);
-            break;
-          }
-          default: {
-            config.validations.headersDraftVersion(config.standardHeaders);
-            break;
-          }
-        }
-      }
-      if (config.skipFailedRequests || config.skipSuccessfulRequests) {
-        let decremented = false;
-        const decrementKey = async () => {
-          if (!decremented) {
-            await config.store.decrement(key);
-            decremented = true;
-          }
-        };
-        if (config.skipFailedRequests) {
-          response.on("finish", async () => {
-            if (!await config.requestWasSuccessful(request, response))
-              await decrementKey();
-          });
-          response.on("close", async () => {
-            if (!response.writableEnded) await decrementKey();
-          });
-          response.on("error", async () => {
-            await decrementKey();
-          });
-        }
-        if (config.skipSuccessfulRequests) {
-          response.on("finish", async () => {
-            if (await config.requestWasSuccessful(request, response))
-              await decrementKey();
-          });
-        }
-      }
-      config.validations.disable();
-      if (totalHits > limit) {
-        if (config.legacyHeaders || config.standardHeaders) {
-          setRetryAfterHeader(response, info, config.windowMs);
-        }
-        config.handler(request, response, next, options);
-        return;
-      }
-      next();
+      throw error;
     }
-  );
+    config.validations.positiveHits(totalHits);
+    config.validations.singleCount(request, config.store, key);
+    const retrieveLimit =
+      typeof config.limit === "function"
+        ? config.limit(request, response)
+        : config.limit;
+    const limit = await retrieveLimit;
+    config.validations.limit(limit);
+    const info = {
+      limit,
+      used: totalHits,
+      remaining: Math.max(limit - totalHits, 0),
+      resetTime,
+    };
+    Object.defineProperty(info, "current", {
+      configurable: false,
+      enumerable: false,
+      value: totalHits,
+    });
+    augmentedRequest[config.requestPropertyName] = info;
+    if (config.legacyHeaders && !response.headersSent) {
+      setLegacyHeaders(response, info);
+    }
+    if (config.standardHeaders && !response.headersSent) {
+      switch (config.standardHeaders) {
+        case "draft-6": {
+          setDraft6Headers(response, info, config.windowMs);
+          break;
+        }
+        case "draft-7": {
+          config.validations.headersResetTime(info.resetTime);
+          setDraft7Headers(response, info, config.windowMs);
+          break;
+        }
+        case "draft-8": {
+          const retrieveName =
+            typeof config.identifier === "function"
+              ? config.identifier(request, response)
+              : config.identifier;
+          const name = await retrieveName;
+          config.validations.headersResetTime(info.resetTime);
+          setDraft8Headers(response, info, config.windowMs, name, key);
+          break;
+        }
+        default: {
+          config.validations.headersDraftVersion(config.standardHeaders);
+          break;
+        }
+      }
+    }
+    if (config.skipFailedRequests || config.skipSuccessfulRequests) {
+      let decremented = false;
+      const decrementKey = async () => {
+        if (!decremented) {
+          await config.store.decrement(key);
+          decremented = true;
+        }
+      };
+      if (config.skipFailedRequests) {
+        response.on("finish", async () => {
+          if (!(await config.requestWasSuccessful(request, response)))
+            await decrementKey();
+        });
+        response.on("close", async () => {
+          if (!response.writableEnded) await decrementKey();
+        });
+        response.on("error", async () => {
+          await decrementKey();
+        });
+      }
+      if (config.skipSuccessfulRequests) {
+        response.on("finish", async () => {
+          if (await config.requestWasSuccessful(request, response))
+            await decrementKey();
+        });
+      }
+    }
+    config.validations.disable();
+    if (totalHits > limit) {
+      if (config.legacyHeaders || config.standardHeaders) {
+        setRetryAfterHeader(response, info, config.windowMs);
+      }
+      config.handler(request, response, next, options);
+      return;
+    }
+    next();
+  });
   const getThrowFn = () => {
     throw new Error("The current store does not support the get/getKey method");
   };
   middleware.resetKey = config.store.resetKey.bind(config.store);
-  middleware.getKey = typeof config.store.get === "function" ? config.store.get.bind(config.store) : getThrowFn;
+  middleware.getKey =
+    typeof config.store.get === "function"
+      ? config.store.get.bind(config.store)
+      : getThrowFn;
   return middleware;
 };
 var lib_default = rateLimit;
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  MemoryStore,
-  rateLimit
-});
-module.exports = rateLimit; module.exports.default = rateLimit; module.exports.rateLimit = rateLimit; module.exports.MemoryStore = MemoryStore;
+0 &&
+  (module.exports = {
+    MemoryStore,
+    rateLimit,
+  });
+module.exports = rateLimit;
+module.exports.default = rateLimit;
+module.exports.rateLimit = rateLimit;
+module.exports.MemoryStore = MemoryStore;

@@ -1,15 +1,15 @@
-import { match } from 'path-to-regexp'
-import { getCleanUrl } from '@mswjs/interceptors'
-import { normalizePath } from './normalizePath'
+import { getCleanUrl } from "@mswjs/interceptors";
+import { match } from "path-to-regexp";
+import { normalizePath } from "./normalizePath";
 
-export type Path = string | RegExp
+export type Path = string | RegExp;
 export type PathParams<KeyType extends keyof any = string> = {
-  [ParamName in KeyType]?: string | ReadonlyArray<string>
-}
+  [ParamName in KeyType]?: string | ReadonlyArray<string>;
+};
 
 export interface Match {
-  matches: boolean
-  params?: PathParams
+  matches: boolean;
+  params?: PathParams;
 }
 
 /**
@@ -27,51 +27,51 @@ export function coercePath(path: string): string {
       .replace(
         /([:a-zA-Z_-]*)(\*{1,2})+/g,
         (_, parameterName: string | undefined, wildcard: string) => {
-          const expression = '(.*)'
+          const expression = "(.*)";
 
           if (!parameterName) {
-            return expression
+            return expression;
           }
 
-          return parameterName.startsWith(':')
+          return parameterName.startsWith(":")
             ? `${parameterName}${wildcard}`
-            : `${parameterName}${expression}`
+            : `${parameterName}${expression}`;
         },
       )
       /**
        * Escape the port so that "path-to-regexp" can match
        * absolute URLs including port numbers.
        */
-      .replace(/([^/])(:)(?=\d+)/, '$1\\$2')
+      .replace(/([^/])(:)(?=\d+)/, "$1\\$2")
       /**
        * Escape the protocol so that "path-to-regexp" could match
        * absolute URL.
        * @see https://github.com/pillarjs/path-to-regexp/issues/259
        */
-      .replace(/^([^/]+)(:)(?=\/\/)/, '$1\\$2')
-  )
+      .replace(/^([^/]+)(:)(?=\/\/)/, "$1\\$2")
+  );
 }
 
 /**
  * Returns the result of matching given request URL against a mask.
  */
 export function matchRequestUrl(url: URL, path: Path, baseUrl?: string): Match {
-  const normalizedPath = normalizePath(path, baseUrl)
+  const normalizedPath = normalizePath(path, baseUrl);
   const cleanPath =
-    typeof normalizedPath === 'string'
+    typeof normalizedPath === "string"
       ? coercePath(normalizedPath)
-      : normalizedPath
+      : normalizedPath;
 
-  const cleanUrl = getCleanUrl(url)
-  const result = match(cleanPath, { decode: decodeURIComponent })(cleanUrl)
-  const params = (result && (result.params as PathParams)) || {}
+  const cleanUrl = getCleanUrl(url);
+  const result = match(cleanPath, { decode: decodeURIComponent })(cleanUrl);
+  const params = (result && (result.params as PathParams)) || {};
 
   return {
     matches: result !== false,
     params,
-  }
+  };
 }
 
 export function isPath(value: unknown): value is Path {
-  return typeof value === 'string' || value instanceof RegExp
+  return typeof value === "string" || value instanceof RegExp;
 }

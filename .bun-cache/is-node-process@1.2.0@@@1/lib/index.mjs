@@ -12,7 +12,5 @@ function isNodeProcess() {
   }
   return false;
 }
-export {
-  isNodeProcess
-};
+export { isNodeProcess };
 //# sourceMappingURL=index.mjs.map

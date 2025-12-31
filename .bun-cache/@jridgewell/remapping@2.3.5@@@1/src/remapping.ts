@@ -1,18 +1,19 @@
-import buildSourceMapTree from './build-source-map-tree';
-import { traceMappings } from './source-map-tree';
-import SourceMap from './source-map';
+import buildSourceMapTree from "./build-source-map-tree";
+import SourceMap from "./source-map";
+import { traceMappings } from "./source-map-tree";
 
-import type { SourceMapInput, SourceMapLoader, Options } from './types';
+import type { Options, SourceMapInput, SourceMapLoader } from "./types";
+
 export type {
-  SourceMapSegment,
+  DecodedSourceMap,
   EncodedSourceMap,
   EncodedSourceMap as RawSourceMap,
-  DecodedSourceMap,
-  SourceMapInput,
-  SourceMapLoader,
   LoaderContext,
   Options,
-} from './types';
+  SourceMapInput,
+  SourceMapLoader,
+  SourceMapSegment,
+} from "./types";
 export type { SourceMap };
 
 /**
@@ -36,7 +37,9 @@ export default function remapping(
   options?: boolean | Options,
 ): SourceMap {
   const opts =
-    typeof options === 'object' ? options : { excludeContent: !!options, decodedMappings: false };
+    typeof options === "object"
+      ? options
+      : { excludeContent: !!options, decodedMappings: false };
   const tree = buildSourceMapTree(input, loader);
   return new SourceMap(traceMappings(tree), opts);
 }

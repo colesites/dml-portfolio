@@ -8,26 +8,30 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var utils_exports = {};
 __export(utils_exports, {
   dirname: () => dirname,
   filterStaticGenerateRoutes: () => filterStaticGenerateRoutes,
   isDynamicRoute: () => isDynamicRoute,
-  joinPaths: () => joinPaths
+  joinPaths: () => joinPaths,
 });
 module.exports = __toCommonJS(utils_exports);
 var import_router = require("../../router");
 var import_handler = require("../../utils/handler");
 const dirname = (path) => {
-  const separatedPath = path.split(/[\/\\]/);
+  const separatedPath = path.split(/[/\\]/);
   return separatedPath.slice(0, -1).join("/");
 };
 const normalizePath = (path) => {
@@ -67,19 +71,25 @@ const joinPaths = (...paths) => {
 const filterStaticGenerateRoutes = (hono) => {
   return hono.routes.reduce((acc, { method, handler, path }) => {
     const targetHandler = (0, import_handler.findTargetHandler)(handler);
-    if (["GET", import_router.METHOD_NAME_ALL].includes(method) && !(0, import_handler.isMiddleware)(targetHandler)) {
+    if (
+      ["GET", import_router.METHOD_NAME_ALL].includes(method) &&
+      !(0, import_handler.isMiddleware)(targetHandler)
+    ) {
       acc.push({ path });
     }
     return acc;
   }, []);
 };
 const isDynamicRoute = (path) => {
-  return path.split("/").some((segment) => segment.startsWith(":") || segment.includes("*"));
+  return path
+    .split("/")
+    .some((segment) => segment.startsWith(":") || segment.includes("*"));
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  dirname,
-  filterStaticGenerateRoutes,
-  isDynamicRoute,
-  joinPaths
-});
+0 &&
+  (module.exports = {
+    dirname,
+    filterStaticGenerateRoutes,
+    isDynamicRoute,
+    joinPaths,
+  });

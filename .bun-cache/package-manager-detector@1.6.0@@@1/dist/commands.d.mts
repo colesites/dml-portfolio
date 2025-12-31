@@ -1,13 +1,19 @@
-import { c as AgentCommands, b as AgentCommandValue, R as ResolvedCommand, A as Agent, C as Command } from './shared/package-manager-detector.DksAilYA.mjs';
+import {
+  c as AgentCommands,
+  b as AgentCommandValue,
+  R as ResolvedCommand,
+  A as Agent,
+  C as Command,
+} from "./shared/package-manager-detector.DksAilYA.mjs";
 
 declare const COMMANDS: {
-    npm: AgentCommands;
-    yarn: AgentCommands;
-    'yarn@berry': AgentCommands;
-    pnpm: AgentCommands;
-    'pnpm@6': AgentCommands;
-    bun: AgentCommands;
-    deno: AgentCommands;
+  npm: AgentCommands;
+  yarn: AgentCommands;
+  "yarn@berry": AgentCommands;
+  pnpm: AgentCommands;
+  "pnpm@6": AgentCommands;
+  bun: AgentCommands;
+  deno: AgentCommands;
 };
 /**
  * Resolve the command for the agent merging the command arguments with the provided arguments.
@@ -24,13 +30,20 @@ declare const COMMANDS: {
  * @param args The arguments to pass to the command.
  * @returns {ResolvedCommand} The resolved command or `null` if the agent command is not found.
  */
-declare function resolveCommand(agent: Agent, command: Command, args: string[]): ResolvedCommand | null;
+declare function resolveCommand(
+  agent: Agent,
+  command: Command,
+  args: string[],
+): ResolvedCommand | null;
 /**
  * Construct the command from the agent command merging the command arguments with the provided arguments.
  * @param value {AgentCommandValue} The agent command to use.
  * @param args The arguments to pass to the command.
  * @returns {ResolvedCommand} The resolved command or `null` if the command is `null`.
  */
-declare function constructCommand(value: AgentCommandValue, args: string[]): ResolvedCommand | null;
+declare function constructCommand(
+  value: AgentCommandValue,
+  args: string[],
+): ResolvedCommand | null;
 
 export { COMMANDS, constructCommand, resolveCommand };

@@ -9,9 +9,5 @@ function restoreHandlers(handlers) {
 function resetHandlers(initialHandlers, ...nextHandlers) {
   return nextHandlers.length > 0 ? [...nextHandlers] : [...initialHandlers];
 }
-export {
-  resetHandlers,
-  restoreHandlers,
-  use
-};
+export { resetHandlers, restoreHandlers, use };
 //# sourceMappingURL=requestHandlerUtils.mjs.map

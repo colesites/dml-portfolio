@@ -1,9 +1,9 @@
-import { createRequestId } from '@mswjs/interceptors'
-import type { RequestHandler } from './handlers/RequestHandler'
+import { createRequestId } from "@mswjs/interceptors";
+import type { RequestHandler } from "./handlers/RequestHandler";
 import {
   executeHandlers,
   type ResponseResolutionContext,
-} from './utils/executeHandlers'
+} from "./utils/executeHandlers";
 
 /**
  * Finds a response for the given request instance
@@ -23,7 +23,7 @@ export const getResponse = async (
     requestId: createRequestId(),
     handlers,
     resolutionContext,
-  })
+  });
 
-  return result?.response
-}
+  return result?.response;
+};

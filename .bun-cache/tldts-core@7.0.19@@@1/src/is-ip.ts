@@ -40,10 +40,10 @@ function isProbablyIpv6(hostname: string): boolean {
     return false;
   }
 
-  let start = hostname.startsWith('[') ? 1 : 0;
+  let start = hostname.startsWith("[") ? 1 : 0;
   let end = hostname.length;
 
-  if (hostname[end - 1] === ']') {
+  if (hostname[end - 1] === "]") {
     end -= 1;
   }
 

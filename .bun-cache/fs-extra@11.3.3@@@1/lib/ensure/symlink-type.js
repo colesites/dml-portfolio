@@ -1,34 +1,32 @@
-'use strict'
+const fs = require("../fs");
+const u = require("universalify").fromPromise;
 
-const fs = require('../fs')
-const u = require('universalify').fromPromise
+async function symlinkType(srcpath, type) {
+  if (type) return type;
 
-async function symlinkType (srcpath, type) {
-  if (type) return type
-
-  let stats
+  let stats;
   try {
-    stats = await fs.lstat(srcpath)
+    stats = await fs.lstat(srcpath);
   } catch {
-    return 'file'
+    return "file";
   }
 
-  return (stats && stats.isDirectory()) ? 'dir' : 'file'
+  return stats && stats.isDirectory() ? "dir" : "file";
 }
 
-function symlinkTypeSync (srcpath, type) {
-  if (type) return type
+function symlinkTypeSync(srcpath, type) {
+  if (type) return type;
 
-  let stats
+  let stats;
   try {
-    stats = fs.lstatSync(srcpath)
+    stats = fs.lstatSync(srcpath);
   } catch {
-    return 'file'
+    return "file";
   }
-  return (stats && stats.isDirectory()) ? 'dir' : 'file'
+  return stats && stats.isDirectory() ? "dir" : "file";
 }
 
 module.exports = {
   symlinkType: u(symlinkType),
-  symlinkTypeSync
-}
+  symlinkTypeSync,
+};

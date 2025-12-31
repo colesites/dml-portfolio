@@ -29,7 +29,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -75,7 +78,8 @@ const error: () => errors.$ZodErrorMap = () => {
       case "invalid_type":
         return `無効な入力: ${issue.expected}が期待されましたが、${parsedType(issue.input)}が入力されました`;
       case "invalid_value":
-        if (issue.values.length === 1) return `無効な入力: ${util.stringifyPrimitive(issue.values[0])}が期待されました`;
+        if (issue.values.length === 1)
+          return `無効な入力: ${util.stringifyPrimitive(issue.values[0])}が期待されました`;
         return `無効な選択: ${util.joinValues(issue.values, "、")}のいずれかである必要があります`;
       case "too_big": {
         const adj = issue.inclusive ? "以下である" : "より小さい";
@@ -93,10 +97,14 @@ const error: () => errors.$ZodErrorMap = () => {
       }
       case "invalid_format": {
         const _issue = issue as errors.$ZodStringFormatIssues;
-        if (_issue.format === "starts_with") return `無効な文字列: "${_issue.prefix}"で始まる必要があります`;
-        if (_issue.format === "ends_with") return `無効な文字列: "${_issue.suffix}"で終わる必要があります`;
-        if (_issue.format === "includes") return `無効な文字列: "${_issue.includes}"を含む必要があります`;
-        if (_issue.format === "regex") return `無効な文字列: パターン${_issue.pattern}に一致する必要があります`;
+        if (_issue.format === "starts_with")
+          return `無効な文字列: "${_issue.prefix}"で始まる必要があります`;
+        if (_issue.format === "ends_with")
+          return `無効な文字列: "${_issue.suffix}"で終わる必要があります`;
+        if (_issue.format === "includes")
+          return `無効な文字列: "${_issue.includes}"を含む必要があります`;
+        if (_issue.format === "regex")
+          return `無効な文字列: パターン${_issue.pattern}に一致する必要があります`;
         return `無効な${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

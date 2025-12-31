@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -36,8 +36,8 @@ test("transform ctx.addIssue with parse", () => {
         },
       ],
       null,
-      2
-    )
+      2,
+    ),
   );
 });
 
@@ -128,7 +128,7 @@ test("sync coercion async error", async () => {
       .object({
         id: asyncNumberToString,
       })
-      .parse({ id: 5 })
+      .parse({ id: 5 }),
   ).toThrow();
   // expect(data).toEqual({ id: '5' });
 });

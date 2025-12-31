@@ -1,19 +1,16 @@
 // src/utils/concurrent.ts
 var DEFAULT_CONCURRENCY = 1024;
-var createPool = ({
-  concurrency,
-  interval
-} = {}) => {
+var createPool = ({ concurrency, interval } = {}) => {
   concurrency ||= DEFAULT_CONCURRENCY;
   if (concurrency === Infinity) {
     return {
-      run: async (fn) => fn()
+      run: async (fn) => fn(),
     };
   }
   const pool = /* @__PURE__ */ new Set();
   const run = async (fn, promise, resolve) => {
     if (pool.size >= concurrency) {
-      promise ||= new Promise((r) => resolve = r);
+      promise ||= new Promise((r) => (resolve = r));
       setTimeout(() => run(fn, promise, resolve));
       return promise;
     }
@@ -34,6 +31,4 @@ var createPool = ({
   };
   return { run };
 };
-export {
-  createPool
-};
+export { createPool };

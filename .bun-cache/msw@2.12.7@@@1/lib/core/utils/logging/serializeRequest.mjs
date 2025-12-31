@@ -5,10 +5,8 @@ async function serializeRequest(request) {
     url: new URL(request.url),
     method: request.method,
     headers: Object.fromEntries(request.headers.entries()),
-    body: requestText
+    body: requestText,
   };
 }
-export {
-  serializeRequest
-};
+export { serializeRequest };
 //# sourceMappingURL=serializeRequest.mjs.map

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.ClassAccessorProperty = ClassAccessorProperty;
 exports.ClassBody = ClassBody;
@@ -13,12 +13,10 @@ exports.ClassProperty = ClassProperty;
 exports.StaticBlock = StaticBlock;
 exports._classMethodHead = _classMethodHead;
 var _t = require("@babel/types");
-const {
-  isExportDefaultDeclaration,
-  isExportNamedDeclaration
-} = _t;
+const { isExportDefaultDeclaration, isExportNamedDeclaration } = _t;
 function ClassDeclaration(node, parent) {
-  const inExport = isExportDefaultDeclaration(parent) || isExportNamedDeclaration(parent);
+  const inExport =
+    isExportDefaultDeclaration(parent) || isExportNamedDeclaration(parent);
   if (!inExport || !this._shouldPrintDecoratorsBeforeExport(parent)) {
     this.printJoin(node.decorators);
   }
@@ -77,19 +75,32 @@ function classBodyEmptySemicolonsPrinter(printer, node) {
   let occurrenceCount = 0;
   let nextLocIndex = 0;
   const advanceNextLocIndex = () => {
-    while (nextLocIndex < node.body.length && node.body[nextLocIndex].start == null) {
+    while (
+      nextLocIndex < node.body.length &&
+      node.body[nextLocIndex].start == null
+    ) {
       nextLocIndex++;
     }
   };
   advanceNextLocIndex();
-  return i => {
+  return (i) => {
     if (nextLocIndex <= i) {
       nextLocIndex = i + 1;
       advanceNextLocIndex();
     }
-    const end = nextLocIndex === node.body.length ? node.end : node.body[nextLocIndex].start;
+    const end =
+      nextLocIndex === node.body.length
+        ? node.end
+        : node.body[nextLocIndex].start;
     let tok;
-    while (k < indexes.length && printer.tokenMap.matchesOriginal(tok = printer._tokens[indexes[k]], ";") && tok.start < end) {
+    while (
+      k < indexes.length &&
+      printer.tokenMap.matchesOriginal(
+        (tok = printer._tokens[indexes[k]]),
+        ";",
+      ) &&
+      tok.start < end
+    ) {
       printer.token(";", undefined, occurrenceCount++);
       k++;
     }
@@ -99,7 +110,11 @@ function ClassProperty(node) {
   this.printJoin(node.decorators);
   if (!node.static && !this.format.preserveFormat) {
     var _node$key$loc;
-    const endLine = (_node$key$loc = node.key.loc) == null || (_node$key$loc = _node$key$loc.end) == null ? void 0 : _node$key$loc.line;
+    const endLine =
+      (_node$key$loc = node.key.loc) == null ||
+      (_node$key$loc = _node$key$loc.end) == null
+        ? void 0
+        : _node$key$loc.line;
     if (endLine) this.catchUp(endLine);
   }
   this.tsPrintClassMemberModifiers(node);
@@ -129,7 +144,11 @@ function ClassProperty(node) {
 function ClassAccessorProperty(node) {
   var _node$key$loc2;
   this.printJoin(node.decorators);
-  const endLine = (_node$key$loc2 = node.key.loc) == null || (_node$key$loc2 = _node$key$loc2.end) == null ? void 0 : _node$key$loc2.line;
+  const endLine =
+    (_node$key$loc2 = node.key.loc) == null ||
+    (_node$key$loc2 = _node$key$loc2.end) == null
+      ? void 0
+      : _node$key$loc2.line;
   if (endLine) this.catchUp(endLine);
   this.tsPrintClassMemberModifiers(node);
   this.word("accessor", true);
@@ -190,7 +209,11 @@ function _classMethodHead(node) {
   this.printJoin(node.decorators);
   if (!this.format.preserveFormat) {
     var _node$key$loc3;
-    const endLine = (_node$key$loc3 = node.key.loc) == null || (_node$key$loc3 = _node$key$loc3.end) == null ? void 0 : _node$key$loc3.line;
+    const endLine =
+      (_node$key$loc3 = node.key.loc) == null ||
+      (_node$key$loc3 = _node$key$loc3.end) == null
+        ? void 0
+        : _node$key$loc3.line;
     if (endLine) this.catchUp(endLine);
   }
   this.tsPrintClassMemberModifiers(node);

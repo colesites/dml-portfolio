@@ -13,9 +13,9 @@ import {
   ensureBytes,
   numberToBytesLE,
   randomBytes,
-} from '../utils.ts';
-import type { CurveLengths } from './curve.ts';
-import { mod } from './modular.ts';
+} from "../utils.ts";
+import type { CurveLengths } from "./curve.ts";
+import { mod } from "./modular.ts";
 
 const _0n = BigInt(0);
 const _1n = BigInt(1);
@@ -24,7 +24,7 @@ type Hex = string | Uint8Array;
 
 export type CurveType = {
   P: bigint; // finite field prime
-  type: 'x25519' | 'x448';
+  type: "x25519" | "x448";
   adjustScalarBytes: (bytes: Uint8Array) => Uint8Array;
   powPminus2: (x: bigint) => bigint;
   randomBytes?: (bytesLength?: number) => Uint8Array;
@@ -42,14 +42,17 @@ export type MontgomeryECDH = {
   };
   GuBytes: Uint8Array;
   lengths: CurveLengths;
-  keygen: (seed?: Uint8Array) => { secretKey: Uint8Array; publicKey: Uint8Array };
+  keygen: (seed?: Uint8Array) => {
+    secretKey: Uint8Array;
+    publicKey: Uint8Array;
+  };
 };
 export type CurveFn = MontgomeryECDH;
 
 function validateOpts(curve: CurveType) {
   _validateObject(curve, {
-    adjustScalarBytes: 'function',
-    powPminus2: 'function',
+    adjustScalarBytes: "function",
+    powPminus2: "function",
   });
   return Object.freeze({ ...curve } as const);
 }
@@ -57,8 +60,8 @@ function validateOpts(curve: CurveType) {
 export function montgomery(curveDef: CurveType): MontgomeryECDH {
   const CURVE = validateOpts(curveDef);
   const { P, type, adjustScalarBytes, powPminus2, randomBytes: rand } = CURVE;
-  const is25519 = type === 'x25519';
-  if (!is25519 && type !== 'x448') throw new Error('invalid type');
+  const is25519 = type === "x25519";
+  if (!is25519 && type !== "x448") throw new Error("invalid type");
   const randomBytes_ = rand || randomBytes;
 
   const montgomeryBits = is25519 ? 255 : 448;
@@ -83,7 +86,7 @@ export function montgomery(curveDef: CurveType): MontgomeryECDH {
     return numberToBytesLE(modP(u), fieldLen);
   }
   function decodeU(u: Hex): bigint {
-    const _u = ensureBytes('u coordinate', u, fieldLen);
+    const _u = ensureBytes("u coordinate", u, fieldLen);
     // RFC: When receiving such an array, implementations of X25519
     // (but not X448) MUST mask the most significant bit in the final byte.
     if (is25519) _u[31] &= 127; // 0b0111_1111
@@ -94,14 +97,16 @@ export function montgomery(curveDef: CurveType): MontgomeryECDH {
     return modP(bytesToNumberLE(_u));
   }
   function decodeScalar(scalar: Hex): bigint {
-    return bytesToNumberLE(adjustScalarBytes(ensureBytes('scalar', scalar, fieldLen)));
+    return bytesToNumberLE(
+      adjustScalarBytes(ensureBytes("scalar", scalar, fieldLen)),
+    );
   }
   function scalarMult(scalar: Hex, u: Hex): Uint8Array {
     const pu = montgomeryLadder(decodeU(u), decodeScalar(scalar));
     // Some public keys are useless, of low-order. Curve author doesn't think
     // it needs to be validated, but we do it nonetheless.
     // https://cr.yp.to/ecdh.html#validate
-    if (pu === _0n) throw new Error('invalid private or public key received');
+    if (pu === _0n) throw new Error("invalid private or public key received");
     return encodeU(pu);
   }
   // Computes public key from private. By doing scalar multiplication of base point.
@@ -110,7 +115,11 @@ export function montgomery(curveDef: CurveType): MontgomeryECDH {
   }
 
   // cswap from RFC7748 "example code"
-  function cswap(swap: bigint, x_2: bigint, x_3: bigint): { x_2: bigint; x_3: bigint } {
+  function cswap(
+    swap: bigint,
+    x_2: bigint,
+    x_3: bigint,
+  ): { x_2: bigint; x_3: bigint } {
     // dummy = mask(swap) AND (x_2 XOR x_3)
     // Where mask(swap) is the all-1 or all-0 word of the same length as x_2
     // and x_3, computed, e.g., as mask(swap) = 0 - swap.
@@ -127,8 +136,8 @@ export function montgomery(curveDef: CurveType): MontgomeryECDH {
    * @returns new Point on Montgomery curve
    */
   function montgomeryLadder(u: bigint, scalar: bigint): bigint {
-    aInRange('u', u, _0n, P);
-    aInRange('scalar', scalar, minScalar, maxScalar);
+    aInRange("u", u, _0n, P);
+    aInRange("scalar", scalar, minScalar, maxScalar);
     const k = scalar;
     const x_1 = u;
     let x_2 = _1n;
@@ -183,7 +192,8 @@ export function montgomery(curveDef: CurveType): MontgomeryECDH {
   };
   return {
     keygen,
-    getSharedSecret: (secretKey: Hex, publicKey: Hex) => scalarMult(secretKey, publicKey),
+    getSharedSecret: (secretKey: Hex, publicKey: Hex) =>
+      scalarMult(secretKey, publicKey),
     getPublicKey: (secretKey: Hex): Uint8Array => scalarMultBase(secretKey),
     scalarMult,
     scalarMultBase,

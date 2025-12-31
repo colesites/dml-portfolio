@@ -6,4 +6,12 @@ import type { UnevaluatedPropertiesError } from "./unevaluated/unevaluatedProper
 import type { UnevaluatedItemsError } from "./unevaluated/unevaluatedItems";
 import type { DependentRequiredError } from "./validation/dependentRequired";
 import type { DiscriminatorError } from "./discriminator";
-export type DefinedError = TypeError | ApplicatorKeywordError | ValidationKeywordError | FormatError | UnevaluatedPropertiesError | UnevaluatedItemsError | DependentRequiredError | DiscriminatorError;
+export type DefinedError =
+  | TypeError
+  | ApplicatorKeywordError
+  | ValidationKeywordError
+  | FormatError
+  | UnevaluatedPropertiesError
+  | UnevaluatedItemsError
+  | DependentRequiredError
+  | DiscriminatorError;

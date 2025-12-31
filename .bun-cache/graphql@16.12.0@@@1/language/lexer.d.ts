@@ -1,6 +1,6 @@
-import { Token } from './ast';
-import type { Source } from './source';
-import { TokenKind } from './tokenKind';
+import { Token } from "./ast";
+import type { Source } from "./source";
+import { TokenKind } from "./tokenKind";
 /**
  * A Lexer interface which provides common properties and methods required for
  * lexing GraphQL source.

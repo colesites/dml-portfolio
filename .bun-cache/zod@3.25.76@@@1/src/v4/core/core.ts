@@ -1,6 +1,7 @@
 import type * as errors from "./errors.js";
 import type * as schemas from "./schemas.js";
 import type { Class } from "./util.js";
+
 //////////////////////////////   CONSTRUCTORS   ///////////////////////////////////////
 
 type ZodTrait = { _zod: { def: any; [k: string]: any } };
@@ -14,10 +15,13 @@ export const NEVER: never = Object.freeze({
   status: "aborted",
 }) as never;
 
-export /*@__NO_SIDE_EFFECTS__*/ function $constructor<T extends ZodTrait, D = T["_zod"]["def"]>(
+export /*@__NO_SIDE_EFFECTS__*/ function $constructor<
+  T extends ZodTrait,
+  D = T["_zod"]["def"],
+>(
   name: string,
   initializer: (inst: T, def: D) => void,
-  params?: { Parent?: typeof Class }
+  params?: { Parent?: typeof Class },
 ): $constructor<T, D> {
   function init(inst: T, def: D) {
     Object.defineProperty(inst, "_zod", {
@@ -31,7 +35,8 @@ export /*@__NO_SIDE_EFFECTS__*/ function $constructor<T extends ZodTrait, D = T[
     initializer(inst, def);
     // support prototype modifications
     for (const k in _.prototype) {
-      if (!(k in inst)) Object.defineProperty(inst, k, { value: _.prototype[k].bind(inst) });
+      if (!(k in inst))
+        Object.defineProperty(inst, k, { value: _.prototype[k].bind(inst) });
     }
     inst._zod.constr = _;
     inst._zod.def = def;
@@ -65,16 +70,22 @@ export /*@__NO_SIDE_EFFECTS__*/ function $constructor<T extends ZodTrait, D = T[
 
 //////////////////////////////   UTILITIES   ///////////////////////////////////////
 export const $brand: unique symbol = Symbol("zod_brand");
-export type $brand<T extends string | number | symbol = string | number | symbol> = {
+export type $brand<
+  T extends string | number | symbol = string | number | symbol,
+> = {
   [$brand]: { [k in T]: true };
 };
 
-export type $ZodBranded<T extends schemas.SomeType, Brand extends string | number | symbol> = T &
-  Record<"_zod", Record<"output", output<T> & $brand<Brand>>>;
+export type $ZodBranded<
+  T extends schemas.SomeType,
+  Brand extends string | number | symbol,
+> = T & Record<"_zod", Record<"output", output<T> & $brand<Brand>>>;
 
 export class $ZodAsyncError extends Error {
   constructor() {
-    super(`Encountered Promise during synchronous parse. Use .parseAsync() instead.`);
+    super(
+      `Encountered Promise during synchronous parse. Use .parseAsync() instead.`,
+    );
   }
 }
 
@@ -84,8 +95,12 @@ export class $ZodAsyncError extends Error {
 // export type output<T extends schemas.$ZodType> = T["_zod"]["output"];
 // export type input<T extends schemas.$ZodType> = T["_zod"]["input"];
 // export type output<T extends schemas.$ZodType> = T["_zod"]["output"];
-export type input<T> = T extends { _zod: { input: any } } ? Required<T["_zod"]>["input"] : unknown;
-export type output<T> = T extends { _zod: { output: any } } ? Required<T["_zod"]>["output"] : unknown;
+export type input<T> = T extends { _zod: { input: any } }
+  ? Required<T["_zod"]>["input"]
+  : unknown;
+export type output<T> = T extends { _zod: { output: any } }
+  ? Required<T["_zod"]>["output"]
+  : unknown;
 
 // Mk2
 // export type input<T> = T extends { _zod: { "~input": any } }

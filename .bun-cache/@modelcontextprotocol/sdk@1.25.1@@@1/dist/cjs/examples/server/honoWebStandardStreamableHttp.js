@@ -7,29 +7,45 @@
  *
  * Run with: npx tsx src/examples/server/honoWebStandardStreamableHttp.ts
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
+var __createBinding =
+  (this && this.__createBinding) ||
+  (Object.create
+    ? (o, m, k, k2) => {
+        if (k2 === undefined) k2 = k;
+        var desc = Object.getOwnPropertyDescriptor(m, k);
+        if (
+          !desc ||
+          ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)
+        ) {
+          desc = { enumerable: true, get: () => m[k] };
+        }
+        Object.defineProperty(o, k2, desc);
+      }
+    : (o, m, k, k2) => {
+        if (k2 === undefined) k2 = k;
+        o[k2] = m[k];
+      });
+var __setModuleDefault =
+  (this && this.__setModuleDefault) ||
+  (Object.create
+    ? (o, v) => {
+        Object.defineProperty(o, "default", { enumerable: true, value: v });
+      }
+    : (o, v) => {
+        o["default"] = v;
+      });
+var __importStar =
+  (this && this.__importStar) ||
+  ((mod) => {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null)
+      for (var k in mod)
+        if (k !== "default" && Object.hasOwn(mod, k))
+          __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
-};
+  });
 Object.defineProperty(exports, "__esModule", { value: true });
 const hono_1 = require("hono");
 const cors_1 = require("hono/cors");
@@ -39,43 +55,61 @@ const mcp_js_1 = require("../../server/mcp.js");
 const webStandardStreamableHttp_js_1 = require("../../server/webStandardStreamableHttp.js");
 // Create the MCP server
 const server = new mcp_js_1.McpServer({
-    name: 'hono-webstandard-mcp-server',
-    version: '1.0.0'
+  name: "hono-webstandard-mcp-server",
+  version: "1.0.0",
 });
 // Register a simple greeting tool
-server.registerTool('greet', {
-    title: 'Greeting Tool',
-    description: 'A simple greeting tool',
-    inputSchema: { name: z.string().describe('Name to greet') }
-}, async ({ name }) => {
+server.registerTool(
+  "greet",
+  {
+    title: "Greeting Tool",
+    description: "A simple greeting tool",
+    inputSchema: { name: z.string().describe("Name to greet") },
+  },
+  async ({ name }) => {
     return {
-        content: [{ type: 'text', text: `Hello, ${name}! (from Hono + WebStandard transport)` }]
+      content: [
+        {
+          type: "text",
+          text: `Hello, ${name}! (from Hono + WebStandard transport)`,
+        },
+      ],
     };
-});
+  },
+);
 // Create a stateless transport (no options = no session management)
-const transport = new webStandardStreamableHttp_js_1.WebStandardStreamableHTTPServerTransport();
+const transport =
+  new webStandardStreamableHttp_js_1.WebStandardStreamableHTTPServerTransport();
 // Create the Hono app
 const app = new hono_1.Hono();
 // Enable CORS for all origins
-app.use('*', (0, cors_1.cors)({
-    origin: '*',
-    allowMethods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-    allowHeaders: ['Content-Type', 'mcp-session-id', 'Last-Event-ID', 'mcp-protocol-version'],
-    exposeHeaders: ['mcp-session-id', 'mcp-protocol-version']
-}));
+app.use(
+  "*",
+  (0, cors_1.cors)({
+    origin: "*",
+    allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
+    allowHeaders: [
+      "Content-Type",
+      "mcp-session-id",
+      "Last-Event-ID",
+      "mcp-protocol-version",
+    ],
+    exposeHeaders: ["mcp-session-id", "mcp-protocol-version"],
+  }),
+);
 // Health check endpoint
-app.get('/health', c => c.json({ status: 'ok' }));
+app.get("/health", (c) => c.json({ status: "ok" }));
 // MCP endpoint
-app.all('/mcp', c => transport.handleRequest(c.req.raw));
+app.all("/mcp", (c) => transport.handleRequest(c.req.raw));
 // Start the server
 const PORT = process.env.MCP_PORT ? parseInt(process.env.MCP_PORT, 10) : 3000;
 server.connect(transport).then(() => {
-    console.log(`Starting Hono MCP server on port ${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/health`);
-    console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
-    (0, node_server_1.serve)({
-        fetch: app.fetch,
-        port: PORT
-    });
+  console.log(`Starting Hono MCP server on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
+  (0, node_server_1.serve)({
+    fetch: app.fetch,
+    port: PORT,
+  });
 });
 //# sourceMappingURL=honoWebStandardStreamableHttp.js.map

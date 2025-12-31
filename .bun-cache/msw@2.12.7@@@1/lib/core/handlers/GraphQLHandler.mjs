@@ -1,22 +1,19 @@
-import {
-  parse
-} from "graphql";
-import {
-  RequestHandler
-} from './RequestHandler.mjs';
-import { getTimestamp } from '../utils/logging/getTimestamp.mjs';
-import { getStatusCodeColor } from '../utils/logging/getStatusCodeColor.mjs';
-import { serializeRequest } from '../utils/logging/serializeRequest.mjs';
-import { serializeResponse } from '../utils/logging/serializeResponse.mjs';
-import { matchRequestUrl } from '../utils/matching/matchRequestUrl.mjs';
-import {
-  parseGraphQLRequest,
-  parseDocumentNode
-} from '../utils/internal/parseGraphQLRequest.mjs';
-import { toPublicUrl } from '../utils/request/toPublicUrl.mjs';
-import { devUtils } from '../utils/internal/devUtils.mjs';
-import { getAllRequestCookies } from '../utils/request/getRequestCookies.mjs';
+import { parse } from "graphql";
 import { invariant } from "outvariant";
+import { devUtils } from "../utils/internal/devUtils.mjs";
+import {
+  parseDocumentNode,
+  parseGraphQLRequest,
+} from "../utils/internal/parseGraphQLRequest.mjs";
+import { getStatusCodeColor } from "../utils/logging/getStatusCodeColor.mjs";
+import { getTimestamp } from "../utils/logging/getTimestamp.mjs";
+import { serializeRequest } from "../utils/logging/serializeRequest.mjs";
+import { serializeResponse } from "../utils/logging/serializeResponse.mjs";
+import { matchRequestUrl } from "../utils/matching/matchRequestUrl.mjs";
+import { getAllRequestCookies } from "../utils/request/getRequestCookies.mjs";
+import { toPublicUrl } from "../utils/request/toPublicUrl.mjs";
+import { RequestHandler } from "./RequestHandler.mjs";
+
 function isDocumentNode(value) {
   if (value == null) {
     return false;
@@ -35,11 +32,11 @@ class GraphQLHandler extends RequestHandler {
         node.operationType === operationType,
         'Failed to create a GraphQL handler: provided a DocumentNode with a mismatched operation type (expected "%s" but got "%s").',
         operationType,
-        node.operationType
+        node.operationType,
       );
       invariant(
         node.operationName,
-        "Failed to create a GraphQL handler: provided a DocumentNode without operation name"
+        "Failed to create a GraphQL handler: provided a DocumentNode without operation name",
       );
       return node.operationName;
     };
@@ -51,7 +48,7 @@ class GraphQLHandler extends RequestHandler {
       invariant(
         isDocumentNode(documentNode),
         "Failed to create a GraphQL handler: given TypedDocumentString (%s) does not produce a valid DocumentNode",
-        predicate
+        predicate,
       );
       return getOperationName(parseDocumentNode(documentNode));
     }
@@ -60,21 +57,27 @@ class GraphQLHandler extends RequestHandler {
   constructor(operationType, predicate, endpoint, resolver, options) {
     const operationName = GraphQLHandler.#parseOperationName(
       predicate,
-      operationType
+      operationType,
     );
-    const displayOperationName = typeof operationName === "function" ? "[custom predicate]" : operationName;
-    const header = operationType === "all" ? `${operationType} (origin: ${endpoint.toString()})` : `${operationType}${displayOperationName ? ` ${displayOperationName}` : ""} (origin: ${endpoint.toString()})`;
+    const displayOperationName =
+      typeof operationName === "function"
+        ? "[custom predicate]"
+        : operationName;
+    const header =
+      operationType === "all"
+        ? `${operationType} (origin: ${endpoint.toString()})`
+        : `${operationType}${displayOperationName ? ` ${displayOperationName}` : ""} (origin: ${endpoint.toString()})`;
     super({
       info: {
         header,
         operationType,
         operationName: GraphQLHandler.#parseOperationName(
           predicate,
-          operationType
-        )
+          operationType,
+        ),
       },
       resolver,
-      options
+      options,
     });
     this.endpoint = endpoint;
   }
@@ -90,7 +93,7 @@ class GraphQLHandler extends RequestHandler {
         await parseGraphQLRequest(request).catch((error) => {
           console.error(error);
           return void 0;
-        })
+        }),
       );
     }
     return GraphQLHandler.parsedRequestCache.get(request);
@@ -101,16 +104,16 @@ class GraphQLHandler extends RequestHandler {
     if (!match.matches) {
       return {
         match,
-        cookies
+        cookies,
       };
     }
     const parsedResult = await this.parseGraphQLRequestOrGetFromCache(
-      args.request
+      args.request,
     );
     if (typeof parsedResult === "undefined") {
       return {
         match,
-        cookies
+        cookies,
       };
     }
     return {
@@ -119,7 +122,7 @@ class GraphQLHandler extends RequestHandler {
       query: parsedResult.query,
       operationType: parsedResult.operationType,
       operationName: parsedResult.operationName,
-      variables: parsedResult.variables
+      variables: parsedResult.variables,
     };
   }
   async predicate(args) {
@@ -133,12 +136,18 @@ class GraphQLHandler extends RequestHandler {
 Consider naming this operation or using "graphql.operation()" request handler to intercept GraphQL requests regardless of their operation name/type. Read more: https://mswjs.io/docs/api/graphql/#graphqloperationresolver`);
       return false;
     }
-    const hasMatchingOperationType = this.info.operationType === "all" || args.parsedResult.operationType === this.info.operationType;
+    const hasMatchingOperationType =
+      this.info.operationType === "all" ||
+      args.parsedResult.operationType === this.info.operationType;
     const hasMatchingOperationName = await this.matchOperationName({
       request: args.request,
-      parsedResult: args.parsedResult
+      parsedResult: args.parsedResult,
     });
-    return args.parsedResult.match.matches && hasMatchingOperationType && hasMatchingOperationName;
+    return (
+      args.parsedResult.match.matches &&
+      hasMatchingOperationType &&
+      hasMatchingOperationName
+    );
   }
   async matchOperationName(args) {
     if (typeof this.info.operationName === "function") {
@@ -146,13 +155,17 @@ Consider naming this operation or using "graphql.operation()" request handler to
         request: args.request,
         ...this.extendResolverArgs({
           request: args.request,
-          parsedResult: args.parsedResult
-        })
+          parsedResult: args.parsedResult,
+        }),
       });
-      return typeof customPredicateResult === "boolean" ? customPredicateResult : customPredicateResult.matches;
+      return typeof customPredicateResult === "boolean"
+        ? customPredicateResult
+        : customPredicateResult.matches;
     }
     if (this.info.operationName instanceof RegExp) {
-      return this.info.operationName.test(args.parsedResult.operationName || "");
+      return this.info.operationName.test(
+        args.parsedResult.operationName || "",
+      );
     }
     return args.parsedResult.operationName === this.info.operationName;
   }
@@ -162,20 +175,22 @@ Consider naming this operation or using "graphql.operation()" request handler to
       operationType: args.parsedResult.operationType,
       operationName: args.parsedResult.operationName || "",
       variables: args.parsedResult.variables || {},
-      cookies: args.parsedResult.cookies
+      cookies: args.parsedResult.cookies,
     };
   }
   async log(args) {
     const loggedRequest = await serializeRequest(args.request);
     const loggedResponse = await serializeResponse(args.response);
     const statusColor = getStatusCodeColor(loggedResponse.status);
-    const requestInfo = args.parsedResult.operationName ? `${args.parsedResult.operationType} ${args.parsedResult.operationName}` : `anonymous ${args.parsedResult.operationType}`;
+    const requestInfo = args.parsedResult.operationName
+      ? `${args.parsedResult.operationType} ${args.parsedResult.operationName}`
+      : `anonymous ${args.parsedResult.operationType}`;
     console.groupCollapsed(
       devUtils.formatMessage(
-        `${getTimestamp()} ${requestInfo} (%c${loggedResponse.status} ${loggedResponse.statusText}%c)`
+        `${getTimestamp()} ${requestInfo} (%c${loggedResponse.status} ${loggedResponse.statusText}%c)`,
       ),
       `color:${statusColor}`,
-      "color:inherit"
+      "color:inherit",
     );
     console.log("Request:", loggedRequest);
     console.log("Handler:", this);
@@ -183,8 +198,5 @@ Consider naming this operation or using "graphql.operation()" request handler to
     console.groupEnd();
   }
 }
-export {
-  GraphQLHandler,
-  isDocumentNode
-};
+export { GraphQLHandler, isDocumentNode };
 //# sourceMappingURL=GraphQLHandler.mjs.map

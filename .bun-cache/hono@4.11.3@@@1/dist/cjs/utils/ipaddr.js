@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var ipaddr_exports = {};
 __export(ipaddr_exports, {
   convertIPv4BinaryToString: () => convertIPv4BinaryToString,
@@ -23,7 +27,7 @@ __export(ipaddr_exports, {
   convertIPv6BinaryToString: () => convertIPv6BinaryToString,
   convertIPv6ToBinary: () => convertIPv6ToBinary,
   distinctRemoteAddr: () => distinctRemoteAddr,
-  expandIPv6: () => expandIPv6
+  expandIPv6: () => expandIPv6,
 });
 module.exports = __toCommonJS(ipaddr_exports);
 const expandIPv6 = (ipV6) => {
@@ -32,7 +36,9 @@ const expandIPv6 = (ipV6) => {
     sections.splice(
       -1,
       1,
-      ...convertIPv6BinaryToString(convertIPv4ToBinary(sections.at(-1))).substring(2).split(":")
+      ...convertIPv6BinaryToString(convertIPv4ToBinary(sections.at(-1)))
+        .substring(2)
+        .split(":"),
       // => ['7f00', '0001']
     );
   }
@@ -77,7 +83,7 @@ const convertIPv6ToBinary = (ipv6) => {
 const convertIPv4BinaryToString = (ipV4) => {
   const sections = [];
   for (let i = 0; i < 4; i++) {
-    sections.push(ipV4 >> BigInt(8 * (3 - i)) & 0xffn);
+    sections.push((ipV4 >> BigInt(8 * (3 - i))) & 0xffn);
   }
   return sections.join(".");
 };
@@ -87,7 +93,7 @@ const convertIPv6BinaryToString = (ipV6) => {
   }
   const sections = [];
   for (let i = 0; i < 8; i++) {
-    sections.push((ipV6 >> BigInt(16 * (7 - i)) & 0xffffn).toString(16));
+    sections.push(((ipV6 >> BigInt(16 * (7 - i))) & 0xffffn).toString(16));
   }
   let currentZeroStart = -1;
   let maxZeroStart = -1;
@@ -119,11 +125,12 @@ const convertIPv6BinaryToString = (ipV6) => {
   return sections.join(":").replace(/:{2,}/g, "::");
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  convertIPv4BinaryToString,
-  convertIPv4ToBinary,
-  convertIPv6BinaryToString,
-  convertIPv6ToBinary,
-  distinctRemoteAddr,
-  expandIPv6
-});
+0 &&
+  (module.exports = {
+    convertIPv4BinaryToString,
+    convertIPv4ToBinary,
+    convertIPv6BinaryToString,
+    convertIPv6ToBinary,
+    distinctRemoteAddr,
+    expandIPv6,
+  });

@@ -1,4 +1,7 @@
-import type { FileSystemModule, ToSSGAdaptorInterface } from '../../helper/ssg/index';
+import type {
+  FileSystemModule,
+  ToSSGAdaptorInterface,
+} from "../../helper/ssg/index";
 /**
  * @experimental
  * `denoFileSystemModule` is an experimental feature.

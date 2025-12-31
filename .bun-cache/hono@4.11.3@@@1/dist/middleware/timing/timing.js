@@ -3,8 +3,7 @@ import "../../context.js";
 var getTime = () => {
   try {
     return performance.now();
-  } catch {
-  }
+  } catch {}
   return Date.now();
 };
 var timing = (config) => {
@@ -14,7 +13,7 @@ var timing = (config) => {
     totalDescription: "Total Response Time",
     autoEnd: true,
     crossOrigin: false,
-    ...config
+    ...config,
   };
   return async function timing2(c, next) {
     const headers = [];
@@ -33,14 +32,20 @@ var timing = (config) => {
     if (options.autoEnd) {
       timers.forEach((_, key) => endTime(c, key));
     }
-    const enabled = typeof options.enabled === "function" ? options.enabled(c) : options.enabled;
+    const enabled =
+      typeof options.enabled === "function"
+        ? options.enabled(c)
+        : options.enabled;
     if (enabled) {
       c.res.headers.append("Server-Timing", headers.join(","));
-      const crossOrigin = typeof options.crossOrigin === "function" ? options.crossOrigin(c) : options.crossOrigin;
+      const crossOrigin =
+        typeof options.crossOrigin === "function"
+          ? options.crossOrigin(c)
+          : options.crossOrigin;
       if (crossOrigin) {
         c.res.headers.append(
           "Timing-Allow-Origin",
-          typeof crossOrigin === "string" ? crossOrigin : "*"
+          typeof crossOrigin === "string" ? crossOrigin : "*",
         );
       }
     }
@@ -49,22 +54,30 @@ var timing = (config) => {
 var setMetric = (c, name, valueDescription, description, precision) => {
   const metrics = c.get("metric");
   if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    console.warn(
+      "Metrics not initialized! Please add the `timing()` middleware to this route!",
+    );
     return;
   }
   if (typeof valueDescription === "number") {
     const dur = valueDescription.toFixed(precision || 1);
-    const metric = description ? `${name};dur=${dur};desc="${description}"` : `${name};dur=${dur}`;
+    const metric = description
+      ? `${name};dur=${dur};desc="${description}"`
+      : `${name};dur=${dur}`;
     metrics.headers.push(metric);
   } else {
-    const metric = valueDescription ? `${name};desc="${valueDescription}"` : `${name}`;
+    const metric = valueDescription
+      ? `${name};desc="${valueDescription}"`
+      : `${name}`;
     metrics.headers.push(metric);
   }
 };
 var startTime = (c, name, description) => {
   const metrics = c.get("metric");
   if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    console.warn(
+      "Metrics not initialized! Please add the `timing()` middleware to this route!",
+    );
     return;
   }
   metrics.timers.set(name, { description, start: getTime() });
@@ -72,7 +85,9 @@ var startTime = (c, name, description) => {
 var endTime = (c, name, precision) => {
   const metrics = c.get("metric");
   if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    console.warn(
+      "Metrics not initialized! Please add the `timing()` middleware to this route!",
+    );
     return;
   }
   const timer = metrics.timers.get(name);
@@ -93,10 +108,4 @@ async function wrapTime(c, name, callable, description, precision) {
     endTime(c, name, precision);
   }
 }
-export {
-  endTime,
-  setMetric,
-  startTime,
-  timing,
-  wrapTime
-};
+export { endTime, setMetric, startTime, timing, wrapTime };

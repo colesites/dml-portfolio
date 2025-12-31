@@ -1,12 +1,12 @@
-const { encrypt } = require('eciesjs')
+const { encrypt } = require("eciesjs");
 
-const PREFIX = 'encrypted:'
+const PREFIX = "encrypted:";
 
-function encryptValue (value, publicKey) {
-  const ciphertext = encrypt(publicKey, Buffer.from(value))
-  const encoded = Buffer.from(ciphertext, 'hex').toString('base64') // base64 encode ciphertext
+function encryptValue(value, publicKey) {
+  const ciphertext = encrypt(publicKey, Buffer.from(value));
+  const encoded = Buffer.from(ciphertext, "hex").toString("base64"); // base64 encode ciphertext
 
-  return `${PREFIX}${encoded}`
+  return `${PREFIX}${encoded}`;
 }
 
-module.exports = encryptValue
+module.exports = encryptValue;

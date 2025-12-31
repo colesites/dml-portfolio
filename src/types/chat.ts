@@ -18,4 +18,3 @@ export type ChatMessage = {
 };
 
 export type ChatStatus = "idle" | "submitted" | "streaming" | "error";
-

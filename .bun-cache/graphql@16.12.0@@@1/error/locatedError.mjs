@@ -1,5 +1,5 @@
-import { toError } from '../jsutils/toError.mjs';
-import { GraphQLError } from './GraphQLError.mjs';
+import { toError } from "../jsutils/toError.mjs";
+import { GraphQLError } from "./GraphQLError.mjs";
 /**
  * Given an arbitrary value, presumably thrown while attempting to execute a
  * GraphQL operation, produce a new GraphQLError aware of the location in the

@@ -53,7 +53,7 @@ for (const suite of suites) {
 }
 
 // exit on Ctrl-C
-process.on("SIGINT", function () {
+process.on("SIGINT", () => {
   console.log("Exiting...");
   process.exit();
 });

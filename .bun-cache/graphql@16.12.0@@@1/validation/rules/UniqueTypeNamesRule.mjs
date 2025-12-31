@@ -1,4 +1,4 @@
-import { GraphQLError } from '../../error/GraphQLError.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
 
 /**
  * Unique type names

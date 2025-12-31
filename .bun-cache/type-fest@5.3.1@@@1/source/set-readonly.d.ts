@@ -1,6 +1,6 @@
-import type {Except} from './except.d.ts';
-import type {HomomorphicPick} from './internal/index.d.ts';
-import type {Simplify} from './simplify.d.ts';
+import type { Except } from "./except.d.ts";
+import type { HomomorphicPick } from "./internal/index.d.ts";
+import type { Simplify } from "./simplify.d.ts";
 
 /**
 Create a type that makes the given keys readonly. The remaining keys are kept as is.
@@ -27,18 +27,17 @@ type SomeReadonly = SetReadonly<Foo, 'b' | 'c'>;
 
 @category Object
 */
-export type SetReadonly<BaseType, Keys extends keyof BaseType> =
-	(BaseType extends (...arguments_: never) => any
-		? (...arguments_: Parameters<BaseType>) => ReturnType<BaseType>
-		: unknown)
-	& _SetReadonly<BaseType, Keys>;
+export type SetReadonly<
+  BaseType,
+  Keys extends keyof BaseType,
+> = (BaseType extends (...arguments_: never) => any
+  ? (...arguments_: Parameters<BaseType>) => ReturnType<BaseType>
+  : unknown) &
+  _SetReadonly<BaseType, Keys>;
 
-export type _SetReadonly<BaseType, Keys extends keyof BaseType> =
-	BaseType extends unknown // To distribute `BaseType` when it's a union type.
-		? Simplify<
-			Except<BaseType, Keys> &
-			Readonly<HomomorphicPick<BaseType, Keys>>
-		>
-		: never;
-
-export {};
+export type _SetReadonly<
+  BaseType,
+  Keys extends keyof BaseType,
+> = BaseType extends unknown // To distribute `BaseType` when it's a union type.
+  ? Simplify<Except<BaseType, Keys> & Readonly<HomomorphicPick<BaseType, Keys>>>
+  : never;

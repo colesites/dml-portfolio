@@ -1,10 +1,5 @@
 import { NextResponse } from "next/server";
 import {
-  CHAT_GREETING_FALLBACK,
-  DEFAULT_CHAT_TONE_ID,
-  getToneInstructions,
-} from "@/lib/config";
-import {
   fetchPortfolioContext,
   formatContextForPrompt,
 } from "@/lib/chat/context";
@@ -14,6 +9,11 @@ import {
   sendChatCompletion,
   sendChatCompletionStream,
 } from "@/lib/chat/gateway";
+import {
+  CHAT_GREETING_FALLBACK,
+  DEFAULT_CHAT_TONE_ID,
+  getToneInstructions,
+} from "@/lib/config";
 import { loadPrompt } from "@/lib/prompts";
 import type { ChatMessage } from "@/types/chat";
 
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     if (!Array.isArray(body?.messages) || body.messages.length === 0) {
       return NextResponse.json(
         { error: "No messages provided." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     if (sanitizedHistory.length === 0) {
       return NextResponse.json(
         { error: "Unable to process empty conversation." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -51,14 +51,14 @@ export async function POST(request: Request) {
     if (!latestUserMessage) {
       return NextResponse.json(
         { error: "A user message is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const topicAllowed = await allowTopic(latestUserMessage.content);
     if (!topicAllowed) {
       const moderationReply = await buildModeratorResponse(
-        latestUserMessage.content
+        latestUserMessage.content,
       );
       return NextResponse.json({
         answer: moderationReply,
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     ]);
 
     const toneInstructions = getToneInstructions(
-      body.tone ?? DEFAULT_CHAT_TONE_ID
+      body.tone ?? DEFAULT_CHAT_TONE_ID,
     );
 
     const contextForPrompt = context
@@ -166,13 +166,13 @@ export async function POST(request: Request) {
     console.error("[api/chat] error", error);
     return NextResponse.json(
       { error: "Unable to process chat request." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 function sanitizeMessages(
-  messages: Pick<ChatMessage, "role" | "content">[]
+  messages: Pick<ChatMessage, "role" | "content">[],
 ): GatewayChatMessage[] {
   const allowedRoles = new Set<ChatMessage["role"]>(["user", "assistant"]);
   return messages
@@ -180,7 +180,7 @@ function sanitizeMessages(
       (msg): msg is ChatMessage =>
         typeof msg?.content === "string" &&
         allowedRoles.has(msg.role) &&
-        msg.content.trim().length > 0
+        msg.content.trim().length > 0,
     )
     .map((msg) => ({ role: msg.role, content: msg.content }));
 }

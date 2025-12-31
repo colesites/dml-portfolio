@@ -2,10 +2,11 @@
 import { COMPRESSIBLE_CONTENT_TYPE_REGEX } from "../../utils/compress.js";
 import { getMimeType } from "../../utils/mime.js";
 import { defaultJoin } from "./path.js";
+
 var ENCODINGS = {
   br: ".br",
   zstd: ".zst",
-  gzip: ".gz"
+  gzip: ".gz",
 };
 var ENCODINGS_ORDERED_KEYS = Object.keys(ENCODINGS);
 var DEFAULT_DOCUMENT = "index.html";
@@ -23,7 +24,7 @@ var serveStatic = (options) => {
     } else {
       try {
         filename = decodeURIComponent(c.req.path);
-        if (/(?:^|[\/\\])\.\.(?:$|[\/\\])/.test(filename)) {
+        if (/(?:^|[/\\])\.\.(?:$|[/\\])/.test(filename)) {
           throw new Error();
         }
       } catch {
@@ -33,9 +34,11 @@ var serveStatic = (options) => {
     }
     let path = join(
       root,
-      !optionPath && options.rewriteRequestPath ? options.rewriteRequestPath(filename) : filename
+      !optionPath && options.rewriteRequestPath
+        ? options.rewriteRequestPath(filename)
+        : filename,
     );
-    if (options.isDir && await options.isDir(path)) {
+    if (options.isDir && (await options.isDir(path))) {
       path = join(path, DEFAULT_DOCUMENT);
     }
     const getContent = options.getContent;
@@ -44,17 +47,28 @@ var serveStatic = (options) => {
       return c.newResponse(content.body, content);
     }
     if (content) {
-      const mimeType = options.mimes && getMimeType(path, options.mimes) || getMimeType(path);
+      const mimeType =
+        (options.mimes && getMimeType(path, options.mimes)) ||
+        getMimeType(path);
       c.header("Content-Type", mimeType || "application/octet-stream");
-      if (options.precompressed && (!mimeType || COMPRESSIBLE_CONTENT_TYPE_REGEX.test(mimeType))) {
+      if (
+        options.precompressed &&
+        (!mimeType || COMPRESSIBLE_CONTENT_TYPE_REGEX.test(mimeType))
+      ) {
         const acceptEncodingSet = new Set(
-          c.req.header("Accept-Encoding")?.split(",").map((encoding) => encoding.trim())
+          c.req
+            .header("Accept-Encoding")
+            ?.split(",")
+            .map((encoding) => encoding.trim()),
         );
         for (const encoding of ENCODINGS_ORDERED_KEYS) {
           if (!acceptEncodingSet.has(encoding)) {
             continue;
           }
-          const compressedContent = await getContent(path + ENCODINGS[encoding], c);
+          const compressedContent = await getContent(
+            path + ENCODINGS[encoding],
+            c,
+          );
           if (compressedContent) {
             content = compressedContent;
             c.header("Content-Encoding", encoding);
@@ -71,6 +85,4 @@ var serveStatic = (options) => {
     return;
   };
 };
-export {
-  serveStatic
-};
+export { serveStatic };

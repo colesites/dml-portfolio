@@ -5,13 +5,12 @@ type nodeType = typeof import("./resolve-targets");
 // exports of index-browser, since this file may be replaced at bundle time with index-browser.
 ({}) as any as browserType as nodeType;
 
-import type { InputOptions } from "./validation/options.ts";
 import path from "node:path";
+import type { Targets } from "@babel/helper-compilation-targets";
 import getTargets, {
   type InputTargets,
 } from "@babel/helper-compilation-targets";
-
-import type { Targets } from "@babel/helper-compilation-targets";
+import type { InputOptions } from "./validation/options.ts";
 
 export function resolveBrowserslistConfigFile(
   browserslistConfigFile: string,

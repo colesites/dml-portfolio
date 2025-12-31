@@ -1,6 +1,6 @@
-import type {Not} from './internal/index.d.ts';
-import type {IsFloat} from './is-float.d.ts';
-import type {PositiveInfinity, NegativeInfinity} from './numeric.d.ts';
+import type { Not } from "./internal/index.d.ts";
+import type { IsFloat } from "./is-float.d.ts";
+import type { PositiveInfinity, NegativeInfinity } from "./numeric.d.ts";
 
 /**
 Returns a boolean for whether the given number is an integer, like `-5`, `1.0`, or `100`.
@@ -46,15 +46,12 @@ type J = IsInteger<1e-7>;
 @category Type Guard
 @category Numeric
 */
-export type IsInteger<T> =
-T extends bigint
-	? true
-	: T extends number
-		? number extends T
-			? false
-			: T extends PositiveInfinity | NegativeInfinity
-				? false
-				: Not<IsFloat<T>>
-		: false;
-
-export {};
+export type IsInteger<T> = T extends bigint
+  ? true
+  : T extends number
+    ? number extends T
+      ? false
+      : T extends PositiveInfinity | NegativeInfinity
+        ? false
+        : Not<IsFloat<T>>
+    : false;

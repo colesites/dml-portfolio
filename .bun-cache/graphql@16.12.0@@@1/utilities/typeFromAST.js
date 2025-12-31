@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.typeFromAST = typeFromAST;
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
 function typeFromAST(schema, typeNode) {
   switch (typeNode.kind) {

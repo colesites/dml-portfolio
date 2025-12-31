@@ -1,4 +1,4 @@
-import { GraphQLError } from '../../error/GraphQLError.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
 
 /**
  * Lone Schema definition
@@ -18,23 +18,23 @@ export function LoneSchemaDefinitionRule(context) {
             : oldSchema.astNode) !== null && _oldSchema$astNode !== void 0
           ? _oldSchema$astNode
           : oldSchema === null || oldSchema === void 0
-          ? void 0
-          : oldSchema.getQueryType()) !== null && _ref2 !== void 0
+            ? void 0
+            : oldSchema.getQueryType()) !== null && _ref2 !== void 0
         ? _ref2
         : oldSchema === null || oldSchema === void 0
-        ? void 0
-        : oldSchema.getMutationType()) !== null && _ref !== void 0
+          ? void 0
+          : oldSchema.getMutationType()) !== null && _ref !== void 0
       ? _ref
       : oldSchema === null || oldSchema === void 0
-      ? void 0
-      : oldSchema.getSubscriptionType();
+        ? void 0
+        : oldSchema.getSubscriptionType();
   let schemaDefinitionsCount = 0;
   return {
     SchemaDefinition(node) {
       if (alreadyDefined) {
         context.reportError(
           new GraphQLError(
-            'Cannot define a new schema within a schema extension.',
+            "Cannot define a new schema within a schema extension.",
             {
               nodes: node,
             },
@@ -45,7 +45,7 @@ export function LoneSchemaDefinitionRule(context) {
 
       if (schemaDefinitionsCount > 0) {
         context.reportError(
-          new GraphQLError('Must provide only one schema definition.', {
+          new GraphQLError("Must provide only one schema definition.", {
             nodes: node,
           }),
         );

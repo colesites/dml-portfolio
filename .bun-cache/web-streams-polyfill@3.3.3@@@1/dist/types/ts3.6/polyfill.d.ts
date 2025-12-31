@@ -1,9 +1,12 @@
 /// <reference lib="dom" />
 /// <reference lib="es2018.asynciterable" />
 
-import type { ReadableStreamAsyncIterator, ReadableStreamIteratorOptions } from './ponyfill';
+import type {
+  ReadableStreamAsyncIterator,
+  ReadableStreamIteratorOptions,
+} from "./ponyfill";
 
-export * from './ponyfill';
+export * from "./ponyfill";
 
 declare global {
   interface ReadableStream<R = any> extends AsyncIterable<R> {
@@ -18,11 +21,15 @@ declare global {
      * cancel the stream. To prevent this, use the stream's {@link ReadableStream.values | values()} method, passing
      * `true` for the `preventCancel` option.
      */
-    values(options?: ReadableStreamIteratorOptions): ReadableStreamAsyncIterator<R>;
+    values(
+      options?: ReadableStreamIteratorOptions,
+    ): ReadableStreamAsyncIterator<R>;
 
     /**
      * {@inheritDoc ReadableStream.values}
      */
-    [Symbol.asyncIterator](options?: ReadableStreamIteratorOptions): ReadableStreamAsyncIterator<R>;
+    [Symbol.asyncIterator](
+      options?: ReadableStreamIteratorOptions,
+    ): ReadableStreamAsyncIterator<R>;
   }
 }

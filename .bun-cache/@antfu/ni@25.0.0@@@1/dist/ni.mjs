@@ -1,24 +1,31 @@
-import process from 'node:process';
-import { t as formatPackageWithUrl, r as runCli, u as prompts, n as exclude, p as parseNi } from './shared/ni.b-W1u-ew.mjs';
-import c from 'ansis';
-import { Fzf } from 'fzf';
-import 'node:path';
-import 'readline';
-import 'events';
-import 'package-manager-detector';
-import 'tinyexec';
-import 'node:fs';
-import 'package-manager-detector/constants';
-import 'os';
-import 'tty';
-import 'node:os';
-import 'fs';
-import 'fs/promises';
-import 'path';
-import 'package-manager-detector/commands';
+import process from "node:process";
+import c from "ansis";
+import { Fzf } from "fzf";
+import {
+  n as exclude,
+  t as formatPackageWithUrl,
+  p as parseNi,
+  u as prompts,
+  r as runCli,
+} from "./shared/ni.b-W1u-ew.mjs";
+import "node:path";
+import "readline";
+import "events";
+import "package-manager-detector";
+import "tinyexec";
+import "node:fs";
+import "package-manager-detector/constants";
+import "os";
+import "tty";
+import "node:os";
+import "fs";
+import "fs/promises";
+import "path";
+import "package-manager-detector/commands";
 
 async function fetchNpmPackages(pattern) {
-  const registryLink = (pattern2) => `https://registry.npmjs.com/-/v1/search?text=${pattern2}&size=35`;
+  const registryLink = (pattern2) =>
+    `https://registry.npmjs.com/-/v1/search?text=${pattern2}&size=35`;
   const terminalColumns = process.stdout?.columns || 80;
   try {
     const result = await fetch(registryLink(pattern)).then((res) => res.json());
@@ -26,9 +33,9 @@ async function fetchNpmPackages(pattern) {
       title: formatPackageWithUrl(
         `${pkg.name.padEnd(30, " ")} ${c.blue`v${pkg.version}`}`,
         pkg.links.repository ?? pkg.links.npm,
-        terminalColumns
+        terminalColumns,
       ),
-      value: pkg
+      value: pkg,
     }));
   } catch {
     console.error("Error when fetching npm registry");
@@ -46,7 +53,7 @@ runCli(async (agent, args, ctx) => {
       const { pattern } = await prompts({
         type: "text",
         name: "pattern",
-        message: "search for package"
+        message: "search for package",
       });
       fetchPattern = pattern;
     }
@@ -62,7 +69,7 @@ runCli(async (agent, args, ctx) => {
     }
     const fzf = new Fzf(packages, {
       selector: (item) => item.title,
-      casing: "case-insensitive"
+      casing: "case-insensitive",
     });
     const { dependency } = await prompts({
       type: "autocomplete",
@@ -73,8 +80,10 @@ runCli(async (agent, args, ctx) => {
       limit: 15,
       async suggest(input, choices) {
         const results = fzf.find(input);
-        return results.map((r) => choices.find((c2) => c2.value === r.item.value));
-      }
+        return results.map((r) =>
+          choices.find((c2) => c2.value === r.item.value),
+        );
+      },
     });
     if (!dependency) {
       process.exitCode = 1;
@@ -90,18 +99,18 @@ runCli(async (agent, args, ctx) => {
         {
           title: "prod",
           value: "",
-          selected: true
+          selected: true,
         },
         {
           title: "dev",
-          value: "-D"
+          value: "-D",
         },
         {
           title: `peer`,
           value: "--save-peer",
-          disabled: !canInstallPeers
-        }
-      ]
+          disabled: !canInstallPeers,
+        },
+      ],
     });
     args.push(dependency.name, mode);
   }

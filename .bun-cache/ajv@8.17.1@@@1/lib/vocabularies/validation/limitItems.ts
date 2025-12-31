@@ -1,14 +1,17 @@
-import type {CodeKeywordDefinition, KeywordErrorDefinition} from "../../types"
-import type {KeywordCxt} from "../../compile/validate"
-import {_, str, operators} from "../../compile/codegen"
+import { _, operators, str } from "../../compile/codegen";
+import type { KeywordCxt } from "../../compile/validate";
+import type {
+  CodeKeywordDefinition,
+  KeywordErrorDefinition,
+} from "../../types";
 
 const error: KeywordErrorDefinition = {
-  message({keyword, schemaCode}) {
-    const comp = keyword === "maxItems" ? "more" : "fewer"
-    return str`must NOT have ${comp} than ${schemaCode} items`
+  message({ keyword, schemaCode }) {
+    const comp = keyword === "maxItems" ? "more" : "fewer";
+    return str`must NOT have ${comp} than ${schemaCode} items`;
   },
-  params: ({schemaCode}) => _`{limit: ${schemaCode}}`,
-}
+  params: ({ schemaCode }) => _`{limit: ${schemaCode}}`,
+};
 
 const def: CodeKeywordDefinition = {
   keyword: ["maxItems", "minItems"],
@@ -17,10 +20,10 @@ const def: CodeKeywordDefinition = {
   $data: true,
   error,
   code(cxt: KeywordCxt) {
-    const {keyword, data, schemaCode} = cxt
-    const op = keyword === "maxItems" ? operators.GT : operators.LT
-    cxt.fail$data(_`${data}.length ${op} ${schemaCode}`)
+    const { keyword, data, schemaCode } = cxt;
+    const op = keyword === "maxItems" ? operators.GT : operators.LT;
+    cxt.fail$data(_`${data}.length ${op} ${schemaCode}`);
   },
-}
+};
 
-export default def
+export default def;

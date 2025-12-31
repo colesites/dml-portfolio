@@ -1,8 +1,12 @@
-import type {If} from './if.d.ts';
-import type {IfNotAnyOrNever, MapsSetsOrArrays, NonRecursiveType} from './internal/type.d.ts';
-import type {IsUnknown} from './is-unknown.d.ts';
-import type {KeysOfUnion} from './keys-of-union.d.ts';
-import type {Simplify} from './simplify.d.ts';
+import type { If } from "./if.d.ts";
+import type {
+  IfNotAnyOrNever,
+  MapsSetsOrArrays,
+  NonRecursiveType,
+} from "./internal/type.d.ts";
+import type { IsUnknown } from "./is-unknown.d.ts";
+import type { KeysOfUnion } from "./keys-of-union.d.ts";
+import type { Simplify } from "./simplify.d.ts";
 
 /**
 Ensure mutual exclusivity in object unions by adding other members’ keys as `?: never`.
@@ -91,23 +95,23 @@ type D = ExclusifyUnion<{a?: 1; readonly b: 2} | {d: 4}>;
 @category Object
 @category Union
 */
-export type ExclusifyUnion<Union> = IfNotAnyOrNever<Union,
-	If<IsUnknown<Union>, Union,
-		Extract<Union, NonRecursiveType | MapsSetsOrArrays> extends infer SkippedMembers
-			? SkippedMembers | _ExclusifyUnion<Exclude<Union, SkippedMembers>>
-			: never
-	>
+export type ExclusifyUnion<Union> = IfNotAnyOrNever<
+  Union,
+  If<
+    IsUnknown<Union>,
+    Union,
+    Extract<
+      Union,
+      NonRecursiveType | MapsSetsOrArrays
+    > extends infer SkippedMembers
+      ? SkippedMembers | _ExclusifyUnion<Exclude<Union, SkippedMembers>>
+      : never
+  >
 >;
 
 type _ExclusifyUnion<Union, UnionCopy = Union> = Union extends unknown // For distributing `Union`
-	? Simplify<
-		Union & Partial<
-			Record<
-				Exclude<KeysOfUnion<UnionCopy>, keyof Union>,
-				never
-			>
-		>
-	>
-	: never; // Should never happen
-
-export {};
+  ? Simplify<
+      Union &
+        Partial<Record<Exclude<KeysOfUnion<UnionCopy>, keyof Union>, never>>
+    >
+  : never; // Should never happen

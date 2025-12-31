@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.GraphQLSpecifiedByDirective =
@@ -16,23 +14,23 @@ exports.isDirective = isDirective;
 exports.isSpecifiedDirective = isSpecifiedDirective;
 exports.specifiedDirectives = void 0;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _instanceOf = require('../jsutils/instanceOf.js');
+var _instanceOf = require("../jsutils/instanceOf.js");
 
-var _isObjectLike = require('../jsutils/isObjectLike.js');
+var _isObjectLike = require("../jsutils/isObjectLike.js");
 
-var _toObjMap = require('../jsutils/toObjMap.js');
+var _toObjMap = require("../jsutils/toObjMap.js");
 
-var _directiveLocation = require('../language/directiveLocation.js');
+var _directiveLocation = require("../language/directiveLocation.js");
 
-var _assertName = require('./assertName.js');
+var _assertName = require("./assertName.js");
 
-var _definition = require('./definition.js');
+var _definition = require("./definition.js");
 
-var _scalars = require('./scalars.js');
+var _scalars = require("./scalars.js");
 
 /**
  * Test if the given value is a GraphQL directive.
@@ -96,7 +94,7 @@ class GraphQLDirective {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLDirective';
+    return "GraphQLDirective";
   }
 
   toConfig() {
@@ -112,7 +110,7 @@ class GraphQLDirective {
   }
 
   toString() {
-    return '@' + this.name;
+    return "@" + this.name;
   }
 
   toJSON() {
@@ -126,9 +124,9 @@ exports.GraphQLDirective = GraphQLDirective;
  * Used to conditionally include fields or fragments.
  */
 const GraphQLIncludeDirective = new GraphQLDirective({
-  name: 'include',
+  name: "include",
   description:
-    'Directs the executor to include this field or fragment only when the `if` argument is true.',
+    "Directs the executor to include this field or fragment only when the `if` argument is true.",
   locations: [
     _directiveLocation.DirectiveLocation.FIELD,
     _directiveLocation.DirectiveLocation.FRAGMENT_SPREAD,
@@ -137,7 +135,7 @@ const GraphQLIncludeDirective = new GraphQLDirective({
   args: {
     if: {
       type: new _definition.GraphQLNonNull(_scalars.GraphQLBoolean),
-      description: 'Included when true.',
+      description: "Included when true.",
     },
   },
 });
@@ -147,9 +145,9 @@ const GraphQLIncludeDirective = new GraphQLDirective({
 
 exports.GraphQLIncludeDirective = GraphQLIncludeDirective;
 const GraphQLSkipDirective = new GraphQLDirective({
-  name: 'skip',
+  name: "skip",
   description:
-    'Directs the executor to skip this field or fragment when the `if` argument is true.',
+    "Directs the executor to skip this field or fragment when the `if` argument is true.",
   locations: [
     _directiveLocation.DirectiveLocation.FIELD,
     _directiveLocation.DirectiveLocation.FRAGMENT_SPREAD,
@@ -158,7 +156,7 @@ const GraphQLSkipDirective = new GraphQLDirective({
   args: {
     if: {
       type: new _definition.GraphQLNonNull(_scalars.GraphQLBoolean),
-      description: 'Skipped when true.',
+      description: "Skipped when true.",
     },
   },
 });
@@ -167,15 +165,15 @@ const GraphQLSkipDirective = new GraphQLDirective({
  */
 
 exports.GraphQLSkipDirective = GraphQLSkipDirective;
-const DEFAULT_DEPRECATION_REASON = 'No longer supported';
+const DEFAULT_DEPRECATION_REASON = "No longer supported";
 /**
  * Used to declare element of a GraphQL schema as deprecated.
  */
 
 exports.DEFAULT_DEPRECATION_REASON = DEFAULT_DEPRECATION_REASON;
 const GraphQLDeprecatedDirective = new GraphQLDirective({
-  name: 'deprecated',
-  description: 'Marks an element of a GraphQL schema as no longer supported.',
+  name: "deprecated",
+  description: "Marks an element of a GraphQL schema as no longer supported.",
   locations: [
     _directiveLocation.DirectiveLocation.FIELD_DEFINITION,
     _directiveLocation.DirectiveLocation.ARGUMENT_DEFINITION,
@@ -186,7 +184,7 @@ const GraphQLDeprecatedDirective = new GraphQLDirective({
     reason: {
       type: _scalars.GraphQLString,
       description:
-        'Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).',
+        "Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).",
       defaultValue: DEFAULT_DEPRECATION_REASON,
     },
   },
@@ -197,13 +195,13 @@ const GraphQLDeprecatedDirective = new GraphQLDirective({
 
 exports.GraphQLDeprecatedDirective = GraphQLDeprecatedDirective;
 const GraphQLSpecifiedByDirective = new GraphQLDirective({
-  name: 'specifiedBy',
-  description: 'Exposes a URL that specifies the behavior of this scalar.',
+  name: "specifiedBy",
+  description: "Exposes a URL that specifies the behavior of this scalar.",
   locations: [_directiveLocation.DirectiveLocation.SCALAR],
   args: {
     url: {
       type: new _definition.GraphQLNonNull(_scalars.GraphQLString),
-      description: 'The URL that specifies the behavior of this scalar.',
+      description: "The URL that specifies the behavior of this scalar.",
     },
   },
 });
@@ -213,9 +211,9 @@ const GraphQLSpecifiedByDirective = new GraphQLDirective({
 
 exports.GraphQLSpecifiedByDirective = GraphQLSpecifiedByDirective;
 const GraphQLOneOfDirective = new GraphQLDirective({
-  name: 'oneOf',
+  name: "oneOf",
   description:
-    'Indicates exactly one field must be supplied and this field must not be `null`.',
+    "Indicates exactly one field must be supplied and this field must not be `null`.",
   locations: [_directiveLocation.DirectiveLocation.INPUT_OBJECT],
   args: {},
 });

@@ -2,16 +2,26 @@
  * Internal Merkle-Damgard hash utils.
  * @module
  */
-import { type Input, Hash, abytes, aexists, aoutput, clean, createView, toBytes } from './utils.ts';
+import {
+  abytes,
+  aexists,
+  aoutput,
+  clean,
+  createView,
+  Hash,
+  type Input,
+  toBytes,
+} from "./utils.ts";
 
 /** Polyfill for Safari 14. https://caniuse.com/mdn-javascript_builtins_dataview_setbiguint64 */
 export function setBigUint64(
   view: DataView,
   byteOffset: number,
   value: bigint,
-  isLE: boolean
+  isLE: boolean,
 ): void {
-  if (typeof view.setBigUint64 === 'function') return view.setBigUint64(byteOffset, value, isLE);
+  if (typeof view.setBigUint64 === "function")
+    return view.setBigUint64(byteOffset, value, isLE);
   const _32n = BigInt(32);
   const _u32_max = BigInt(0xffffffff);
   const wh = Number((value >> _32n) & _u32_max);
@@ -56,7 +66,12 @@ export abstract class HashMD<T extends HashMD<T>> extends Hash<T> {
   protected pos = 0;
   protected destroyed = false;
 
-  constructor(blockLen: number, outputLen: number, padOffset: number, isLE: boolean) {
+  constructor(
+    blockLen: number,
+    outputLen: number,
+    padOffset: number,
+    isLE: boolean,
+  ) {
     super();
     this.blockLen = blockLen;
     this.outputLen = outputLen;
@@ -76,7 +91,8 @@ export abstract class HashMD<T extends HashMD<T>> extends Hash<T> {
       // Fast path: we have at least one block in input, cast it to view and process
       if (take === blockLen) {
         const dataView = createView(data);
-        for (; blockLen <= len - pos; pos += blockLen) this.process(dataView, pos);
+        for (; blockLen <= len - pos; pos += blockLen)
+          this.process(dataView, pos);
         continue;
       }
       buffer.set(data.subarray(pos, pos + take), this.pos);
@@ -119,10 +135,11 @@ export abstract class HashMD<T extends HashMD<T>> extends Hash<T> {
     const oview = createView(out);
     const len = this.outputLen;
     // NOTE: we do division by 4 later, which should be fused in single op with modulo by JIT
-    if (len % 4) throw new Error('_sha2: outputLen should be aligned to 32bit');
+    if (len % 4) throw new Error("_sha2: outputLen should be aligned to 32bit");
     const outLen = len / 4;
     const state = this.get();
-    if (outLen > state.length) throw new Error('_sha2: outputLen bigger than state');
+    if (outLen > state.length)
+      throw new Error("_sha2: outputLen bigger than state");
     for (let i = 0; i < outLen; i++) oview.setUint32(4 * i, state[i], isLE);
   }
   digest(): Uint8Array {
@@ -155,22 +172,26 @@ export abstract class HashMD<T extends HashMD<T>> extends Hash<T> {
 
 /** Initial SHA256 state. Bits 0..32 of frac part of sqrt of primes 2..19 */
 export const SHA256_IV: Uint32Array = /* @__PURE__ */ Uint32Array.from([
-  0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
+  0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
+  0x1f83d9ab, 0x5be0cd19,
 ]);
 
 /** Initial SHA224 state. Bits 32..64 of frac part of sqrt of primes 23..53 */
 export const SHA224_IV: Uint32Array = /* @__PURE__ */ Uint32Array.from([
-  0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939, 0xffc00b31, 0x68581511, 0x64f98fa7, 0xbefa4fa4,
+  0xc1059ed8, 0x367cd507, 0x3070dd17, 0xf70e5939, 0xffc00b31, 0x68581511,
+  0x64f98fa7, 0xbefa4fa4,
 ]);
 
 /** Initial SHA384 state. Bits 0..64 of frac part of sqrt of primes 23..53 */
 export const SHA384_IV: Uint32Array = /* @__PURE__ */ Uint32Array.from([
-  0xcbbb9d5d, 0xc1059ed8, 0x629a292a, 0x367cd507, 0x9159015a, 0x3070dd17, 0x152fecd8, 0xf70e5939,
-  0x67332667, 0xffc00b31, 0x8eb44a87, 0x68581511, 0xdb0c2e0d, 0x64f98fa7, 0x47b5481d, 0xbefa4fa4,
+  0xcbbb9d5d, 0xc1059ed8, 0x629a292a, 0x367cd507, 0x9159015a, 0x3070dd17,
+  0x152fecd8, 0xf70e5939, 0x67332667, 0xffc00b31, 0x8eb44a87, 0x68581511,
+  0xdb0c2e0d, 0x64f98fa7, 0x47b5481d, 0xbefa4fa4,
 ]);
 
 /** Initial SHA512 state. Bits 0..64 of frac part of sqrt of primes 2..19 */
 export const SHA512_IV: Uint32Array = /* @__PURE__ */ Uint32Array.from([
-  0x6a09e667, 0xf3bcc908, 0xbb67ae85, 0x84caa73b, 0x3c6ef372, 0xfe94f82b, 0xa54ff53a, 0x5f1d36f1,
-  0x510e527f, 0xade682d1, 0x9b05688c, 0x2b3e6c1f, 0x1f83d9ab, 0xfb41bd6b, 0x5be0cd19, 0x137e2179,
+  0x6a09e667, 0xf3bcc908, 0xbb67ae85, 0x84caa73b, 0x3c6ef372, 0xfe94f82b,
+  0xa54ff53a, 0x5f1d36f1, 0x510e527f, 0xade682d1, 0x9b05688c, 0x2b3e6c1f,
+  0x1f83d9ab, 0xfb41bd6b, 0x5be0cd19, 0x137e2179,
 ]);

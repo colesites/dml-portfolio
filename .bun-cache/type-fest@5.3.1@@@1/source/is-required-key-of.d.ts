@@ -1,6 +1,6 @@
-import type {IsOptionalKeyOf} from './is-optional-key-of.d.ts';
-import type {Not} from './internal/type.d.ts';
-import type {IsAny} from './is-any.d.ts';
+import type { IsOptionalKeyOf } from "./is-optional-key-of.d.ts";
+import type { Not } from "./internal/type.d.ts";
+import type { IsAny } from "./is-any.d.ts";
 
 /**
 Returns a boolean for whether the given key is a required key of type.
@@ -42,10 +42,11 @@ type T5 = IsRequiredKeyOf<User | Admin, 'surname'>;
 @category Type Guard
 @category Utilities
 */
-export type IsRequiredKeyOf<Type extends object, Key extends keyof Type> =
-	IsAny<Type | Key> extends true ? never
-		: Key extends keyof Type
-			? Not<IsOptionalKeyOf<Type, Key>>
-			: false;
-
-export {};
+export type IsRequiredKeyOf<
+  Type extends object,
+  Key extends keyof Type,
+> = IsAny<Type | Key> extends true
+  ? never
+  : Key extends keyof Type
+    ? Not<IsOptionalKeyOf<Type, Key>>
+    : false;

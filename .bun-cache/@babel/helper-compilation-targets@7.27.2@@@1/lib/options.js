@@ -1,10 +1,10 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.TargetNames = void 0;
-const TargetNames = exports.TargetNames = {
+const TargetNames = (exports.TargetNames = {
   node: "node",
   deno: "deno",
   chrome: "chrome",
@@ -18,7 +18,7 @@ const TargetNames = exports.TargetNames = {
   electron: "electron",
   samsung: "samsung",
   rhino: "rhino",
-  opera_mobile: "opera_mobile"
-};
+  opera_mobile: "opera_mobile",
+});
 
 //# sourceMappingURL=options.js.map

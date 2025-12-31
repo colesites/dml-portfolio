@@ -1,30 +1,57 @@
-'use strict';
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) {
+  return function () {
+    var args = arguments;
+    return new Promise((resolve, reject) => {
+      var gen = fn.apply(this, args);
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+      _next(undefined);
+    });
+  };
+}
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+const color = require("kleur");
 
-const color = require('kleur');
+const Prompt = require("./prompt");
 
-const Prompt = require('./prompt');
+const _require = require("sisteransi"),
+  erase = _require.erase,
+  cursor = _require.cursor;
 
-const _require = require('sisteransi'),
-      erase = _require.erase,
-      cursor = _require.cursor;
-
-const _require2 = require('../util'),
-      style = _require2.style,
-      clear = _require2.clear,
-      figures = _require2.figures,
-      wrap = _require2.wrap,
-      entriesToDisplay = _require2.entriesToDisplay;
+const _require2 = require("../util"),
+  style = _require2.style,
+  clear = _require2.clear,
+  figures = _require2.figures,
+  wrap = _require2.wrap,
+  entriesToDisplay = _require2.entriesToDisplay;
 
 const getVal = (arr, i) => arr[i] && (arr[i].value || arr[i].title || arr[i]);
 
 const getTitle = (arr, i) => arr[i] && (arr[i].title || arr[i].value || arr[i]);
 
 const getIndex = (arr, valOrTitle) => {
-  const index = arr.findIndex(el => el.value === valOrTitle || el.title === valOrTitle);
+  const index = arr.findIndex(
+    (el) => el.value === valOrTitle || el.title === valOrTitle,
+  );
   return index > -1 ? index : undefined;
 };
 /**
@@ -44,29 +71,31 @@ const getIndex = (arr, valOrTitle) => {
  * @param {String} [opts.noMatches] The no matches found label
  */
 
-
 class AutocompletePrompt extends Prompt {
   constructor(opts = {}) {
     super(opts);
     this.msg = opts.message;
     this.suggest = opts.suggest;
     this.choices = opts.choices;
-    this.initial = typeof opts.initial === 'number' ? opts.initial : getIndex(opts.choices, opts.initial);
+    this.initial =
+      typeof opts.initial === "number"
+        ? opts.initial
+        : getIndex(opts.choices, opts.initial);
     this.select = this.initial || opts.cursor || 0;
     this.i18n = {
-      noMatches: opts.noMatches || 'no matches found'
+      noMatches: opts.noMatches || "no matches found",
     };
     this.fallback = opts.fallback || this.initial;
     this.clearFirst = opts.clearFirst || false;
     this.suggestions = [];
-    this.input = '';
+    this.input = "";
     this.limit = opts.limit || 10;
     this.cursor = 0;
     this.transform = style.render(opts.style);
     this.scale = this.transform.scale;
     this.render = this.render.bind(this);
     this.complete = this.complete.bind(this);
-    this.clear = clear('', this.out.columns);
+    this.clear = clear("", this.out.columns);
     this.complete(this.render);
     this.render();
   }
@@ -77,17 +106,23 @@ class AutocompletePrompt extends Prompt {
 
   get fallback() {
     let choice;
-    if (typeof this._fb === 'number') choice = this.choices[this._fb];else if (typeof this._fb === 'string') choice = {
-      title: this._fb
-    };
-    return choice || this._fb || {
-      title: this.i18n.noMatches
-    };
+    if (typeof this._fb === "number") choice = this.choices[this._fb];
+    else if (typeof this._fb === "string")
+      choice = {
+        title: this._fb,
+      };
+    return (
+      choice ||
+      this._fb || {
+        title: this.i18n.noMatches,
+      }
+    );
   }
 
   moveSelect(i) {
     this.select = i;
-    if (this.suggestions.length > 0) this.value = getVal(this.suggestions, i);else this.value = this.fallback.value;
+    if (this.suggestions.length > 0) this.value = getVal(this.suggestions, i);
+    else this.value = this.fallback.value;
     this.fire();
   }
 
@@ -95,14 +130,14 @@ class AutocompletePrompt extends Prompt {
     var _this = this;
 
     return _asyncToGenerator(function* () {
-      const p = _this.completing = _this.suggest(_this.input, _this.choices);
+      const p = (_this.completing = _this.suggest(_this.input, _this.choices));
 
       const suggestions = yield p;
       if (_this.completing !== p) return;
       _this.suggestions = suggestions.map((s, i, arr) => ({
         title: getTitle(arr, i),
         value: getVal(arr, i),
-        description: s.description
+        description: s.description,
       }));
       _this.completing = false;
       const l = Math.max(suggestions.length - 1, 0);
@@ -114,7 +149,7 @@ class AutocompletePrompt extends Prompt {
   }
 
   reset() {
-    this.input = '';
+    this.input = "";
     this.complete(() => {
       this.moveSelect(this.initial !== void 0 ? this.initial : 0);
       this.render();
@@ -130,7 +165,7 @@ class AutocompletePrompt extends Prompt {
       this.aborted = false;
       this.fire();
       this.render();
-      this.out.write('\n');
+      this.out.write("\n");
       this.close();
     }
   }
@@ -140,7 +175,7 @@ class AutocompletePrompt extends Prompt {
     this.exited = false;
     this.fire();
     this.render();
-    this.out.write('\n');
+    this.out.write("\n");
     this.close();
   }
 
@@ -149,13 +184,13 @@ class AutocompletePrompt extends Prompt {
     this.aborted = this.exited = false;
     this.fire();
     this.render();
-    this.out.write('\n');
+    this.out.write("\n");
     this.close();
   }
 
   _(c, key) {
-    let s1 = this.input.slice(0, this.cursor);
-    let s2 = this.input.slice(this.cursor);
+    const s1 = this.input.slice(0, this.cursor);
+    const s2 = this.input.slice(this.cursor);
     this.input = `${s1}${c}${s2}`;
     this.cursor = s1.length + 1;
     this.complete(this.render);
@@ -164,8 +199,8 @@ class AutocompletePrompt extends Prompt {
 
   delete() {
     if (this.cursor === 0) return this.bell();
-    let s1 = this.input.slice(0, this.cursor - 1);
-    let s2 = this.input.slice(this.cursor);
+    const s1 = this.input.slice(0, this.cursor - 1);
+    const s2 = this.input.slice(this.cursor);
     this.input = `${s1}${s2}`;
     this.complete(this.render);
     this.cursor = this.cursor - 1;
@@ -174,8 +209,8 @@ class AutocompletePrompt extends Prompt {
 
   deleteForward() {
     if (this.cursor * this.scale >= this.rendered.length) return this.bell();
-    let s1 = this.input.slice(0, this.cursor);
-    let s2 = this.input.slice(this.cursor + 1);
+    const s1 = this.input.slice(0, this.cursor);
+    const s2 = this.input.slice(this.cursor + 1);
     this.input = `${s1}${s2}`;
     this.complete(this.render);
     this.render();
@@ -220,7 +255,9 @@ class AutocompletePrompt extends Prompt {
   }
 
   nextPage() {
-    this.moveSelect(Math.min(this.select + this.limit, this.suggestions.length - 1));
+    this.moveSelect(
+      Math.min(this.select + this.limit, this.suggestions.length - 1),
+    );
     this.render();
   }
 
@@ -243,43 +280,70 @@ class AutocompletePrompt extends Prompt {
 
   renderOption(v, hovered, isStart, isEnd) {
     let desc;
-    let prefix = isStart ? figures.arrowUp : isEnd ? figures.arrowDown : ' ';
-    let title = hovered ? color.cyan().underline(v.title) : v.title;
-    prefix = (hovered ? color.cyan(figures.pointer) + ' ' : '  ') + prefix;
+    let prefix = isStart ? figures.arrowUp : isEnd ? figures.arrowDown : " ";
+    const title = hovered ? color.cyan().underline(v.title) : v.title;
+    prefix = (hovered ? color.cyan(figures.pointer) + " " : "  ") + prefix;
 
     if (v.description) {
       desc = ` - ${v.description}`;
 
-      if (prefix.length + title.length + desc.length >= this.out.columns || v.description.split(/\r?\n/).length > 1) {
-        desc = '\n' + wrap(v.description, {
-          margin: 3,
-          width: this.out.columns
-        });
+      if (
+        prefix.length + title.length + desc.length >= this.out.columns ||
+        v.description.split(/\r?\n/).length > 1
+      ) {
+        desc =
+          "\n" +
+          wrap(v.description, {
+            margin: 3,
+            width: this.out.columns,
+          });
       }
     }
 
-    return prefix + ' ' + title + color.gray(desc || '');
+    return prefix + " " + title + color.gray(desc || "");
   }
 
   render() {
     if (this.closed) return;
-    if (this.firstRender) this.out.write(cursor.hide);else this.out.write(clear(this.outputText, this.out.columns));
+    if (this.firstRender) this.out.write(cursor.hide);
+    else this.out.write(clear(this.outputText, this.out.columns));
     super.render();
 
-    let _entriesToDisplay = entriesToDisplay(this.select, this.choices.length, this.limit),
-        startIndex = _entriesToDisplay.startIndex,
-        endIndex = _entriesToDisplay.endIndex;
+    const _entriesToDisplay = entriesToDisplay(
+        this.select,
+        this.choices.length,
+        this.limit,
+      ),
+      startIndex = _entriesToDisplay.startIndex,
+      endIndex = _entriesToDisplay.endIndex;
 
-    this.outputText = [style.symbol(this.done, this.aborted, this.exited), color.bold(this.msg), style.delimiter(this.completing), this.done && this.suggestions[this.select] ? this.suggestions[this.select].title : this.rendered = this.transform.render(this.input)].join(' ');
+    this.outputText = [
+      style.symbol(this.done, this.aborted, this.exited),
+      color.bold(this.msg),
+      style.delimiter(this.completing),
+      this.done && this.suggestions[this.select]
+        ? this.suggestions[this.select].title
+        : (this.rendered = this.transform.render(this.input)),
+    ].join(" ");
 
     if (!this.done) {
-      const suggestions = this.suggestions.slice(startIndex, endIndex).map((item, i) => this.renderOption(item, this.select === i + startIndex, i === 0 && startIndex > 0, i + startIndex === endIndex - 1 && endIndex < this.choices.length)).join('\n');
-      this.outputText += `\n` + (suggestions || color.gray(this.fallback.title));
+      const suggestions = this.suggestions
+        .slice(startIndex, endIndex)
+        .map((item, i) =>
+          this.renderOption(
+            item,
+            this.select === i + startIndex,
+            i === 0 && startIndex > 0,
+            i + startIndex === endIndex - 1 && endIndex < this.choices.length,
+          ),
+        )
+        .join("\n");
+      this.outputText +=
+        `\n` + (suggestions || color.gray(this.fallback.title));
     }
 
     this.out.write(erase.line + cursor.to(0) + this.outputText);
   }
-
 }
 
 module.exports = AutocompletePrompt;

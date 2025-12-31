@@ -1,19 +1,19 @@
-import type {ApplyDefaultOptions} from './internal/index.d.ts';
-import type {Simplify} from './simplify.d.ts';
+import type { ApplyDefaultOptions } from "./internal/index.d.ts";
+import type { Simplify } from "./simplify.d.ts";
 
 export type SetFieldTypeOptions = {
-	/**
+  /**
 	Preserve optional and readonly modifiers for properties being updated.
 
 	NOTE: Property modifiers will always be preserved for properties that are not being updated.
 
 	@default true
 	*/
-	preservePropertyModifiers?: boolean;
+  preservePropertyModifiers?: boolean;
 };
 
 type DefaultSetFieldTypeOptions = {
-	preservePropertyModifiers: true;
+  preservePropertyModifiers: true;
 };
 
 /**
@@ -53,15 +53,27 @@ type MyModelApi2 = SetFieldType<MyModel, 'createdAt' | 'updatedAt', string, {pre
 
 @category Object
 */
-export type SetFieldType<BaseType, Keys extends keyof BaseType, NewType, Options extends SetFieldTypeOptions = {}> =
-	_SetFieldType<BaseType, Keys, NewType, ApplyDefaultOptions<SetFieldTypeOptions, DefaultSetFieldTypeOptions, Options>>;
+export type SetFieldType<
+  BaseType,
+  Keys extends keyof BaseType,
+  NewType,
+  Options extends SetFieldTypeOptions = {},
+> = _SetFieldType<
+  BaseType,
+  Keys,
+  NewType,
+  ApplyDefaultOptions<SetFieldTypeOptions, DefaultSetFieldTypeOptions, Options>
+>;
 
-type _SetFieldType<BaseType, Keys extends keyof BaseType, NewType, Options extends Required<SetFieldTypeOptions>> =
-	Simplify<{
-		[P in keyof BaseType]: P extends Keys ? NewType : BaseType[P];
-	} & (
-		// `Record` is used to remove property modifiers
-		Options['preservePropertyModifiers'] extends false ? Record<Keys, NewType> : unknown
-	)>;
-
-export {};
+type _SetFieldType<
+  BaseType,
+  Keys extends keyof BaseType,
+  NewType,
+  Options extends Required<SetFieldTypeOptions>,
+> = Simplify<
+  {
+    [P in keyof BaseType]: P extends Keys ? NewType : BaseType[P];
+  } & (Options["preservePropertyModifiers"] extends false // `Record` is used to remove property modifiers
+    ? Record<Keys, NewType>
+    : unknown)
+>;

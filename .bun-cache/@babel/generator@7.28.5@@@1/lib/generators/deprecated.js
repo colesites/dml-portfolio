@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.addDeprecatedGenerators = addDeprecatedGenerators;
 function addDeprecatedGenerators(PrinterClass) {
@@ -19,7 +19,7 @@ function addDeprecatedGenerators(PrinterClass) {
           return;
         }
         this.word(node.value + "m");
-      }
+      },
     };
     Object.assign(PrinterClass.prototype, deprecatedBabel7Generators);
   }

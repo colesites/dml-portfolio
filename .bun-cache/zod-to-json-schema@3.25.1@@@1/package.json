@@ -27,7 +27,14 @@
     "test": "tsx test/index.ts",
     "gen": "tsx createIndex.ts"
   },
-  "keywords": ["zod", "json", "schema", "open", "api", "conversion"],
+  "keywords": [
+    "zod",
+    "json",
+    "schema",
+    "open",
+    "api",
+    "conversion"
+  ],
   "author": "Stefan Terdell",
   "contributors": [
     "Hammad Asif (https://github.com/mrhammadasif)",

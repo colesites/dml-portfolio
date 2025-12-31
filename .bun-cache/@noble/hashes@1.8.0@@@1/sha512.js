@@ -1,6 +1,13 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sha512_256 = exports.SHA512_256 = exports.sha512_224 = exports.SHA512_224 = exports.sha384 = exports.SHA384 = exports.sha512 = exports.SHA512 = void 0;
+exports.sha512_256 =
+  exports.SHA512_256 =
+  exports.sha512_224 =
+  exports.SHA512_224 =
+  exports.sha384 =
+  exports.SHA384 =
+  exports.sha512 =
+  exports.SHA512 =
+    void 0;
 /**
  * SHA2-512 a.k.a. sha512 and sha384. It is slower than sha256 in js because u64 operations are slow.
  *

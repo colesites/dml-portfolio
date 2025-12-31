@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var WebSocketIndexedDBClientStore_exports = {};
 __export(WebSocketIndexedDBClientStore_exports, {
-  WebSocketIndexedDBClientStore: () => WebSocketIndexedDBClientStore
+  WebSocketIndexedDBClientStore: () => WebSocketIndexedDBClientStore,
 });
 module.exports = __toCommonJS(WebSocketIndexedDBClientStore_exports);
 var import_deferred_promise = require("@open-draft/deferred-promise");
@@ -34,7 +38,7 @@ class WebSocketIndexedDBClientStore {
     const store = await this.getStore();
     const request = store.put({
       id: client.id,
-      url: client.url.href
+      url: client.url.href,
     });
     request.onsuccess = () => {
       promise.resolve();
@@ -43,8 +47,8 @@ class WebSocketIndexedDBClientStore {
       console.error(request.error);
       promise.reject(
         new Error(
-          `Failed to add WebSocket client "${client.id}". There is likely an additional output above.`
-        )
+          `Failed to add WebSocket client "${client.id}". There is likely an additional output above.`,
+        ),
       );
     };
     return promise;
@@ -60,8 +64,8 @@ class WebSocketIndexedDBClientStore {
       console.log(request.error);
       promise.reject(
         new Error(
-          `Failed to get all WebSocket clients. There is likely an additional output above.`
-        )
+          `Failed to get all WebSocket clients. There is likely an additional output above.`,
+        ),
       );
     };
     return promise;
@@ -79,8 +83,8 @@ class WebSocketIndexedDBClientStore {
       console.error(store.transaction.error);
       promise.reject(
         new Error(
-          `Failed to delete WebSocket clients [${clientIds.join(", ")}]. There is likely an additional output above.`
-        )
+          `Failed to delete WebSocket clients [${clientIds.join(", ")}]. There is likely an additional output above.`,
+        ),
       );
     };
     return promise;
@@ -107,8 +111,8 @@ class WebSocketIndexedDBClientStore {
         console.error(store.transaction.error);
         promise.reject(
           new Error(
-            "Failed to create WebSocket client store. There is likely an additional output above."
-          )
+            "Failed to create WebSocket client store. There is likely an additional output above.",
+          ),
         );
       };
     };
@@ -116,15 +120,17 @@ class WebSocketIndexedDBClientStore {
       console.error(request.error);
       promise.reject(
         new Error(
-          "Failed to open an IndexedDB database. There is likely an additional output above."
-        )
+          "Failed to open an IndexedDB database. There is likely an additional output above.",
+        ),
       );
     };
     return promise;
   }
   async getStore() {
     const db = await this.db;
-    return db.transaction(DB_STORE_NAME, "readwrite").objectStore(DB_STORE_NAME);
+    return db
+      .transaction(DB_STORE_NAME, "readwrite")
+      .objectStore(DB_STORE_NAME);
   }
 }
 //# sourceMappingURL=WebSocketIndexedDBClientStore.js.map

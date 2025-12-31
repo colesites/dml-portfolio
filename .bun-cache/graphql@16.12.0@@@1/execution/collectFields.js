@@ -1,20 +1,18 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.collectFields = collectFields;
 exports.collectSubfields = collectSubfields;
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _directives = require('../type/directives.js');
+var _directives = require("../type/directives.js");
 
-var _typeFromAST = require('../utilities/typeFromAST.js');
+var _typeFromAST = require("../utilities/typeFromAST.js");
 
-var _values = require('./values.js');
+var _values = require("./values.js");
 
 /**
  * Given a selectionSet, collects all of the fields and returns them.

@@ -17,14 +17,14 @@
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
 import {
   abytes,
-  ensureBytes,
-  memoized,
-  randomBytes,
   type CHash,
+  ensureBytes,
   type Hex,
+  memoized,
   type PrivKey,
-} from '../utils.ts';
-import { normalizeZ } from './curve.ts';
+  randomBytes,
+} from "../utils.ts";
+import { normalizeZ } from "./curve.ts";
 import {
   createHasher,
   type H2CHasher,
@@ -33,24 +33,27 @@ import {
   type H2CPointConstructor,
   type htfBasicOpts,
   type MapToCurve,
-} from './hash-to-curve.ts';
-import { getMinHashLength, mapHashToField, type IField } from './modular.ts';
-import type { Fp12, Fp12Bls, Fp2, Fp2Bls, Fp6Bls } from './tower.ts';
+} from "./hash-to-curve.ts";
+import { getMinHashLength, type IField, mapHashToField } from "./modular.ts";
+import type { Fp2, Fp2Bls, Fp6Bls, Fp12, Fp12Bls } from "./tower.ts";
 import {
   _normFnElement,
-  weierstrassPoints,
   type CurvePointsRes,
   type CurvePointsType,
   type WeierstrassPoint,
   type WeierstrassPointCons,
-} from './weierstrass.ts';
+  weierstrassPoints,
+} from "./weierstrass.ts";
 
 type Fp = bigint; // Can be different field?
 
 // prettier-ignore
-const _0n = BigInt(0), _1n = BigInt(1), _2n = BigInt(2), _3n = BigInt(3);
+const _0n = BigInt(0),
+  _1n = BigInt(1),
+  _2n = BigInt(2),
+  _3n = BigInt(3);
 
-export type TwistType = 'multiplicative' | 'divisive';
+export type TwistType = "multiplicative" | "divisive";
 
 export type ShortSignatureCoder<Fp> = {
   fromBytes(bytes: Uint8Array): WeierstrassPoint<Fp>;
@@ -83,7 +86,7 @@ export type PostPrecomputePointAddFn = (
   Ry: Fp2,
   Rz: Fp2,
   Qx: Fp2,
-  Qy: Fp2
+  Qy: Fp2,
 ) => { Rx: Fp2; Ry: Fp2; Rz: Fp2 };
 export type PostPrecomputeFn = (
   Rx: Fp2,
@@ -91,16 +94,20 @@ export type PostPrecomputeFn = (
   Rz: Fp2,
   Qx: Fp2,
   Qy: Fp2,
-  pointAdd: PostPrecomputePointAddFn
+  pointAdd: PostPrecomputePointAddFn,
 ) => void;
 export type BlsPairing = {
   Fp12: Fp12Bls;
   calcPairingPrecomputes: (p: WeierstrassPoint<Fp2>) => Precompute;
   millerLoopBatch: (pairs: [Precompute, Fp, Fp][]) => Fp12;
-  pairing: (P: WeierstrassPoint<Fp>, Q: WeierstrassPoint<Fp2>, withFinalExponent?: boolean) => Fp12;
+  pairing: (
+    P: WeierstrassPoint<Fp>,
+    Q: WeierstrassPoint<Fp2>,
+    withFinalExponent?: boolean,
+  ) => Fp12;
   pairingBatch: (
     pairs: { g1: WeierstrassPoint<Fp>; g2: WeierstrassPoint<Fp2> }[],
-    withFinalExponent?: boolean
+    withFinalExponent?: boolean,
   ) => Fp12;
 };
 // TODO: replace CurveType with this? It doesn't contain r however and has postPrecompute
@@ -130,10 +137,10 @@ export type CurveType = {
     // NOTE: MSB is always ignored and used as marker for length,
     // otherwise leading zeros will be lost.
     // Can be different from 'X' (seed) param!
-    ateLoopSize: BlsPairingParams['ateLoopSize'];
-    xNegative: BlsPairingParams['xNegative'];
+    ateLoopSize: BlsPairingParams["ateLoopSize"];
+    xNegative: BlsPairingParams["xNegative"];
     r: bigint; // TODO: remove
-    twistType: BlsPairingParams['twistType']; // BLS12-381: Multiplicative, BN254: Divisive
+    twistType: BlsPairingParams["twistType"]; // BLS12-381: Multiplicative, BN254: Divisive
   };
   htfDefaults: H2COpts;
   hash: CHash; // Because we need outputLen for DRBG
@@ -153,9 +160,9 @@ type Precompute = PrecomputeSingle[];
 export interface BLSCurvePair {
   longSignatures: BLSSigs<bigint, Fp2>;
   shortSignatures: BLSSigs<Fp2, bigint>;
-  millerLoopBatch: BlsPairing['millerLoopBatch'];
-  pairing: BlsPairing['pairing'];
-  pairingBatch: BlsPairing['pairingBatch'];
+  millerLoopBatch: BlsPairing["millerLoopBatch"];
+  pairing: BlsPairing["pairing"];
+  pairingBatch: BlsPairing["pairingBatch"];
   G1: { Point: WeierstrassPointCons<bigint> } & H2CHasher<Fp>;
   G2: { Point: WeierstrassPointCons<Fp2> } & H2CHasher<Fp2>;
   fields: {
@@ -169,7 +176,7 @@ export interface BLSCurvePair {
     randomSecretKey: () => Uint8Array;
     /** @deprecated use randomSecretKey */
     randomPrivateKey: () => Uint8Array;
-    calcPairingPrecomputes: BlsPairing['calcPairingPrecomputes'];
+    calcPairingPrecomputes: BlsPairing["calcPairingPrecomputes"];
   };
 }
 
@@ -184,7 +191,7 @@ export type CurveFn = BLSCurvePair & {
     (
       message: WeierstrassPoint<Fp2>,
       secretKey: PrivKey,
-      htfOpts?: htfBasicOpts
+      htfOpts?: htfBasicOpts,
     ): WeierstrassPoint<Fp2>;
   };
   /** @deprecated use `shortSignatures.sign` */
@@ -193,7 +200,7 @@ export type CurveFn = BLSCurvePair & {
     (
       message: WeierstrassPoint<Fp>,
       secretKey: PrivKey,
-      htfOpts?: htfBasicOpts
+      htfOpts?: htfBasicOpts,
     ): WeierstrassPoint<Fp>;
   };
   /** @deprecated use `longSignatures.verify` */
@@ -201,20 +208,20 @@ export type CurveFn = BLSCurvePair & {
     signature: Hex | WeierstrassPoint<Fp2>,
     message: Hex | WeierstrassPoint<Fp2>,
     publicKey: Hex | WeierstrassPoint<Fp>,
-    htfOpts?: htfBasicOpts
+    htfOpts?: htfBasicOpts,
   ) => boolean;
   /** @deprecated use `shortSignatures.verify` */
   verifyShortSignature: (
     signature: Hex | WeierstrassPoint<Fp>,
     message: Hex | WeierstrassPoint<Fp>,
     publicKey: Hex | WeierstrassPoint<Fp2>,
-    htfOpts?: htfBasicOpts
+    htfOpts?: htfBasicOpts,
   ) => boolean;
   verifyBatch: (
     signature: Hex | WeierstrassPoint<Fp2>,
     messages: (Hex | WeierstrassPoint<Fp2>)[],
     publicKeys: (Hex | WeierstrassPoint<Fp>)[],
-    htfOpts?: htfBasicOpts
+    htfOpts?: htfBasicOpts,
   ) => boolean;
   /** @deprecated use `longSignatures.aggregatePublicKeys` */
   aggregatePublicKeys: {
@@ -251,20 +258,31 @@ export type CurveFn = BLSCurvePair & {
 type BLSInput = Hex | Uint8Array;
 export interface BLSSigs<P, S> {
   getPublicKey(secretKey: PrivKey): WeierstrassPoint<P>;
-  sign(hashedMessage: WeierstrassPoint<S>, secretKey: PrivKey): WeierstrassPoint<S>;
+  sign(
+    hashedMessage: WeierstrassPoint<S>,
+    secretKey: PrivKey,
+  ): WeierstrassPoint<S>;
   verify(
     signature: WeierstrassPoint<S> | BLSInput,
     message: WeierstrassPoint<S>,
-    publicKey: WeierstrassPoint<P> | BLSInput
+    publicKey: WeierstrassPoint<P> | BLSInput,
   ): boolean;
   verifyBatch: (
     signature: WeierstrassPoint<S> | BLSInput,
     messages: WeierstrassPoint<S>[],
-    publicKeys: (WeierstrassPoint<P> | BLSInput)[]
+    publicKeys: (WeierstrassPoint<P> | BLSInput)[],
   ) => boolean;
-  aggregatePublicKeys(publicKeys: (WeierstrassPoint<P> | BLSInput)[]): WeierstrassPoint<P>;
-  aggregateSignatures(signatures: (WeierstrassPoint<S> | BLSInput)[]): WeierstrassPoint<S>;
-  hash(message: Uint8Array, DST?: string | Uint8Array, hashOpts?: H2CHashOpts): WeierstrassPoint<S>;
+  aggregatePublicKeys(
+    publicKeys: (WeierstrassPoint<P> | BLSInput)[],
+  ): WeierstrassPoint<P>;
+  aggregateSignatures(
+    signatures: (WeierstrassPoint<S> | BLSInput)[],
+  ): WeierstrassPoint<S>;
+  hash(
+    message: Uint8Array,
+    DST?: string | Uint8Array,
+    hashOpts?: H2CHashOpts,
+  ): WeierstrassPoint<S>;
   Signature: SignatureCoder<S>;
 }
 
@@ -283,7 +301,8 @@ function NAfDecomposition(a: bigint) {
 }
 
 function aNonEmpty(arr: any[]) {
-  if (!Array.isArray(arr) || arr.length === 0) throw new Error('expected non-empty array');
+  if (!Array.isArray(arr) || arr.length === 0)
+    throw new Error("expected non-empty array");
 }
 
 // This should be enough for bn254, no need to export full stuff?
@@ -291,23 +310,30 @@ function createBlsPairing(
   fields: BlsFields,
   G1: WeierstrassPointCons<Fp>,
   G2: WeierstrassPointCons<Fp2>,
-  params: BlsPairingParams
+  params: BlsPairingParams,
 ): BlsPairing {
   const { Fp2, Fp12 } = fields;
   const { twistType, ateLoopSize, xNegative, postPrecompute } = params;
   type G1 = typeof G1.BASE;
   type G2 = typeof G2.BASE;
   // Applies sparse multiplication as line function
-  let lineFunction: (c0: Fp2, c1: Fp2, c2: Fp2, f: Fp12, Px: Fp, Py: Fp) => Fp12;
-  if (twistType === 'multiplicative') {
+  let lineFunction: (
+    c0: Fp2,
+    c1: Fp2,
+    c2: Fp2,
+    f: Fp12,
+    Px: Fp,
+    Py: Fp,
+  ) => Fp12;
+  if (twistType === "multiplicative") {
     lineFunction = (c0: Fp2, c1: Fp2, c2: Fp2, f: Fp12, Px: Fp, Py: Fp) =>
       Fp12.mul014(f, c0, Fp2.mul(c1, Px), Fp2.mul(c2, Py));
-  } else if (twistType === 'divisive') {
+  } else if (twistType === "divisive") {
     // NOTE: it should be [c0, c1, c2], but we use different order here to reduce complexity of
     // precompute calculations.
     lineFunction = (c0: Fp2, c1: Fp2, c2: Fp2, f: Fp12, Px: Fp, Py: Fp) =>
       Fp12.mul034(f, Fp2.mul(c2, Py), Fp2.mul(c1, Px), c0);
-  } else throw new Error('bls: unknown twist type');
+  } else throw new Error("bls: unknown twist type");
 
   const Fp2div2 = Fp2.div(Fp2.ONE, Fp2.mul(Fp2.ONE, _2n));
   function pointDouble(ell: PrecomputeSingle, Rx: Fp2, Ry: Fp2, Rz: Fp2) {
@@ -323,11 +349,21 @@ function createBlsPairing(
     ell.push([c0, c1, c2]);
 
     Rx = Fp2.mul(Fp2.mul(Fp2.mul(Fp2.sub(t0, t3), Rx), Ry), Fp2div2); // ((T0 - T3) * Rx * Ry) / 2
-    Ry = Fp2.sub(Fp2.sqr(Fp2.mul(Fp2.add(t0, t3), Fp2div2)), Fp2.mul(Fp2.sqr(t2), _3n)); // ((T0 + T3) / 2)² - 3 * T2²
+    Ry = Fp2.sub(
+      Fp2.sqr(Fp2.mul(Fp2.add(t0, t3), Fp2div2)),
+      Fp2.mul(Fp2.sqr(t2), _3n),
+    ); // ((T0 + T3) / 2)² - 3 * T2²
     Rz = Fp2.mul(t0, t4); // T0 * T4
     return { Rx, Ry, Rz };
   }
-  function pointAdd(ell: PrecomputeSingle, Rx: Fp2, Ry: Fp2, Rz: Fp2, Qx: Fp2, Qy: Fp2) {
+  function pointAdd(
+    ell: PrecomputeSingle,
+    Rx: Fp2,
+    Ry: Fp2,
+    Rz: Fp2,
+    Qx: Fp2,
+    Qy: Fp2,
+  ) {
     // Addition
     const t0 = Fp2.sub(Ry, Fp2.mul(Qy, Rz)); // Ry - Qy * Rz
     const t1 = Fp2.sub(Rx, Fp2.mul(Qx, Rz)); // Rx - Qx * Rz
@@ -357,14 +393,26 @@ function createBlsPairing(
     const p = point;
     const { x, y } = p.toAffine();
     // prettier-ignore
-    const Qx = x, Qy = y, negQy = Fp2.neg(y);
+    const Qx = x,
+      Qy = y,
+      negQy = Fp2.neg(y);
     // prettier-ignore
-    let Rx = Qx, Ry = Qy, Rz = Fp2.ONE;
+    let Rx = Qx,
+      Ry = Qy,
+      Rz = Fp2.ONE;
     const ell: Precompute = [];
     for (const bit of ATE_NAF) {
       const cur: PrecomputeSingle = [];
       ({ Rx, Ry, Rz } = pointDouble(cur, Rx, Ry, Rz));
-      if (bit) ({ Rx, Ry, Rz } = pointAdd(cur, Rx, Ry, Rz, Qx, bit === -1 ? negQy : Qy));
+      if (bit)
+        ({ Rx, Ry, Rz } = pointAdd(
+          cur,
+          Rx,
+          Ry,
+          Rz,
+          Qx,
+          bit === -1 ? negQy : Qy,
+        ));
       ell.push(cur);
     }
     if (postPrecompute) {
@@ -377,7 +425,10 @@ function createBlsPairing(
   // Main pairing logic is here. Computes product of miller loops + final exponentiate
   // Applies calculated precomputes
   type MillerInput = [Precompute, Fp, Fp][];
-  function millerLoopBatch(pairs: MillerInput, withFinalExponent: boolean = false) {
+  function millerLoopBatch(
+    pairs: MillerInput,
+    withFinalExponent: boolean = false,
+  ) {
     let f12 = Fp12.ONE;
     if (pairs.length) {
       const ellLen = pairs[0][0].length;
@@ -385,7 +436,8 @@ function createBlsPairing(
         f12 = Fp12.sqr(f12); // This allows us to do sqr only one time for all pairings
         // NOTE: we apply multiple pairings in parallel here
         for (const [ell, Px, Py] of pairs) {
-          for (const [c0, c1, c2] of ell[i]) f12 = lineFunction(c0, c1, c2, f12, Px, Py);
+          for (const [c0, c1, c2] of ell[i])
+            f12 = lineFunction(c0, c1, c2, f12, Px, Py);
         }
       }
     }
@@ -395,19 +447,23 @@ function createBlsPairing(
   type PairingInput = { g1: G1; g2: G2 };
   // Calculates product of multiple pairings
   // This up to x2 faster than just `map(({g1, g2})=>pairing({g1,g2}))`
-  function pairingBatch(pairs: PairingInput[], withFinalExponent: boolean = true) {
+  function pairingBatch(
+    pairs: PairingInput[],
+    withFinalExponent: boolean = true,
+  ) {
     const res: MillerInput = [];
     // Cache precomputed toAffine for all points
     normalizeZ(
       G1,
-      pairs.map(({ g1 }) => g1)
+      pairs.map(({ g1 }) => g1),
     );
     normalizeZ(
       G2,
-      pairs.map(({ g2 }) => g2)
+      pairs.map(({ g2 }) => g2),
     );
     for (const { g1, g2 } of pairs) {
-      if (g1.is0() || g2.is0()) throw new Error('pairing is not available for ZERO point');
+      if (g1.is0() || g2.is0())
+        throw new Error("pairing is not available for ZERO point");
       // This uses toAffine inside
       g1.assertValidity();
       g2.assertValidity();
@@ -434,25 +490,31 @@ function createBlsSig<P, S>(
   PubCurve: CurvePointsRes<P> & H2CHasher<P>,
   SigCurve: CurvePointsRes<S> & H2CHasher<S>,
   SignatureCoder: SignatureCoder<S>,
-  isSigG1: boolean
+  isSigG1: boolean,
 ): BLSSigs<P, S> {
   const { Fp12, pairingBatch } = blsPairing;
   type PubPoint = WeierstrassPoint<P>;
   type SigPoint = WeierstrassPoint<S>;
   function normPub(point: PubPoint | BLSInput): PubPoint {
-    return point instanceof PubCurve.Point ? (point as PubPoint) : PubCurve.Point.fromHex(point);
+    return point instanceof PubCurve.Point
+      ? (point as PubPoint)
+      : PubCurve.Point.fromHex(point);
   }
   function normSig(point: SigPoint | BLSInput): SigPoint {
-    return point instanceof SigCurve.Point ? (point as SigPoint) : SigCurve.Point.fromHex(point);
+    return point instanceof SigCurve.Point
+      ? (point as SigPoint)
+      : SigCurve.Point.fromHex(point);
   }
   function amsg(m: unknown): SigPoint {
     if (!(m instanceof SigCurve.Point))
-      throw new Error(`expected valid message hashed to ${!isSigG1 ? 'G2' : 'G1'} curve`);
+      throw new Error(
+        `expected valid message hashed to ${!isSigG1 ? "G2" : "G1"} curve`,
+      );
     return m as SigPoint;
   }
 
-  type G1 = CurvePointsRes<Fp>['Point']['BASE'];
-  type G2 = CurvePointsRes<Fp2>['Point']['BASE'];
+  type G1 = CurvePointsRes<Fp>["Point"]["BASE"];
+  type G2 = CurvePointsRes<Fp2>["Point"]["BASE"];
   type PairingInput = { g1: G1; g2: G2 };
   // What matters here is what point pairing API accepts as G1 or G2, not actual size or names
   const pair: (a: PubPoint, b: SigPoint) => PairingInput = !isSigG1
@@ -468,7 +530,7 @@ function createBlsSig<P, S>(
     },
     // S = pk x H(m)
     sign(message: SigPoint, secretKey: PrivKey, unusedArg?: any): SigPoint {
-      if (unusedArg != null) throw new Error('sign() expects 2 arguments');
+      if (unusedArg != null) throw new Error("sign() expects 2 arguments");
       // TODO: replace with
       // PubCurve.Point.Fn.fromBytes(secretKey)
       const sec = _normFnElement(PubCurve.Point.Fn, secretKey);
@@ -482,9 +544,9 @@ function createBlsSig<P, S>(
       signature: SigPoint | BLSInput,
       message: SigPoint,
       publicKey: PubPoint | BLSInput,
-      unusedArg?: any
+      unusedArg?: any,
     ): boolean {
-      if (unusedArg != null) throw new Error('verify() expects 3 arguments');
+      if (unusedArg != null) throw new Error("verify() expects 3 arguments");
       signature = normSig(signature);
       publicKey = normPub(publicKey);
       const P = publicKey.negate();
@@ -504,11 +566,11 @@ function createBlsSig<P, S>(
     verifyBatch(
       signature: SigPoint | BLSInput,
       messages: SigPoint[],
-      publicKeys: (PubPoint | BLSInput)[]
+      publicKeys: (PubPoint | BLSInput)[],
     ): boolean {
       aNonEmpty(messages);
       if (publicKeys.length !== messages.length)
-        throw new Error('amount of public keys and messages should be equal');
+        throw new Error("amount of public keys and messages should be equal");
       const sig = normSig(signature);
       const nMessages = messages;
       const nPublicKeys = publicKeys.map(normPub);
@@ -542,7 +604,10 @@ function createBlsSig<P, S>(
     aggregatePublicKeys(publicKeys: (PubPoint | BLSInput)[]): PubPoint {
       aNonEmpty(publicKeys);
       publicKeys = publicKeys.map((pub) => normPub(pub));
-      const agg = (publicKeys as PubPoint[]).reduce((sum, p) => sum.add(p), PubCurve.Point.ZERO);
+      const agg = (publicKeys as PubPoint[]).reduce(
+        (sum, p) => sum.add(p),
+        PubCurve.Point.ZERO,
+      );
       agg.assertValidity();
       return agg;
     },
@@ -552,7 +617,10 @@ function createBlsSig<P, S>(
     aggregateSignatures(signatures: (SigPoint | BLSInput)[]): SigPoint {
       aNonEmpty(signatures);
       signatures = signatures.map((sig) => normSig(sig));
-      const agg = (signatures as SigPoint[]).reduce((sum, s) => sum.add(s), SigCurve.Point.ZERO);
+      const agg = (signatures as SigPoint[]).reduce(
+        (sum, s) => sum.add(s),
+        SigCurve.Point.ZERO,
+      );
       agg.assertValidity();
       return agg;
     },
@@ -577,7 +645,7 @@ export function bls(CURVE: CurveType): CurveFn {
     createHasher(G1_.Point, CURVE.G1.mapToCurve, {
       ...CURVE.htfDefaults,
       ...CURVE.G1.htfDefaults,
-    })
+    }),
   );
   // Point on G2 curve (complex numbers): (x₁, x₂+i), (y₁, y₂+i)
   const G2_ = weierstrassPoints(CURVE.G2);
@@ -586,7 +654,7 @@ export function bls(CURVE: CurveType): CurveFn {
     createHasher(G2_.Point as H2CPointConstructor<Fp2>, CURVE.G2.mapToCurve, {
       ...CURVE.htfDefaults,
       ...CURVE.G2.htfDefaults,
-    })
+    }),
   );
   type G1 = typeof G1.Point.BASE;
   type G2 = typeof G2.Point.BASE;
@@ -596,9 +664,22 @@ export function bls(CURVE: CurveType): CurveFn {
     postPrecompute: CURVE.postPrecompute,
   });
 
-  const { millerLoopBatch, pairing, pairingBatch, calcPairingPrecomputes } = pairingRes;
-  const longSignatures = createBlsSig(pairingRes, G1, G2, CURVE.G2.Signature, false);
-  const shortSignatures = createBlsSig(pairingRes, G2, G1, CURVE.G1.ShortSignature, true);
+  const { millerLoopBatch, pairing, pairingBatch, calcPairingPrecomputes } =
+    pairingRes;
+  const longSignatures = createBlsSig(
+    pairingRes,
+    G1,
+    G2,
+    CURVE.G2.Signature,
+    false,
+  );
+  const shortSignatures = createBlsSig(
+    pairingRes,
+    G2,
+    G1,
+    CURVE.G1.ShortSignature,
+    true,
+  );
 
   const rand = CURVE.randomBytes || randomBytes;
   const randomSecretKey = (): Uint8Array => {
@@ -621,12 +702,12 @@ export function bls(CURVE: CurveType): CurveFn {
   function normP1Hash(point: G1Hex, htfOpts?: htfBasicOpts): G1 {
     return point instanceof G1.Point
       ? point
-      : shortSignatures.hash(ensureBytes('point', point), htfOpts?.DST);
+      : shortSignatures.hash(ensureBytes("point", point), htfOpts?.DST);
   }
   function normP2Hash(point: G2Hex, htfOpts?: htfBasicOpts): G2 {
     return point instanceof G2.Point
       ? point
-      : longSignatures.hash(ensureBytes('point', point), htfOpts?.DST);
+      : longSignatures.hash(ensureBytes("point", point), htfOpts?.DST);
   }
 
   function getPublicKey(privateKey: PrivKey): Uint8Array {
@@ -635,9 +716,17 @@ export function bls(CURVE: CurveType): CurveFn {
   function getPublicKeyForShortSignatures(privateKey: PrivKey): Uint8Array {
     return shortSignatures.getPublicKey(privateKey).toBytes(true);
   }
-  function sign(message: Hex, privateKey: PrivKey, htfOpts?: htfBasicOpts): Uint8Array;
+  function sign(
+    message: Hex,
+    privateKey: PrivKey,
+    htfOpts?: htfBasicOpts,
+  ): Uint8Array;
   function sign(message: G2, privateKey: PrivKey, htfOpts?: htfBasicOpts): G2;
-  function sign(message: G2Hex, privateKey: PrivKey, htfOpts?: htfBasicOpts): Uint8Array | G2 {
+  function sign(
+    message: G2Hex,
+    privateKey: PrivKey,
+    htfOpts?: htfBasicOpts,
+  ): Uint8Array | G2 {
     const Hm = normP2Hash(message, htfOpts);
     const S = longSignatures.sign(Hm, privateKey);
     return message instanceof G2.Point ? S : Signature.toBytes(S);
@@ -645,13 +734,17 @@ export function bls(CURVE: CurveType): CurveFn {
   function signShortSignature(
     message: Hex,
     privateKey: PrivKey,
-    htfOpts?: htfBasicOpts
+    htfOpts?: htfBasicOpts,
   ): Uint8Array;
-  function signShortSignature(message: G1, privateKey: PrivKey, htfOpts?: htfBasicOpts): G1;
+  function signShortSignature(
+    message: G1,
+    privateKey: PrivKey,
+    htfOpts?: htfBasicOpts,
+  ): G1;
   function signShortSignature(
     message: G1Hex,
     privateKey: PrivKey,
-    htfOpts?: htfBasicOpts
+    htfOpts?: htfBasicOpts,
   ): Uint8Array | G1 {
     const Hm = normP1Hash(message, htfOpts);
     const S = shortSignatures.sign(Hm, privateKey);
@@ -661,7 +754,7 @@ export function bls(CURVE: CurveType): CurveFn {
     signature: G2Hex,
     message: G2Hex,
     publicKey: G1Hex,
-    htfOpts?: htfBasicOpts
+    htfOpts?: htfBasicOpts,
   ): boolean {
     const Hm = normP2Hash(message, htfOpts);
     return longSignatures.verify(signature, Hm, publicKey);
@@ -670,7 +763,7 @@ export function bls(CURVE: CurveType): CurveFn {
     signature: G1Hex,
     message: G1Hex,
     publicKey: G2Hex,
-    htfOpts?: htfBasicOpts
+    htfOpts?: htfBasicOpts,
   ): boolean {
     const Hm = normP1Hash(message, htfOpts);
     return shortSignatures.verify(signature, Hm, publicKey);
@@ -691,13 +784,15 @@ export function bls(CURVE: CurveType): CurveFn {
   function aggregateShortSignatures(signatures: G1[]): G1;
   function aggregateShortSignatures(signatures: G1Hex[]): Uint8Array | G1 {
     const agg = shortSignatures.aggregateSignatures(signatures);
-    return signatures[0] instanceof G1.Point ? agg : ShortSignature.toBytes(agg);
+    return signatures[0] instanceof G1.Point
+      ? agg
+      : ShortSignature.toBytes(agg);
   }
   function verifyBatch(
     signature: G2Hex,
     messages: G2Hex[],
     publicKeys: G1Hex[],
-    htfOpts?: htfBasicOpts
+    htfOpts?: htfBasicOpts,
   ): boolean {
     const Hm = messages.map((m) => normP2Hash(m, htfOpts));
     return longSignatures.verifyBatch(signature, Hm, publicKeys);

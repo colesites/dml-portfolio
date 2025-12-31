@@ -1,13 +1,13 @@
-import {on} from 'node:events';
-import {finished} from 'node:stream/promises';
-import {nodeImports} from './stream.js';
+import { on } from "node:events";
+import { finished } from "node:stream/promises";
+import { nodeImports } from "./stream.js";
 
-Object.assign(nodeImports, {on, finished});
+Object.assign(nodeImports, { on, finished });
 
 export {
-	default,
-	getStreamAsArray,
-	getStreamAsArrayBuffer,
-	getStreamAsBuffer,
-	MaxBufferError,
-} from './exports.js';
+  default,
+  getStreamAsArray,
+  getStreamAsArrayBuffer,
+  getStreamAsBuffer,
+  MaxBufferError,
+} from "./exports.js";

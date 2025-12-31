@@ -1,5 +1,5 @@
-import type { Context } from './context';
-import type { Env, ErrorHandler, Next, NotFoundHandler } from './types';
+import type { Context } from "./context";
+import type { Env, ErrorHandler, Next, NotFoundHandler } from "./types";
 /**
  * Compose middleware functions into a single function based on `koa-compose` package.
  *
@@ -11,4 +11,8 @@ import type { Env, ErrorHandler, Next, NotFoundHandler } from './types';
  *
  * @returns {(context: Context, next?: Next) => Promise<Context>} - A composed middleware function.
  */
-export declare const compose: <E extends Env = Env>(middleware: [[Function, unknown], unknown][] | [[Function]][], onError?: ErrorHandler<E>, onNotFound?: NotFoundHandler<E>) => ((context: Context, next?: Next) => Promise<Context>);
+export declare const compose: <E extends Env = Env>(
+  middleware: [[Function, unknown], unknown][] | [[Function]][],
+  onError?: ErrorHandler<E>,
+  onNotFound?: NotFoundHandler<E>,
+) => (context: Context, next?: Next) => Promise<Context>;

@@ -1,31 +1,22 @@
-/*!
- * type-is
- * Copyright(c) 2014 Jonathan Ong
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict'
-
 /**
  * Module dependencies.
  * @private
  */
 
-var contentType = require('content-type')
-var mime = require('mime-types')
-var typer = require('media-typer')
+var contentType = require("content-type");
+var mime = require("mime-types");
+var typer = require("media-typer");
 
 /**
  * Module exports.
  * @public
  */
 
-module.exports = typeofrequest
-module.exports.is = typeis
-module.exports.hasBody = hasbody
-module.exports.normalize = normalize
-module.exports.match = mimeMatch
+module.exports = typeofrequest;
+module.exports.is = typeis;
+module.exports.hasBody = hasbody;
+module.exports.normalize = normalize;
+module.exports.match = mimeMatch;
 
 /**
  * Compare a `value` content-type with `types`.
@@ -41,42 +32,40 @@ module.exports.match = mimeMatch
  * @public
  */
 
-function typeis (value, types_) {
-  var i
-  var types = types_
+function typeis(value, types_) {
+  var i;
+  var types = types_;
 
   // remove parameters and normalize
-  var val = tryNormalizeType(value)
+  var val = tryNormalizeType(value);
 
   // no type or invalid
   if (!val) {
-    return false
+    return false;
   }
 
   // support flattened arguments
   if (types && !Array.isArray(types)) {
-    types = new Array(arguments.length - 1)
+    types = new Array(arguments.length - 1);
     for (i = 0; i < types.length; i++) {
-      types[i] = arguments[i + 1]
+      types[i] = arguments[i + 1];
     }
   }
 
   // no types, return the content type
   if (!types || !types.length) {
-    return val
+    return val;
   }
 
-  var type
+  var type;
   for (i = 0; i < types.length; i++) {
-    if (mimeMatch(normalize(type = types[i]), val)) {
-      return type[0] === '+' || type.indexOf('*') !== -1
-        ? val
-        : type
+    if (mimeMatch(normalize((type = types[i])), val)) {
+      return type[0] === "+" || type.indexOf("*") !== -1 ? val : type;
     }
   }
 
   // no matches
-  return false
+  return false;
 }
 
 /**
@@ -90,9 +79,11 @@ function typeis (value, types_) {
  * @public
  */
 
-function hasbody (req) {
-  return req.headers['transfer-encoding'] !== undefined ||
-    !isNaN(req.headers['content-length'])
+function hasbody(req) {
+  return (
+    req.headers["transfer-encoding"] !== undefined ||
+    !isNaN(req.headers["content-length"])
+  );
 }
 
 /**
@@ -122,17 +113,16 @@ function hasbody (req) {
  * @public
  */
 
-function typeofrequest (req, types_) {
+function typeofrequest(req, types_) {
   // no body
-  if (!hasbody(req)) return null
+  if (!hasbody(req)) return null;
   // support flattened arguments
-  var types = arguments.length > 2
-    ? Array.prototype.slice.call(arguments, 1)
-    : types_
+  var types =
+    arguments.length > 2 ? Array.prototype.slice.call(arguments, 1) : types_;
   // request content type
-  var value = req.headers['content-type']
+  var value = req.headers["content-type"];
 
-  return typeis(value, types)
+  return typeis(value, types);
 }
 
 /**
@@ -152,27 +142,25 @@ function typeofrequest (req, types_) {
  * @public
  */
 
-function normalize (type) {
-  if (typeof type !== 'string') {
+function normalize(type) {
+  if (typeof type !== "string") {
     // invalid type
-    return false
+    return false;
   }
 
   switch (type) {
-    case 'urlencoded':
-      return 'application/x-www-form-urlencoded'
-    case 'multipart':
-      return 'multipart/*'
+    case "urlencoded":
+      return "application/x-www-form-urlencoded";
+    case "multipart":
+      return "multipart/*";
   }
 
-  if (type[0] === '+') {
+  if (type[0] === "+") {
     // "+json" -> "*/*+json" expando
-    return '*/*' + type
+    return "*/*" + type;
   }
 
-  return type.indexOf('/') === -1
-    ? mime.lookup(type)
-    : type
+  return type.indexOf("/") === -1 ? mime.lookup(type) : type;
 }
 
 /**
@@ -186,38 +174,41 @@ function normalize (type) {
  * @public
  */
 
-function mimeMatch (expected, actual) {
+function mimeMatch(expected, actual) {
   // invalid type
   if (expected === false) {
-    return false
+    return false;
   }
 
   // split types
-  var actualParts = actual.split('/')
-  var expectedParts = expected.split('/')
+  var actualParts = actual.split("/");
+  var expectedParts = expected.split("/");
 
   // invalid format
   if (actualParts.length !== 2 || expectedParts.length !== 2) {
-    return false
+    return false;
   }
 
   // validate type
-  if (expectedParts[0] !== '*' && expectedParts[0] !== actualParts[0]) {
-    return false
+  if (expectedParts[0] !== "*" && expectedParts[0] !== actualParts[0]) {
+    return false;
   }
 
   // validate suffix wildcard
-  if (expectedParts[1].slice(0, 2) === '*+') {
-    return expectedParts[1].length <= actualParts[1].length + 1 &&
-      expectedParts[1].slice(1) === actualParts[1].slice(1 - expectedParts[1].length)
+  if (expectedParts[1].slice(0, 2) === "*+") {
+    return (
+      expectedParts[1].length <= actualParts[1].length + 1 &&
+      expectedParts[1].slice(1) ===
+        actualParts[1].slice(1 - expectedParts[1].length)
+    );
   }
 
   // validate subtype
-  if (expectedParts[1] !== '*' && expectedParts[1] !== actualParts[1]) {
-    return false
+  if (expectedParts[1] !== "*" && expectedParts[1] !== actualParts[1]) {
+    return false;
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -227,11 +218,11 @@ function mimeMatch (expected, actual) {
  * @return {(string|null)}
  * @private
  */
-function normalizeType (value) {
+function normalizeType(value) {
   // Parse the type
-  var type = contentType.parse(value).type
+  var type = contentType.parse(value).type;
 
-  return typer.test(type) ? type : null
+  return typer.test(type) ? type : null;
 }
 
 /**
@@ -241,10 +232,10 @@ function normalizeType (value) {
  * @return {(string|null)}
  * @private
  */
-function tryNormalizeType (value) {
+function tryNormalizeType(value) {
   try {
-    return value ? normalizeType(value) : null
+    return value ? normalizeType(value) : null;
   } catch (err) {
-    return null
+    return null;
   }
 }

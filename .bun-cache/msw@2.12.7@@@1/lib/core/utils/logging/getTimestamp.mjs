@@ -6,7 +6,5 @@ function getTimestamp(options) {
   }
   return timestamp;
 }
-export {
-  getTimestamp
-};
+export { getTimestamp };
 //# sourceMappingURL=getTimestamp.mjs.map

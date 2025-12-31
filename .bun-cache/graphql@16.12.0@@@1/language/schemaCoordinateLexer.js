@@ -1,19 +1,17 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.SchemaCoordinateLexer = void 0;
 
-var _syntaxError = require('../error/syntaxError.js');
+var _syntaxError = require("../error/syntaxError.js");
 
-var _ast = require('./ast.js');
+var _ast = require("./ast.js");
 
-var _characterClasses = require('./characterClasses.js');
+var _characterClasses = require("./characterClasses.js");
 
-var _lexer = require('./lexer.js');
+var _lexer = require("./lexer.js");
 
-var _tokenKind = require('./tokenKind.js');
+var _tokenKind = require("./tokenKind.js");
 
 /**
  * Given a Source schema coordinate, creates a Lexer for that source.
@@ -58,7 +56,7 @@ class SchemaCoordinateLexer {
   }
 
   get [Symbol.toStringTag]() {
-    return 'SchemaCoordinateLexer';
+    return "SchemaCoordinateLexer";
   }
   /**
    * Advances the token stream to the next non-ignored token.

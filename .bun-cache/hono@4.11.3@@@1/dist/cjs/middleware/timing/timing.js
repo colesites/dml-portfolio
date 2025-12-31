@@ -8,29 +8,32 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var timing_exports = {};
 __export(timing_exports, {
   endTime: () => endTime,
   setMetric: () => setMetric,
   startTime: () => startTime,
   timing: () => timing,
-  wrapTime: () => wrapTime
+  wrapTime: () => wrapTime,
 });
 module.exports = __toCommonJS(timing_exports);
 var import_context = require("../../context");
 const getTime = () => {
   try {
     return performance.now();
-  } catch {
-  }
+  } catch {}
   return Date.now();
 };
 const timing = (config) => {
@@ -40,7 +43,7 @@ const timing = (config) => {
     totalDescription: "Total Response Time",
     autoEnd: true,
     crossOrigin: false,
-    ...config
+    ...config,
   };
   return async function timing2(c, next) {
     const headers = [];
@@ -59,14 +62,20 @@ const timing = (config) => {
     if (options.autoEnd) {
       timers.forEach((_, key) => endTime(c, key));
     }
-    const enabled = typeof options.enabled === "function" ? options.enabled(c) : options.enabled;
+    const enabled =
+      typeof options.enabled === "function"
+        ? options.enabled(c)
+        : options.enabled;
     if (enabled) {
       c.res.headers.append("Server-Timing", headers.join(","));
-      const crossOrigin = typeof options.crossOrigin === "function" ? options.crossOrigin(c) : options.crossOrigin;
+      const crossOrigin =
+        typeof options.crossOrigin === "function"
+          ? options.crossOrigin(c)
+          : options.crossOrigin;
       if (crossOrigin) {
         c.res.headers.append(
           "Timing-Allow-Origin",
-          typeof crossOrigin === "string" ? crossOrigin : "*"
+          typeof crossOrigin === "string" ? crossOrigin : "*",
         );
       }
     }
@@ -75,22 +84,30 @@ const timing = (config) => {
 const setMetric = (c, name, valueDescription, description, precision) => {
   const metrics = c.get("metric");
   if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    console.warn(
+      "Metrics not initialized! Please add the `timing()` middleware to this route!",
+    );
     return;
   }
   if (typeof valueDescription === "number") {
     const dur = valueDescription.toFixed(precision || 1);
-    const metric = description ? `${name};dur=${dur};desc="${description}"` : `${name};dur=${dur}`;
+    const metric = description
+      ? `${name};dur=${dur};desc="${description}"`
+      : `${name};dur=${dur}`;
     metrics.headers.push(metric);
   } else {
-    const metric = valueDescription ? `${name};desc="${valueDescription}"` : `${name}`;
+    const metric = valueDescription
+      ? `${name};desc="${valueDescription}"`
+      : `${name}`;
     metrics.headers.push(metric);
   }
 };
 const startTime = (c, name, description) => {
   const metrics = c.get("metric");
   if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    console.warn(
+      "Metrics not initialized! Please add the `timing()` middleware to this route!",
+    );
     return;
   }
   metrics.timers.set(name, { description, start: getTime() });
@@ -98,7 +115,9 @@ const startTime = (c, name, description) => {
 const endTime = (c, name, precision) => {
   const metrics = c.get("metric");
   if (!metrics) {
-    console.warn("Metrics not initialized! Please add the `timing()` middleware to this route!");
+    console.warn(
+      "Metrics not initialized! Please add the `timing()` middleware to this route!",
+    );
     return;
   }
   const timer = metrics.timers.get(name);
@@ -120,10 +139,11 @@ async function wrapTime(c, name, callable, description, precision) {
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  endTime,
-  setMetric,
-  startTime,
-  timing,
-  wrapTime
-});
+0 &&
+  (module.exports = {
+    endTime,
+    setMetric,
+    startTime,
+    timing,
+    wrapTime,
+  });

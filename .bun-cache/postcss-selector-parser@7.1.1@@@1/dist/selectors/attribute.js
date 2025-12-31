@@ -1,5 +1,3 @@
-"use strict";
-
 exports.__esModule = true;
 exports["default"] = void 0;
 exports.unescapeValue = unescapeValue;
@@ -8,16 +6,53 @@ var _unesc = _interopRequireDefault(require("../util/unesc"));
 var _namespace = _interopRequireDefault(require("./namespace"));
 var _types = require("./types");
 var _CSSESC_QUOTE_OPTIONS;
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  Object.defineProperty(Constructor, "prototype", { writable: false });
+  return Constructor;
+}
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  _setPrototypeOf(subClass, superClass);
+}
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf
+    ? Object.setPrototypeOf.bind()
+    : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+  return _setPrototypeOf(o, p);
+}
 var deprecate = require("util-deprecate");
 var WRAPPED_IN_QUOTES = /^('|")([^]*)\1$/;
-var warnOfDeprecatedValueAssignment = deprecate(function () {}, "Assigning an attribute a value containing characters that might need to be escaped is deprecated. " + "Call attribute.setValue() instead.");
-var warnOfDeprecatedQuotedAssignment = deprecate(function () {}, "Assigning attr.quoted is deprecated and has no effect. Assign to attr.quoteMark instead.");
-var warnOfDeprecatedConstructor = deprecate(function () {}, "Constructing an Attribute selector with a value without specifying quoteMark is deprecated. Note: The value should be unescaped now.");
+var warnOfDeprecatedValueAssignment = deprecate(
+  () => {},
+  "Assigning an attribute a value containing characters that might need to be escaped is deprecated. " +
+    "Call attribute.setValue() instead.",
+);
+var warnOfDeprecatedQuotedAssignment = deprecate(
+  () => {},
+  "Assigning attr.quoted is deprecated and has no effect. Assign to attr.quoteMark instead.",
+);
+var warnOfDeprecatedConstructor = deprecate(
+  () => {},
+  "Constructing an Attribute selector with a value without specifying quoteMark is deprecated. Note: The value should be unescaped now.",
+);
 function unescapeValue(value) {
   var deprecatedUsage = false;
   var quoteMark = null;
@@ -34,7 +69,7 @@ function unescapeValue(value) {
   return {
     deprecatedUsage: deprecatedUsage,
     unescaped: unescaped,
-    quoteMark: quoteMark
+    quoteMark: quoteMark,
   };
 }
 function handleDeprecatedContructorOpts(opts) {
@@ -58,7 +93,7 @@ function handleDeprecatedContructorOpts(opts) {
   opts.quoteMark = quoteMark;
   return opts;
 }
-var Attribute = /*#__PURE__*/function (_Namespace) {
+var Attribute = /*#__PURE__*/ ((_Namespace) => {
   _inheritsLoose(Attribute, _Namespace);
   function Attribute(opts) {
     var _this;
@@ -68,13 +103,15 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
     _this = _Namespace.call(this, handleDeprecatedContructorOpts(opts)) || this;
     _this.type = _types.ATTRIBUTE;
     _this.raws = _this.raws || {};
-    Object.defineProperty(_this.raws, 'unquoted', {
-      get: deprecate(function () {
-        return _this.value;
-      }, "attr.raws.unquoted is deprecated. Call attr.value instead."),
-      set: deprecate(function () {
-        return _this.value;
-      }, "Setting attr.raws.unquoted is deprecated and has no effect. attr.value is unescaped by default now.")
+    Object.defineProperty(_this.raws, "unquoted", {
+      get: deprecate(
+        () => _this.value,
+        "attr.raws.unquoted is deprecated. Call attr.value instead.",
+      ),
+      set: deprecate(
+        () => _this.value,
+        "Setting attr.raws.unquoted is deprecated and has no effect. attr.value is unescaped by default now.",
+      ),
     });
     _this._constructed = true;
     return _this;
@@ -112,14 +149,16 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
     return escaped;
   };
   _proto._determineQuoteMark = function _determineQuoteMark(options) {
-    return options.smart ? this.smartQuoteMark(options) : this.preferredQuoteMark(options);
-  }
+    return options.smart
+      ? this.smartQuoteMark(options)
+      : this.preferredQuoteMark(options);
+  };
 
   /**
    * Set the unescaped value with the specified quotation options. The value
    * provided must not include any wrapping quote marks -- those quotes will
    * be interpreted as part of the value and escaped accordingly.
-   */;
+   */
   _proto.setValue = function setValue(value, options) {
     if (options === void 0) {
       options = {};
@@ -127,7 +166,7 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
     this._value = value;
     this._quoteMark = this._determineQuoteMark(options);
     this._syncRawValue();
-  }
+  };
 
   /**
    * Intelligently select a quoteMark value based on the value's contents. If
@@ -140,14 +179,14 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
    *
    * @param options This takes the quoteMark and preferCurrentQuoteMark options
    * from the quoteValue method.
-   */;
+   */
   _proto.smartQuoteMark = function smartQuoteMark(options) {
     var v = this.value;
-    var numSingleQuotes = v.replace(/[^']/g, '').length;
-    var numDoubleQuotes = v.replace(/[^"]/g, '').length;
+    var numSingleQuotes = v.replace(/[^']/g, "").length;
+    var numDoubleQuotes = v.replace(/[^"]/g, "").length;
     if (numSingleQuotes + numDoubleQuotes === 0) {
       var escaped = (0, _cssesc["default"])(v, {
-        isIdentifier: true
+        isIdentifier: true,
       });
       if (escaped === v) {
         return Attribute.NO_QUOTE;
@@ -155,7 +194,8 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
         var pref = this.preferredQuoteMark(options);
         if (pref === Attribute.NO_QUOTE) {
           // pick a quote mark that isn't none and see if it's smaller
-          var quote = this.quoteMark || options.quoteMark || Attribute.DOUBLE_QUOTE;
+          var quote =
+            this.quoteMark || options.quoteMark || Attribute.DOUBLE_QUOTE;
           var opts = CSSESC_QUOTE_OPTIONS[quote];
           var quoteValue = (0, _cssesc["default"])(v, opts);
           if (quoteValue.length < escaped.length) {
@@ -171,17 +211,21 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
     } else {
       return Attribute.SINGLE_QUOTE;
     }
-  }
+  };
 
   /**
    * Selects the preferred quote mark based on the options and the current quote mark value.
    * If you want the quote mark to depend on the attribute value, call `smartQuoteMark(opts)`
    * instead.
-   */;
+   */
   _proto.preferredQuoteMark = function preferredQuoteMark(options) {
-    var quoteMark = options.preferCurrentQuoteMark ? this.quoteMark : options.quoteMark;
+    var quoteMark = options.preferCurrentQuoteMark
+      ? this.quoteMark
+      : options.quoteMark;
     if (quoteMark === undefined) {
-      quoteMark = options.preferCurrentQuoteMark ? options.quoteMark : this.quoteMark;
+      quoteMark = options.preferCurrentQuoteMark
+        ? options.quoteMark
+        : this.quoteMark;
     }
     if (quoteMark === undefined) {
       quoteMark = Attribute.DOUBLE_QUOTE;
@@ -189,7 +233,10 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
     return quoteMark;
   };
   _proto._syncRawValue = function _syncRawValue() {
-    var rawValue = (0, _cssesc["default"])(this._value, CSSESC_QUOTE_OPTIONS[this.quoteMark]);
+    var rawValue = (0, _cssesc["default"])(
+      this._value,
+      CSSESC_QUOTE_OPTIONS[this.quoteMark],
+    );
     if (rawValue === this._value) {
       if (this.raws) {
         delete this.raws.value;
@@ -201,7 +248,7 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
   _proto._handleEscapes = function _handleEscapes(prop, value) {
     if (this._constructed) {
       var escaped = (0, _cssesc["default"])(value, {
-        isIdentifier: true
+        isIdentifier: true,
       });
       if (escaped !== value) {
         this.raws[prop] = escaped;
@@ -212,11 +259,11 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
   };
   _proto._spacesFor = function _spacesFor(name) {
     var attrSpaces = {
-      before: '',
-      after: ''
+      before: "",
+      after: "",
     };
     var spaces = this.spaces[name] || {};
-    var rawSpaces = this.raws.spaces && this.raws.spaces[name] || {};
+    var rawSpaces = (this.raws.spaces && this.raws.spaces[name]) || {};
     return Object.assign(attrSpaces, spaces, rawSpaces);
   };
   _proto._stringFor = function _stringFor(name, spaceName, concat) {
@@ -228,7 +275,7 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
     }
     var attrSpaces = this._spacesFor(spaceName);
     return concat(this.stringifyProperty(name), attrSpaces);
-  }
+  };
 
   /**
    * returns the offset of the attribute part specified relative to the
@@ -243,7 +290,7 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
    * * "insensitive" - the case insensitivity flag;
    * @param part One of the possible values inside an attribute.
    * @returns -1 if the name is invalid or the value doesn't exist in this attribute.
-   */;
+   */
   _proto.offsetOf = function offsetOf(name) {
     var count = 1;
     var attributeSpaces = this._spacesFor("attribute");
@@ -287,162 +334,183 @@ var Attribute = /*#__PURE__*/function (_Namespace) {
     return -1;
   };
   _proto.toString = function toString() {
-    var _this2 = this;
-    var selector = [this.rawSpaceBefore, '['];
-    selector.push(this._stringFor('qualifiedAttribute', 'attribute'));
-    if (this.operator && (this.value || this.value === '')) {
-      selector.push(this._stringFor('operator'));
-      selector.push(this._stringFor('value'));
-      selector.push(this._stringFor('insensitiveFlag', 'insensitive', function (attrValue, attrSpaces) {
-        if (attrValue.length > 0 && !_this2.quoted && attrSpaces.before.length === 0 && !(_this2.spaces.value && _this2.spaces.value.after)) {
-          attrSpaces.before = " ";
-        }
-        return defaultAttrConcat(attrValue, attrSpaces);
-      }));
+    var selector = [this.rawSpaceBefore, "["];
+    selector.push(this._stringFor("qualifiedAttribute", "attribute"));
+    if (this.operator && (this.value || this.value === "")) {
+      selector.push(this._stringFor("operator"));
+      selector.push(this._stringFor("value"));
+      selector.push(
+        this._stringFor(
+          "insensitiveFlag",
+          "insensitive",
+          (attrValue, attrSpaces) => {
+            if (
+              attrValue.length > 0 &&
+              !this.quoted &&
+              attrSpaces.before.length === 0 &&
+              !(this.spaces.value && this.spaces.value.after)
+            ) {
+              attrSpaces.before = " ";
+            }
+            return defaultAttrConcat(attrValue, attrSpaces);
+          },
+        ),
+      );
     }
-    selector.push(']');
+    selector.push("]");
     selector.push(this.rawSpaceAfter);
-    return selector.join('');
+    return selector.join("");
   };
-  _createClass(Attribute, [{
-    key: "quoted",
-    get: function get() {
-      var qm = this.quoteMark;
-      return qm === "'" || qm === '"';
-    },
-    set: function set(value) {
-      warnOfDeprecatedQuotedAssignment();
-    }
+  _createClass(Attribute, [
+    {
+      key: "quoted",
+      get: function get() {
+        var qm = this.quoteMark;
+        return qm === "'" || qm === '"';
+      },
+      set: function set(value) {
+        warnOfDeprecatedQuotedAssignment();
+      },
 
-    /**
-     * returns a single (`'`) or double (`"`) quote character if the value is quoted.
-     * returns `null` if the value is not quoted.
-     * returns `undefined` if the quotation state is unknown (this can happen when
-     * the attribute is constructed without specifying a quote mark.)
-     */
-  }, {
-    key: "quoteMark",
-    get: function get() {
-      return this._quoteMark;
-    }
-
-    /**
-     * Set the quote mark to be used by this attribute's value.
-     * If the quote mark changes, the raw (escaped) value at `attr.raws.value` of the attribute
-     * value is updated accordingly.
-     *
-     * @param {"'" | '"' | null} quoteMark The quote mark or `null` if the value should be unquoted.
-     */,
-    set: function set(quoteMark) {
-      if (!this._constructed) {
-        this._quoteMark = quoteMark;
-        return;
-      }
-      if (this._quoteMark !== quoteMark) {
-        this._quoteMark = quoteMark;
-        this._syncRawValue();
-      }
-    }
-  }, {
-    key: "qualifiedAttribute",
-    get: function get() {
-      return this.qualifiedName(this.raws.attribute || this.attribute);
-    }
-  }, {
-    key: "insensitiveFlag",
-    get: function get() {
-      return this.insensitive ? 'i' : '';
-    }
-  }, {
-    key: "value",
-    get: function get() {
-      return this._value;
+      /**
+       * returns a single (`'`) or double (`"`) quote character if the value is quoted.
+       * returns `null` if the value is not quoted.
+       * returns `undefined` if the quotation state is unknown (this can happen when
+       * the attribute is constructed without specifying a quote mark.)
+       */
     },
-    set:
-    /**
-     * Before 3.0, the value had to be set to an escaped value including any wrapped
-     * quote marks. In 3.0, the semantics of `Attribute.value` changed so that the value
-     * is unescaped during parsing and any quote marks are removed.
-     *
-     * Because the ambiguity of this semantic change, if you set `attr.value = newValue`,
-     * a deprecation warning is raised when the new value contains any characters that would
-     * require escaping (including if it contains wrapped quotes).
-     *
-     * Instead, you should call `attr.setValue(newValue, opts)` and pass options that describe
-     * how the new value is quoted.
-     */
-    function set(v) {
-      if (this._constructed) {
-        var _unescapeValue2 = unescapeValue(v),
-          deprecatedUsage = _unescapeValue2.deprecatedUsage,
-          unescaped = _unescapeValue2.unescaped,
-          quoteMark = _unescapeValue2.quoteMark;
-        if (deprecatedUsage) {
-          warnOfDeprecatedValueAssignment();
-        }
-        if (unescaped === this._value && quoteMark === this._quoteMark) {
+    {
+      key: "quoteMark",
+      get: function get() {
+        return this._quoteMark;
+      },
+      /**
+       * Set the quote mark to be used by this attribute's value.
+       * If the quote mark changes, the raw (escaped) value at `attr.raws.value` of the attribute
+       * value is updated accordingly.
+       *
+       * @param {"'" | '"' | null} quoteMark The quote mark or `null` if the value should be unquoted.
+       */ set: function set(quoteMark) {
+        if (!this._constructed) {
+          this._quoteMark = quoteMark;
           return;
         }
-        this._value = unescaped;
-        this._quoteMark = quoteMark;
-        this._syncRawValue();
-      } else {
-        this._value = v;
-      }
-    }
-  }, {
-    key: "insensitive",
-    get: function get() {
-      return this._insensitive;
-    }
-
-    /**
-     * Set the case insensitive flag.
-     * If the case insensitive flag changes, the raw (escaped) value at `attr.raws.insensitiveFlag`
-     * of the attribute is updated accordingly.
-     *
-     * @param {true | false} insensitive true if the attribute should match case-insensitively.
-     */,
-    set: function set(insensitive) {
-      if (!insensitive) {
-        this._insensitive = false;
-
-        // "i" and "I" can be used in "this.raws.insensitiveFlag" to store the original notation.
-        // When setting `attr.insensitive = false` both should be erased to ensure correct serialization.
-        if (this.raws && (this.raws.insensitiveFlag === 'I' || this.raws.insensitiveFlag === 'i')) {
-          this.raws.insensitiveFlag = undefined;
+        if (this._quoteMark !== quoteMark) {
+          this._quoteMark = quoteMark;
+          this._syncRawValue();
         }
-      }
-      this._insensitive = insensitive;
-    }
-  }, {
-    key: "attribute",
-    get: function get() {
-      return this._attribute;
+      },
     },
-    set: function set(name) {
-      this._handleEscapes("attribute", name);
-      this._attribute = name;
-    }
-  }]);
+    {
+      key: "qualifiedAttribute",
+      get: function get() {
+        return this.qualifiedName(this.raws.attribute || this.attribute);
+      },
+    },
+    {
+      key: "insensitiveFlag",
+      get: function get() {
+        return this.insensitive ? "i" : "";
+      },
+    },
+    {
+      key: "value",
+      get: function get() {
+        return this._value;
+      },
+      set:
+        /**
+         * Before 3.0, the value had to be set to an escaped value including any wrapped
+         * quote marks. In 3.0, the semantics of `Attribute.value` changed so that the value
+         * is unescaped during parsing and any quote marks are removed.
+         *
+         * Because the ambiguity of this semantic change, if you set `attr.value = newValue`,
+         * a deprecation warning is raised when the new value contains any characters that would
+         * require escaping (including if it contains wrapped quotes).
+         *
+         * Instead, you should call `attr.setValue(newValue, opts)` and pass options that describe
+         * how the new value is quoted.
+         */
+        function set(v) {
+          if (this._constructed) {
+            var _unescapeValue2 = unescapeValue(v),
+              deprecatedUsage = _unescapeValue2.deprecatedUsage,
+              unescaped = _unescapeValue2.unescaped,
+              quoteMark = _unescapeValue2.quoteMark;
+            if (deprecatedUsage) {
+              warnOfDeprecatedValueAssignment();
+            }
+            if (unescaped === this._value && quoteMark === this._quoteMark) {
+              return;
+            }
+            this._value = unescaped;
+            this._quoteMark = quoteMark;
+            this._syncRawValue();
+          } else {
+            this._value = v;
+          }
+        },
+    },
+    {
+      key: "insensitive",
+      get: function get() {
+        return this._insensitive;
+      },
+      /**
+       * Set the case insensitive flag.
+       * If the case insensitive flag changes, the raw (escaped) value at `attr.raws.insensitiveFlag`
+       * of the attribute is updated accordingly.
+       *
+       * @param {true | false} insensitive true if the attribute should match case-insensitively.
+       */ set: function set(insensitive) {
+        if (!insensitive) {
+          this._insensitive = false;
+
+          // "i" and "I" can be used in "this.raws.insensitiveFlag" to store the original notation.
+          // When setting `attr.insensitive = false` both should be erased to ensure correct serialization.
+          if (
+            this.raws &&
+            (this.raws.insensitiveFlag === "I" ||
+              this.raws.insensitiveFlag === "i")
+          ) {
+            this.raws.insensitiveFlag = undefined;
+          }
+        }
+        this._insensitive = insensitive;
+      },
+    },
+    {
+      key: "attribute",
+      get: function get() {
+        return this._attribute;
+      },
+      set: function set(name) {
+        this._handleEscapes("attribute", name);
+        this._attribute = name;
+      },
+    },
+  ]);
   return Attribute;
-}(_namespace["default"]);
+})(_namespace["default"]);
 exports["default"] = Attribute;
 Attribute.NO_QUOTE = null;
 Attribute.SINGLE_QUOTE = "'";
 Attribute.DOUBLE_QUOTE = '"';
-var CSSESC_QUOTE_OPTIONS = (_CSSESC_QUOTE_OPTIONS = {
-  "'": {
-    quotes: 'single',
-    wrap: true
-  },
-  '"': {
-    quotes: 'double',
-    wrap: true
-  }
-}, _CSSESC_QUOTE_OPTIONS[null] = {
-  isIdentifier: true
-}, _CSSESC_QUOTE_OPTIONS);
+var CSSESC_QUOTE_OPTIONS =
+  ((_CSSESC_QUOTE_OPTIONS = {
+    "'": {
+      quotes: "single",
+      wrap: true,
+    },
+    '"': {
+      quotes: "double",
+      wrap: true,
+    },
+  }),
+  (_CSSESC_QUOTE_OPTIONS[null] = {
+    isIdentifier: true,
+  }),
+  _CSSESC_QUOTE_OPTIONS);
 function defaultAttrConcat(attrValue, attrSpaces) {
   return "" + attrSpaces.before + attrValue + attrSpaces.after;
 }

@@ -1,5 +1,5 @@
-function escapeForRegex (str) {
-  return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d')
+function escapeForRegex(str) {
+  return str.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&").replace(/-/g, "\\x2d");
 }
 
-module.exports = escapeForRegex
+module.exports = escapeForRegex;

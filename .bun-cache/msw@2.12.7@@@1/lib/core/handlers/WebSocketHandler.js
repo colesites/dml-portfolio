@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var WebSocketHandler_exports = {};
 __export(WebSocketHandler_exports, {
   WebSocketHandler: () => WebSocketHandler,
   kEmitter: () => kEmitter,
-  kSender: () => kSender
+  kSender: () => kSender,
 });
 module.exports = __toCommonJS(WebSocketHandler_exports);
 var import_strict_event_emitter = require("strict-event-emitter");
@@ -49,10 +53,10 @@ class WebSocketHandler {
     const match = (0, import_matchRequestUrl.matchRequestUrl)(
       clientUrl,
       this.url,
-      args.resolutionContext?.baseUrl
+      args.resolutionContext?.baseUrl,
     );
     return {
-      match
+      match,
     };
   }
   predicate(args) {
@@ -61,41 +65,41 @@ class WebSocketHandler {
   async run(connection, resolutionContext) {
     const parsedResult = this.parse({
       url: connection.client.url,
-      resolutionContext
+      resolutionContext,
     });
     if (!this.predicate({ url: connection.client.url, parsedResult })) {
       return false;
     }
     const resolvedConnection = {
       ...connection,
-      params: parsedResult.match.params || {}
+      params: parsedResult.match.params || {},
     };
     return this.connect(resolvedConnection);
   }
   connect(connection) {
     connection.client.addEventListener(
       "message",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.client.addEventListener(
       "close",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.server.addEventListener(
       "open",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.server.addEventListener(
       "message",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.server.addEventListener(
       "error",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     connection.server.addEventListener(
       "close",
-      createStopPropagationListener(this)
+      createStopPropagationListener(this),
     );
     return this[kEmitter].emit("connection", connection);
   }
@@ -110,22 +114,22 @@ function createStopPropagationListener(handler) {
     Object.defineProperty(event, KOnStopPropagation, {
       value() {
         Object.defineProperty(event, "kPropagationStoppedAt", {
-          value: handler.id
+          value: handler.id,
         });
       },
-      configurable: true
+      configurable: true,
     });
     if (!Reflect.get(event, kStopPropagationPatched)) {
       event.stopPropagation = new Proxy(event.stopPropagation, {
         apply: (target, thisArg, args) => {
           Reflect.get(event, KOnStopPropagation)?.call(handler);
           return Reflect.apply(target, thisArg, args);
-        }
+        },
       });
       Object.defineProperty(event, kStopPropagationPatched, {
         value: true,
         // If something else attempts to redefine this, throw.
-        configurable: false
+        configurable: false,
       });
     }
   };

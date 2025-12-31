@@ -8,20 +8,24 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var crypto_exports = {};
 __export(crypto_exports, {
   createHash: () => createHash,
   md5: () => md5,
   sha1: () => sha1,
-  sha256: () => sha256
+  sha256: () => sha256,
 });
 module.exports = __toCommonJS(crypto_exports);
 const sha256 = async (data) => {
@@ -52,19 +56,22 @@ const createHash = async (data, algorithm) => {
   if (crypto && crypto.subtle) {
     const buffer = await crypto.subtle.digest(
       {
-        name: algorithm.name
+        name: algorithm.name,
       },
-      sourceBuffer
+      sourceBuffer,
     );
-    const hash = Array.prototype.map.call(new Uint8Array(buffer), (x) => ("00" + x.toString(16)).slice(-2)).join("");
+    const hash = Array.prototype.map
+      .call(new Uint8Array(buffer), (x) => ("00" + x.toString(16)).slice(-2))
+      .join("");
     return hash;
   }
   return null;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  createHash,
-  md5,
-  sha1,
-  sha256
-});
+0 &&
+  (module.exports = {
+    createHash,
+    md5,
+    sha1,
+    sha256,
+  });

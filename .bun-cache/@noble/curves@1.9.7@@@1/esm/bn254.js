@@ -54,52 +54,70 @@ Ate loop size: 6x+2
  * @module
  */
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
-import { sha256 } from '@noble/hashes/sha2.js';
-import { bls, } from "./abstract/bls.js";
+import { sha256 } from "@noble/hashes/sha2.js";
+import { bls } from "./abstract/bls.js";
 import { Field } from "./abstract/modular.js";
 import { psiFrobenius, tower12 } from "./abstract/tower.js";
 import { weierstrass } from "./abstract/weierstrass.js";
 import { bitLen, notImplemented } from "./utils.js";
+
 // prettier-ignore
-const _0n = BigInt(0), _1n = BigInt(1), _2n = BigInt(2), _3n = BigInt(3);
+const _0n = BigInt(0),
+  _1n = BigInt(1),
+  _2n = BigInt(2),
+  _3n = BigInt(3);
 const _6n = BigInt(6);
-const BN_X = BigInt('4965661367192848881');
+const BN_X = BigInt("4965661367192848881");
 const BN_X_LEN = bitLen(BN_X);
 const SIX_X_SQUARED = _6n * BN_X ** _2n;
 const bn254_G1_CURVE = {
-    p: BigInt('0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47'),
-    n: BigInt('0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001'),
-    h: _1n,
-    a: _0n,
-    b: _3n,
-    Gx: _1n,
-    Gy: BigInt(2),
+  p: BigInt(
+    "0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47",
+  ),
+  n: BigInt(
+    "0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001",
+  ),
+  h: _1n,
+  a: _0n,
+  b: _3n,
+  Gx: _1n,
+  Gy: BigInt(2),
 };
 // r == n
 // Finite field over r. It's for convenience and is not used in the code below.
 export const bn254_Fr = Field(bn254_G1_CURVE.n);
 // Fp2.div(Fp2.mul(Fp2.ONE, _3n), Fp2.NONRESIDUE)
 const Fp2B = {
-    c0: BigInt('19485874751759354771024239261021720505790618469301721065564631296452457478373'),
-    c1: BigInt('266929791119991161246907387137283842545076965332900288569378510910307636690'),
+  c0: BigInt(
+    "19485874751759354771024239261021720505790618469301721065564631296452457478373",
+  ),
+  c1: BigInt(
+    "266929791119991161246907387137283842545076965332900288569378510910307636690",
+  ),
 };
 const { Fp, Fp2, Fp6, Fp12 } = tower12({
-    ORDER: bn254_G1_CURVE.p,
-    X_LEN: BN_X_LEN,
-    FP2_NONRESIDUE: [BigInt(9), _1n],
-    Fp2mulByB: (num) => Fp2.mul(num, Fp2B),
-    Fp12finalExponentiate: (num) => {
-        const powMinusX = (num) => Fp12.conjugate(Fp12._cyclotomicExp(num, BN_X));
-        const r0 = Fp12.mul(Fp12.conjugate(num), Fp12.inv(num));
-        const r = Fp12.mul(Fp12.frobeniusMap(r0, 2), r0);
-        const y1 = Fp12._cyclotomicSquare(powMinusX(r));
-        const y2 = Fp12.mul(Fp12._cyclotomicSquare(y1), y1);
-        const y4 = powMinusX(y2);
-        const y6 = powMinusX(Fp12._cyclotomicSquare(y4));
-        const y8 = Fp12.mul(Fp12.mul(Fp12.conjugate(y6), y4), Fp12.conjugate(y2));
-        const y9 = Fp12.mul(y8, y1);
-        return Fp12.mul(Fp12.frobeniusMap(Fp12.mul(Fp12.conjugate(r), y9), 3), Fp12.mul(Fp12.frobeniusMap(y8, 2), Fp12.mul(Fp12.frobeniusMap(y9, 1), Fp12.mul(Fp12.mul(y8, y4), r))));
-    },
+  ORDER: bn254_G1_CURVE.p,
+  X_LEN: BN_X_LEN,
+  FP2_NONRESIDUE: [BigInt(9), _1n],
+  Fp2mulByB: (num) => Fp2.mul(num, Fp2B),
+  Fp12finalExponentiate: (num) => {
+    const powMinusX = (num) => Fp12.conjugate(Fp12._cyclotomicExp(num, BN_X));
+    const r0 = Fp12.mul(Fp12.conjugate(num), Fp12.inv(num));
+    const r = Fp12.mul(Fp12.frobeniusMap(r0, 2), r0);
+    const y1 = Fp12._cyclotomicSquare(powMinusX(r));
+    const y2 = Fp12.mul(Fp12._cyclotomicSquare(y1), y1);
+    const y4 = powMinusX(y2);
+    const y6 = powMinusX(Fp12._cyclotomicSquare(y4));
+    const y8 = Fp12.mul(Fp12.mul(Fp12.conjugate(y6), y4), Fp12.conjugate(y2));
+    const y9 = Fp12.mul(y8, y1);
+    return Fp12.mul(
+      Fp12.frobeniusMap(Fp12.mul(Fp12.conjugate(r), y9), 3),
+      Fp12.mul(
+        Fp12.frobeniusMap(y8, 2),
+        Fp12.mul(Fp12.frobeniusMap(y9, 1), Fp12.mul(Fp12.mul(y8, y4), r)),
+      ),
+    );
+  },
 });
 // END OF CURVE FIELDS
 const { G2psi, psi } = psiFrobenius(Fp, Fp2, Fp2.NONRESIDUE);
@@ -111,89 +129,102 @@ No hashToCurve for now (and signatures):
 - Seems like it can utilize SVDW, which is not implemented yet
 */
 const htfDefaults = Object.freeze({
-    // DST: a domain separation tag defined in section 2.2.5
-    DST: 'BN254G2_XMD:SHA-256_SVDW_RO_',
-    encodeDST: 'BN254G2_XMD:SHA-256_SVDW_RO_',
-    p: Fp.ORDER,
-    m: 2,
-    k: 128,
-    expand: 'xmd',
-    hash: sha256,
+  // DST: a domain separation tag defined in section 2.2.5
+  DST: "BN254G2_XMD:SHA-256_SVDW_RO_",
+  encodeDST: "BN254G2_XMD:SHA-256_SVDW_RO_",
+  p: Fp.ORDER,
+  m: 2,
+  k: 128,
+  expand: "xmd",
+  hash: sha256,
 });
 export const _postPrecompute = (Rx, Ry, Rz, Qx, Qy, pointAdd) => {
-    const q = psi(Qx, Qy);
-    ({ Rx, Ry, Rz } = pointAdd(Rx, Ry, Rz, q[0], q[1]));
-    const q2 = psi(q[0], q[1]);
-    pointAdd(Rx, Ry, Rz, q2[0], Fp2.neg(q2[1]));
+  const q = psi(Qx, Qy);
+  ({ Rx, Ry, Rz } = pointAdd(Rx, Ry, Rz, q[0], q[1]));
+  const q2 = psi(q[0], q[1]);
+  pointAdd(Rx, Ry, Rz, q2[0], Fp2.neg(q2[1]));
 };
 // cofactor: (36 * X^4) + (36 * X^3) + (30 * X^2) + 6*X + 1
 const bn254_G2_CURVE = {
-    p: Fp2.ORDER,
-    n: bn254_G1_CURVE.n,
-    h: BigInt('0x30644e72e131a029b85045b68181585e06ceecda572a2489345f2299c0f9fa8d'),
-    a: Fp2.ZERO,
-    b: Fp2B,
-    Gx: Fp2.fromBigTuple([
-        BigInt('10857046999023057135944570762232829481370756359578518086990519993285655852781'),
-        BigInt('11559732032986387107991004021392285783925812861821192530917403151452391805634'),
-    ]),
-    Gy: Fp2.fromBigTuple([
-        BigInt('8495653923123431417604973247489272438418190587263600148770280649306958101930'),
-        BigInt('4082367875863433681332203403145435568316851327593401208105741076214120093531'),
-    ]),
+  p: Fp2.ORDER,
+  n: bn254_G1_CURVE.n,
+  h: BigInt(
+    "0x30644e72e131a029b85045b68181585e06ceecda572a2489345f2299c0f9fa8d",
+  ),
+  a: Fp2.ZERO,
+  b: Fp2B,
+  Gx: Fp2.fromBigTuple([
+    BigInt(
+      "10857046999023057135944570762232829481370756359578518086990519993285655852781",
+    ),
+    BigInt(
+      "11559732032986387107991004021392285783925812861821192530917403151452391805634",
+    ),
+  ]),
+  Gy: Fp2.fromBigTuple([
+    BigInt(
+      "8495653923123431417604973247489272438418190587263600148770280649306958101930",
+    ),
+    BigInt(
+      "4082367875863433681332203403145435568316851327593401208105741076214120093531",
+    ),
+  ]),
 };
 /**
  * bn254 (a.k.a. alt_bn128) pairing-friendly curve.
  * Contains G1 / G2 operations and pairings.
  */
 export const bn254 = bls({
-    // Fields
-    fields: { Fp, Fp2, Fp6, Fp12, Fr: bn254_Fr },
-    G1: {
-        ...bn254_G1_CURVE,
-        Fp,
-        htfDefaults: { ...htfDefaults, m: 1, DST: 'BN254G2_XMD:SHA-256_SVDW_RO_' },
-        wrapPrivateKey: true,
-        allowInfinityPoint: true,
-        mapToCurve: notImplemented,
-        fromBytes: notImplemented,
-        toBytes: notImplemented,
-        ShortSignature: {
-            fromBytes: notImplemented,
-            fromHex: notImplemented,
-            toBytes: notImplemented,
-            toRawBytes: notImplemented,
-            toHex: notImplemented,
-        },
+  // Fields
+  fields: { Fp, Fp2, Fp6, Fp12, Fr: bn254_Fr },
+  G1: {
+    ...bn254_G1_CURVE,
+    Fp,
+    htfDefaults: { ...htfDefaults, m: 1, DST: "BN254G2_XMD:SHA-256_SVDW_RO_" },
+    wrapPrivateKey: true,
+    allowInfinityPoint: true,
+    mapToCurve: notImplemented,
+    fromBytes: notImplemented,
+    toBytes: notImplemented,
+    ShortSignature: {
+      fromBytes: notImplemented,
+      fromHex: notImplemented,
+      toBytes: notImplemented,
+      toRawBytes: notImplemented,
+      toHex: notImplemented,
     },
-    G2: {
-        ...bn254_G2_CURVE,
-        Fp: Fp2,
-        hEff: BigInt('21888242871839275222246405745257275088844257914179612981679871602714643921549'),
-        htfDefaults: { ...htfDefaults },
-        wrapPrivateKey: true,
-        allowInfinityPoint: true,
-        isTorsionFree: (c, P) => P.multiplyUnsafe(SIX_X_SQUARED).equals(G2psi(c, P)), // [p]P = [6X^2]P
-        mapToCurve: notImplemented,
-        fromBytes: notImplemented,
-        toBytes: notImplemented,
-        Signature: {
-            fromBytes: notImplemented,
-            fromHex: notImplemented,
-            toBytes: notImplemented,
-            toRawBytes: notImplemented,
-            toHex: notImplemented,
-        },
+  },
+  G2: {
+    ...bn254_G2_CURVE,
+    Fp: Fp2,
+    hEff: BigInt(
+      "21888242871839275222246405745257275088844257914179612981679871602714643921549",
+    ),
+    htfDefaults: { ...htfDefaults },
+    wrapPrivateKey: true,
+    allowInfinityPoint: true,
+    isTorsionFree: (c, P) =>
+      P.multiplyUnsafe(SIX_X_SQUARED).equals(G2psi(c, P)), // [p]P = [6X^2]P
+    mapToCurve: notImplemented,
+    fromBytes: notImplemented,
+    toBytes: notImplemented,
+    Signature: {
+      fromBytes: notImplemented,
+      fromHex: notImplemented,
+      toBytes: notImplemented,
+      toRawBytes: notImplemented,
+      toHex: notImplemented,
     },
-    params: {
-        ateLoopSize: BN_X * _6n + _2n,
-        r: bn254_Fr.ORDER,
-        xNegative: false,
-        twistType: 'divisive',
-    },
-    htfDefaults,
-    hash: sha256,
-    postPrecompute: _postPrecompute,
+  },
+  params: {
+    ateLoopSize: BN_X * _6n + _2n,
+    r: bn254_Fr.ORDER,
+    xNegative: false,
+    twistType: "divisive",
+  },
+  htfDefaults,
+  hash: sha256,
+  postPrecompute: _postPrecompute,
 });
 /**
  * bn254 weierstrass curve with ECDSA.
@@ -202,13 +233,15 @@ export const bn254 = bls({
  * @deprecated
  */
 export const bn254_weierstrass = weierstrass({
-    a: BigInt(0),
-    b: BigInt(3),
-    Fp,
-    n: BigInt('21888242871839275222246405745257275088548364400416034343698204186575808495617'),
-    Gx: BigInt(1),
-    Gy: BigInt(2),
-    h: BigInt(1),
-    hash: sha256,
+  a: BigInt(0),
+  b: BigInt(3),
+  Fp,
+  n: BigInt(
+    "21888242871839275222246405745257275088548364400416034343698204186575808495617",
+  ),
+  Gx: BigInt(1),
+  Gy: BigInt(2),
+  h: BigInt(1),
+  hash: sha256,
 });
 //# sourceMappingURL=bn254.js.map

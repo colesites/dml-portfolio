@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.isPromise = isPromise;
@@ -12,6 +10,6 @@ exports.isPromise = isPromise;
 function isPromise(value) {
   return (
     typeof (value === null || value === void 0 ? void 0 : value.then) ===
-    'function'
+    "function"
   );
 }

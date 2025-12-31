@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blake2b = exports.BLAKE2b = void 0;
 /**

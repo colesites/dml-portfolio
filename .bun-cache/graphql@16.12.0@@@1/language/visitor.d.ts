@@ -1,12 +1,12 @@
-import type { ASTNode } from './ast';
-import { Kind } from './kinds';
+import type { ASTNode } from "./ast";
+import { Kind } from "./kinds";
 /**
  * A visitor is provided to visit, it contains the collection of
  * relevant functions to be called during the visitor's traversal.
  */
 export declare type ASTVisitor = EnterLeaveVisitor<ASTNode> | KindVisitor;
 declare type KindVisitor = {
-  readonly [NodeT in ASTNode as NodeT['kind']]?:
+  readonly [NodeT in ASTNode as NodeT["kind"]]?:
     | ASTVisitFn<NodeT>
     | EnterLeaveVisitor<NodeT>;
 };
@@ -39,7 +39,7 @@ export declare type ASTVisitFn<TVisitedNode extends ASTNode> = (
  * another form.
  */
 export declare type ASTReducer<R> = {
-  readonly [NodeT in ASTNode as NodeT['kind']]?: {
+  readonly [NodeT in ASTNode as NodeT["kind"]]?: {
     readonly enter?: ASTVisitFn<NodeT>;
     readonly leave: ASTReducerFn<NodeT, R>;
   };
@@ -65,15 +65,15 @@ declare type ASTReducerFn<TReducedNode extends ASTNode, R> = (
 declare type ReducedField<T, R> = T extends null | undefined
   ? T
   : T extends ReadonlyArray<any>
-  ? ReadonlyArray<R>
-  : R;
+    ? ReadonlyArray<R>
+    : R;
 /**
  * A KeyMap describes each the traversable properties of each kind of node.
  *
  * @deprecated Please inline it. Will be removed in v17
  */
 export declare type ASTVisitorKeyMap = {
-  [NodeT in ASTNode as NodeT['kind']]?: ReadonlyArray<keyof NodeT>;
+  [NodeT in ASTNode as NodeT["kind"]]?: ReadonlyArray<keyof NodeT>;
 };
 export declare const BREAK: unknown;
 /**
@@ -191,4 +191,3 @@ export declare function getVisitFn(
   kind: Kind,
   isLeaving: boolean,
 ): ASTVisitFn<ASTNode> | undefined;
-export {};

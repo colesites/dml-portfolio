@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.BREAK = void 0;
@@ -9,13 +7,13 @@ exports.getVisitFn = getVisitFn;
 exports.visit = visit;
 exports.visitInParallel = visitInParallel;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _ast = require('./ast.js');
+var _ast = require("./ast.js");
 
-var _kinds = require('./kinds.js');
+var _kinds = require("./kinds.js");
 
 const BREAK = Object.freeze({});
 /**
@@ -107,14 +105,14 @@ function visit(root, visitor, visitorKeys = _ast.QueryDocumentKeys) {
   }
   /* eslint-disable no-undef-init */
 
-  let stack = undefined;
+  let stack;
   let inArray = Array.isArray(root);
   let keys = [root];
   let index = -1;
   let edits = [];
   let node = root;
-  let key = undefined;
-  let parent = undefined;
+  let key;
+  let parent;
   const path = [];
   const ancestors = [];
   /* eslint-enable no-undef-init */
@@ -185,9 +183,9 @@ function visit(root, visitor, visitorKeys = _ast.QueryDocumentKeys) {
           ? void 0
           : _enterLeaveMap$get.leave
         : (_enterLeaveMap$get2 = enterLeaveMap.get(node.kind)) === null ||
-          _enterLeaveMap$get2 === void 0
-        ? void 0
-        : _enterLeaveMap$get2.enter;
+            _enterLeaveMap$get2 === void 0
+          ? void 0
+          : _enterLeaveMap$get2.enter;
       result =
         visitFn === null || visitFn === void 0
           ? void 0
@@ -236,9 +234,9 @@ function visit(root, visitor, visitorKeys = _ast.QueryDocumentKeys) {
       keys = inArray
         ? node
         : (_node$kind = visitorKeys[node.kind]) !== null &&
-          _node$kind !== void 0
-        ? _node$kind
-        : [];
+            _node$kind !== void 0
+          ? _node$kind
+          : [];
       index = -1;
       edits = [];
 
@@ -343,10 +341,10 @@ function visitInParallel(visitors) {
 function getEnterLeaveForKind(visitor, kind) {
   const kindVisitor = visitor[kind];
 
-  if (typeof kindVisitor === 'object') {
+  if (typeof kindVisitor === "object") {
     // { Kind: { enter() {}, leave() {} } }
     return kindVisitor;
-  } else if (typeof kindVisitor === 'function') {
+  } else if (typeof kindVisitor === "function") {
     // { Kind() {} }
     return {
       enter: kindVisitor,

@@ -1,19 +1,17 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.valueFromAST = valueFromAST;
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
-var _keyMap = require('../jsutils/keyMap.js');
+var _keyMap = require("../jsutils/keyMap.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -184,7 +182,7 @@ function valueFromAST(valueNode, type, variables) {
   false ||
     (0, _invariant.invariant)(
       false,
-      'Unexpected input type: ' + (0, _inspect.inspect)(type),
+      "Unexpected input type: " + (0, _inspect.inspect)(type),
     );
 } // Returns true if the provided valueNode is a variable which is not defined
 // in the set of variables.

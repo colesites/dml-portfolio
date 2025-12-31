@@ -1,4 +1,4 @@
-import { readdirSync, writeFileSync, statSync } from "fs";
+import { readdirSync, statSync, writeFileSync } from "fs";
 
 const ignore = ["src/index.ts"];
 

@@ -5,10 +5,8 @@ var getConnInfo = (c) => {
     remote: {
       address: remoteAddr.hostname,
       port: remoteAddr.port,
-      transport: remoteAddr.transport
-    }
+      transport: remoteAddr.transport,
+    },
   };
 };
-export {
-  getConnInfo
-};
+export { getConnInfo };

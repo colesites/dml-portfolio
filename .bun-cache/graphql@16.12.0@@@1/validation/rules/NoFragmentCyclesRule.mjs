@@ -1,4 +1,4 @@
-import { GraphQLError } from '../../error/GraphQLError.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
 
 /**
  * No fragment cycles
@@ -58,11 +58,11 @@ export function NoFragmentCyclesRule(context) {
         const viaPath = cyclePath
           .slice(0, -1)
           .map((s) => '"' + s.name.value + '"')
-          .join(', ');
+          .join(", ");
         context.reportError(
           new GraphQLError(
             `Cannot spread fragment "${spreadName}" within itself` +
-              (viaPath !== '' ? ` via ${viaPath}.` : '.'),
+              (viaPath !== "" ? ` via ${viaPath}.` : "."),
             {
               nodes: cyclePath,
             },

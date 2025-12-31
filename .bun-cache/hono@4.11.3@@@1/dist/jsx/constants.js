@@ -11,5 +11,5 @@ export {
   DOM_MEMO,
   DOM_RENDERER,
   DOM_STASH,
-  PERMALINK
+  PERMALINK,
 };

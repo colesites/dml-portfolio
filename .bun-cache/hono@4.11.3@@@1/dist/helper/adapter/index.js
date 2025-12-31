@@ -13,7 +13,7 @@ var env = (c, runtime) => {
     workerd: () => c.env,
     // On Fastly Compute, you can use the ConfigStore to manage user-defined data.
     fastly: () => ({}),
-    other: () => ({})
+    other: () => ({}),
   };
   return runtimeEnvHandlers[runtime]();
 };
@@ -21,11 +21,12 @@ var knownUserAgents = {
   deno: "Deno",
   bun: "Bun",
   workerd: "Cloudflare-Workers",
-  node: "Node.js"
+  node: "Node.js",
 };
 var getRuntimeKey = () => {
   const global = globalThis;
-  const userAgentSupported = typeof navigator !== "undefined" && typeof navigator.userAgent === "string";
+  const userAgentSupported =
+    typeof navigator !== "undefined" && typeof navigator.userAgent === "string";
   if (userAgentSupported) {
     for (const [runtimeKey, userAgent] of Object.entries(knownUserAgents)) {
       if (checkUserAgentEquals(userAgent)) {
@@ -48,9 +49,4 @@ var checkUserAgentEquals = (platform) => {
   const userAgent = navigator.userAgent;
   return userAgent.startsWith(platform);
 };
-export {
-  checkUserAgentEquals,
-  env,
-  getRuntimeKey,
-  knownUserAgents
-};
+export { checkUserAgentEquals, env, getRuntimeKey, knownUserAgents };

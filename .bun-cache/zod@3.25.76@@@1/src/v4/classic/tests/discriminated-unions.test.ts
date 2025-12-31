@@ -5,7 +5,9 @@ import * as z from "zod/v4";
 test("_values", () => {
   expect(z.string()._zod.values).toEqual(undefined);
   expect(z.enum(["a", "b"])._zod.values).toEqual(new Set(["a", "b"]));
-  expect(z.nativeEnum({ a: "A", b: "B" })._zod.values).toEqual(new Set(["A", "B"]));
+  expect(z.nativeEnum({ a: "A", b: "B" })._zod.values).toEqual(
+    new Set(["A", "B"]),
+  );
   expect(z.literal("test")._zod.values).toEqual(new Set(["test"]));
   expect(z.literal(123)._zod.values).toEqual(new Set([123]));
   expect(z.literal(true)._zod.values).toEqual(new Set([true]));
@@ -19,7 +21,9 @@ test("_values", () => {
   expect(t.default("test")._zod.values).toEqual(new Set(["test"]));
   expect(t.catch("test")._zod.values).toEqual(new Set(["test"]));
 
-  const pre = z.preprocess((val) => String(val), z.string()).pipe(z.literal("test"));
+  const pre = z
+    .preprocess((val) => String(val), z.string())
+    .pipe(z.literal("test"));
   expect(pre._zod.values).toEqual(undefined);
 
   const post = z.literal("test").transform((_) => Math.random());
@@ -36,7 +40,7 @@ test("valid parse - object", () => {
         z.object({ type: z.literal("a"), a: z.string() }),
         z.object({ type: z.literal("b"), b: z.string() }),
       ])
-      .parse({ type: "a", a: "abc" })
+      .parse({ type: "a", a: "abc" }),
   ).toEqual({ type: "a", a: "abc" });
 });
 
@@ -47,7 +51,7 @@ test("valid - include discriminator key (deprecated)", () => {
         z.object({ type: z.literal("a"), a: z.string() }),
         z.object({ type: z.literal("b"), b: z.string() }),
       ])
-      .parse({ type: "a", a: "abc" })
+      .parse({ type: "a", a: "abc" }),
   ).toEqual({ type: "a", a: "abc" });
 });
 
@@ -56,7 +60,10 @@ test("valid - optional discriminator (object)", () => {
     z.object({ type: z.literal("a").optional(), a: z.string() }),
     z.object({ type: z.literal("b"), b: z.string() }),
   ]);
-  expect(schema.parse({ type: "a", a: "abc" })).toEqual({ type: "a", a: "abc" });
+  expect(schema.parse({ type: "a", a: "abc" })).toEqual({
+    type: "a",
+    a: "abc",
+  });
   expect(schema.parse({ a: "abc" })).toEqual({ a: "abc" });
 });
 
@@ -73,8 +80,14 @@ test("valid - discriminator value of various primitive types", () => {
     z.object({ type: z.undefined(), val: z.string() }),
   ]);
 
-  expect(schema.parse({ type: "1", val: "val" })).toEqual({ type: "1", val: "val" });
-  expect(schema.parse({ type: 1, val: "val" })).toEqual({ type: 1, val: "val" });
+  expect(schema.parse({ type: "1", val: "val" })).toEqual({
+    type: "1",
+    val: "val",
+  });
+  expect(schema.parse({ type: 1, val: "val" })).toEqual({
+    type: 1,
+    val: "val",
+  });
   expect(schema.parse({ type: BigInt(1), val: "val" })).toEqual({
     type: BigInt(1),
     val: "val",
@@ -172,8 +185,11 @@ test("invalid discriminator value - unionFallback", () => {
   const result = z
     .discriminatedUnion(
       "type",
-      [z.object({ type: z.literal("a"), a: z.string() }), z.object({ type: z.literal("b"), b: z.string() })],
-      { unionFallback: true }
+      [
+        z.object({ type: z.literal("a"), a: z.string() }),
+        z.object({ type: z.literal("b"), b: z.string() }),
+      ],
+      { unionFallback: true },
     )
     .safeParse({ type: "x", a: "abc" });
   expect(result).toMatchInlineSnapshot(`
@@ -386,7 +402,9 @@ test("enum and nativeEnum", () => {
   ]);
 
   type schema = z.infer<typeof schema>;
-  expectTypeOf<schema>().toEqualTypeOf<{ key: "a" } | { key: "b" | "c" } | { key: MyEnum.d | MyEnum.e }>();
+  expectTypeOf<schema>().toEqualTypeOf<
+    { key: "a" } | { key: "b" | "c" } | { key: MyEnum.d | MyEnum.e }
+  >();
 
   schema.parse({ key: "a" });
   schema.parse({ key: "b" });
@@ -409,7 +427,9 @@ test("branded", () => {
   ]);
 
   type schema = z.infer<typeof schema>;
-  expectTypeOf<schema>().toEqualTypeOf<{ key: "a" } | { key: "b" & z.core.$brand<"asdfasdf"> }>();
+  expectTypeOf<schema>().toEqualTypeOf<
+    { key: "a" } | { key: "b" & z.core.$brand<"asdfasdf"> }
+  >();
 
   schema.parse({ key: "a" });
   schema.parse({ key: "b" });
@@ -432,7 +452,9 @@ test("optional and nullable", () => {
   ]);
 
   type schema = z.infer<typeof schema>;
-  expectTypeOf<schema>().toEqualTypeOf<{ key?: "a" | undefined; a: true } | { key: "b" | null; b: true }>();
+  expectTypeOf<schema>().toEqualTypeOf<
+    { key?: "a" | undefined; a: true } | { key: "b" | null; b: true }
+  >();
 
   schema.parse({ key: "a", a: true });
   schema.parse({ key: undefined, a: true });
@@ -523,7 +545,10 @@ test("single element union", () => {
 });
 
 test("nested discriminated unions", () => {
-  const BaseError = z.object({ status: z.literal("failed"), message: z.string() });
+  const BaseError = z.object({
+    status: z.literal("failed"),
+    message: z.string(),
+  });
   const MyErrors = z.discriminatedUnion("code", [
     BaseError.extend({ code: z.literal(400) }),
     BaseError.extend({ code: z.literal(401) }),
@@ -568,7 +593,11 @@ test("nested discriminated unions", () => {
       "status": "success",
     }
   `);
-  const result2 = MyResult.parse({ status: "failed", code: 400, message: "bad request" });
+  const result2 = MyResult.parse({
+    status: "failed",
+    code: 400,
+    message: "bad request",
+  });
   expect(result2).toMatchInlineSnapshot(`
     {
       "code": 400,
@@ -576,7 +605,11 @@ test("nested discriminated unions", () => {
       "status": "failed",
     }
   `);
-  const result3 = MyResult.parse({ status: "failed", code: 401, message: "unauthorized" });
+  const result3 = MyResult.parse({
+    status: "failed",
+    code: 401,
+    message: "unauthorized",
+  });
   expect(result3).toMatchInlineSnapshot(`
     {
       "code": 401,
@@ -584,7 +617,11 @@ test("nested discriminated unions", () => {
       "status": "failed",
     }
   `);
-  const result4 = MyResult.parse({ status: "failed", code: 500, message: "internal server error" });
+  const result4 = MyResult.parse({
+    status: "failed",
+    code: 500,
+    message: "internal server error",
+  });
   expect(result4).toMatchInlineSnapshot(`
     {
       "code": 500,

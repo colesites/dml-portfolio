@@ -6,6 +6,10 @@ Merges "own" properties from a source to a destination object, including non-enu
 @param overwrite - Optional boolean to control overwriting of existing properties. Defaults to true.
 @returns The modified destination object.
 */
-declare function mergeDescriptors<T, U>(destination: T, source: U, overwrite?: boolean): T & U;
+declare function mergeDescriptors<T, U>(
+  destination: T,
+  source: U,
+  overwrite?: boolean,
+): T & U;
 
 export = mergeDescriptors;

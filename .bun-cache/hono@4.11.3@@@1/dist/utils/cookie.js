@@ -1,13 +1,22 @@
 // src/utils/cookie.ts
 import { decodeURIComponent_, tryDecode } from "./url.js";
+
 var algorithm = { name: "HMAC", hash: "SHA-256" };
 var getCryptoKey = async (secret) => {
-  const secretBuf = typeof secret === "string" ? new TextEncoder().encode(secret) : secret;
-  return await crypto.subtle.importKey("raw", secretBuf, algorithm, false, ["sign", "verify"]);
+  const secretBuf =
+    typeof secret === "string" ? new TextEncoder().encode(secret) : secret;
+  return await crypto.subtle.importKey("raw", secretBuf, algorithm, false, [
+    "sign",
+    "verify",
+  ]);
 };
 var makeSignature = async (value, secret) => {
   const key = await getCryptoKey(secret);
-  const signature = await crypto.subtle.sign(algorithm.name, key, new TextEncoder().encode(value));
+  const signature = await crypto.subtle.sign(
+    algorithm.name,
+    key,
+    new TextEncoder().encode(value),
+  );
   return btoa(String.fromCharCode(...new Uint8Array(signature)));
 };
 var verifySignature = async (base64Signature, value, secret) => {
@@ -17,7 +26,12 @@ var verifySignature = async (base64Signature, value, secret) => {
     for (let i = 0, len = signatureBinStr.length; i < len; i++) {
       signature[i] = signatureBinStr.charCodeAt(i);
     }
-    return await crypto.subtle.verify(algorithm, secret, signature, new TextEncoder().encode(value));
+    return await crypto.subtle.verify(
+      algorithm,
+      secret,
+      signature,
+      new TextEncoder().encode(value),
+    );
   } catch {
     return false;
   }
@@ -37,7 +51,10 @@ var parse = (cookie, name) => {
       continue;
     }
     const cookieName = pairStr.substring(0, valueStartPos).trim();
-    if (name && name !== cookieName || !validCookieNameRegEx.test(cookieName)) {
+    if (
+      (name && name !== cookieName) ||
+      !validCookieNameRegEx.test(cookieName)
+    ) {
       continue;
     }
     let cookieValue = pairStr.substring(valueStartPos + 1).trim();
@@ -45,7 +62,10 @@ var parse = (cookie, name) => {
       cookieValue = cookieValue.slice(1, -1);
     }
     if (validCookieValueRegEx.test(cookieValue)) {
-      parsedCookie[cookieName] = cookieValue.indexOf("%") !== -1 ? tryDecode(cookieValue, decodeURIComponent_) : cookieValue;
+      parsedCookie[cookieName] =
+        cookieValue.indexOf("%") !== -1
+          ? tryDecode(cookieValue, decodeURIComponent_)
+          : cookieValue;
       if (name) {
         break;
       }
@@ -90,7 +110,7 @@ var _serialize = (name, value, opt = {}) => {
   if (opt && typeof opt.maxAge === "number" && opt.maxAge >= 0) {
     if (opt.maxAge > 3456e4) {
       throw new Error(
-        "Cookies Max-Age SHOULD NOT be greater than 400 days (34560000 seconds) in duration."
+        "Cookies Max-Age SHOULD NOT be greater than 400 days (34560000 seconds) in duration.",
       );
     }
     cookie += `; Max-Age=${opt.maxAge | 0}`;
@@ -104,7 +124,7 @@ var _serialize = (name, value, opt = {}) => {
   if (opt.expires) {
     if (opt.expires.getTime() - Date.now() > 3456e7) {
       throw new Error(
-        "Cookies Expires SHOULD NOT be greater than 400 days (34560000 seconds) in the future."
+        "Cookies Expires SHOULD NOT be greater than 400 days (34560000 seconds) in the future.",
       );
     }
     cookie += `; Expires=${opt.expires.toUTCString()}`;
@@ -139,9 +159,4 @@ var serializeSigned = async (name, value, secret, opt = {}) => {
   value = encodeURIComponent(value);
   return _serialize(name, value, opt);
 };
-export {
-  parse,
-  parseSigned,
-  serialize,
-  serializeSigned
-};
+export { parse, parseSigned, serialize, serializeSigned };

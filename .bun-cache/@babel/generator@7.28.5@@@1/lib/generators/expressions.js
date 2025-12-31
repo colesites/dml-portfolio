@@ -1,9 +1,12 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
-exports.LogicalExpression = exports.BinaryExpression = exports.AssignmentExpression = AssignmentExpression;
+exports.LogicalExpression =
+  exports.BinaryExpression =
+  exports.AssignmentExpression =
+    AssignmentExpression;
 exports.AssignmentPattern = AssignmentPattern;
 exports.AwaitExpression = AwaitExpression;
 exports.BindExpression = BindExpression;
@@ -37,13 +40,16 @@ const {
   isLiteral,
   isMemberExpression,
   isNewExpression,
-  isPattern
+  isPattern,
 } = _t;
 function UnaryExpression(node) {
-  const {
-    operator
-  } = node;
-  if (operator === "void" || operator === "delete" || operator === "typeof" || operator === "throw") {
+  const { operator } = node;
+  if (
+    operator === "void" ||
+    operator === "delete" ||
+    operator === "typeof" ||
+    operator === "throw"
+  ) {
     this.word(operator);
     this.space();
   } else {
@@ -91,19 +97,28 @@ function NewExpression(node, parent) {
   this.word("new");
   this.space();
   this.print(node.callee);
-  if (this.format.minified && node.arguments.length === 0 && !node.optional && !isCallExpression(parent, {
-    callee: node
-  }) && !isMemberExpression(parent) && !isNewExpression(parent)) {
+  if (
+    this.format.minified &&
+    node.arguments.length === 0 &&
+    !node.optional &&
+    !isCallExpression(parent, {
+      callee: node,
+    }) &&
+    !isMemberExpression(parent) &&
+    !isNewExpression(parent)
+  ) {
     return;
   }
   this.print(node.typeArguments);
-  {
-    this.print(node.typeParameters);
-    if (node.optional) {
-      this.token("?.");
-    }
+  this.print(node.typeParameters);
+  if (node.optional) {
+    this.token("?.");
   }
-  if (node.arguments.length === 0 && this.tokenMap && !this.tokenMap.endMatches(node, ")")) {
+  if (
+    node.arguments.length === 0 &&
+    this.tokenMap &&
+    !this.tokenMap.endMatches(node, ")")
+  ) {
     return;
   }
   this.tokenChar(40);
@@ -125,7 +140,9 @@ function _shouldPrintDecoratorsBeforeExport(node) {
   if (typeof this.format.decoratorsBeforeExport === "boolean") {
     return this.format.decoratorsBeforeExport;
   }
-  return typeof node.start === "number" && node.start === node.declaration.start;
+  return (
+    typeof node.start === "number" && node.start === node.declaration.start
+  );
 }
 function Decorator(node) {
   this.tokenChar(64);
@@ -133,13 +150,8 @@ function Decorator(node) {
   this.newline();
 }
 function OptionalMemberExpression(node) {
-  let {
-    computed
-  } = node;
-  const {
-    optional,
-    property
-  } = node;
+  let { computed } = node;
+  const { optional, property } = node;
   this.print(node.object);
   if (!computed && isMemberExpression(property)) {
     throw new TypeError("Got a MemberExpression for MemberExpression property");
@@ -163,9 +175,7 @@ function OptionalMemberExpression(node) {
 }
 function OptionalCallExpression(node) {
   this.print(node.callee);
-  {
-    this.print(node.typeParameters);
-  }
+  this.print(node.typeParameters);
   if (node.optional) {
     this.token("?.");
   }
@@ -179,9 +189,7 @@ function OptionalCallExpression(node) {
 function CallExpression(node) {
   this.print(node.callee);
   this.print(node.typeArguments);
-  {
-    this.print(node.typeParameters);
-  }
+  this.print(node.typeParameters);
   this.tokenChar(40);
   const exit = this.enterDelimited();
   this.printList(node.arguments, this.shouldPrintTrailingComma(")"));
@@ -286,9 +294,7 @@ function ModuleExpression(node) {
   this.space();
   this.tokenChar(123);
   this.indent();
-  const {
-    body
-  } = node;
+  const { body } = node;
   if (body.body.length || body.directives.length) {
     this.newline();
   }

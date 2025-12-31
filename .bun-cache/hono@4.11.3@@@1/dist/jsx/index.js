@@ -1,5 +1,12 @@
 // src/jsx/index.ts
-import { Fragment, cloneElement, isValidElement, jsx, memo, reactAPICompatVersion } from "./base.js";
+import {
+  cloneElement,
+  Fragment,
+  isValidElement,
+  jsx,
+  memo,
+  reactAPICompatVersion,
+} from "./base.js";
 import { Children } from "./children.js";
 import { ErrorBoundary } from "./components.js";
 import { createContext, useContext } from "./context.js";
@@ -24,9 +31,10 @@ import {
   useState,
   useSyncExternalStore,
   useTransition,
-  useViewTransition
+  useViewTransition,
 } from "./hooks/index.js";
 import { Suspense } from "./streaming.js";
+
 var jsx_default = {
   version: reactAPICompatVersion,
   memo,
@@ -61,7 +69,7 @@ var jsx_default = {
   useActionState,
   useOptimistic,
   Suspense,
-  Children
+  Children,
 };
 export {
   Children,
@@ -99,5 +107,5 @@ export {
   useSyncExternalStore,
   useTransition,
   useViewTransition,
-  reactAPICompatVersion as version
+  reactAPICompatVersion as version,
 };

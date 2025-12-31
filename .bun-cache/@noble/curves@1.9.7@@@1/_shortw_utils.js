@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getHash = getHash;
 exports.createCurve = createCurve;
@@ -10,11 +9,12 @@ exports.createCurve = createCurve;
 const weierstrass_ts_1 = require("./abstract/weierstrass.js");
 /** connects noble-curves to noble-hashes */
 function getHash(hash) {
-    return { hash };
+  return { hash };
 }
 /** @deprecated use new `weierstrass()` and `ecdsa()` methods */
 function createCurve(curveDef, defHash) {
-    const create = (hash) => (0, weierstrass_ts_1.weierstrass)({ ...curveDef, hash: hash });
-    return { ...create(defHash), create };
+  const create = (hash) =>
+    (0, weierstrass_ts_1.weierstrass)({ ...curveDef, hash: hash });
+  return { ...create(defHash), create };
 }
 //# sourceMappingURL=_shortw_utils.js.map

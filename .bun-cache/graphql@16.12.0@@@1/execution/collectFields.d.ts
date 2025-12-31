@@ -1,11 +1,11 @@
-import type { ObjMap } from '../jsutils/ObjMap';
+import type { ObjMap } from "../jsutils/ObjMap";
 import type {
   FieldNode,
   FragmentDefinitionNode,
   SelectionSetNode,
-} from '../language/ast';
-import type { GraphQLObjectType } from '../type/definition';
-import type { GraphQLSchema } from '../type/schema';
+} from "../language/ast";
+import type { GraphQLObjectType } from "../type/definition";
+import type { GraphQLSchema } from "../type/schema";
 /**
  * Given a selectionSet, collects all of the fields and returns them.
  *

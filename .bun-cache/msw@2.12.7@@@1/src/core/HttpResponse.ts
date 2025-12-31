@@ -1,23 +1,23 @@
-import { FetchResponse } from '@mswjs/interceptors'
-import type { DefaultBodyType, JsonBodyType } from './handlers/RequestHandler'
-import type { NoInfer } from './typeUtils'
+import { FetchResponse } from "@mswjs/interceptors";
+import type { DefaultBodyType, JsonBodyType } from "./handlers/RequestHandler";
+import type { NoInfer } from "./typeUtils";
 import {
   decorateResponse,
   normalizeResponseInit,
-} from './utils/HttpResponse/decorators'
+} from "./utils/HttpResponse/decorators";
 
 export interface HttpResponseInit extends ResponseInit {
-  type?: ResponseType
+  type?: ResponseType;
 }
 
-export const bodyType: unique symbol = Symbol('bodyType')
+export const bodyType: unique symbol = Symbol("bodyType");
 export type DefaultUnsafeFetchResponse = Response & {
-  [bodyType]?: never
-}
+  [bodyType]?: never;
+};
 
 export interface StrictRequest<BodyType extends JsonBodyType> extends Request {
-  json(): Promise<BodyType>
-  clone(): StrictRequest<BodyType>
+  json(): Promise<BodyType>;
+  clone(): StrictRequest<BodyType>;
 }
 
 /**
@@ -26,7 +26,7 @@ export interface StrictRequest<BodyType extends JsonBodyType> extends Request {
  * @deprecated Please use {@link HttpResponse} instead.
  */
 export type StrictResponse<BodyType extends DefaultBodyType> =
-  HttpResponse<BodyType>
+  HttpResponse<BodyType>;
 
 /**
  * A drop-in replacement for the standard `Response` class
@@ -42,16 +42,16 @@ export type StrictResponse<BodyType extends DefaultBodyType> =
 export class HttpResponse<
   BodyType extends DefaultBodyType,
 > extends FetchResponse {
-  readonly [bodyType]: BodyType = null as any
+  readonly [bodyType]: BodyType = null as any;
 
   constructor(body?: NoInfer<BodyType> | null, init?: HttpResponseInit) {
-    const responseInit = normalizeResponseInit(init)
-    super(body as BodyInit, responseInit)
-    decorateResponse(this, responseInit)
+    const responseInit = normalizeResponseInit(init);
+    super(body as BodyInit, responseInit);
+    decorateResponse(this, responseInit);
   }
 
   static error(): HttpResponse<any> {
-    return super.error() as HttpResponse<any>
+    return FetchResponse.error() as HttpResponse<any>;
   }
 
   /**
@@ -64,23 +64,23 @@ export class HttpResponse<
     body?: NoInfer<BodyType> | null,
     init?: HttpResponseInit,
   ): HttpResponse<BodyType> {
-    const responseInit = normalizeResponseInit(init)
+    const responseInit = normalizeResponseInit(init);
 
-    if (!responseInit.headers.has('Content-Type')) {
-      responseInit.headers.set('Content-Type', 'text/plain')
+    if (!responseInit.headers.has("Content-Type")) {
+      responseInit.headers.set("Content-Type", "text/plain");
     }
 
     // Automatically set the "Content-Length" response header
     // for non-empty text responses. This enforces consistency and
     // brings mocked responses closer to production.
-    if (!responseInit.headers.has('Content-Length')) {
+    if (!responseInit.headers.has("Content-Length")) {
       responseInit.headers.set(
-        'Content-Length',
-        body ? new Blob([body]).size.toString() : '0',
-      )
+        "Content-Length",
+        body ? new Blob([body]).size.toString() : "0",
+      );
     }
 
-    return new HttpResponse(body, responseInit)
+    return new HttpResponse(body, responseInit);
   }
 
   /**
@@ -93,26 +93,26 @@ export class HttpResponse<
     body?: NoInfer<BodyType> | null | undefined,
     init?: HttpResponseInit,
   ): HttpResponse<BodyType> {
-    const responseInit = normalizeResponseInit(init)
+    const responseInit = normalizeResponseInit(init);
 
-    if (!responseInit.headers.has('Content-Type')) {
-      responseInit.headers.set('Content-Type', 'application/json')
+    if (!responseInit.headers.has("Content-Type")) {
+      responseInit.headers.set("Content-Type", "application/json");
     }
 
     /**
      * @note TypeScript is incorrect here.
      * Stringifying undefined will return undefined.
      */
-    const responseText = JSON.stringify(body) as string | undefined
+    const responseText = JSON.stringify(body) as string | undefined;
 
-    if (!responseInit.headers.has('Content-Length')) {
+    if (!responseInit.headers.has("Content-Length")) {
       responseInit.headers.set(
-        'Content-Length',
-        responseText ? new Blob([responseText]).size.toString() : '0',
-      )
+        "Content-Length",
+        responseText ? new Blob([responseText]).size.toString() : "0",
+      );
     }
 
-    return new HttpResponse(responseText as BodyType, responseInit)
+    return new HttpResponse(responseText as BodyType, responseInit);
   }
 
   /**
@@ -125,13 +125,13 @@ export class HttpResponse<
     body?: BodyType | null,
     init?: HttpResponseInit,
   ): HttpResponse<BodyType> {
-    const responseInit = normalizeResponseInit(init)
+    const responseInit = normalizeResponseInit(init);
 
-    if (!responseInit.headers.has('Content-Type')) {
-      responseInit.headers.set('Content-Type', 'text/xml')
+    if (!responseInit.headers.has("Content-Type")) {
+      responseInit.headers.set("Content-Type", "text/xml");
     }
 
-    return new HttpResponse(body, responseInit)
+    return new HttpResponse(body, responseInit);
   }
 
   /**
@@ -144,13 +144,13 @@ export class HttpResponse<
     body?: BodyType | null,
     init?: HttpResponseInit,
   ): HttpResponse<BodyType> {
-    const responseInit = normalizeResponseInit(init)
+    const responseInit = normalizeResponseInit(init);
 
-    if (!responseInit.headers.has('Content-Type')) {
-      responseInit.headers.set('Content-Type', 'text/html')
+    if (!responseInit.headers.has("Content-Type")) {
+      responseInit.headers.set("Content-Type", "text/html");
     }
 
-    return new HttpResponse(body, responseInit)
+    return new HttpResponse(body, responseInit);
   }
 
   /**
@@ -166,17 +166,17 @@ export class HttpResponse<
     body?: BodyType,
     init?: HttpResponseInit,
   ): HttpResponse<BodyType> {
-    const responseInit = normalizeResponseInit(init)
+    const responseInit = normalizeResponseInit(init);
 
-    if (!responseInit.headers.has('Content-Type')) {
-      responseInit.headers.set('Content-Type', 'application/octet-stream')
+    if (!responseInit.headers.has("Content-Type")) {
+      responseInit.headers.set("Content-Type", "application/octet-stream");
     }
 
-    if (body && !responseInit.headers.has('Content-Length')) {
-      responseInit.headers.set('Content-Length', body.byteLength.toString())
+    if (body && !responseInit.headers.has("Content-Length")) {
+      responseInit.headers.set("Content-Length", body.byteLength.toString());
     }
 
-    return new HttpResponse(body, responseInit)
+    return new HttpResponse(body, responseInit);
   }
 
   /**
@@ -191,6 +191,6 @@ export class HttpResponse<
     body?: FormData,
     init?: HttpResponseInit,
   ): HttpResponse<FormData> {
-    return new HttpResponse(body, normalizeResponseInit(init))
+    return new HttpResponse(body, normalizeResponseInit(init));
   }
 }

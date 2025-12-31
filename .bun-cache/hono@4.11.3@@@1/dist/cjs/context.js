@@ -8,18 +8,22 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var context_exports = {};
 __export(context_exports, {
   Context: () => Context,
-  TEXT_PLAIN: () => TEXT_PLAIN
+  TEXT_PLAIN: () => TEXT_PLAIN,
 });
 module.exports = __toCommonJS(context_exports);
 var import_request = require("./request");
@@ -28,7 +32,7 @@ const TEXT_PLAIN = "text/plain; charset=UTF-8";
 const setDefaultContentType = (contentType, headers) => {
   return {
     "Content-Type": contentType,
-    ...headers
+    ...headers,
   };
 };
 class Context {
@@ -95,7 +99,11 @@ class Context {
    * `.req` is the instance of {@link HonoRequest}.
    */
   get req() {
-    this.#req ??= new import_request.HonoRequest(this.#rawRequest, this.#path, this.#matchResult);
+    this.#req ??= new import_request.HonoRequest(
+      this.#rawRequest,
+      this.#path,
+      this.#matchResult,
+    );
     return this.#req;
   }
   /**
@@ -129,9 +137,9 @@ class Context {
    * The Response object for the current request.
    */
   get res() {
-    return this.#res ||= new Response(null, {
-      headers: this.#preparedHeaders ??= new Headers()
-    });
+    return (this.#res ||= new Response(null, {
+      headers: (this.#preparedHeaders ??= new Headers()),
+    }));
   }
   /**
    * Sets the Response object for the current request.
@@ -181,7 +189,7 @@ class Context {
    * @param layout - The layout to set.
    * @returns The layout function.
    */
-  setLayout = (layout) => this.#layout = layout;
+  setLayout = (layout) => (this.#layout = layout);
   /**
    * Gets the current layout for the response.
    *
@@ -232,7 +240,9 @@ class Context {
     if (this.finalized) {
       this.#res = new Response(this.#res.body, this.#res);
     }
-    const headers = this.#res ? this.#res.headers : this.#preparedHeaders ??= new Headers();
+    const headers = this.#res
+      ? this.#res.headers
+      : (this.#preparedHeaders ??= new Headers());
     if (value === void 0) {
       headers.delete(name);
     } else if (options?.append) {
@@ -295,9 +305,12 @@ class Context {
     return Object.fromEntries(this.#var);
   }
   #newResponse(data, arg, headers) {
-    const responseHeaders = this.#res ? new Headers(this.#res.headers) : this.#preparedHeaders ?? new Headers();
+    const responseHeaders = this.#res
+      ? new Headers(this.#res.headers)
+      : (this.#preparedHeaders ?? new Headers());
     if (typeof arg === "object" && "headers" in arg) {
-      const argHeaders = arg.headers instanceof Headers ? arg.headers : new Headers(arg.headers);
+      const argHeaders =
+        arg.headers instanceof Headers ? arg.headers : new Headers(arg.headers);
       for (const [key, value] of argHeaders) {
         if (key.toLowerCase() === "set-cookie") {
           responseHeaders.append(key, value);
@@ -318,7 +331,8 @@ class Context {
         }
       }
     }
-    const status = typeof arg === "number" ? arg : arg?.status ?? this.#status;
+    const status =
+      typeof arg === "number" ? arg : (arg?.status ?? this.#status);
     return new Response(data, { status, headers: responseHeaders });
   }
   newResponse = (...args) => this.#newResponse(...args);
@@ -357,11 +371,17 @@ class Context {
    * ```
    */
   text = (text, arg, headers) => {
-    return !this.#preparedHeaders && !this.#status && !arg && !headers && !this.finalized ? new Response(text) : this.#newResponse(
-      text,
-      arg,
-      setDefaultContentType(TEXT_PLAIN, headers)
-    );
+    return !this.#preparedHeaders &&
+      !this.#status &&
+      !arg &&
+      !headers &&
+      !this.finalized
+      ? new Response(text)
+      : this.#newResponse(
+          text,
+          arg,
+          setDefaultContentType(TEXT_PLAIN, headers),
+        );
   };
   /**
    * `.json()` can render JSON as `Content-Type:application/json`.
@@ -379,12 +399,24 @@ class Context {
     return this.#newResponse(
       JSON.stringify(object),
       arg,
-      setDefaultContentType("application/json", headers)
+      setDefaultContentType("application/json", headers),
     );
   };
   html = (html, arg, headers) => {
-    const res = (html2) => this.#newResponse(html2, arg, setDefaultContentType("text/html; charset=UTF-8", headers));
-    return typeof html === "object" ? (0, import_html.resolveCallback)(html, import_html.HtmlEscapedCallbackPhase.Stringify, false, {}).then(res) : res(html);
+    const res = (html2) =>
+      this.#newResponse(
+        html2,
+        arg,
+        setDefaultContentType("text/html; charset=UTF-8", headers),
+      );
+    return typeof html === "object"
+      ? (0, import_html.resolveCallback)(
+          html,
+          import_html.HtmlEscapedCallbackPhase.Stringify,
+          false,
+          {},
+        ).then(res)
+      : res(html);
   };
   /**
    * `.redirect()` can Redirect, default status code is 302.
@@ -407,7 +439,9 @@ class Context {
       "Location",
       // Multibyes should be encoded
       // eslint-disable-next-line no-control-regex
-      !/[^\x00-\xFF]/.test(locationString) ? locationString : encodeURI(locationString)
+      !/[^\x00-\xFF]/.test(locationString)
+        ? locationString
+        : encodeURI(locationString),
     );
     return this.newResponse(null, status ?? 302);
   };
@@ -429,7 +463,8 @@ class Context {
   };
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  Context,
-  TEXT_PLAIN
-});
+0 &&
+  (module.exports = {
+    Context,
+    TEXT_PLAIN,
+  });

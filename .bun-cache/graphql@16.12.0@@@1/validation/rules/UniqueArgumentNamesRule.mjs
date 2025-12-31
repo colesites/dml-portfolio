@@ -1,5 +1,5 @@
-import { groupBy } from '../../jsutils/groupBy.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { groupBy } from "../../jsutils/groupBy.mjs";
 
 /**
  * Unique argument names

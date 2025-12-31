@@ -1,7 +1,11 @@
-import { GenMapping, maybeAddSegment, setIgnore, setSourceContent } from '@jridgewell/gen-mapping';
-import { traceSegment, decodedMappings } from '@jridgewell/trace-mapping';
-
-import type { TraceMap } from '@jridgewell/trace-mapping';
+import {
+  GenMapping,
+  maybeAddSegment,
+  setIgnore,
+  setSourceContent,
+} from "@jridgewell/gen-mapping";
+import type { TraceMap } from "@jridgewell/trace-mapping";
+import { decodedMappings, traceSegment } from "@jridgewell/trace-mapping";
 
 export type SourceMapSegmentObject = {
   column: number;
@@ -30,7 +34,14 @@ export type MapSource = {
 
 export type Sources = OriginalSource | MapSource;
 
-const SOURCELESS_MAPPING = /* #__PURE__ */ SegmentObject('', -1, -1, '', null, false);
+const SOURCELESS_MAPPING = /* #__PURE__ */ SegmentObject(
+  "",
+  -1,
+  -1,
+  "",
+  null,
+  false,
+);
 const EMPTY_SOURCES: Sources[] = [];
 
 function SegmentObject(
@@ -47,7 +58,7 @@ function SegmentObject(
 function Source(
   map: TraceMap,
   sources: Sources[],
-  source: '',
+  source: "",
   content: null,
   ignore: false,
 ): MapSource;
@@ -61,7 +72,7 @@ function Source(
 function Source(
   map: TraceMap | null,
   sources: Sources[],
-  source: string | '',
+  source: string | "",
   content: string | null,
   ignore: boolean,
 ): Sources {
@@ -79,7 +90,7 @@ function Source(
  * (which may themselves be SourceMapTrees).
  */
 export function MapSource(map: TraceMap, sources: Sources[]): MapSource {
-  return Source(map, sources, '', null, false);
+  return Source(map, sources, "", null, false);
 }
 
 /**
@@ -122,7 +133,7 @@ export function traceMappings(tree: MapSource): GenMapping {
           source,
           segment[2],
           segment[3],
-          segment.length === 5 ? rootNames[segment[4]] : '',
+          segment.length === 5 ? rootNames[segment[4]] : "",
         );
 
         // If the trace is invalid, then the trace ran into a sourcemap that doesn't contain a
@@ -152,7 +163,14 @@ export function originalPositionFor(
   name: string,
 ): SourceMapSegmentObject | null {
   if (!source.map) {
-    return SegmentObject(source.source, line, column, name, source.content, source.ignore);
+    return SegmentObject(
+      source.source,
+      line,
+      column,
+      name,
+      source.content,
+      source.ignore,
+    );
   }
 
   const segment = traceSegment(source.map, line, column);

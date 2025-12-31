@@ -1,6 +1,8 @@
-import type {JsonPrimitive} from './json-value.d.ts';
+import type { JsonPrimitive } from "./json-value.d.ts";
 
-type JsonifiableObject = {[Key in string]?: Jsonifiable} | {toJSON: () => Jsonifiable};
+type JsonifiableObject =
+  | { [Key in string]?: Jsonifiable }
+  | { toJSON: () => Jsonifiable };
 type JsonifiableArray = readonly Jsonifiable[];
 
 /**
@@ -35,5 +37,3 @@ JSON.stringify(good);
 @category JSON
 */
 export type Jsonifiable = JsonPrimitive | JsonifiableObject | JsonifiableArray;
-
-export {};

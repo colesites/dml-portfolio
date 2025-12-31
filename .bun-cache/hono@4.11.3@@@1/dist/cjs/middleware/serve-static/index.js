@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var serve_static_exports = {};
 __export(serve_static_exports, {
-  serveStatic: () => serveStatic
+  serveStatic: () => serveStatic,
 });
 module.exports = __toCommonJS(serve_static_exports);
 var import_compress = require("../../utils/compress");
@@ -27,7 +31,7 @@ var import_path = require("./path");
 const ENCODINGS = {
   br: ".br",
   zstd: ".zst",
-  gzip: ".gz"
+  gzip: ".gz",
 };
 const ENCODINGS_ORDERED_KEYS = Object.keys(ENCODINGS);
 const DEFAULT_DOCUMENT = "index.html";
@@ -45,7 +49,7 @@ const serveStatic = (options) => {
     } else {
       try {
         filename = decodeURIComponent(c.req.path);
-        if (/(?:^|[\/\\])\.\.(?:$|[\/\\])/.test(filename)) {
+        if (/(?:^|[/\\])\.\.(?:$|[/\\])/.test(filename)) {
           throw new Error();
         }
       } catch {
@@ -55,9 +59,11 @@ const serveStatic = (options) => {
     }
     let path = join(
       root,
-      !optionPath && options.rewriteRequestPath ? options.rewriteRequestPath(filename) : filename
+      !optionPath && options.rewriteRequestPath
+        ? options.rewriteRequestPath(filename)
+        : filename,
     );
-    if (options.isDir && await options.isDir(path)) {
+    if (options.isDir && (await options.isDir(path))) {
       path = join(path, DEFAULT_DOCUMENT);
     }
     const getContent = options.getContent;
@@ -66,17 +72,29 @@ const serveStatic = (options) => {
       return c.newResponse(content.body, content);
     }
     if (content) {
-      const mimeType = options.mimes && (0, import_mime.getMimeType)(path, options.mimes) || (0, import_mime.getMimeType)(path);
+      const mimeType =
+        (options.mimes && (0, import_mime.getMimeType)(path, options.mimes)) ||
+        (0, import_mime.getMimeType)(path);
       c.header("Content-Type", mimeType || "application/octet-stream");
-      if (options.precompressed && (!mimeType || import_compress.COMPRESSIBLE_CONTENT_TYPE_REGEX.test(mimeType))) {
+      if (
+        options.precompressed &&
+        (!mimeType ||
+          import_compress.COMPRESSIBLE_CONTENT_TYPE_REGEX.test(mimeType))
+      ) {
         const acceptEncodingSet = new Set(
-          c.req.header("Accept-Encoding")?.split(",").map((encoding) => encoding.trim())
+          c.req
+            .header("Accept-Encoding")
+            ?.split(",")
+            .map((encoding) => encoding.trim()),
         );
         for (const encoding of ENCODINGS_ORDERED_KEYS) {
           if (!acceptEncodingSet.has(encoding)) {
             continue;
           }
-          const compressedContent = await getContent(path + ENCODINGS[encoding], c);
+          const compressedContent = await getContent(
+            path + ENCODINGS[encoding],
+            c,
+          );
           if (compressedContent) {
             content = compressedContent;
             c.header("Content-Encoding", encoding);
@@ -94,6 +112,7 @@ const serveStatic = (options) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  serveStatic
-});
+0 &&
+  (module.exports = {
+    serveStatic,
+  });

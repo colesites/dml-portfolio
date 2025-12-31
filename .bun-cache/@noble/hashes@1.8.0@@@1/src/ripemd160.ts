@@ -5,7 +5,7 @@
  * @module
  * @deprecated
  */
-import { RIPEMD160 as RIPEMD160n, ripemd160 as ripemd160n } from './legacy.ts';
+import { RIPEMD160 as RIPEMD160n, ripemd160 as ripemd160n } from "./legacy.ts";
 /** @deprecated Use import from `noble/hashes/legacy` module */
 export const RIPEMD160: typeof RIPEMD160n = RIPEMD160n;
 /** @deprecated Use import from `noble/hashes/legacy` module */

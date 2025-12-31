@@ -1,7 +1,7 @@
-import { printBlockString } from '../language/blockString.mjs';
-import { isPunctuatorTokenKind, Lexer } from '../language/lexer.mjs';
-import { isSource, Source } from '../language/source.mjs';
-import { TokenKind } from '../language/tokenKind.mjs';
+import { printBlockString } from "../language/blockString.mjs";
+import { isPunctuatorTokenKind, Lexer } from "../language/lexer.mjs";
+import { isSource, Source } from "../language/source.mjs";
+import { TokenKind } from "../language/tokenKind.mjs";
 /**
  * Strips characters that are not significant to the validity or execution
  * of a GraphQL document:
@@ -67,7 +67,7 @@ export function stripIgnoredCharacters(source) {
   const sourceObj = isSource(source) ? source : new Source(source);
   const body = sourceObj.body;
   const lexer = new Lexer(sourceObj);
-  let strippedBody = '';
+  let strippedBody = "";
   let wasLastAddedTokenNonPunctuator = false;
 
   while (lexer.advance().kind !== TokenKind.EOF) {
@@ -83,7 +83,7 @@ export function stripIgnoredCharacters(source) {
 
     if (wasLastAddedTokenNonPunctuator) {
       if (isNonPunctuator || currentToken.kind === TokenKind.SPREAD) {
-        strippedBody += ' ';
+        strippedBody += " ";
       }
     }
 

@@ -31,7 +31,7 @@ export class Location {
   }
 
   get [Symbol.toStringTag]() {
-    return 'Location';
+    return "Location";
   }
 
   toJSON() {
@@ -92,7 +92,7 @@ export class Token {
   }
 
   get [Symbol.toStringTag]() {
-    return 'Token';
+    return "Token";
   }
 
   toJSON() {
@@ -113,34 +113,34 @@ export class Token {
  */
 export const QueryDocumentKeys = {
   Name: [],
-  Document: ['definitions'],
+  Document: ["definitions"],
   OperationDefinition: [
-    'description',
-    'name',
-    'variableDefinitions',
-    'directives',
-    'selectionSet',
+    "description",
+    "name",
+    "variableDefinitions",
+    "directives",
+    "selectionSet",
   ],
   VariableDefinition: [
-    'description',
-    'variable',
-    'type',
-    'defaultValue',
-    'directives',
+    "description",
+    "variable",
+    "type",
+    "defaultValue",
+    "directives",
   ],
-  Variable: ['name'],
-  SelectionSet: ['selections'],
-  Field: ['alias', 'name', 'arguments', 'directives', 'selectionSet'],
-  Argument: ['name', 'value'],
-  FragmentSpread: ['name', 'directives'],
-  InlineFragment: ['typeCondition', 'directives', 'selectionSet'],
+  Variable: ["name"],
+  SelectionSet: ["selections"],
+  Field: ["alias", "name", "arguments", "directives", "selectionSet"],
+  Argument: ["name", "value"],
+  FragmentSpread: ["name", "directives"],
+  InlineFragment: ["typeCondition", "directives", "selectionSet"],
   FragmentDefinition: [
-    'description',
-    'name', // Note: fragment variable definitions are deprecated and will removed in v17.0.0
-    'variableDefinitions',
-    'typeCondition',
-    'directives',
-    'selectionSet',
+    "description",
+    "name", // Note: fragment variable definitions are deprecated and will removed in v17.0.0
+    "variableDefinitions",
+    "typeCondition",
+    "directives",
+    "selectionSet",
   ],
   IntValue: [],
   FloatValue: [],
@@ -148,55 +148,55 @@ export const QueryDocumentKeys = {
   BooleanValue: [],
   NullValue: [],
   EnumValue: [],
-  ListValue: ['values'],
-  ObjectValue: ['fields'],
-  ObjectField: ['name', 'value'],
-  Directive: ['name', 'arguments'],
-  NamedType: ['name'],
-  ListType: ['type'],
-  NonNullType: ['type'],
-  SchemaDefinition: ['description', 'directives', 'operationTypes'],
-  OperationTypeDefinition: ['type'],
-  ScalarTypeDefinition: ['description', 'name', 'directives'],
+  ListValue: ["values"],
+  ObjectValue: ["fields"],
+  ObjectField: ["name", "value"],
+  Directive: ["name", "arguments"],
+  NamedType: ["name"],
+  ListType: ["type"],
+  NonNullType: ["type"],
+  SchemaDefinition: ["description", "directives", "operationTypes"],
+  OperationTypeDefinition: ["type"],
+  ScalarTypeDefinition: ["description", "name", "directives"],
   ObjectTypeDefinition: [
-    'description',
-    'name',
-    'interfaces',
-    'directives',
-    'fields',
+    "description",
+    "name",
+    "interfaces",
+    "directives",
+    "fields",
   ],
-  FieldDefinition: ['description', 'name', 'arguments', 'type', 'directives'],
+  FieldDefinition: ["description", "name", "arguments", "type", "directives"],
   InputValueDefinition: [
-    'description',
-    'name',
-    'type',
-    'defaultValue',
-    'directives',
+    "description",
+    "name",
+    "type",
+    "defaultValue",
+    "directives",
   ],
   InterfaceTypeDefinition: [
-    'description',
-    'name',
-    'interfaces',
-    'directives',
-    'fields',
+    "description",
+    "name",
+    "interfaces",
+    "directives",
+    "fields",
   ],
-  UnionTypeDefinition: ['description', 'name', 'directives', 'types'],
-  EnumTypeDefinition: ['description', 'name', 'directives', 'values'],
-  EnumValueDefinition: ['description', 'name', 'directives'],
-  InputObjectTypeDefinition: ['description', 'name', 'directives', 'fields'],
-  DirectiveDefinition: ['description', 'name', 'arguments', 'locations'],
-  SchemaExtension: ['directives', 'operationTypes'],
-  ScalarTypeExtension: ['name', 'directives'],
-  ObjectTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
-  InterfaceTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
-  UnionTypeExtension: ['name', 'directives', 'types'],
-  EnumTypeExtension: ['name', 'directives', 'values'],
-  InputObjectTypeExtension: ['name', 'directives', 'fields'],
-  TypeCoordinate: ['name'],
-  MemberCoordinate: ['name', 'memberName'],
-  ArgumentCoordinate: ['name', 'fieldName', 'argumentName'],
-  DirectiveCoordinate: ['name'],
-  DirectiveArgumentCoordinate: ['name', 'argumentName'],
+  UnionTypeDefinition: ["description", "name", "directives", "types"],
+  EnumTypeDefinition: ["description", "name", "directives", "values"],
+  EnumValueDefinition: ["description", "name", "directives"],
+  InputObjectTypeDefinition: ["description", "name", "directives", "fields"],
+  DirectiveDefinition: ["description", "name", "arguments", "locations"],
+  SchemaExtension: ["directives", "operationTypes"],
+  ScalarTypeExtension: ["name", "directives"],
+  ObjectTypeExtension: ["name", "interfaces", "directives", "fields"],
+  InterfaceTypeExtension: ["name", "interfaces", "directives", "fields"],
+  UnionTypeExtension: ["name", "directives", "types"],
+  EnumTypeExtension: ["name", "directives", "values"],
+  InputObjectTypeExtension: ["name", "directives", "fields"],
+  TypeCoordinate: ["name"],
+  MemberCoordinate: ["name", "memberName"],
+  ArgumentCoordinate: ["name", "fieldName", "argumentName"],
+  DirectiveCoordinate: ["name"],
+  DirectiveArgumentCoordinate: ["name", "argumentName"],
 };
 const kindValues = new Set(Object.keys(QueryDocumentKeys));
 /**
@@ -206,16 +206,16 @@ const kindValues = new Set(Object.keys(QueryDocumentKeys));
 export function isNode(maybeNode) {
   const maybeKind =
     maybeNode === null || maybeNode === void 0 ? void 0 : maybeNode.kind;
-  return typeof maybeKind === 'string' && kindValues.has(maybeKind);
+  return typeof maybeKind === "string" && kindValues.has(maybeKind);
 }
 /** Name */
 
 var OperationTypeNode;
 
-(function (OperationTypeNode) {
-  OperationTypeNode['QUERY'] = 'query';
-  OperationTypeNode['MUTATION'] = 'mutation';
-  OperationTypeNode['SUBSCRIPTION'] = 'subscription';
+((OperationTypeNode) => {
+  OperationTypeNode["QUERY"] = "query";
+  OperationTypeNode["MUTATION"] = "mutation";
+  OperationTypeNode["SUBSCRIPTION"] = "subscription";
 })(OperationTypeNode || (OperationTypeNode = {}));
 
 export { OperationTypeNode };

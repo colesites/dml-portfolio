@@ -5,7 +5,5 @@ function cleanUrl(path) {
   }
   return path.replace(REDUNDANT_CHARACTERS_EXP, "");
 }
-export {
-  cleanUrl
-};
+export { cleanUrl };
 //# sourceMappingURL=cleanUrl.mjs.map

@@ -1,17 +1,17 @@
-const fs = require('fs')
+const fs = require("fs");
 
-const ENCODING = 'utf8'
+const ENCODING = "utf8";
 
-function readFileX (filepath, encoding = null) {
+function readFileX(filepath, encoding = null) {
   if (!encoding) {
-    encoding = ENCODING
+    encoding = ENCODING;
   }
 
-  return fs.readFileSync(filepath, encoding) // utf8 default so it returns a string
+  return fs.readFileSync(filepath, encoding); // utf8 default so it returns a string
 }
 
-function writeFileX (filepath, str) {
-  return fs.writeFileSync(filepath, str, ENCODING) // utf8 always
+function writeFileX(filepath, str) {
+  return fs.writeFileSync(filepath, str, ENCODING); // utf8 always
 }
 
 const fsx = {
@@ -24,7 +24,7 @@ const fsx = {
 
   // fsx special commands
   readFileX,
-  writeFileX
-}
+  writeFileX,
+};
 
-module.exports = fsx
+module.exports = fsx;

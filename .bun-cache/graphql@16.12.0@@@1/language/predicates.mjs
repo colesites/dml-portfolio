@@ -1,4 +1,4 @@
-import { Kind } from './kinds.mjs';
+import { Kind } from "./kinds.mjs";
 export function isDefinitionNode(node) {
   return (
     isExecutableDefinitionNode(node) ||
@@ -38,8 +38,8 @@ export function isConstValueNode(node) {
     (node.kind === Kind.LIST
       ? node.values.some(isConstValueNode)
       : node.kind === Kind.OBJECT
-      ? node.fields.some((field) => isConstValueNode(field.value))
-      : node.kind !== Kind.VARIABLE)
+        ? node.fields.some((field) => isConstValueNode(field.value))
+        : node.kind !== Kind.VARIABLE)
   );
 }
 export function isTypeNode(node) {

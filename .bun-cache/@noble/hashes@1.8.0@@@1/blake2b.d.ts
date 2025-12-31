@@ -3,7 +3,7 @@
  * @module
  * @deprecated
  */
-import { BLAKE2b as B2B, blake2b as b2b } from './blake2.ts';
+import { BLAKE2b as B2B, blake2b as b2b } from "./blake2.ts";
 /** @deprecated Use import from `noble/hashes/blake2` module */
 export declare const BLAKE2b: typeof B2B;
 /** @deprecated Use import from `noble/hashes/blake2` module */

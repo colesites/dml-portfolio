@@ -1,17 +1,9 @@
-/*!
- * forwarded
- * Copyright(c) 2014-2017 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict'
-
 /**
  * Module exports.
  * @public
  */
 
-module.exports = forwarded
+module.exports = forwarded;
 
 /**
  * Get all addresses in the request, using the `X-Forwarded-For` header.
@@ -21,18 +13,18 @@ module.exports = forwarded
  * @public
  */
 
-function forwarded (req) {
+function forwarded(req) {
   if (!req) {
-    throw new TypeError('argument req is required')
+    throw new TypeError("argument req is required");
   }
 
   // simple header parsing
-  var proxyAddrs = parse(req.headers['x-forwarded-for'] || '')
-  var socketAddr = getSocketAddr(req)
-  var addrs = [socketAddr].concat(proxyAddrs)
+  var proxyAddrs = parse(req.headers["x-forwarded-for"] || "");
+  var socketAddr = getSocketAddr(req);
+  var addrs = [socketAddr].concat(proxyAddrs);
 
   // return all addresses
-  return addrs
+  return addrs;
 }
 
 /**
@@ -43,10 +35,8 @@ function forwarded (req) {
  * @private
  */
 
-function getSocketAddr (req) {
-  return req.socket
-    ? req.socket.remoteAddress
-    : req.connection.remoteAddress
+function getSocketAddr(req) {
+  return req.socket ? req.socket.remoteAddress : req.connection.remoteAddress;
 }
 
 /**
@@ -56,35 +46,35 @@ function getSocketAddr (req) {
  * @private
  */
 
-function parse (header) {
-  var end = header.length
-  var list = []
-  var start = header.length
+function parse(header) {
+  var end = header.length;
+  var list = [];
+  var start = header.length;
 
   // gather addresses, backwards
   for (var i = header.length - 1; i >= 0; i--) {
     switch (header.charCodeAt(i)) {
-      case 0x20: /*   */
+      case 0x20 /*   */:
         if (start === end) {
-          start = end = i
+          start = end = i;
         }
-        break
-      case 0x2c: /* , */
+        break;
+      case 0x2c /* , */:
         if (start !== end) {
-          list.push(header.substring(start, end))
+          list.push(header.substring(start, end));
         }
-        start = end = i
-        break
+        start = end = i;
+        break;
       default:
-        start = i
-        break
+        start = i;
+        break;
     }
   }
 
   // final address
   if (start !== end) {
-    list.push(header.substring(start, end))
+    list.push(header.substring(start, end));
   }
 
-  return list
+  return list;
 }

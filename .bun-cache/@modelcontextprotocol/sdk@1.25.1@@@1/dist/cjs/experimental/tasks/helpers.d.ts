@@ -9,15 +9,15 @@
  * This is derived from ClientTasksCapability.requests and ServerTasksCapability.requests.
  */
 interface TaskRequestsCapability {
-    tools?: {
-        call?: object;
-    };
-    sampling?: {
-        createMessage?: object;
-    };
-    elicitation?: {
-        create?: object;
-    };
+  tools?: {
+    call?: object;
+  };
+  sampling?: {
+    createMessage?: object;
+  };
+  elicitation?: {
+    create?: object;
+  };
 }
 /**
  * Asserts that task creation is supported for tools/call.
@@ -30,7 +30,11 @@ interface TaskRequestsCapability {
  *
  * @experimental
  */
-export declare function assertToolsCallTaskCapability(requests: TaskRequestsCapability | undefined, method: string, entityName: 'Server' | 'Client'): void;
+export declare function assertToolsCallTaskCapability(
+  requests: TaskRequestsCapability | undefined,
+  method: string,
+  entityName: "Server" | "Client",
+): void;
 /**
  * Asserts that task creation is supported for sampling/createMessage or elicitation/create.
  * Used by Server.assertTaskCapability and Client.assertTaskHandlerCapability.
@@ -42,6 +46,9 @@ export declare function assertToolsCallTaskCapability(requests: TaskRequestsCapa
  *
  * @experimental
  */
-export declare function assertClientRequestTaskCapability(requests: TaskRequestsCapability | undefined, method: string, entityName: 'Server' | 'Client'): void;
-export {};
+export declare function assertClientRequestTaskCapability(
+  requests: TaskRequestsCapability | undefined,
+  method: string,
+  entityName: "Server" | "Client",
+): void;
 //# sourceMappingURL=helpers.d.ts.map

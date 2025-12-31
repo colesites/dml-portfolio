@@ -3,7 +3,14 @@
  * @module
  * @deprecated
  */
-import { abytes as ab, abool as abool_, aexists as ae, anumber as an, aoutput as ao, type IHash as H } from './utils.ts';
+import {
+  abytes as ab,
+  abool as abool_,
+  aexists as ae,
+  anumber as an,
+  aoutput as ao,
+  type IHash as H,
+} from "./utils.ts";
 /** @deprecated Use import from `noble/hashes/utils` module */
 export declare const abool: typeof abool_;
 /** @deprecated Use import from `noble/hashes/utils` module */

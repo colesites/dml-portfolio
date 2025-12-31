@@ -1,8 +1,13 @@
-import type {Primitive} from './primitive.d.ts';
-import type {_Numeric} from './numeric.d.ts';
-import type {CollapseLiterals, IfNotAnyOrNever, IsNotFalse, IsPrimitive} from './internal/index.d.ts';
-import type {IsNever} from './is-never.d.ts';
-import type {TagContainer, UnwrapTagged} from './tagged.d.ts';
+import type { Primitive } from "./primitive.d.ts";
+import type { _Numeric } from "./numeric.d.ts";
+import type {
+  CollapseLiterals,
+  IfNotAnyOrNever,
+  IsNotFalse,
+  IsPrimitive,
+} from "./internal/index.d.ts";
+import type { IsNever } from "./is-never.d.ts";
+import type { TagContainer, UnwrapTagged } from "./tagged.d.ts";
 
 /**
 Returns a boolean for whether the given type `T` is the specified `LiteralType`.
@@ -21,17 +26,15 @@ type C = LiteralCheck<1, string>;
 //=> false
 ```
 */
-type LiteralCheck<T, LiteralType extends Primitive> = (
-	IsNever<T> extends false // Must be wider than `never`
-		? [T] extends [LiteralType & infer U] // Remove any branding
-			? [U] extends [LiteralType] // Must be narrower than `LiteralType`
-				? [LiteralType] extends [U] // Cannot be wider than `LiteralType`
-					? false
-					: true
-				: false
-			: false
-		: false
-);
+type LiteralCheck<T, LiteralType extends Primitive> = IsNever<T> extends false // Must be wider than `never`
+  ? [T] extends [LiteralType & infer U] // Remove any branding
+    ? [U] extends [LiteralType] // Must be narrower than `LiteralType`
+      ? [LiteralType] extends [U] // Cannot be wider than `LiteralType`
+        ? false
+        : true
+      : false
+    : false
+  : false;
 
 /**
 Returns a boolean for whether the given type `T` is one of the specified literal types in `LiteralUnionType`.
@@ -48,15 +51,15 @@ type C = LiteralChecks<bigint, Numeric>;
 //=> false
 ```
 */
-type LiteralChecks<T, LiteralUnionType> = (
-	// Conditional type to force union distribution.
-	// If `T` is none of the literal types in the union `LiteralUnionType`, then `LiteralCheck<T, LiteralType>` will evaluate to `false` for the whole union.
-	// If `T` is one of the literal types in the union, it will evaluate to `boolean` (i.e. `true | false`)
-	IsNotFalse<LiteralUnionType extends Primitive
-		? LiteralCheck<T, LiteralUnionType>
-		: never
-	>
-);
+type LiteralChecks<T, LiteralUnionType> =
+  // Conditional type to force union distribution.
+  // If `T` is none of the literal types in the union `LiteralUnionType`, then `LiteralCheck<T, LiteralType>` will evaluate to `false` for the whole union.
+  // If `T` is one of the literal types in the union, it will evaluate to `boolean` (i.e. `true | false`)
+  IsNotFalse<
+    LiteralUnionType extends Primitive
+      ? LiteralCheck<T, LiteralUnionType>
+      : never
+  >;
 
 /**
 Returns a boolean for whether the given type is a `string` [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types).
@@ -114,18 +117,19 @@ type L2 = Length<`${number}`>;
 @category Type Guard
 @category Utilities
 */
-export type IsStringLiteral<S> = IfNotAnyOrNever<S,
-	_IsStringLiteral<CollapseLiterals<S extends TagContainer<any> ? UnwrapTagged<S> : S>>,
-	false, false>;
+export type IsStringLiteral<S> = IfNotAnyOrNever<
+  S,
+  _IsStringLiteral<
+    CollapseLiterals<S extends TagContainer<any> ? UnwrapTagged<S> : S>
+  >,
+  false,
+  false
+>;
 
 export type _IsStringLiteral<S> =
-// If `T` is an infinite string type (e.g., `on${string}`), `Record<T, never>` produces an index signature,
-// and since `{}` extends index signatures, the result becomes `false`.
-S extends string
-	? {} extends Record<S, never>
-		? false
-		: true
-	: false;
+  // If `T` is an infinite string type (e.g., `on${string}`), `Record<T, never>` produces an index signature,
+  // and since `{}` extends index signatures, the result becomes `false`.
+  S extends string ? ({} extends Record<S, never> ? false : true) : false;
 
 /**
 Returns a boolean for whether the given type is a `number` or `bigint` [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types).
@@ -252,10 +256,10 @@ export type IsSymbolLiteral<T> = LiteralCheck<T, symbol>;
 
 /** Helper type for `IsLiteral`. */
 type IsLiteralUnion<T> =
-	| IsStringLiteral<T>
-	| IsNumericLiteral<T>
-	| IsBooleanLiteral<T>
-	| IsSymbolLiteral<T>;
+  | IsStringLiteral<T>
+  | IsNumericLiteral<T>
+  | IsBooleanLiteral<T>
+  | IsSymbolLiteral<T>;
 
 /**
 Returns a boolean for whether the given type is a [literal type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#literal-types).
@@ -306,9 +310,6 @@ type K = IsLiteral<boolean>;
 @category Type Guard
 @category Utilities
 */
-export type IsLiteral<T> =
-	IsPrimitive<T> extends true
-		? IsNotFalse<IsLiteralUnion<T>>
-		: false;
-
-export {};
+export type IsLiteral<T> = IsPrimitive<T> extends true
+  ? IsNotFalse<IsLiteralUnion<T>>
+  : false;

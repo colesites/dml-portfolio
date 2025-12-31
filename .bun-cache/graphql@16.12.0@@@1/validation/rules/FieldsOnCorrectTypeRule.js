@@ -1,19 +1,17 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.FieldsOnCorrectTypeRule = FieldsOnCorrectTypeRule;
 
-var _didYouMean = require('../../jsutils/didYouMean.js');
+var _didYouMean = require("../../jsutils/didYouMean.js");
 
-var _naturalCompare = require('../../jsutils/naturalCompare.js');
+var _naturalCompare = require("../../jsutils/naturalCompare.js");
 
-var _suggestionList = require('../../jsutils/suggestionList.js');
+var _suggestionList = require("../../jsutils/suggestionList.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _definition = require('../../type/definition.js');
+var _definition = require("../../type/definition.js");
 
 /**
  * Fields on correct type
@@ -37,11 +35,11 @@ function FieldsOnCorrectTypeRule(context) {
           const fieldName = node.name.value; // First determine if there are any suggested types to condition on.
 
           let suggestion = (0, _didYouMean.didYouMean)(
-            'to use an inline fragment on',
+            "to use an inline fragment on",
             getSuggestedTypeNames(schema, type, fieldName),
           ); // If there are no suggested types, then perhaps this was a typo?
 
-          if (suggestion === '') {
+          if (suggestion === "") {
             suggestion = (0, _didYouMean.didYouMean)(
               getSuggestedFieldNames(type, fieldName),
             );

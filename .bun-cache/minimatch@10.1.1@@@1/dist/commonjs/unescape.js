@@ -20,19 +20,22 @@ exports.unescape = void 0;
  * When `magicalBraces` is not set, escapes of braces (`{` and `}`) will not be
  * unescaped.
  */
-const unescape = (s, { windowsPathsNoEscape = false, magicalBraces = true, } = {}) => {
-    if (magicalBraces) {
-        return windowsPathsNoEscape
-            ? s.replace(/\[([^\/\\])\]/g, '$1')
-            : s
-                .replace(/((?!\\).|^)\[([^\/\\])\]/g, '$1$2')
-                .replace(/\\([^\/])/g, '$1');
-    }
+const unescape = (
+  s,
+  { windowsPathsNoEscape = false, magicalBraces = true } = {},
+) => {
+  if (magicalBraces) {
     return windowsPathsNoEscape
-        ? s.replace(/\[([^\/\\{}])\]/g, '$1')
-        : s
-            .replace(/((?!\\).|^)\[([^\/\\{}])\]/g, '$1$2')
-            .replace(/\\([^\/{}])/g, '$1');
+      ? s.replace(/\[([^/\\])\]/g, "$1")
+      : s
+          .replace(/((?!\\).|^)\[([^/\\])\]/g, "$1$2")
+          .replace(/\\([^/])/g, "$1");
+  }
+  return windowsPathsNoEscape
+    ? s.replace(/\[([^/\\{}])\]/g, "$1")
+    : s
+        .replace(/((?!\\).|^)\[([^/\\{}])\]/g, "$1$2")
+        .replace(/\\([^/{}])/g, "$1");
 };
 exports.unescape = unescape;
 //# sourceMappingURL=unescape.js.map

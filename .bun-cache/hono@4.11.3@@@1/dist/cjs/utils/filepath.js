@@ -8,18 +8,22 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var filepath_exports = {};
 __export(filepath_exports, {
   getFilePath: () => getFilePath,
-  getFilePathWithoutDefaultDocument: () => getFilePathWithoutDefaultDocument
+  getFilePathWithoutDefaultDocument: () => getFilePathWithoutDefaultDocument,
 });
 module.exports = __toCommonJS(filepath_exports);
 const getFilePath = (options) => {
@@ -32,17 +36,17 @@ const getFilePath = (options) => {
   }
   const path = getFilePathWithoutDefaultDocument({
     root: options.root,
-    filename
+    filename,
   });
   return path;
 };
 const getFilePathWithoutDefaultDocument = (options) => {
   let root = options.root || "";
   let filename = options.filename;
-  if (/(?:^|[\/\\])\.\.(?:$|[\/\\])/.test(filename)) {
+  if (/(?:^|[/\\])\.\.(?:$|[/\\])/.test(filename)) {
     return;
   }
-  filename = filename.replace(/^\.?[\/\\]/, "");
+  filename = filename.replace(/^\.?[/\\]/, "");
   filename = filename.replace(/\\/, "/");
   root = root.replace(/\/$/, "");
   let path = root ? root + "/" + filename : filename;
@@ -53,7 +57,8 @@ const getFilePathWithoutDefaultDocument = (options) => {
   return path;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  getFilePath,
-  getFilePathWithoutDefaultDocument
-});
+0 &&
+  (module.exports = {
+    getFilePath,
+    getFilePathWithoutDefaultDocument,
+  });

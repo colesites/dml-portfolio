@@ -1,11 +1,17 @@
 // src/utils.ts
 async function readWithoutBlocking(readPromise) {
-  return Promise.race([readPromise, Promise.resolve().then(() => Promise.resolve(void 0))]);
+  return Promise.race([
+    readPromise,
+    Promise.resolve().then(() => Promise.resolve(void 0)),
+  ]);
 }
-function writeFromReadableStreamDefaultReader(reader, writable, currentReadPromise) {
+function writeFromReadableStreamDefaultReader(
+  reader,
+  writable,
+  currentReadPromise,
+) {
   const cancel = (error) => {
-    reader.cancel(error).catch(() => {
-    });
+    reader.cancel(error).catch(() => {});
   };
   writable.on("close", cancel);
   writable.on("error", cancel);
@@ -67,5 +73,5 @@ export {
   buildOutgoingHttpHeaders,
   readWithoutBlocking,
   writeFromReadableStream,
-  writeFromReadableStreamDefaultReader
+  writeFromReadableStreamDefaultReader,
 };

@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.matchFromAbsolutePaths = exports.createMatchPath = void 0;
 var path = require("path");
@@ -15,12 +14,26 @@ var TryPath = require("./try-path");
  * @returns a function that can resolve paths.
  */
 function createMatchPath(absoluteBaseUrl, paths, mainFields, addMatchAll) {
-    if (mainFields === void 0) { mainFields = ["main"]; }
-    if (addMatchAll === void 0) { addMatchAll = true; }
-    var absolutePaths = MappingEntry.getAbsoluteMappingEntries(absoluteBaseUrl, paths, addMatchAll);
-    return function (requestedModule, readJson, fileExists, extensions) {
-        return matchFromAbsolutePaths(absolutePaths, requestedModule, readJson, fileExists, extensions, mainFields);
-    };
+  if (mainFields === void 0) {
+    mainFields = ["main"];
+  }
+  if (addMatchAll === void 0) {
+    addMatchAll = true;
+  }
+  var absolutePaths = MappingEntry.getAbsoluteMappingEntries(
+    absoluteBaseUrl,
+    paths,
+    addMatchAll,
+  );
+  return (requestedModule, readJson, fileExists, extensions) =>
+    matchFromAbsolutePaths(
+      absolutePaths,
+      requestedModule,
+      readJson,
+      fileExists,
+      extensions,
+      mainFields,
+    );
 }
 exports.createMatchPath = createMatchPath;
 /**
@@ -34,58 +47,95 @@ exports.createMatchPath = createMatchPath;
  * @param mainFields A list of package.json field names to try when resolving module files. Select a nested field using an array of field names.
  * @returns the found path, or undefined if no path was found.
  */
-function matchFromAbsolutePaths(absolutePathMappings, requestedModule, readJson, fileExists, extensions, mainFields) {
-    if (readJson === void 0) { readJson = Filesystem.readJsonFromDiskSync; }
-    if (fileExists === void 0) { fileExists = Filesystem.fileExistsSync; }
-    if (extensions === void 0) { extensions = Object.keys(require.extensions); }
-    if (mainFields === void 0) { mainFields = ["main"]; }
-    var tryPaths = TryPath.getPathsToTry(extensions, absolutePathMappings, requestedModule);
-    if (!tryPaths) {
-        return undefined;
-    }
-    return findFirstExistingPath(tryPaths, readJson, fileExists, mainFields);
+function matchFromAbsolutePaths(
+  absolutePathMappings,
+  requestedModule,
+  readJson,
+  fileExists,
+  extensions,
+  mainFields,
+) {
+  if (readJson === void 0) {
+    readJson = Filesystem.readJsonFromDiskSync;
+  }
+  if (fileExists === void 0) {
+    fileExists = Filesystem.fileExistsSync;
+  }
+  if (extensions === void 0) {
+    extensions = Object.keys(require.extensions);
+  }
+  if (mainFields === void 0) {
+    mainFields = ["main"];
+  }
+  var tryPaths = TryPath.getPathsToTry(
+    extensions,
+    absolutePathMappings,
+    requestedModule,
+  );
+  if (!tryPaths) {
+    return undefined;
+  }
+  return findFirstExistingPath(tryPaths, readJson, fileExists, mainFields);
 }
 exports.matchFromAbsolutePaths = matchFromAbsolutePaths;
-function findFirstExistingMainFieldMappedFile(packageJson, mainFields, packageJsonPath, fileExists) {
-    for (var index = 0; index < mainFields.length; index++) {
-        var mainFieldSelector = mainFields[index];
-        var candidateMapping = typeof mainFieldSelector === "string"
-            ? packageJson[mainFieldSelector]
-            : mainFieldSelector.reduce(function (obj, key) { return obj[key]; }, packageJson);
-        if (candidateMapping && typeof candidateMapping === "string") {
-            var candidateFilePath = path.join(path.dirname(packageJsonPath), candidateMapping);
-            if (fileExists(candidateFilePath)) {
-                return candidateFilePath;
-            }
-        }
+function findFirstExistingMainFieldMappedFile(
+  packageJson,
+  mainFields,
+  packageJsonPath,
+  fileExists,
+) {
+  for (var index = 0; index < mainFields.length; index++) {
+    var mainFieldSelector = mainFields[index];
+    var candidateMapping =
+      typeof mainFieldSelector === "string"
+        ? packageJson[mainFieldSelector]
+        : mainFieldSelector.reduce((obj, key) => obj[key], packageJson);
+    if (candidateMapping && typeof candidateMapping === "string") {
+      var candidateFilePath = path.join(
+        path.dirname(packageJsonPath),
+        candidateMapping,
+      );
+      if (fileExists(candidateFilePath)) {
+        return candidateFilePath;
+      }
     }
-    return undefined;
+  }
+  return undefined;
 }
 function findFirstExistingPath(tryPaths, readJson, fileExists, mainFields) {
-    if (readJson === void 0) { readJson = Filesystem.readJsonFromDiskSync; }
-    if (mainFields === void 0) { mainFields = ["main"]; }
-    for (var _i = 0, tryPaths_1 = tryPaths; _i < tryPaths_1.length; _i++) {
-        var tryPath = tryPaths_1[_i];
-        if (tryPath.type === "file" ||
-            tryPath.type === "extension" ||
-            tryPath.type === "index") {
-            if (fileExists(tryPath.path)) {
-                return TryPath.getStrippedPath(tryPath);
-            }
+  if (readJson === void 0) {
+    readJson = Filesystem.readJsonFromDiskSync;
+  }
+  if (mainFields === void 0) {
+    mainFields = ["main"];
+  }
+  for (var _i = 0, tryPaths_1 = tryPaths; _i < tryPaths_1.length; _i++) {
+    var tryPath = tryPaths_1[_i];
+    if (
+      tryPath.type === "file" ||
+      tryPath.type === "extension" ||
+      tryPath.type === "index"
+    ) {
+      if (fileExists(tryPath.path)) {
+        return TryPath.getStrippedPath(tryPath);
+      }
+    } else if (tryPath.type === "package") {
+      var packageJson = readJson(tryPath.path);
+      if (packageJson) {
+        var mainFieldMappedFile = findFirstExistingMainFieldMappedFile(
+          packageJson,
+          mainFields,
+          tryPath.path,
+          fileExists,
+        );
+        if (mainFieldMappedFile) {
+          return mainFieldMappedFile;
         }
-        else if (tryPath.type === "package") {
-            var packageJson = readJson(tryPath.path);
-            if (packageJson) {
-                var mainFieldMappedFile = findFirstExistingMainFieldMappedFile(packageJson, mainFields, tryPath.path, fileExists);
-                if (mainFieldMappedFile) {
-                    return mainFieldMappedFile;
-                }
-            }
-        }
-        else {
-            TryPath.exhaustiveTypeException(tryPath.type);
-        }
+      }
+    } else {
+      TryPath.exhaustiveTypeException(tryPath.type);
     }
-    return undefined;
+  }
+  return undefined;
 }
 //# sourceMappingURL=match-path-sync.js.map

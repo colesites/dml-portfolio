@@ -8,15 +8,15 @@ describe("match-path-sync", () => {
         t.absoluteBaseUrl,
         t.paths,
         t.mainFields,
-        t.addMatchAll
+        t.addMatchAll,
       );
       const result = matchPath(
         t.requestedModule,
         (_: string) => t.packageJson,
         (name: string) => t.existingFiles.indexOf(name) !== -1,
-        t.extensions
+        t.extensions,
       );
       expect(result).toBe(t.expectedPath);
-    })
+    }),
   );
 });

@@ -22,16 +22,28 @@
  * - blake512: G1b: rotr 24 -> 25, G2b: rotr 63 -> 11
  * @module
  */
-import { BSIGMA, G1s, G2s } from './_blake.ts';
-import { setBigUint64, SHA224_IV, SHA256_IV, SHA384_IV, SHA512_IV } from './_md.ts';
-import * as u64 from './_u64.ts';
+import { BSIGMA, G1s, G2s } from "./_blake.ts";
+import {
+  SHA224_IV,
+  SHA256_IV,
+  SHA384_IV,
+  SHA512_IV,
+  setBigUint64,
+} from "./_md.ts";
+import * as u64 from "./_u64.ts";
 // prettier-ignore
 import {
-  abytes, aexists, aoutput,
-  clean, createOptHasher,
-  createView, Hash, toBytes,
-  type CHashO, type Input,
-} from './utils.ts';
+  abytes,
+  aexists,
+  aoutput,
+  type CHashO,
+  clean,
+  createOptHasher,
+  createView,
+  Hash,
+  type Input,
+  toBytes,
+} from "./utils.ts";
 
 /** Blake1 options. Basically just "salt" */
 export type BlakeOpts = {
@@ -67,7 +79,7 @@ abstract class BLAKE1<T extends BLAKE1<T>> extends Hash<T> {
     counterLen: number,
     saltLen: number,
     constants: Uint32Array,
-    opts: BlakeOpts = {}
+    opts: BlakeOpts = {},
   ) {
     super();
     const { salt } = opts;
@@ -81,7 +93,7 @@ abstract class BLAKE1<T extends BLAKE1<T>> extends Hash<T> {
       let slt = salt;
       slt = toBytes(slt);
       abytes(slt);
-      if (slt.length !== 4 * saltLen) throw new Error('wrong salt length');
+      if (slt.length !== 4 * saltLen) throw new Error("wrong salt length");
       const salt32 = (this.salt = new Uint32Array(saltLen));
       const sv = createView(slt);
       this.constants = constants.slice();
@@ -185,10 +197,12 @@ abstract class BLAKE1<T extends BLAKE1<T>> extends Hash<T> {
 
 // Constants
 const B64C = /* @__PURE__ */ Uint32Array.from([
-  0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344, 0xa4093822, 0x299f31d0, 0x082efa98, 0xec4e6c89,
-  0x452821e6, 0x38d01377, 0xbe5466cf, 0x34e90c6c, 0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5, 0xb5470917,
-  0x9216d5d9, 0x8979fb1b, 0xd1310ba6, 0x98dfb5ac, 0x2ffd72db, 0xd01adfb7, 0xb8e1afed, 0x6a267e96,
-  0xba7c9045, 0xf12c7f99, 0x24a19947, 0xb3916cf7, 0x0801f2e2, 0x858efc16, 0x636920d8, 0x71574e69,
+  0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344, 0xa4093822, 0x299f31d0,
+  0x082efa98, 0xec4e6c89, 0x452821e6, 0x38d01377, 0xbe5466cf, 0x34e90c6c,
+  0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5, 0xb5470917, 0x9216d5d9, 0x8979fb1b,
+  0xd1310ba6, 0x98dfb5ac, 0x2ffd72db, 0xd01adfb7, 0xb8e1afed, 0x6a267e96,
+  0xba7c9045, 0xf12c7f99, 0x24a19947, 0xb3916cf7, 0x0801f2e2, 0x858efc16,
+  0x636920d8, 0x71574e69,
 ]);
 // first half of C512
 const B32C = B64C.slice(0, 16);
@@ -222,7 +236,12 @@ class Blake1_32 extends BLAKE1<Blake1_32> {
   private v5: number;
   private v6: number;
   private v7: number;
-  constructor(outputLen: number, IV: Uint32Array, lengthFlag: number, opts: BlakeOpts = {}) {
+  constructor(
+    outputLen: number,
+    IV: Uint32Array,
+    lengthFlag: number,
+    opts: BlakeOpts = {},
+  ) {
     super(64, outputLen, lengthFlag, 8, 4, B32C, opts);
     this.v0 = IV[0] | 0;
     this.v1 = IV[1] | 0;
@@ -233,13 +252,29 @@ class Blake1_32 extends BLAKE1<Blake1_32> {
     this.v6 = IV[6] | 0;
     this.v7 = IV[7] | 0;
   }
-  protected get(): [number, number, number, number, number, number, number, number] {
+  protected get(): [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ] {
     const { v0, v1, v2, v3, v4, v5, v6, v7 } = this;
     return [v0, v1, v2, v3, v4, v5, v6, v7];
   }
   // prettier-ignore
   protected set(
-    v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number
+    v0: number,
+    v1: number,
+    v2: number,
+    v3: number,
+    v4: number,
+    v5: number,
+    v6: number,
+    v7: number,
   ): void {
     this.v0 = v0 | 0;
     this.v1 = v1 | 0;
@@ -255,7 +290,8 @@ class Blake1_32 extends BLAKE1<Blake1_32> {
     this.set(0, 0, 0, 0, 0, 0, 0, 0);
   }
   compress(view: DataView, offset: number, withLength = true): void {
-    for (let i = 0; i < 16; i++, offset += 4) BLAKE256_W[i] = view.getUint32(offset, false);
+    for (let i = 0; i < 16; i++, offset += 4)
+      BLAKE256_W[i] = view.getUint32(offset, false);
     // NOTE: we cannot re-use compress from blake2s, since there is additional xor over u256[SIGMA[e]]
     let v00 = this.v0 | 0;
     let v01 = this.v1 | 0;
@@ -276,22 +312,102 @@ class Blake1_32 extends BLAKE1<Blake1_32> {
     let v15 = (this.constants[7] ^ h) >>> 0;
     // prettier-ignore
     for (let i = 0, k = 0, j = 0; i < 14; i++) {
-      ({ a: v00, b: v04, c: v08, d: v12 } = G1s(v00, v04, v08, v12, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v00, b: v04, c: v08, d: v12 } = G2s(v00, v04, v08, v12, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v01, b: v05, c: v09, d: v13 } = G1s(v01, v05, v09, v13, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v01, b: v05, c: v09, d: v13 } = G2s(v01, v05, v09, v13, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v02, b: v06, c: v10, d: v14 } = G1s(v02, v06, v10, v14, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v02, b: v06, c: v10, d: v14 } = G2s(v02, v06, v10, v14, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v03, b: v07, c: v11, d: v15 } = G1s(v03, v07, v11, v15, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v03, b: v07, c: v11, d: v15 } = G2s(v03, v07, v11, v15, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v00, b: v05, c: v10, d: v15 } = G1s(v00, v05, v10, v15, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v00, b: v05, c: v10, d: v15 } = G2s(v00, v05, v10, v15, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v01, b: v06, c: v11, d: v12 } = G1s(v01, v06, v11, v12, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v01, b: v06, c: v11, d: v12 } = G2s(v01, v06, v11, v12, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v02, b: v07, c: v08, d: v13 } = G1s(v02, v07, v08, v13, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v02, b: v07, c: v08, d: v13 } = G2s(v02, v07, v08, v13, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v03, b: v04, c: v09, d: v14 } = G1s(v03, v04, v09, v14, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
-      ({ a: v03, b: v04, c: v09, d: v14 } = G2s(v03, v04, v09, v14, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v00,
+        b: v04,
+        c: v08,
+        d: v12,
+      } = G1s(v00, v04, v08, v12, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v00,
+        b: v04,
+        c: v08,
+        d: v12,
+      } = G2s(v00, v04, v08, v12, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v01,
+        b: v05,
+        c: v09,
+        d: v13,
+      } = G1s(v01, v05, v09, v13, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v01,
+        b: v05,
+        c: v09,
+        d: v13,
+      } = G2s(v01, v05, v09, v13, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v02,
+        b: v06,
+        c: v10,
+        d: v14,
+      } = G1s(v02, v06, v10, v14, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v02,
+        b: v06,
+        c: v10,
+        d: v14,
+      } = G2s(v02, v06, v10, v14, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v03,
+        b: v07,
+        c: v11,
+        d: v15,
+      } = G1s(v03, v07, v11, v15, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v03,
+        b: v07,
+        c: v11,
+        d: v15,
+      } = G2s(v03, v07, v11, v15, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v00,
+        b: v05,
+        c: v10,
+        d: v15,
+      } = G1s(v00, v05, v10, v15, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v00,
+        b: v05,
+        c: v10,
+        d: v15,
+      } = G2s(v00, v05, v10, v15, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v01,
+        b: v06,
+        c: v11,
+        d: v12,
+      } = G1s(v01, v06, v11, v12, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v01,
+        b: v06,
+        c: v11,
+        d: v12,
+      } = G2s(v01, v06, v11, v12, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v02,
+        b: v07,
+        c: v08,
+        d: v13,
+      } = G1s(v02, v07, v08, v13, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v02,
+        b: v07,
+        c: v08,
+        d: v13,
+      } = G2s(v02, v07, v08, v13, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v03,
+        b: v04,
+        c: v09,
+        d: v14,
+      } = G1s(v03, v04, v09, v14, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
+      ({
+        a: v03,
+        b: v04,
+        c: v09,
+        d: v14,
+      } = G2s(v03, v04, v09, v14, BLAKE256_W[BSIGMA[k++]] ^ TBL256[j++]));
     }
     this.v0 = (this.v0 ^ v00 ^ v08 ^ this.salt[0]) >>> 0;
     this.v1 = (this.v1 ^ v01 ^ v09 ^ this.salt[1]) >>> 0;
@@ -323,15 +439,27 @@ function generateTBL512() {
 const TBL512 = /* @__PURE__ */ generateTBL512(); // C512[SIGMA[X]] precompute
 
 // Mixing function G splitted in two halfs
-function G1b(a: number, b: number, c: number, d: number, msg: Uint32Array, k: number) {
+function G1b(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  msg: Uint32Array,
+  k: number,
+) {
   const Xpos = 2 * BSIGMA[k];
-  const Xl = msg[Xpos + 1] ^ TBL512[k * 2 + 1], Xh = msg[Xpos] ^ TBL512[k * 2]; // prettier-ignore
-  let Al = BBUF[2 * a + 1], Ah = BBUF[2 * a]; // prettier-ignore
-  let Bl = BBUF[2 * b + 1], Bh = BBUF[2 * b]; // prettier-ignore
-  let Cl = BBUF[2 * c + 1], Ch = BBUF[2 * c]; // prettier-ignore
-  let Dl = BBUF[2 * d + 1], Dh = BBUF[2 * d]; // prettier-ignore
+  const Xl = msg[Xpos + 1] ^ TBL512[k * 2 + 1],
+    Xh = msg[Xpos] ^ TBL512[k * 2]; // prettier-ignore
+  let Al = BBUF[2 * a + 1],
+    Ah = BBUF[2 * a]; // prettier-ignore
+  let Bl = BBUF[2 * b + 1],
+    Bh = BBUF[2 * b]; // prettier-ignore
+  let Cl = BBUF[2 * c + 1],
+    Ch = BBUF[2 * c]; // prettier-ignore
+  let Dl = BBUF[2 * d + 1],
+    Dh = BBUF[2 * d]; // prettier-ignore
   // v[a] = (v[a] + v[b] + x) | 0;
-  let ll = u64.add3L(Al, Bl, Xl);
+  const ll = u64.add3L(Al, Bl, Xl);
   Ah = u64.add3H(ll, Ah, Bh, Xh) >>> 0;
   Al = (ll | 0) >>> 0;
   // v[d] = rotr(v[d] ^ v[a], 32)
@@ -348,15 +476,27 @@ function G1b(a: number, b: number, c: number, d: number, msg: Uint32Array, k: nu
   (BBUF[2 * d + 1] = Dl), (BBUF[2 * d] = Dh);
 }
 
-function G2b(a: number, b: number, c: number, d: number, msg: Uint32Array, k: number) {
+function G2b(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  msg: Uint32Array,
+  k: number,
+) {
   const Xpos = 2 * BSIGMA[k];
-  const Xl = msg[Xpos + 1] ^ TBL512[k * 2 + 1], Xh = msg[Xpos] ^ TBL512[k * 2]; // prettier-ignore
-  let Al = BBUF[2 * a + 1], Ah = BBUF[2 * a]; // prettier-ignore
-  let Bl = BBUF[2 * b + 1], Bh = BBUF[2 * b]; // prettier-ignore
-  let Cl = BBUF[2 * c + 1], Ch = BBUF[2 * c]; // prettier-ignore
-  let Dl = BBUF[2 * d + 1], Dh = BBUF[2 * d]; // prettier-ignore
+  const Xl = msg[Xpos + 1] ^ TBL512[k * 2 + 1],
+    Xh = msg[Xpos] ^ TBL512[k * 2]; // prettier-ignore
+  let Al = BBUF[2 * a + 1],
+    Ah = BBUF[2 * a]; // prettier-ignore
+  let Bl = BBUF[2 * b + 1],
+    Bh = BBUF[2 * b]; // prettier-ignore
+  let Cl = BBUF[2 * c + 1],
+    Ch = BBUF[2 * c]; // prettier-ignore
+  let Dl = BBUF[2 * d + 1],
+    Dh = BBUF[2 * d]; // prettier-ignore
   // v[a] = (v[a] + v[b] + x) | 0;
-  let ll = u64.add3L(Al, Bl, Xl);
+  const ll = u64.add3L(Al, Bl, Xl);
   Ah = u64.add3H(ll, Ah, Bh, Xh);
   Al = ll | 0;
   // v[d] = rotr(v[d] ^ v[a], 16)
@@ -390,7 +530,12 @@ class Blake1_64 extends BLAKE1<Blake1_64> {
   private v6h: number;
   private v7l: number;
   private v7h: number;
-  constructor(outputLen: number, IV: Uint32Array, lengthFlag: number, opts: BlakeOpts = {}) {
+  constructor(
+    outputLen: number,
+    IV: Uint32Array,
+    lengthFlag: number,
+    opts: BlakeOpts = {},
+  ) {
     super(128, outputLen, lengthFlag, 16, 8, B64C, opts);
     this.v0l = IV[0] | 0;
     this.v0h = IV[1] | 0;
@@ -411,18 +556,78 @@ class Blake1_64 extends BLAKE1<Blake1_64> {
   }
   // prettier-ignore
   protected get(): [
-    number, number, number, number, number, number, number, number,
-    number, number, number, number, number, number, number, number
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
   ] {
-    let { v0l, v0h, v1l, v1h, v2l, v2h, v3l, v3h, v4l, v4h, v5l, v5h, v6l, v6h, v7l, v7h } = this;
-    return [v0l, v0h, v1l, v1h, v2l, v2h, v3l, v3h, v4l, v4h, v5l, v5h, v6l, v6h, v7l, v7h];
+    const {
+      v0l,
+      v0h,
+      v1l,
+      v1h,
+      v2l,
+      v2h,
+      v3l,
+      v3h,
+      v4l,
+      v4h,
+      v5l,
+      v5h,
+      v6l,
+      v6h,
+      v7l,
+      v7h,
+    } = this;
+    return [
+      v0l,
+      v0h,
+      v1l,
+      v1h,
+      v2l,
+      v2h,
+      v3l,
+      v3h,
+      v4l,
+      v4h,
+      v5l,
+      v5h,
+      v6l,
+      v6h,
+      v7l,
+      v7h,
+    ];
   }
   // prettier-ignore
   protected set(
-    v0l: number, v0h: number, v1l: number, v1h: number,
-    v2l: number, v2h: number, v3l: number, v3h: number,
-    v4l: number, v4h: number, v5l: number, v5h: number,
-    v6l: number, v6h: number, v7l: number, v7h: number
+    v0l: number,
+    v0h: number,
+    v1l: number,
+    v1h: number,
+    v2l: number,
+    v2h: number,
+    v3l: number,
+    v3h: number,
+    v4l: number,
+    v4h: number,
+    v5l: number,
+    v5h: number,
+    v6l: number,
+    v6h: number,
+    v7l: number,
+    v7h: number,
   ): void {
     this.v0l = v0l | 0;
     this.v0h = v0h | 0;
@@ -446,7 +651,8 @@ class Blake1_64 extends BLAKE1<Blake1_64> {
     this.set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
   compress(view: DataView, offset: number, withLength = true): void {
-    for (let i = 0; i < 32; i++, offset += 4) BLAKE512_W[i] = view.getUint32(offset, false);
+    for (let i = 0; i < 32; i++, offset += 4)
+      BLAKE512_W[i] = view.getUint32(offset, false);
 
     this.get().forEach((v, i) => (BBUF[i] = v)); // First half from state.
     BBUF.set(this.constants.subarray(0, 16), 16);
@@ -517,18 +723,22 @@ export class BLAKE512 extends Blake1_64 {
   }
 }
 /** blake1-224 hash function */
-export const blake224: CHashO = /* @__PURE__ */ createOptHasher<BLAKE224, BlakeOpts>(
-  (opts) => new BLAKE224(opts)
-);
+export const blake224: CHashO = /* @__PURE__ */ createOptHasher<
+  BLAKE224,
+  BlakeOpts
+>((opts) => new BLAKE224(opts));
 /** blake1-256 hash function */
-export const blake256: CHashO = /* @__PURE__ */ createOptHasher<BLAKE256, BlakeOpts>(
-  (opts) => new BLAKE256(opts)
-);
+export const blake256: CHashO = /* @__PURE__ */ createOptHasher<
+  BLAKE256,
+  BlakeOpts
+>((opts) => new BLAKE256(opts));
 /** blake1-384 hash function */
-export const blake384: CHashO = /* @__PURE__ */ createOptHasher<BLAKE512, BlakeOpts>(
-  (opts) => new BLAKE384(opts)
-);
+export const blake384: CHashO = /* @__PURE__ */ createOptHasher<
+  BLAKE512,
+  BlakeOpts
+>((opts) => new BLAKE384(opts));
 /** blake1-512 hash function */
-export const blake512: CHashO = /* @__PURE__ */ createOptHasher<BLAKE512, BlakeOpts>(
-  (opts) => new BLAKE512(opts)
-);
+export const blake512: CHashO = /* @__PURE__ */ createOptHasher<
+  BLAKE512,
+  BlakeOpts
+>((opts) => new BLAKE512(opts));

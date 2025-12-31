@@ -2,11 +2,11 @@
  * @module
  * Compress Middleware for Hono.
  */
-import type { MiddlewareHandler } from '../../types';
+import type { MiddlewareHandler } from "../../types";
 declare const ENCODING_TYPES: readonly ["gzip", "deflate"];
 interface CompressionOptions {
-    encoding?: (typeof ENCODING_TYPES)[number];
-    threshold?: number;
+  encoding?: (typeof ENCODING_TYPES)[number];
+  threshold?: number;
 }
 /**
  * Compress Middleware for Hono.
@@ -25,5 +25,6 @@ interface CompressionOptions {
  * app.use(compress())
  * ```
  */
-export declare const compress: (options?: CompressionOptions) => MiddlewareHandler;
-export {};
+export declare const compress: (
+  options?: CompressionOptions,
+) => MiddlewareHandler;

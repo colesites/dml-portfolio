@@ -10,7 +10,7 @@ import {
   anumber as an,
   aoutput as ao,
   type IHash as H,
-} from './utils.ts';
+} from "./utils.ts";
 /** @deprecated Use import from `noble/hashes/utils` module */
 export const abool: typeof abool_ = abool_;
 /** @deprecated Use import from `noble/hashes/utils` module */

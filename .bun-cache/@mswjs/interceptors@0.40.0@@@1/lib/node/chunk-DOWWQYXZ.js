@@ -1,15 +1,14 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 
-
-var _chunkSRMAQGPMjs = require('./chunk-SRMAQGPM.js');
+var _chunkSRMAQGPMjs = require("./chunk-SRMAQGPM.js");
 
 // src/Interceptor.ts
-var _logger = require('@open-draft/logger');
-var _stricteventemitter = require('strict-event-emitter');
+var _logger = require("@open-draft/logger");
+var _stricteventemitter = require("strict-event-emitter");
 var INTERNAL_REQUEST_ID_HEADER_NAME = "x-interceptors-internal-request-id";
 function getGlobalSymbol(symbol) {
   return (
-    // @ts-ignore https://github.com/Microsoft/TypeScript/issues/24587
+    // @ts-expect-error https://github.com/Microsoft/TypeScript/issues/24587
     globalThis[symbol] || void 0
   );
 }
@@ -86,14 +85,16 @@ var Interceptor = class {
    * This method is not run if there's a running interceptor instance
    * to prevent instantiating an interceptor multiple times.
    */
-  setup() {
-  }
+  setup() {}
   /**
    * Listen to the interceptor's public events.
    */
   on(event, listener) {
     const logger = this.logger.extend("on");
-    if (this.readyState === "DISPOSING" /* DISPOSING */ || this.readyState === "DISPOSED" /* DISPOSED */) {
+    if (
+      this.readyState === "DISPOSING" /* DISPOSING */ ||
+      this.readyState === "DISPOSED" /* DISPOSED */
+    ) {
       logger.info("cannot listen to events, already disposed!");
       return this;
     }
@@ -131,7 +132,10 @@ var Interceptor = class {
     this.clearInstance();
     logger.info("global symbol deleted:", getGlobalSymbol(this.symbol));
     if (this.subscriptions.length > 0) {
-      logger.info("disposing of %d subscriptions...", this.subscriptions.length);
+      logger.info(
+        "disposing of %d subscriptions...",
+        this.subscriptions.length,
+      );
       for (const dispose of this.subscriptions) {
         dispose();
       }
@@ -145,7 +149,12 @@ var Interceptor = class {
   getInstance() {
     var _a;
     const instance = getGlobalSymbol(this.symbol);
-    this.logger.info("retrieved global instance:", (_a = instance == null ? void 0 : instance.constructor) == null ? void 0 : _a.name);
+    this.logger.info(
+      "retrieved global instance:",
+      (_a = instance == null ? void 0 : instance.constructor) == null
+        ? void 0
+        : _a.name,
+    );
     return instance;
   }
   setInstance() {
@@ -159,8 +168,8 @@ var Interceptor = class {
 };
 
 // src/RequestController.ts
-var _deferredpromise = require('@open-draft/deferred-promise');
-var _outvariant = require('outvariant');
+var _deferredpromise = require("@open-draft/deferred-promise");
+var _outvariant = require("outvariant");
 
 // src/InterceptorError.ts
 var InterceptorError = class extends Error {
@@ -190,11 +199,13 @@ var _RequestController = class {
       this.readyState === _RequestController.PENDING,
       'Failed to passthrough the "%s %s" request: the request has already been handled',
       this.request.method,
-      this.request.url
+      this.request.url,
     );
     this.readyState = _RequestController.PASSTHROUGH;
     await this.source.passthrough();
-    _chunkSRMAQGPMjs.__privateGet.call(void 0, this, _handled, handled_get).resolve();
+    _chunkSRMAQGPMjs.__privateGet
+      .call(void 0, this, _handled, handled_get)
+      .resolve();
   }
   /**
    * Respond to this request with the given `Response` instance.
@@ -213,10 +224,12 @@ var _RequestController = class {
       this.request.url,
       response.status,
       response.statusText || "OK",
-      this.readyState
+      this.readyState,
     );
     this.readyState = _RequestController.RESPONSE;
-    _chunkSRMAQGPMjs.__privateGet.call(void 0, this, _handled, handled_get).resolve();
+    _chunkSRMAQGPMjs.__privateGet
+      .call(void 0, this, _handled, handled_get)
+      .resolve();
     this.source.respondWith(response);
   }
   /**
@@ -235,16 +248,18 @@ var _RequestController = class {
       this.request.method,
       this.request.url,
       reason == null ? void 0 : reason.toString(),
-      this.readyState
+      this.readyState,
     );
     this.readyState = _RequestController.ERROR;
     this.source.errorWith(reason);
-    _chunkSRMAQGPMjs.__privateGet.call(void 0, this, _handled, handled_get).resolve();
+    _chunkSRMAQGPMjs.__privateGet
+      .call(void 0, this, _handled, handled_get)
+      .resolve();
   }
 };
 var RequestController = _RequestController;
 _handled = new WeakSet();
-handled_get = function() {
+handled_get = function () {
   return this.handled;
 };
 RequestController.PENDING = 0;
@@ -306,7 +321,7 @@ var _FetchResponse = class extends Response {
         value: url,
         enumerable: true,
         configurable: true,
-        writable: false
+        writable: false,
       });
     }
   }
@@ -323,12 +338,14 @@ var _FetchResponse = class extends Response {
   constructor(body, init = {}) {
     var _a;
     const status = (_a = init.status) != null ? _a : 200;
-    const safeStatus = _FetchResponse.isConfigurableStatusCode(status) ? status : 200;
+    const safeStatus = _FetchResponse.isConfigurableStatusCode(status)
+      ? status
+      : 200;
     const finalBody = _FetchResponse.isResponseWithBody(status) ? body : null;
     super(finalBody, {
       status: safeStatus,
       statusText: init.statusText,
-      headers: init.headers
+      headers: init.headers,
     });
     if (status !== safeStatus) {
       const state = getValueBySymbol("state", this);
@@ -339,7 +356,7 @@ var _FetchResponse = class extends Response {
           value: status,
           enumerable: true,
           configurable: true,
-          writable: false
+          writable: false,
         });
       }
     }
@@ -354,16 +371,14 @@ var FetchResponse = _FetchResponse;
 FetchResponse.STATUS_CODES_WITHOUT_BODY = [101, 103, 204, 205, 304];
 FetchResponse.STATUS_CODES_WITH_REDIRECT = [301, 302, 303, 307, 308];
 
-
-
-
-
-
-
-
-
-
-
-
-exports.INTERNAL_REQUEST_ID_HEADER_NAME = INTERNAL_REQUEST_ID_HEADER_NAME; exports.getGlobalSymbol = getGlobalSymbol; exports.deleteGlobalSymbol = deleteGlobalSymbol; exports.InterceptorReadyState = InterceptorReadyState; exports.Interceptor = Interceptor; exports.InterceptorError = InterceptorError; exports.RequestController = RequestController; exports.createRequestId = createRequestId; exports.canParseUrl = canParseUrl; exports.FetchResponse = FetchResponse;
+exports.INTERNAL_REQUEST_ID_HEADER_NAME = INTERNAL_REQUEST_ID_HEADER_NAME;
+exports.getGlobalSymbol = getGlobalSymbol;
+exports.deleteGlobalSymbol = deleteGlobalSymbol;
+exports.InterceptorReadyState = InterceptorReadyState;
+exports.Interceptor = Interceptor;
+exports.InterceptorError = InterceptorError;
+exports.RequestController = RequestController;
+exports.createRequestId = createRequestId;
+exports.canParseUrl = canParseUrl;
+exports.FetchResponse = FetchResponse;
 //# sourceMappingURL=chunk-DOWWQYXZ.js.map

@@ -22,7 +22,7 @@ export interface Paths {
 export function getAbsoluteMappingEntries(
   absoluteBaseUrl: string,
   paths: Paths,
-  addMatchAll: boolean
+  addMatchAll: boolean,
 ): ReadonlyArray<MappingEntry> {
   // Resolve all paths to absolute form once here, and sort them by
   // longest prefix once here, this saves time on each request later.
@@ -33,7 +33,7 @@ export function getAbsoluteMappingEntries(
     absolutePaths.push({
       pattern: key,
       paths: paths[key].map((pathToResolve) =>
-        path.resolve(absoluteBaseUrl, pathToResolve)
+        path.resolve(absoluteBaseUrl, pathToResolve),
       ),
     });
   }

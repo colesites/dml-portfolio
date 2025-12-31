@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var cors_exports = {};
 __export(cors_exports, {
-  cors: () => cors
+  cors: () => cors,
 });
 module.exports = __toCommonJS(cors_exports);
 const cors = (options) => {
@@ -26,23 +30,23 @@ const cors = (options) => {
     origin: "*",
     allowMethods: ["GET", "HEAD", "PUT", "POST", "DELETE", "PATCH"],
     allowHeaders: [],
-    exposeHeaders: []
+    exposeHeaders: [],
   };
   const opts = {
     ...defaults,
-    ...options
+    ...options,
   };
   const findAllowOrigin = ((optsOrigin) => {
     if (typeof optsOrigin === "string") {
       if (optsOrigin === "*") {
         return () => optsOrigin;
       } else {
-        return (origin) => optsOrigin === origin ? origin : null;
+        return (origin) => (optsOrigin === origin ? origin : null);
       }
     } else if (typeof optsOrigin === "function") {
       return optsOrigin;
     } else {
-      return (origin) => optsOrigin.includes(origin) ? origin : null;
+      return (origin) => (optsOrigin.includes(origin) ? origin : null);
     }
   })(opts.origin);
   const findAllowMethods = ((optsAllowMethods) => {
@@ -75,7 +79,10 @@ const cors = (options) => {
       if (opts.maxAge != null) {
         set("Access-Control-Max-Age", opts.maxAge.toString());
       }
-      const allowMethods = await findAllowMethods(c.req.header("origin") || "", c);
+      const allowMethods = await findAllowMethods(
+        c.req.header("origin") || "",
+        c,
+      );
       if (allowMethods.length) {
         set("Access-Control-Allow-Methods", allowMethods.join(","));
       }
@@ -95,7 +102,7 @@ const cors = (options) => {
       return new Response(null, {
         headers: c.res.headers,
         status: 204,
-        statusText: "No Content"
+        statusText: "No Content",
       });
     }
     await next();
@@ -105,6 +112,7 @@ const cors = (options) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  cors
-});
+0 &&
+  (module.exports = {
+    cors,
+  });

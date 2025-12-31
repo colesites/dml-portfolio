@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var logger_exports = {};
 __export(logger_exports, {
-  logger: () => logger
+  logger: () => logger,
 });
 module.exports = __toCommonJS(logger_exports);
 var import_color = require("../../utils/color");
@@ -30,7 +34,9 @@ var LogPrefix = /* @__PURE__ */ ((LogPrefix2) => {
 })(LogPrefix || {});
 const humanize = (times) => {
   const [delimiter, separator] = [",", "."];
-  const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
+  const orderTimes = times.map((v) =>
+    v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter),
+  );
   return orderTimes.join(separator);
 };
 const time = (start) => {
@@ -40,7 +46,7 @@ const time = (start) => {
 const colorStatus = async (status) => {
   const colorEnabled = await (0, import_color.getColorEnabledAsync)();
   if (colorEnabled) {
-    switch (status / 100 | 0) {
+    switch ((status / 100) | 0) {
       case 5:
         return `\x1B[31m${status}\x1B[0m`;
       case 4:
@@ -54,7 +60,10 @@ const colorStatus = async (status) => {
   return `${status}`;
 };
 async function log(fn, prefix, method, path, status = 0, elapsed) {
-  const out = prefix === "<--" /* Incoming */ ? `${prefix} ${method} ${path}` : `${prefix} ${method} ${path} ${await colorStatus(status)} ${elapsed}`;
+  const out =
+    prefix === "<--" /* Incoming */
+      ? `${prefix} ${method} ${path}`
+      : `${prefix} ${method} ${path} ${await colorStatus(status)} ${elapsed}`;
   fn(out);
 }
 const logger = (fn = console.log) => {
@@ -64,10 +73,18 @@ const logger = (fn = console.log) => {
     await log(fn, "<--" /* Incoming */, method, path);
     const start = Date.now();
     await next();
-    await log(fn, "-->" /* Outgoing */, method, path, c.res.status, time(start));
+    await log(
+      fn,
+      "-->" /* Outgoing */,
+      method,
+      path,
+      c.res.status,
+      time(start),
+    );
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  logger
-});
+0 &&
+  (module.exports = {
+    logger,
+  });

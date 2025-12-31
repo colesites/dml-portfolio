@@ -4,7 +4,7 @@ import {
   isListType,
   isNonNullType,
   isObjectType,
-} from '../type/definition.mjs';
+} from "../type/definition.mjs";
 
 /**
  * Provided two types, return true if the types are equal (invariant).

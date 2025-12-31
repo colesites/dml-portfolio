@@ -1,56 +1,56 @@
-import { CssSyntaxError, ProcessOptions } from './postcss.js'
-import PreviousMap from './previous-map.js'
+import { CssSyntaxError, ProcessOptions } from "./postcss.js";
+import PreviousMap from "./previous-map.js";
 
 declare namespace Input {
   export interface FilePosition {
     /**
      * Column of inclusive start position in source file.
      */
-    column: number
+    column: number;
 
     /**
      * Column of exclusive end position in source file.
      */
-    endColumn?: number
+    endColumn?: number;
 
     /**
      * Line of exclusive end position in source file.
      */
-    endLine?: number
+    endLine?: number;
 
     /**
      * Offset of exclusive end position in source file.
      */
-    endOffset?: number
+    endOffset?: number;
 
     /**
      * Absolute path to the source file.
      */
-    file?: string
+    file?: string;
 
     /**
      * Line of inclusive start position in source file.
      */
-    line: number
+    line: number;
 
     /**
      * Offset of inclusive start position in source file.
      */
-    offset: number
+    offset: number;
 
     /**
      * Source code.
      */
-    source?: string
+    source?: string;
 
     /**
      * URL for the source file.
      */
-    url: string
+    url: string;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  export { Input_ as default }
+  export { Input_ as default };
 }
 
 /**
@@ -70,7 +70,7 @@ declare class Input_ {
    * input.css //=> "a{}"
    * ```
    */
-  css: string
+  css: string;
 
   /**
    * Input source with support for non-CSS documents.
@@ -81,7 +81,7 @@ declare class Input_ {
    * input.css //=> "a{}"
    * ```
    */
-  document: string
+  document: string;
 
   /**
    * The absolute path to the CSS source file defined
@@ -92,12 +92,12 @@ declare class Input_ {
    * root.source.input.file //=> '/home/ai/a.css'
    * ```
    */
-  file?: string
+  file?: string;
 
   /**
    * The flag to indicate whether or not the source code has Unicode BOM.
    */
-  hasBOM: boolean
+  hasBOM: boolean;
 
   /**
    * The unique ID of the CSS source. It will be created if `from` option
@@ -109,7 +109,7 @@ declare class Input_ {
    * root.source.input.id   //=> "<input css 8LZeVF>"
    * ```
    */
-  id?: string
+  id?: string;
 
   /**
    * The input source map passed from a compilation step before PostCSS
@@ -119,7 +119,7 @@ declare class Input_ {
    * root.source.input.map.consumer().sources //=> ['a.sass']
    * ```
    */
-  map: PreviousMap
+  map: PreviousMap;
 
   /**
    * The CSS source identifier. Contains `Input#file` if the user
@@ -133,13 +133,13 @@ declare class Input_ {
    * root.source.input.from //=> "<input css 1>"
    * ```
    */
-  get from(): string
+  get from(): string;
 
   /**
    * @param css  Input CSS source.
    * @param opts Process options.
    */
-  constructor(css: string, opts?: ProcessOptions)
+  constructor(css: string, opts?: ProcessOptions);
 
   /**
    * Returns `CssSyntaxError` with information about the error and its position.
@@ -148,33 +148,33 @@ declare class Input_ {
     message: string,
     start:
       | {
-          column: number
-          line: number
+          column: number;
+          line: number;
         }
       | {
-          offset: number
+          offset: number;
         },
     end:
       | {
-          column: number
-          line: number
+          column: number;
+          line: number;
         }
       | {
-          offset: number
+          offset: number;
         },
-    opts?: { plugin?: CssSyntaxError['plugin'] }
-  ): CssSyntaxError
+    opts?: { plugin?: CssSyntaxError["plugin"] },
+  ): CssSyntaxError;
   error(
     message: string,
     line: number,
     column: number,
-    opts?: { plugin?: CssSyntaxError['plugin'] }
-  ): CssSyntaxError
+    opts?: { plugin?: CssSyntaxError["plugin"] },
+  ): CssSyntaxError;
   error(
     message: string,
     offset: number,
-    opts?: { plugin?: CssSyntaxError['plugin'] }
-  ): CssSyntaxError
+    opts?: { plugin?: CssSyntaxError["plugin"] },
+  ): CssSyntaxError;
 
   /**
    * Converts source line and column to offset.
@@ -183,14 +183,14 @@ declare class Input_ {
    * @param column Source column.
    * @return Source offset.
    */
-  fromLineAndColumn(line: number, column: number): number
+  fromLineAndColumn(line: number, column: number): number;
 
   /**
    * Converts source offset to line and column.
    *
    * @param offset Source offset.
    */
-  fromOffset(offset: number): { col: number; line: number } | null
+  fromOffset(offset: number): { col: number; line: number } | null;
 
   /**
    * Reads the input source map and returns a symbol position
@@ -215,13 +215,13 @@ declare class Input_ {
     line: number,
     column: number,
     endLine?: number,
-    endColumn?: number
-  ): false | Input.FilePosition
+    endColumn?: number,
+  ): false | Input.FilePosition;
 
   /** Converts this to a JSON-friendly object representation. */
-  toJSON(): object
+  toJSON(): object;
 }
 
 declare class Input extends Input_ {}
 
-export = Input
+export = Input;

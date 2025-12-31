@@ -1,34 +1,25 @@
-/*!
- * statuses
- * Copyright(c) 2014 Jonathan Ong
- * Copyright(c) 2016 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict'
-
 /**
  * Module dependencies.
  * @private
  */
 
-var codes = require('./codes.json')
+var codes = require("./codes.json");
 
 /**
  * Module exports.
  * @public
  */
 
-module.exports = status
+module.exports = status;
 
 // status code to message map
-status.message = codes
+status.message = codes;
 
 // status message (lower-case) to code map
-status.code = createMessageToStatusCodeMap(codes)
+status.code = createMessageToStatusCodeMap(codes);
 
 // array of status codes
-status.codes = createStatusCodeList(codes)
+status.codes = createStatusCodeList(codes);
 
 // status codes for redirects
 status.redirect = {
@@ -38,40 +29,40 @@ status.redirect = {
   303: true,
   305: true,
   307: true,
-  308: true
-}
+  308: true,
+};
 
 // status codes for empty bodies
 status.empty = {
   204: true,
   205: true,
-  304: true
-}
+  304: true,
+};
 
 // status codes for when you should retry the request
 status.retry = {
   502: true,
   503: true,
-  504: true
-}
+  504: true,
+};
 
 /**
  * Create a map of message to status code.
  * @private
  */
 
-function createMessageToStatusCodeMap (codes) {
-  var map = {}
+function createMessageToStatusCodeMap(codes) {
+  var map = {};
 
-  Object.keys(codes).forEach(function forEachCode (code) {
-    var message = codes[code]
-    var status = Number(code)
+  Object.keys(codes).forEach(function forEachCode(code) {
+    var message = codes[code];
+    var status = Number(code);
 
     // populate map
-    map[message.toLowerCase()] = status
-  })
+    map[message.toLowerCase()] = status;
+  });
 
-  return map
+  return map;
 }
 
 /**
@@ -79,10 +70,10 @@ function createMessageToStatusCodeMap (codes) {
  * @private
  */
 
-function createStatusCodeList (codes) {
-  return Object.keys(codes).map(function mapCode (code) {
-    return Number(code)
-  })
+function createStatusCodeList(codes) {
+  return Object.keys(codes).map(function mapCode(code) {
+    return Number(code);
+  });
 }
 
 /**
@@ -90,14 +81,14 @@ function createStatusCodeList (codes) {
  * @private
  */
 
-function getStatusCode (message) {
-  var msg = message.toLowerCase()
+function getStatusCode(message) {
+  var msg = message.toLowerCase();
 
-  if (!Object.prototype.hasOwnProperty.call(status.code, msg)) {
-    throw new Error('invalid status message: "' + message + '"')
+  if (!Object.hasOwn(status.code, msg)) {
+    throw new Error('invalid status message: "' + message + '"');
   }
 
-  return status.code[msg]
+  return status.code[msg];
 }
 
 /**
@@ -105,12 +96,12 @@ function getStatusCode (message) {
  * @private
  */
 
-function getStatusMessage (code) {
-  if (!Object.prototype.hasOwnProperty.call(status.message, code)) {
-    throw new Error('invalid status code: ' + code)
+function getStatusMessage(code) {
+  if (!Object.hasOwn(status.message, code)) {
+    throw new Error("invalid status code: " + code);
   }
 
-  return status.message[code]
+  return status.message[code];
 }
 
 /**
@@ -127,20 +118,20 @@ function getStatusMessage (code) {
  * @public
  */
 
-function status (code) {
-  if (typeof code === 'number') {
-    return getStatusMessage(code)
+function status(code) {
+  if (typeof code === "number") {
+    return getStatusMessage(code);
   }
 
-  if (typeof code !== 'string') {
-    throw new TypeError('code must be a number or string')
+  if (typeof code !== "string") {
+    throw new TypeError("code must be a number or string");
   }
 
   // '403'
-  var n = parseInt(code, 10)
+  var n = parseInt(code, 10);
   if (!isNaN(n)) {
-    return getStatusMessage(n)
+    return getStatusMessage(n);
   }
 
-  return getStatusCode(code)
+  return getStatusCode(code);
 }

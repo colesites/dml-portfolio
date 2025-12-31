@@ -1,13 +1,24 @@
-import { comma, decodeInteger, encodeInteger, hasMoreVlq, semicolon } from './vlq';
-import { StringWriter, StringReader } from './strings';
+import { StringReader, StringWriter } from "./strings";
+import {
+  comma,
+  decodeInteger,
+  encodeInteger,
+  hasMoreVlq,
+  semicolon,
+} from "./vlq";
 
+export type {
+  BindingExpressionRange,
+  CallSite,
+  GeneratedRange,
+  OriginalScope,
+} from "./scopes";
 export {
-  decodeOriginalScopes,
-  encodeOriginalScopes,
   decodeGeneratedRanges,
+  decodeOriginalScopes,
   encodeGeneratedRanges,
-} from './scopes';
-export type { OriginalScope, GeneratedRange, CallSite, BindingExpressionRange } from './scopes';
+  encodeOriginalScopes,
+} from "./scopes";
 
 export type SourceMapSegment =
   | [number]
@@ -27,7 +38,7 @@ export function decode(mappings: string): SourceMapMappings {
   let namesIndex = 0;
 
   do {
-    const semi = reader.indexOf(';');
+    const semi = reader.indexOf(";");
     const line: SourceMapLine = [];
     let sorted = true;
     let lastCol = 0;

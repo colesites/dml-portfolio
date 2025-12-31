@@ -2,7 +2,7 @@
  * Utils for IP Addresses
  * @module
  */
-import type { AddressType } from '../helper/conninfo';
+import type { AddressType } from "../helper/conninfo";
 /**
  * Expand IPv6 Address
  * @param ipV6 Shorten IPv6 Address

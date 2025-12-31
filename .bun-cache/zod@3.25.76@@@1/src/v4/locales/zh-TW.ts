@@ -29,7 +29,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -75,7 +78,8 @@ const error: () => errors.$ZodErrorMap = () => {
       case "invalid_type":
         return `無效的輸入值：預期為 ${issue.expected}，但收到 ${parsedType(issue.input)}`;
       case "invalid_value":
-        if (issue.values.length === 1) return `無效的輸入值：預期為 ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `無效的輸入值：預期為 ${util.stringifyPrimitive(issue.values[0])}`;
         return `無效的選項：預期為以下其中之一 ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
@@ -97,9 +101,12 @@ const error: () => errors.$ZodErrorMap = () => {
         if (_issue.format === "starts_with") {
           return `無效的字串：必須以 "${_issue.prefix}" 開頭`;
         }
-        if (_issue.format === "ends_with") return `無效的字串：必須以 "${_issue.suffix}" 結尾`;
-        if (_issue.format === "includes") return `無效的字串：必須包含 "${_issue.includes}"`;
-        if (_issue.format === "regex") return `無效的字串：必須符合格式 ${_issue.pattern}`;
+        if (_issue.format === "ends_with")
+          return `無效的字串：必須以 "${_issue.suffix}" 結尾`;
+        if (_issue.format === "includes")
+          return `無效的字串：必須包含 "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `無效的字串：必須符合格式 ${_issue.pattern}`;
         return `無效的 ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

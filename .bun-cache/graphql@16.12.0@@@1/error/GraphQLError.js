@@ -1,22 +1,20 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.GraphQLError = void 0;
 exports.formatError = formatError;
 exports.printError = printError;
 
-var _isObjectLike = require('../jsutils/isObjectLike.js');
+var _isObjectLike = require("../jsutils/isObjectLike.js");
 
-var _location = require('../language/location.js');
+var _location = require("../language/location.js");
 
-var _printLocation = require('../language/printLocation.js');
+var _printLocation = require("../language/printLocation.js");
 
 function toNormalizedOptions(args) {
   const firstArg = args[0];
 
-  if (firstArg == null || 'kind' in firstArg || 'length' in firstArg) {
+  if (firstArg == null || "kind" in firstArg || "length" in firstArg) {
     return {
       nodes: firstArg,
       source: args[1],
@@ -88,7 +86,7 @@ class GraphQLError extends Error {
     const { nodes, source, positions, path, originalError, extensions } =
       toNormalizedOptions(rawArgs);
     super(message);
-    this.name = 'GraphQLError';
+    this.name = "GraphQLError";
     this.path = path !== null && path !== void 0 ? path : undefined;
     this.originalError =
       originalError !== null && originalError !== void 0
@@ -108,25 +106,25 @@ class GraphQLError extends Error {
       source !== null && source !== void 0
         ? source
         : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : (_nodeLocations$ = nodeLocations[0]) === null ||
-          _nodeLocations$ === void 0
-        ? void 0
-        : _nodeLocations$.source;
+          ? void 0
+          : (_nodeLocations$ = nodeLocations[0]) === null ||
+              _nodeLocations$ === void 0
+            ? void 0
+            : _nodeLocations$.source;
     this.positions =
       positions !== null && positions !== void 0
         ? positions
         : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : nodeLocations.map((loc) => loc.start);
+          ? void 0
+          : nodeLocations.map((loc) => loc.start);
     this.locations =
       positions && source
         ? positions.map((pos) => (0, _location.getLocation)(source, pos))
         : nodeLocations === null || nodeLocations === void 0
-        ? void 0
-        : nodeLocations.map((loc) =>
-            (0, _location.getLocation)(loc.source, loc.start),
-          );
+          ? void 0
+          : nodeLocations.map((loc) =>
+              (0, _location.getLocation)(loc.source, loc.start),
+            );
     const originalExtensions = (0, _isObjectLike.isObjectLike)(
       originalError === null || originalError === void 0
         ? void 0
@@ -175,7 +173,7 @@ class GraphQLError extends Error {
       originalError !== void 0 &&
       originalError.stack
     ) {
-      Object.defineProperty(this, 'stack', {
+      Object.defineProperty(this, "stack", {
         value: originalError.stack,
         writable: true,
         configurable: true,
@@ -183,7 +181,7 @@ class GraphQLError extends Error {
     } else if (Error.captureStackTrace) {
       Error.captureStackTrace(this, GraphQLError);
     } else {
-      Object.defineProperty(this, 'stack', {
+      Object.defineProperty(this, "stack", {
         value: Error().stack,
         writable: true,
         configurable: true,
@@ -193,7 +191,7 @@ class GraphQLError extends Error {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLError';
+    return "GraphQLError";
   }
 
   toString() {
@@ -202,13 +200,13 @@ class GraphQLError extends Error {
     if (this.nodes) {
       for (const node of this.nodes) {
         if (node.loc) {
-          output += '\n\n' + (0, _printLocation.printLocation)(node.loc);
+          output += "\n\n" + (0, _printLocation.printLocation)(node.loc);
         }
       }
     } else if (this.source && this.locations) {
       for (const location of this.locations) {
         output +=
-          '\n\n' +
+          "\n\n" +
           (0, _printLocation.printSourceLocation)(this.source, location);
       }
     }

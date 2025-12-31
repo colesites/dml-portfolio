@@ -2,26 +2,26 @@ import type {
   WebSocketClientConnection,
   WebSocketConnectionData,
   WebSocketData,
-} from '@mswjs/interceptors/WebSocket'
-import { devUtils } from '../../utils/internal/devUtils'
-import { getTimestamp } from '../../utils/logging/getTimestamp'
-import { toPublicUrl } from '../../utils/request/toPublicUrl'
-import { getMessageLength } from './getMessageLength'
-import { getPublicData } from './getPublicData'
+} from "@mswjs/interceptors/WebSocket";
+import { devUtils } from "../../utils/internal/devUtils";
+import { getTimestamp } from "../../utils/logging/getTimestamp";
+import { toPublicUrl } from "../../utils/request/toPublicUrl";
+import { getMessageLength } from "./getMessageLength";
+import { getPublicData } from "./getPublicData";
 
 export const colors = {
-  system: '#3b82f6',
-  outgoing: '#22c55e',
-  incoming: '#ef4444',
-  mocked: '#ff6a33',
-}
+  system: "#3b82f6",
+  outgoing: "#22c55e",
+  incoming: "#ef4444",
+  mocked: "#ff6a33",
+};
 
 export function attachWebSocketLogger(
   connection: WebSocketConnectionData,
 ): void {
-  const { client, server } = connection
+  const { client, server } = connection;
 
-  logConnectionOpen(client)
+  logConnectionOpen(client);
 
   // Log the events sent from the WebSocket client.
   // WebSocket client connection object is written from the
@@ -30,23 +30,23 @@ export function attachWebSocketLogger(
    * @todo Provide the reference to the exact event handler
    * that called this `client.send()`.
    */
-  client.addEventListener('message', (event) => {
-    logOutgoingClientMessage(event)
-  })
+  client.addEventListener("message", (event) => {
+    logOutgoingClientMessage(event);
+  });
 
-  client.addEventListener('close', (event) => {
-    logConnectionClose(event)
-  })
+  client.addEventListener("close", (event) => {
+    logConnectionClose(event);
+  });
 
   // Log client errors (connection closures due to errors).
-  client.socket.addEventListener('error', (event) => {
-    logClientError(event)
-  })
+  client.socket.addEventListener("error", (event) => {
+    logClientError(event);
+  });
 
   client.send = new Proxy(client.send, {
     apply(target, thisArg, args) {
-      const [data] = args
-      const messageEvent = new MessageEvent('message', { data })
+      const [data] = args;
+      const messageEvent = new MessageEvent("message", { data });
       Object.defineProperties(messageEvent, {
         currentTarget: {
           enumerable: true,
@@ -58,32 +58,32 @@ export function attachWebSocketLogger(
           writable: false,
           value: client.socket,
         },
-      })
+      });
 
       queueMicrotask(() => {
-        logIncomingMockedClientMessage(messageEvent)
-      })
+        logIncomingMockedClientMessage(messageEvent);
+      });
 
-      return Reflect.apply(target, thisArg, args)
+      return Reflect.apply(target, thisArg, args);
     },
-  })
+  });
 
   server.addEventListener(
-    'open',
+    "open",
     () => {
-      server.addEventListener('message', (event) => {
-        logIncomingServerMessage(event)
-      })
+      server.addEventListener("message", (event) => {
+        logIncomingServerMessage(event);
+      });
     },
     { once: true },
-  )
+  );
 
   // Log outgoing client events initiated by the event handler.
   // The actual client never sent these but the handler did.
   server.send = new Proxy(server.send, {
     apply(target, thisArg, args) {
-      const [data] = args
-      const messageEvent = new MessageEvent('message', { data })
+      const [data] = args;
+      const messageEvent = new MessageEvent("message", { data });
       Object.defineProperties(messageEvent, {
         currentTarget: {
           enumerable: true,
@@ -95,13 +95,13 @@ export function attachWebSocketLogger(
           writable: false,
           value: server.socket,
         },
-      })
+      });
 
-      logOutgoingMockedClientMessage(messageEvent)
+      logOutgoingMockedClientMessage(messageEvent);
 
-      return Reflect.apply(target, thisArg, args)
+      return Reflect.apply(target, thisArg, args);
     },
-  })
+  });
 }
 
 /**
@@ -111,70 +111,70 @@ export function attachWebSocketLogger(
  * what handlers observe this connection.
  */
 export function logConnectionOpen(client: WebSocketClientConnection) {
-  const publicUrl = toPublicUrl(client.url)
+  const publicUrl = toPublicUrl(client.url);
 
   console.groupCollapsed(
     devUtils.formatMessage(`${getTimestamp()} %c▶%c ${publicUrl}`),
     `color:${colors.system}`,
-    'color:inherit',
-  )
+    "color:inherit",
+  );
   // eslint-disable-next-line no-console
-  console.log('Client:', client.socket)
-  console.groupEnd()
+  console.log("Client:", client.socket);
+  console.groupEnd();
 }
 
 function logConnectionClose(event: CloseEvent) {
-  const target = event.target as WebSocket
-  const publicUrl = toPublicUrl(target.url)
+  const target = event.target as WebSocket;
+  const publicUrl = toPublicUrl(target.url);
 
   console.groupCollapsed(
     devUtils.formatMessage(
       `${getTimestamp({ milliseconds: true })} %c■%c ${publicUrl}`,
     ),
     `color:${colors.system}`,
-    'color:inherit',
-  )
+    "color:inherit",
+  );
   // eslint-disable-next-line no-console
-  console.log(event)
-  console.groupEnd()
+  console.log(event);
+  console.groupEnd();
 }
 
 function logClientError(event: Event) {
-  const socket = event.target as WebSocket
-  const publicUrl = toPublicUrl(socket.url)
+  const socket = event.target as WebSocket;
+  const publicUrl = toPublicUrl(socket.url);
 
   console.groupCollapsed(
     devUtils.formatMessage(
       `${getTimestamp({ milliseconds: true })} %c\u00D7%c ${publicUrl}`,
     ),
     `color:${colors.system}`,
-    'color:inherit',
-  )
+    "color:inherit",
+  );
   // eslint-disable-next-line no-console
-  console.log(event)
-  console.groupEnd()
+  console.log(event);
+  console.groupEnd();
 }
 
 /**
  * Prints the outgoing client message.
  */
 async function logOutgoingClientMessage(event: MessageEvent<WebSocketData>) {
-  const byteLength = getMessageLength(event.data)
-  const publicData = await getPublicData(event.data)
-  const arrow = event.defaultPrevented ? '⇡' : '⬆'
+  const byteLength = getMessageLength(event.data);
+  const publicData = await getPublicData(event.data);
+  const arrow = event.defaultPrevented ? "⇡" : "⬆";
 
   console.groupCollapsed(
     devUtils.formatMessage(
       `${getTimestamp({ milliseconds: true })} %c${arrow}%c ${publicData} %c${byteLength}%c`,
     ),
     `color:${colors.outgoing}`,
-    'color:inherit',
-    'color:gray;font-weight:normal',
-    'color:inherit;font-weight:inherit',
-  )
+    "color:inherit",
+    "color:gray;font-weight:normal",
+    "color:inherit;font-weight:inherit",
+  );
   // eslint-disable-next-line no-console
-  console.log(event)
-  console.groupEnd()
+  console.log(event);
+  console.groupEnd();
 }
 
 /**
@@ -184,21 +184,21 @@ async function logOutgoingClientMessage(event: MessageEvent<WebSocketData>) {
 async function logOutgoingMockedClientMessage(
   event: MessageEvent<WebSocketData>,
 ) {
-  const byteLength = getMessageLength(event.data)
-  const publicData = await getPublicData(event.data)
+  const byteLength = getMessageLength(event.data);
+  const publicData = await getPublicData(event.data);
 
   console.groupCollapsed(
     devUtils.formatMessage(
       `${getTimestamp({ milliseconds: true })} %c⬆%c ${publicData} %c${byteLength}%c`,
     ),
     `color:${colors.mocked}`,
-    'color:inherit',
-    'color:gray;font-weight:normal',
-    'color:inherit;font-weight:inherit',
-  )
+    "color:inherit",
+    "color:gray;font-weight:normal",
+    "color:inherit;font-weight:inherit",
+  );
   // eslint-disable-next-line no-console
-  console.log(event)
-  console.groupEnd()
+  console.log(event);
+  console.groupEnd();
 }
 
 /**
@@ -208,38 +208,38 @@ async function logOutgoingMockedClientMessage(
 async function logIncomingMockedClientMessage(
   event: MessageEvent<WebSocketData>,
 ) {
-  const byteLength = getMessageLength(event.data)
-  const publicData = await getPublicData(event.data)
+  const byteLength = getMessageLength(event.data);
+  const publicData = await getPublicData(event.data);
 
   console.groupCollapsed(
     devUtils.formatMessage(
       `${getTimestamp({ milliseconds: true })} %c⬇%c ${publicData} %c${byteLength}%c`,
     ),
     `color:${colors.mocked}`,
-    'color:inherit',
-    'color:gray;font-weight:normal',
-    'color:inherit;font-weight:inherit',
-  )
+    "color:inherit",
+    "color:gray;font-weight:normal",
+    "color:inherit;font-weight:inherit",
+  );
   // eslint-disable-next-line no-console
-  console.log(event)
-  console.groupEnd()
+  console.log(event);
+  console.groupEnd();
 }
 
 async function logIncomingServerMessage(event: MessageEvent<WebSocketData>) {
-  const byteLength = getMessageLength(event.data)
-  const publicData = await getPublicData(event.data)
-  const arrow = event.defaultPrevented ? '⇣' : '⬇'
+  const byteLength = getMessageLength(event.data);
+  const publicData = await getPublicData(event.data);
+  const arrow = event.defaultPrevented ? "⇣" : "⬇";
 
   console.groupCollapsed(
     devUtils.formatMessage(
       `${getTimestamp({ milliseconds: true })} %c${arrow}%c ${publicData} %c${byteLength}%c`,
     ),
     `color:${colors.incoming}`,
-    'color:inherit',
-    'color:gray;font-weight:normal',
-    'color:inherit;font-weight:inherit',
-  )
+    "color:inherit",
+    "color:gray;font-weight:normal",
+    "color:inherit;font-weight:inherit",
+  );
   // eslint-disable-next-line no-console
-  console.log(event)
-  console.groupEnd()
+  console.log(event);
+  console.groupEnd();
 }

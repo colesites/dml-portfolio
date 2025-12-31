@@ -1,11 +1,11 @@
-export type TimeComponents<T extends (number | bigint) = number> = {
-	days: T;
-	hours: T;
-	minutes: T;
-	seconds: T;
-	milliseconds: T;
-	microseconds: T;
-	nanoseconds: T;
+export type TimeComponents<T extends number | bigint = number> = {
+  days: T;
+  hours: T;
+  minutes: T;
+  seconds: T;
+  milliseconds: T;
+  microseconds: T;
+  nanoseconds: T;
 };
 
 /**
@@ -27,4 +27,6 @@ parseMilliseconds(1337000001);
 // }
 ```
 */
-export default function parseMilliseconds<T extends number | bigint>(milliseconds: T): TimeComponents<T>;
+export default function parseMilliseconds<T extends number | bigint>(
+  milliseconds: T,
+): TimeComponents<T>;

@@ -1,7 +1,7 @@
-import {type ChildProcess} from 'node:child_process';
+import { type ChildProcess } from "node:child_process";
 
 export type Options = {
-	/**
+  /**
 	Wait for the opened app to exit before fulfilling the promise. If `false` it's fulfilled immediately when opening the app.
 
 	Note that it waits for the app to exit, not just for the window to close.
@@ -12,18 +12,18 @@ export type Options = {
 
 	@default false
 	*/
-	readonly wait?: boolean;
+  readonly wait?: boolean;
 
-	/**
+  /**
 	__macOS only__
 
 	Do not bring the app to the foreground.
 
 	@default false
 	*/
-	readonly background?: boolean;
+  readonly background?: boolean;
 
-	/**
+  /**
 	__macOS only__
 
 	Open a new instance of the app even it's already running.
@@ -32,9 +32,9 @@ export type Options = {
 
 	@default false
 	*/
-	readonly newInstance?: boolean;
+  readonly newInstance?: boolean;
 
-	/**
+  /**
 	Specify the `name` of the app to open the `target` with, and optionally, app `arguments`. `app` can be an array of apps to try to open and `name` can be an array of app names to try. If each app fails, the last error will be thrown.
 
 	The app name is platform dependent. Don't hard code it in reusable modules. For example, Chrome is `google chrome` on macOS, `google-chrome` on Linux and `chrome` on Windows. If possible, use `apps` which auto-detects the correct binary to use.
@@ -43,38 +43,38 @@ export type Options = {
 
 	The app `arguments` are app dependent. Check the app's documentation for what arguments it accepts.
 	*/
-	readonly app?: App | readonly App[];
+  readonly app?: App | readonly App[];
 
-	/**
+  /**
 	Allow the opened app to exit with nonzero exit code when the `wait` option is `true`.
 
 	We do not recommend setting this option. The convention for success is exit code zero.
 
 	@default false
 	*/
-	readonly allowNonzeroExitCode?: boolean;
+  readonly allowNonzeroExitCode?: boolean;
 };
 
 export type OpenAppOptions = {
-	/**
+  /**
 	Arguments passed to the app.
 
 	These arguments are app dependent. Check the app's documentation for what arguments it accepts.
 	*/
-	readonly arguments?: readonly string[];
-} & Omit<Options, 'app'>;
+  readonly arguments?: readonly string[];
+} & Omit<Options, "app">;
 
 export type AppName =
-	| 'chrome'
-	| 'brave'
-	| 'firefox'
-	| 'edge'
-	| 'browser'
-	| 'browserPrivate';
+  | "chrome"
+  | "brave"
+  | "firefox"
+  | "edge"
+  | "browser"
+  | "browserPrivate";
 
 export type App = {
-	name: string | readonly string[];
-	arguments?: readonly string[];
+  name: string | readonly string[];
+  arguments?: readonly string[];
 };
 
 /**
@@ -123,8 +123,8 @@ await open('https://sindresorhus.com', {app: {name: apps.browserPrivate}});
 ```
 */
 export default function open(
-	target: string,
-	options?: Options
+  target: string,
+  options?: Options,
 ): Promise<ChildProcess>;
 
 /**
@@ -155,4 +155,7 @@ await openApp(apps.browserPrivate);
 await openApp('xcode');
 ```
 */
-export function openApp(name: App['name'], options?: OpenAppOptions): Promise<ChildProcess>;
+export function openApp(
+  name: App["name"],
+  options?: OpenAppOptions,
+): Promise<ChildProcess>;

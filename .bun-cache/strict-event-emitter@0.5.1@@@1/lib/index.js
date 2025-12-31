@@ -7,20 +7,24 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
   Emitter: () => Emitter,
-  MemoryLeakError: () => MemoryLeakError
+  MemoryLeakError: () => MemoryLeakError,
 });
 module.exports = __toCommonJS(src_exports);
 
@@ -28,7 +32,7 @@ module.exports = __toCommonJS(src_exports);
 var MemoryLeakError = class extends Error {
   constructor(emitter, type, count) {
     super(
-      `Possible EventEmitter memory leak detected. ${count} ${type.toString()} listeners added. Use emitter.setMaxListeners() to increase limit`
+      `Possible EventEmitter memory leak detected. ${count} ${type.toString()} listeners added. Use emitter.setMaxListeners() to increase limit`,
     );
     this.emitter = emitter;
     this.type = type;
@@ -48,10 +52,7 @@ var _Emitter = class {
     this.hasWarnedAboutPotentialMemoryLeak = false;
   }
   _emitInternalEvent(internalEventName, eventName, listener) {
-    this.emit(
-      internalEventName,
-      ...[eventName, listener]
-    );
+    this.emit(internalEventName, ...[eventName, listener]);
   }
   _getListeners(eventName) {
     return Array.prototype.concat.apply([], this.events.get(eventName)) || [];
@@ -110,12 +111,16 @@ var _Emitter = class {
     this._emitInternalEvent("newListener", eventName, listener);
     const nextListeners = this._getListeners(eventName).concat(listener);
     this.events.set(eventName, nextListeners);
-    if (this.maxListeners > 0 && this.listenerCount(eventName) > this.maxListeners && !this.hasWarnedAboutPotentialMemoryLeak) {
+    if (
+      this.maxListeners > 0 &&
+      this.listenerCount(eventName) > this.maxListeners &&
+      !this.hasWarnedAboutPotentialMemoryLeak
+    ) {
       this.hasWarnedAboutPotentialMemoryLeak = true;
       const memoryLeakWarning = new MemoryLeakError(
         this,
         eventName,
-        this.listenerCount(eventName)
+        this.listenerCount(eventName),
       );
       console.warn(memoryLeakWarning);
     }
@@ -127,7 +132,7 @@ var _Emitter = class {
   once(eventName, listener) {
     return this.addListener(
       eventName,
-      this._wrapOnceListener(eventName, listener)
+      this._wrapOnceListener(eventName, listener),
     );
   }
   prependListener(eventName, listener) {
@@ -143,7 +148,7 @@ var _Emitter = class {
   prependOnceListener(eventName, listener) {
     return this.prependListener(
       eventName,
-      this._wrapOnceListener(eventName, listener)
+      this._wrapOnceListener(eventName, listener),
     );
   }
   removeListener(eventName, listener) {
@@ -191,8 +196,9 @@ var _Emitter = class {
 var Emitter = _Emitter;
 Emitter.defaultMaxListeners = 10;
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  Emitter,
-  MemoryLeakError
-});
+0 &&
+  (module.exports = {
+    Emitter,
+    MemoryLeakError,
+  });
 //# sourceMappingURL=index.js.map

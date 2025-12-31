@@ -80,7 +80,10 @@ test(".flatten()", () => {
 
 test("custom .flatten()", () => {
   type ErrorType = { message: string; code: number };
-  const flattened = parsed.error!.flatten((iss) => ({ message: iss.message, code: 1234 }));
+  const flattened = parsed.error!.flatten((iss) => ({
+    message: iss.message,
+    code: 1234,
+  }));
   expectTypeOf(flattened).toMatchTypeOf<{
     formErrors: ErrorType[];
     fieldErrors: {
@@ -160,7 +163,10 @@ test(".format()", () => {
 
 test("custom .format()", () => {
   type ErrorType = { message: string; code: number };
-  const formatted = parsed.error!.format((iss) => ({ message: iss.message, code: 1234 }));
+  const formatted = parsed.error!.format((iss) => ({
+    message: iss.message,
+    code: 1234,
+  }));
   expectTypeOf(formatted).toMatchTypeOf<{
     _errors: ErrorType[];
     f2?: { _errors: ErrorType[] };
@@ -219,7 +225,7 @@ test("all errors", () => {
       (val) => {
         return val.a === val.b;
       },
-      { message: "Must be equal" }
+      { message: "Must be equal" },
     );
 
   const r1 = schema.safeParse({
@@ -252,7 +258,9 @@ test("all errors", () => {
     }
   `);
 
-  expect(z.core.flattenError(r2.error!, (iss) => iss.message.toUpperCase())).toMatchInlineSnapshot(`
+  expect(
+    z.core.flattenError(r2.error!, (iss) => iss.message.toUpperCase()),
+  ).toMatchInlineSnapshot(`
     {
       "fieldErrors": {
         "a": [
@@ -267,7 +275,9 @@ test("all errors", () => {
   `);
   // Test identity
 
-  expect(z.core.flattenError(r2.error!, (i: z.ZodIssue) => i)).toMatchInlineSnapshot(`
+  expect(
+    z.core.flattenError(r2.error!, (i: z.ZodIssue) => i),
+  ).toMatchInlineSnapshot(`
     {
       "fieldErrors": {
         "a": [
@@ -296,7 +306,10 @@ test("all errors", () => {
   `);
 
   // Test mapping
-  const f1 = z.core.flattenError(r2.error!, (i: z.ZodIssue) => i.message.length);
+  const f1 = z.core.flattenError(
+    r2.error!,
+    (i: z.ZodIssue) => i.message.length,
+  );
   expect(f1).toMatchInlineSnapshot(`
     {
       "fieldErrors": {
@@ -429,39 +442,51 @@ test("z.prettifyError", () => {
 });
 
 test("z.toDotPath", () => {
-  expect(z.core.toDotPath(["a", "b", 0, "c"])).toMatchInlineSnapshot(`"a.b[0].c"`);
+  expect(z.core.toDotPath(["a", "b", 0, "c"])).toMatchInlineSnapshot(
+    `"a.b[0].c"`,
+  );
 
-  expect(z.core.toDotPath(["a", Symbol("b"), 0, "c"])).toMatchInlineSnapshot(`"a["Symbol(b)"][0].c"`);
+  expect(z.core.toDotPath(["a", Symbol("b"), 0, "c"])).toMatchInlineSnapshot(
+    `"a["Symbol(b)"][0].c"`,
+  );
 
   // Test with periods in keys
-  expect(z.core.toDotPath(["user.name", "first.last"])).toMatchInlineSnapshot(`"["user.name"]["first.last"]"`);
+  expect(z.core.toDotPath(["user.name", "first.last"])).toMatchInlineSnapshot(
+    `"["user.name"]["first.last"]"`,
+  );
 
   // Test with special characters
-  expect(z.core.toDotPath(["user", "$special", Symbol("#symbol")])).toMatchInlineSnapshot(
-    `"user.$special["Symbol(#symbol)"]"`
-  );
+  expect(
+    z.core.toDotPath(["user", "$special", Symbol("#symbol")]),
+  ).toMatchInlineSnapshot(`"user.$special["Symbol(#symbol)"]"`);
 
   // Test with dots and quotes
-  expect(z.core.toDotPath(["search", `query("foo.bar"="abc")`])).toMatchInlineSnapshot(
-    `"search["query(\\"foo.bar\\"=\\"abc\\")"]"`
-  );
+  expect(
+    z.core.toDotPath(["search", `query("foo.bar"="abc")`]),
+  ).toMatchInlineSnapshot(`"search["query(\\"foo.bar\\"=\\"abc\\")"]"`);
 
   // Test with newlines
-  expect(z.core.toDotPath(["search", `foo\nbar`])).toMatchInlineSnapshot(`"search["foo\\nbar"]"`);
+  expect(z.core.toDotPath(["search", `foo\nbar`])).toMatchInlineSnapshot(
+    `"search["foo\\nbar"]"`,
+  );
 
   // Test with empty strings
   expect(z.core.toDotPath(["", "empty"])).toMatchInlineSnapshot(`".empty"`);
 
   // Test with array indices
-  expect(z.core.toDotPath(["items", 0, 1, 2])).toMatchInlineSnapshot(`"items[0][1][2]"`);
-
-  // Test with mixed path elements
-  expect(z.core.toDotPath(["users", "user.config", 0, "settings.theme"])).toMatchInlineSnapshot(
-    `"users["user.config"][0]["settings.theme"]"`
+  expect(z.core.toDotPath(["items", 0, 1, 2])).toMatchInlineSnapshot(
+    `"items[0][1][2]"`,
   );
 
+  // Test with mixed path elements
+  expect(
+    z.core.toDotPath(["users", "user.config", 0, "settings.theme"]),
+  ).toMatchInlineSnapshot(`"users["user.config"][0]["settings.theme"]"`);
+
   // Test with square brackets in keys
-  expect(z.core.toDotPath(["data[0]", "value"])).toMatchInlineSnapshot(`"["data[0]"].value"`);
+  expect(z.core.toDotPath(["data[0]", "value"])).toMatchInlineSnapshot(
+    `"["data[0]"].value"`,
+  );
 
   // Test with empty path
   expect(z.core.toDotPath([])).toMatchInlineSnapshot(`""`);
@@ -494,7 +519,7 @@ test("disc union treeify/format", () => {
     ],
     {
       error: "Invalid discriminator",
-    }
+    },
   );
 
   const error = schema.safeParse({ foo: "invalid" }).error;

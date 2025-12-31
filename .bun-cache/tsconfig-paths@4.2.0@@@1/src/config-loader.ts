@@ -1,5 +1,5 @@
-import * as TsConfigLoader2 from "./tsconfig-loader";
 import * as path from "path";
+import * as TsConfigLoader2 from "./tsconfig-loader";
 
 export interface ExplicitParams {
   baseUrl: string;
@@ -9,7 +9,7 @@ export interface ExplicitParams {
 }
 
 export type TsConfigLoader = (
-  params: TsConfigLoader2.TsConfigLoaderParams
+  params: TsConfigLoader2.TsConfigLoaderParams,
 ) => TsConfigLoader2.TsConfigLoaderResult;
 
 export interface ConfigLoaderParams {
@@ -81,7 +81,7 @@ export function configLoader({
     baseUrl: loadResult.baseUrl,
     absoluteBaseUrl: path.resolve(
       path.dirname(loadResult.tsConfigPath),
-      loadResult.baseUrl || ""
+      loadResult.baseUrl || "",
     ),
     paths: loadResult.paths || {},
     addMatchAll: loadResult.baseUrl !== undefined,

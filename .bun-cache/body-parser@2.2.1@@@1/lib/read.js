@@ -1,29 +1,21 @@
-/*!
- * body-parser
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict'
-
 /**
  * Module dependencies.
  * @private
  */
 
-var createError = require('http-errors')
-var getBody = require('raw-body')
-var iconv = require('iconv-lite')
-var onFinished = require('on-finished')
-var zlib = require('node:zlib')
-var hasBody = require('type-is').hasBody
-var { getCharset } = require('./utils')
+var createError = require("http-errors");
+var getBody = require("raw-body");
+var iconv = require("iconv-lite");
+var onFinished = require("on-finished");
+var zlib = require("node:zlib");
+var hasBody = require("type-is").hasBody;
+var { getCharset } = require("./utils");
 
 /**
  * Module exports.
  */
 
-module.exports = read
+module.exports = read;
 
 /**
  * Read a request into a buffer and parse.
@@ -37,140 +29,159 @@ module.exports = read
  * @private
  */
 
-function read (req, res, next, parse, debug, options) {
+function read(req, res, next, parse, debug, options) {
   if (onFinished.isFinished(req)) {
-    debug('body already parsed')
-    next()
-    return
+    debug("body already parsed");
+    next();
+    return;
   }
 
-  if (!('body' in req)) {
-    req.body = undefined
+  if (!("body" in req)) {
+    req.body = undefined;
   }
 
   // skip requests without bodies
   if (!hasBody(req)) {
-    debug('skip empty body')
-    next()
-    return
+    debug("skip empty body");
+    next();
+    return;
   }
 
-  debug('content-type %j', req.headers['content-type'])
+  debug("content-type %j", req.headers["content-type"]);
 
   // determine if request should be parsed
   if (!options.shouldParse(req)) {
-    debug('skip parsing')
-    next()
-    return
+    debug("skip parsing");
+    next();
+    return;
   }
 
-  var encoding = null
+  var encoding = null;
   if (options?.skipCharset !== true) {
-    encoding = getCharset(req) || options.defaultCharset
+    encoding = getCharset(req) || options.defaultCharset;
 
     // validate charset
     if (!!options?.isValidCharset && !options.isValidCharset(encoding)) {
-      debug('invalid charset')
-      next(createError(415, 'unsupported charset "' + encoding.toUpperCase() + '"', {
-        charset: encoding,
-        type: 'charset.unsupported'
-      }))
-      return
+      debug("invalid charset");
+      next(
+        createError(
+          415,
+          'unsupported charset "' + encoding.toUpperCase() + '"',
+          {
+            charset: encoding,
+            type: "charset.unsupported",
+          },
+        ),
+      );
+      return;
     }
   }
 
-  var length
-  var opts = options
-  var stream
+  var length;
+  var opts = options;
+  var stream;
 
   // read options
-  var verify = opts.verify
+  var verify = opts.verify;
 
   try {
     // get the content stream
-    stream = contentstream(req, debug, opts.inflate)
-    length = stream.length
-    stream.length = undefined
+    stream = contentstream(req, debug, opts.inflate);
+    length = stream.length;
+    stream.length = undefined;
   } catch (err) {
-    return next(err)
+    return next(err);
   }
 
   // set raw-body options
-  opts.length = length
-  opts.encoding = verify
-    ? null
-    : encoding
+  opts.length = length;
+  opts.encoding = verify ? null : encoding;
 
   // assert charset is supported
-  if (opts.encoding === null && encoding !== null && !iconv.encodingExists(encoding)) {
-    return next(createError(415, 'unsupported charset "' + encoding.toUpperCase() + '"', {
-      charset: encoding.toLowerCase(),
-      type: 'charset.unsupported'
-    }))
+  if (
+    opts.encoding === null &&
+    encoding !== null &&
+    !iconv.encodingExists(encoding)
+  ) {
+    return next(
+      createError(415, 'unsupported charset "' + encoding.toUpperCase() + '"', {
+        charset: encoding.toLowerCase(),
+        type: "charset.unsupported",
+      }),
+    );
   }
 
   // read body
-  debug('read body')
-  getBody(stream, opts, function (error, body) {
+  debug("read body");
+  getBody(stream, opts, (error, body) => {
     if (error) {
-      var _error
+      var _error;
 
-      if (error.type === 'encoding.unsupported') {
+      if (error.type === "encoding.unsupported") {
         // echo back charset
-        _error = createError(415, 'unsupported charset "' + encoding.toUpperCase() + '"', {
-          charset: encoding.toLowerCase(),
-          type: 'charset.unsupported'
-        })
+        _error = createError(
+          415,
+          'unsupported charset "' + encoding.toUpperCase() + '"',
+          {
+            charset: encoding.toLowerCase(),
+            type: "charset.unsupported",
+          },
+        );
       } else {
         // set status code on error
-        _error = createError(400, error)
+        _error = createError(400, error);
       }
 
       // unpipe from stream and destroy
       if (stream !== req) {
-        req.unpipe()
-        stream.destroy()
+        req.unpipe();
+        stream.destroy();
       }
 
       // read off entire request
-      dump(req, function onfinished () {
-        next(createError(400, _error))
-      })
-      return
+      dump(req, function onfinished() {
+        next(createError(400, _error));
+      });
+      return;
     }
 
     // verify
     if (verify) {
       try {
-        debug('verify body')
-        verify(req, res, body, encoding)
+        debug("verify body");
+        verify(req, res, body, encoding);
       } catch (err) {
-        next(createError(403, err, {
-          body: body,
-          type: err.type || 'entity.verify.failed'
-        }))
-        return
+        next(
+          createError(403, err, {
+            body: body,
+            type: err.type || "entity.verify.failed",
+          }),
+        );
+        return;
       }
     }
 
     // parse
-    var str = body
+    var str = body;
     try {
-      debug('parse body')
-      str = typeof body !== 'string' && encoding !== null
-        ? iconv.decode(body, encoding)
-        : body
-      req.body = parse(str, encoding)
+      debug("parse body");
+      str =
+        typeof body !== "string" && encoding !== null
+          ? iconv.decode(body, encoding)
+          : body;
+      req.body = parse(str, encoding);
     } catch (err) {
-      next(createError(400, err, {
-        body: str,
-        type: err.type || 'entity.parse.failed'
-      }))
-      return
+      next(
+        createError(400, err, {
+          body: str,
+          type: err.type || "entity.parse.failed",
+        }),
+      );
+      return;
     }
 
-    next()
-  })
+    next();
+  });
 }
 
 /**
@@ -183,27 +194,27 @@ function read (req, res, next, parse, debug, options) {
  * @api private
  */
 
-function contentstream (req, debug, inflate) {
-  var encoding = (req.headers['content-encoding'] || 'identity').toLowerCase()
-  var length = req.headers['content-length']
+function contentstream(req, debug, inflate) {
+  var encoding = (req.headers["content-encoding"] || "identity").toLowerCase();
+  var length = req.headers["content-length"];
 
-  debug('content-encoding "%s"', encoding)
+  debug('content-encoding "%s"', encoding);
 
-  if (inflate === false && encoding !== 'identity') {
-    throw createError(415, 'content encoding unsupported', {
+  if (inflate === false && encoding !== "identity") {
+    throw createError(415, "content encoding unsupported", {
       encoding: encoding,
-      type: 'encoding.unsupported'
-    })
+      type: "encoding.unsupported",
+    });
   }
 
-  if (encoding === 'identity') {
-    req.length = length
-    return req
+  if (encoding === "identity") {
+    req.length = length;
+    return req;
   }
 
-  var stream = createDecompressionStream(encoding, debug)
-  req.pipe(stream)
-  return stream
+  var stream = createDecompressionStream(encoding, debug);
+  req.pipe(stream);
+  return stream;
 }
 
 /**
@@ -213,22 +224,26 @@ function contentstream (req, debug, inflate) {
  * @return {object}
  * @api private
  */
-function createDecompressionStream (encoding, debug) {
+function createDecompressionStream(encoding, debug) {
   switch (encoding) {
-    case 'deflate':
-      debug('inflate body')
-      return zlib.createInflate()
-    case 'gzip':
-      debug('gunzip body')
-      return zlib.createGunzip()
-    case 'br':
-      debug('brotli decompress body')
-      return zlib.createBrotliDecompress()
+    case "deflate":
+      debug("inflate body");
+      return zlib.createInflate();
+    case "gzip":
+      debug("gunzip body");
+      return zlib.createGunzip();
+    case "br":
+      debug("brotli decompress body");
+      return zlib.createBrotliDecompress();
     default:
-      throw createError(415, 'unsupported content encoding "' + encoding + '"', {
-        encoding: encoding,
-        type: 'encoding.unsupported'
-      })
+      throw createError(
+        415,
+        'unsupported content encoding "' + encoding + '"',
+        {
+          encoding: encoding,
+          type: "encoding.unsupported",
+        },
+      );
   }
 }
 
@@ -240,11 +255,11 @@ function createDecompressionStream (encoding, debug) {
  * @api private
  */
 
-function dump (req, callback) {
+function dump(req, callback) {
   if (onFinished.isFinished(req)) {
-    callback(null)
+    callback(null);
   } else {
-    onFinished(req, callback)
-    req.resume()
+    onFinished(req, callback);
+    req.resume();
   }
 }

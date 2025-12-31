@@ -1,21 +1,25 @@
-import type {CodeKeywordDefinition, ErrorNoParams, AnySchema} from "../../types"
-import type {KeywordCxt} from "../../compile/validate"
-import {alwaysValidSchema} from "../../compile/util"
+import { alwaysValidSchema } from "../../compile/util";
+import type { KeywordCxt } from "../../compile/validate";
+import type {
+  AnySchema,
+  CodeKeywordDefinition,
+  ErrorNoParams,
+} from "../../types";
 
-export type NotKeywordError = ErrorNoParams<"not", AnySchema>
+export type NotKeywordError = ErrorNoParams<"not", AnySchema>;
 
 const def: CodeKeywordDefinition = {
   keyword: "not",
   schemaType: ["object", "boolean"],
   trackErrors: true,
   code(cxt: KeywordCxt) {
-    const {gen, schema, it} = cxt
+    const { gen, schema, it } = cxt;
     if (alwaysValidSchema(it, schema)) {
-      cxt.fail()
-      return
+      cxt.fail();
+      return;
     }
 
-    const valid = gen.name("valid")
+    const valid = gen.name("valid");
     cxt.subschema(
       {
         keyword: "not",
@@ -23,16 +27,16 @@ const def: CodeKeywordDefinition = {
         createErrors: false,
         allErrors: false,
       },
-      valid
-    )
+      valid,
+    );
 
     cxt.failResult(
       valid,
       () => cxt.reset(),
-      () => cxt.error()
-    )
+      () => cxt.error(),
+    );
   },
-  error: {message: "must NOT be valid"},
-}
+  error: { message: "must NOT be valid" },
+};
 
-export default def
+export default def;

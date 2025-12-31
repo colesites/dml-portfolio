@@ -1,4 +1,4 @@
-const { InvalidArgumentError } = require('./error.js');
+const { InvalidArgumentError } = require("./error.js");
 
 class Option {
   /**
@@ -10,10 +10,10 @@ class Option {
 
   constructor(flags, description) {
     this.flags = flags;
-    this.description = description || '';
+    this.description = description || "";
 
-    this.required = flags.includes('<'); // A value must be supplied when the option is specified.
-    this.optional = flags.includes('['); // A value is optional when the option is specified.
+    this.required = flags.includes("<"); // A value must be supplied when the option is specified.
+    this.optional = flags.includes("["); // A value is optional when the option is specified.
     // variadic test ignores <value,...> et al which might be used to describe custom splitting of single argument
     this.variadic = /\w\.\.\.[>\]]$/.test(flags); // The option can take multiple values.
     this.mandatory = false; // The option must have a value after parsing, which usually means it must be specified on command line.
@@ -22,7 +22,7 @@ class Option {
     this.long = optionFlags.longFlag;
     this.negate = false;
     if (this.long) {
-      this.negate = this.long.startsWith('--no-');
+      this.negate = this.long.startsWith("--no-");
     }
     this.defaultValue = undefined;
     this.defaultValueDescription = undefined;
@@ -98,7 +98,7 @@ class Option {
    */
   implies(impliedOptionValues) {
     let newImplied = impliedOptionValues;
-    if (typeof impliedOptionValues === 'string') {
+    if (typeof impliedOptionValues === "string") {
       // string is not documented, but easy mistake and we can do what user probably intended.
       newImplied = { [impliedOptionValues]: true };
     }
@@ -180,7 +180,9 @@ class Option {
     this.argChoices = values.slice();
     this.parseArg = (arg, previous) => {
       if (!this.argChoices.includes(arg)) {
-        throw new InvalidArgumentError(`Allowed choices are ${this.argChoices.join(', ')}.`);
+        throw new InvalidArgumentError(
+          `Allowed choices are ${this.argChoices.join(", ")}.`,
+        );
       }
       if (this.variadic) {
         return this._concatValue(arg, previous);
@@ -198,9 +200,9 @@ class Option {
 
   name() {
     if (this.long) {
-      return this.long.replace(/^--/, '');
+      return this.long.replace(/^--/, "");
     }
-    return this.short.replace(/^-/, '');
+    return this.short.replace(/^-/, "");
   }
 
   /**
@@ -212,7 +214,7 @@ class Option {
    */
 
   attributeName() {
-    return camelcase(this.name().replace(/^no-/, ''));
+    return camelcase(this.name().replace(/^no-/, ""));
   }
 
   /**
@@ -256,7 +258,7 @@ class DualOptions {
     this.positiveOptions = new Map();
     this.negativeOptions = new Map();
     this.dualOptions = new Set();
-    options.forEach(option => {
+    options.forEach((option) => {
       if (option.negate) {
         this.negativeOptions.set(option.attributeName(), option);
       } else {
@@ -283,7 +285,7 @@ class DualOptions {
 
     // Use the value to deduce if (probably) came from the option.
     const preset = this.negativeOptions.get(optionKey).presetArg;
-    const negativeValue = (preset !== undefined) ? preset : false;
+    const negativeValue = preset !== undefined ? preset : false;
     return option.negate === (negativeValue === value);
   }
 }
@@ -297,7 +299,7 @@ class DualOptions {
  */
 
 function camelcase(str) {
-  return str.split('-').reduce((str, word) => {
+  return str.split("-").reduce((str, word) => {
     return str + word[0].toUpperCase() + word.slice(1);
   });
 }
@@ -314,7 +316,8 @@ function splitOptionFlags(flags) {
   // Use original very loose parsing to maintain backwards compatibility for now,
   // which allowed for example unintended `-sw, --short-word` [sic].
   const flagParts = flags.split(/[ |,]+/);
-  if (flagParts.length > 1 && !/^[[<]/.test(flagParts[1])) shortFlag = flagParts.shift();
+  if (flagParts.length > 1 && !/^[[<]/.test(flagParts[1]))
+    shortFlag = flagParts.shift();
   longFlag = flagParts.shift();
   // Add support for lone short flag without significantly changing parsing!
   if (!shortFlag && /^-[^-]$/.test(longFlag)) {

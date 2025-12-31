@@ -3,5 +3,5 @@
  * relative URL (known during the registration).
  */
 export function getAbsoluteWorkerUrl(workerUrl: string): string {
-  return new URL(workerUrl, location.href).href
+  return new URL(workerUrl, location.href).href;
 }

@@ -1,11 +1,11 @@
-import type {ApplyDefaultOptions} from './internal/index.d.ts';
+import type { ApplyDefaultOptions } from "./internal/index.d.ts";
 
 export type ReplaceOptions = {
-	all?: boolean;
+  all?: boolean;
 };
 
 type DefaultReplaceOptions = {
-	all: false;
+  all: false;
 };
 
 /**
@@ -62,26 +62,35 @@ replaceAll('My Cool Title', ' ', '');
 @category Template literal
 */
 export type Replace<
-	Input extends string,
-	Search extends string,
-	Replacement extends string,
-	Options extends ReplaceOptions = {},
-> = _Replace<Input, Search, Replacement, ApplyDefaultOptions<ReplaceOptions, DefaultReplaceOptions, Options>>;
+  Input extends string,
+  Search extends string,
+  Replacement extends string,
+  Options extends ReplaceOptions = {},
+> = _Replace<
+  Input,
+  Search,
+  Replacement,
+  ApplyDefaultOptions<ReplaceOptions, DefaultReplaceOptions, Options>
+>;
 
 type _Replace<
-	Input extends string,
-	Search extends string,
-	Replacement extends string,
-	Options extends Required<ReplaceOptions>,
-	Accumulator extends string = '',
+  Input extends string,
+  Search extends string,
+  Replacement extends string,
+  Options extends Required<ReplaceOptions>,
+  Accumulator extends string = "",
 > = Search extends string // For distributing `Search`
-	? Replacement extends string // For distributing `Replacement`
-		? Input extends `${infer Head}${Search}${infer Tail}`
-			? Options['all'] extends true
-				? _Replace<Tail, Search, Replacement, Options, `${Accumulator}${Head}${Replacement}`>
-				: `${Head}${Replacement}${Tail}`
-			: `${Accumulator}${Input}`
-		: never
-	: never;
-
-export {};
+  ? Replacement extends string // For distributing `Replacement`
+    ? Input extends `${infer Head}${Search}${infer Tail}`
+      ? Options["all"] extends true
+        ? _Replace<
+            Tail,
+            Search,
+            Replacement,
+            Options,
+            `${Accumulator}${Head}${Replacement}`
+          >
+        : `${Head}${Replacement}${Tail}`
+      : `${Accumulator}${Input}`
+    : never
+  : never;

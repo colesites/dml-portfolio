@@ -16,7 +16,7 @@ function put(setarr, key) {
   if (index !== void 0) return index;
   const { array, _indexes: indexes } = cast(setarr);
   const length = array.push(key);
-  return indexes[key] = length - 1;
+  return (indexes[key] = length - 1);
 }
 function remove(setarr, key) {
   const index = get(setarr, key);
@@ -32,10 +32,8 @@ function remove(setarr, key) {
 }
 
 // src/gen-mapping.ts
-import {
-  encode
-} from "@jridgewell/sourcemap-codec";
-import { TraceMap, decodedMappings } from "@jridgewell/trace-mapping";
+import { encode } from "@jridgewell/sourcemap-codec";
+import { decodedMappings, TraceMap } from "@jridgewell/trace-mapping";
 
 // src/sourcemap-segment.ts
 var COLUMN = 0;
@@ -60,7 +58,16 @@ var GenMapping = class {
 function cast2(map) {
   return map;
 }
-function addSegment(map, genLine, genColumn, source, sourceLine, sourceColumn, name, content) {
+function addSegment(
+  map,
+  genLine,
+  genColumn,
+  source,
+  sourceLine,
+  sourceColumn,
+  name,
+  content,
+) {
   return addSegmentInternal(
     false,
     map,
@@ -70,13 +77,22 @@ function addSegment(map, genLine, genColumn, source, sourceLine, sourceColumn, n
     sourceLine,
     sourceColumn,
     name,
-    content
+    content,
   );
 }
 function addMapping(map, mapping) {
   return addMappingInternal(false, map, mapping);
 }
-var maybeAddSegment = (map, genLine, genColumn, source, sourceLine, sourceColumn, name, content) => {
+var maybeAddSegment = (
+  map,
+  genLine,
+  genColumn,
+  source,
+  sourceLine,
+  sourceColumn,
+  name,
+  content,
+) => {
   return addSegmentInternal(
     true,
     map,
@@ -86,7 +102,7 @@ var maybeAddSegment = (map, genLine, genColumn, source, sourceLine, sourceColumn
     sourceLine,
     sourceColumn,
     name,
-    content
+    content,
   );
 };
 var maybeAddMapping = (map, mapping) => {
@@ -95,7 +111,7 @@ var maybeAddMapping = (map, mapping) => {
 function setSourceContent(map, source, content) {
   const {
     _sources: sources,
-    _sourcesContent: sourcesContent
+    _sourcesContent: sourcesContent,
     // _originalScopes: originalScopes,
   } = cast2(map);
   const index = put(sources, source);
@@ -105,7 +121,7 @@ function setIgnore(map, source, ignore = true) {
   const {
     _sources: sources,
     _sourcesContent: sourcesContent,
-    _ignoreList: ignoreList
+    _ignoreList: ignoreList,
     // _originalScopes: originalScopes,
   } = cast2(map);
   const index = put(sources, source);
@@ -119,7 +135,7 @@ function toDecodedMap(map) {
     _sources: sources,
     _sourcesContent: sourcesContent,
     _names: names,
-    _ignoreList: ignoreList
+    _ignoreList: ignoreList,
     // _originalScopes: originalScopes,
     // _generatedRanges: generatedRanges,
   } = cast2(map);
@@ -134,7 +150,7 @@ function toDecodedMap(map) {
     mappings,
     // originalScopes,
     // generatedRanges,
-    ignoreList: ignoreList.array
+    ignoreList: ignoreList.array,
   };
 }
 function toEncodedMap(map) {
@@ -142,7 +158,7 @@ function toEncodedMap(map) {
   return Object.assign({}, decoded, {
     // originalScopes: decoded.originalScopes.map((os) => encodeOriginalScopes(os)),
     // generatedRanges: encodeGeneratedRanges(decoded.generatedRanges as GeneratedRange[]),
-    mappings: encode(decoded.mappings)
+    mappings: encode(decoded.mappings),
   });
 }
 function fromMap(input) {
@@ -150,7 +166,8 @@ function fromMap(input) {
   const gen = new GenMapping({ file: map.file, sourceRoot: map.sourceRoot });
   putAll(cast2(gen)._names, map.names);
   putAll(cast2(gen)._sources, map.sources);
-  cast2(gen)._sourcesContent = map.sourcesContent || map.sources.map(() => null);
+  cast2(gen)._sourcesContent =
+    map.sourcesContent || map.sources.map(() => null);
   cast2(gen)._mappings = decodedMappings(map);
   if (map.ignoreList) putAll(cast2(gen)._ignoreList, map.ignoreList);
   return gen;
@@ -176,12 +193,22 @@ function allMappings(map) {
   }
   return out;
 }
-function addSegmentInternal(skipable, map, genLine, genColumn, source, sourceLine, sourceColumn, name, content) {
+function addSegmentInternal(
+  skipable,
+  map,
+  genLine,
+  genColumn,
+  source,
+  sourceLine,
+  sourceColumn,
+  name,
+  content,
+) {
   const {
     _mappings: mappings,
     _sources: sources,
     _sourcesContent: sourcesContent,
-    _names: names
+    _names: names,
     // _originalScopes: originalScopes,
   } = cast2(map);
   const line = getIndex(mappings, genLine);
@@ -194,18 +221,23 @@ function addSegmentInternal(skipable, map, genLine, genColumn, source, sourceLin
   assert(sourceColumn);
   const sourcesIndex = put(sources, source);
   const namesIndex = name ? put(names, name) : NO_NAME;
-  if (sourcesIndex === sourcesContent.length) sourcesContent[sourcesIndex] = content != null ? content : null;
-  if (skipable && skipSource(line, index, sourcesIndex, sourceLine, sourceColumn, namesIndex)) {
+  if (sourcesIndex === sourcesContent.length)
+    sourcesContent[sourcesIndex] = content != null ? content : null;
+  if (
+    skipable &&
+    skipSource(line, index, sourcesIndex, sourceLine, sourceColumn, namesIndex)
+  ) {
     return;
   }
   return insert(
     line,
     index,
-    name ? [genColumn, sourcesIndex, sourceLine, sourceColumn, namesIndex] : [genColumn, sourcesIndex, sourceLine, sourceColumn]
+    name
+      ? [genColumn, sourcesIndex, sourceLine, sourceColumn, namesIndex]
+      : [genColumn, sourcesIndex, sourceLine, sourceColumn],
   );
 }
-function assert(_val) {
-}
+function assert(_val) {}
 function getIndex(arr, index) {
   for (let i = arr.length; i <= index; i++) {
     arr[i] = [];
@@ -242,11 +274,23 @@ function skipSourceless(line, index) {
   const prev = line[index - 1];
   return prev.length === 1;
 }
-function skipSource(line, index, sourcesIndex, sourceLine, sourceColumn, namesIndex) {
+function skipSource(
+  line,
+  index,
+  sourcesIndex,
+  sourceLine,
+  sourceColumn,
+  namesIndex,
+) {
   if (index === 0) return false;
   const prev = line[index - 1];
   if (prev.length === 1) return false;
-  return sourcesIndex === prev[SOURCES_INDEX] && sourceLine === prev[SOURCE_LINE] && sourceColumn === prev[SOURCE_COLUMN] && namesIndex === (prev.length === 5 ? prev[NAMES_INDEX] : NO_NAME);
+  return (
+    sourcesIndex === prev[SOURCES_INDEX] &&
+    sourceLine === prev[SOURCE_LINE] &&
+    sourceColumn === prev[SOURCE_COLUMN] &&
+    namesIndex === (prev.length === 5 ? prev[NAMES_INDEX] : NO_NAME)
+  );
 }
 function addMappingInternal(skipable, map, mapping) {
   const { generated, source, original, name, content } = mapping;
@@ -260,7 +304,7 @@ function addMappingInternal(skipable, map, mapping) {
       null,
       null,
       null,
-      null
+      null,
     );
   }
   assert(original);
@@ -273,7 +317,7 @@ function addMappingInternal(skipable, map, mapping) {
     original.line - 1,
     original.column,
     name,
-    content
+    content,
   );
 }
 export {
@@ -287,6 +331,6 @@ export {
   setIgnore,
   setSourceContent,
   toDecodedMap,
-  toEncodedMap
+  toEncodedMap,
 };
 //# sourceMappingURL=gen-mapping.mjs.map

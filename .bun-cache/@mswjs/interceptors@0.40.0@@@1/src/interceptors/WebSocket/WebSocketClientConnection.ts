@@ -1,38 +1,38 @@
-import type { WebSocketData, WebSocketTransport } from './WebSocketTransport'
-import type { WebSocketEventListener } from './WebSocketOverride'
-import { bindEvent } from './utils/bindEvent'
-import { CancelableMessageEvent, CloseEvent } from './utils/events'
-import { createRequestId } from '../../createRequestId'
+import { createRequestId } from "../../createRequestId";
+import { bindEvent } from "./utils/bindEvent";
+import { CancelableMessageEvent, CloseEvent } from "./utils/events";
+import type { WebSocketEventListener } from "./WebSocketOverride";
+import type { WebSocketData, WebSocketTransport } from "./WebSocketTransport";
 
-const kEmitter = Symbol('kEmitter')
-const kBoundListener = Symbol('kBoundListener')
+const kEmitter = Symbol("kEmitter");
+const kBoundListener = Symbol("kBoundListener");
 
 export interface WebSocketClientEventMap {
-  message: MessageEvent<WebSocketData>
-  close: CloseEvent
+  message: MessageEvent<WebSocketData>;
+  close: CloseEvent;
 }
 
 export abstract class WebSocketClientConnectionProtocol {
-  abstract id: string
-  abstract url: URL
-  public abstract send(data: WebSocketData): void
-  public abstract close(code?: number, reason?: string): void
+  abstract id: string;
+  abstract url: URL;
+  public abstract send(data: WebSocketData): void;
+  public abstract close(code?: number, reason?: string): void;
 
   public abstract addEventListener<
-    EventType extends keyof WebSocketClientEventMap
+    EventType extends keyof WebSocketClientEventMap,
   >(
     type: EventType,
     listener: WebSocketEventListener<WebSocketClientEventMap[EventType]>,
-    options?: AddEventListenerOptions | boolean
-  ): void
+    options?: AddEventListenerOptions | boolean,
+  ): void;
 
   public abstract removeEventListener<
-    EventType extends keyof WebSocketClientEventMap
+    EventType extends keyof WebSocketClientEventMap,
   >(
     event: EventType,
     listener: WebSocketEventListener<WebSocketClientEventMap[EventType]>,
-    options?: EventListenerOptions | boolean
-  ): void
+    options?: EventListenerOptions | boolean,
+  ): void;
 }
 
 /**
@@ -43,41 +43,41 @@ export abstract class WebSocketClientConnectionProtocol {
 export class WebSocketClientConnection
   implements WebSocketClientConnectionProtocol
 {
-  public readonly id: string
-  public readonly url: URL
+  public readonly id: string;
+  public readonly url: URL;
 
-  private [kEmitter]: EventTarget
+  private [kEmitter]: EventTarget;
 
   constructor(
     public readonly socket: WebSocket,
-    private readonly transport: WebSocketTransport
+    private readonly transport: WebSocketTransport,
   ) {
-    this.id = createRequestId()
-    this.url = new URL(socket.url)
-    this[kEmitter] = new EventTarget()
+    this.id = createRequestId();
+    this.url = new URL(socket.url);
+    this[kEmitter] = new EventTarget();
 
     // Emit outgoing client data ("ws.send()") as "message"
     // events on the "client" connection.
-    this.transport.addEventListener('outgoing', (event) => {
+    this.transport.addEventListener("outgoing", (event) => {
       const message = bindEvent(
         this.socket,
-        new CancelableMessageEvent('message', {
+        new CancelableMessageEvent("message", {
           data: event.data,
           origin: event.origin,
           cancelable: true,
-        })
-      )
+        }),
+      );
 
-      this[kEmitter].dispatchEvent(message)
+      this[kEmitter].dispatchEvent(message);
 
       // This is a bit silly but forward the cancellation state
       // of the "client" message event to the "outgoing" transport event.
       // This way, other agens (like "server" connection) can know
       // whether the client listener has pervented the default.
       if (message.defaultPrevented) {
-        event.preventDefault()
+        event.preventDefault();
       }
-    })
+    });
 
     /**
      * Emit the "close" event on the "client" connection
@@ -87,11 +87,11 @@ export class WebSocketClientConnection
      * close status code. Thus, we listen to the transport
      * instead of the WebSocket's "close" event.
      */
-    this.transport.addEventListener('close', (event) => {
+    this.transport.addEventListener("close", (event) => {
       this[kEmitter].dispatchEvent(
-        bindEvent(this.socket, new CloseEvent('close', event))
-      )
-    })
+        bindEvent(this.socket, new CloseEvent("close", event)),
+      );
+    });
   }
 
   /**
@@ -100,10 +100,10 @@ export class WebSocketClientConnection
   public addEventListener<EventType extends keyof WebSocketClientEventMap>(
     type: EventType,
     listener: WebSocketEventListener<WebSocketClientEventMap[EventType]>,
-    options?: AddEventListenerOptions | boolean
+    options?: AddEventListenerOptions | boolean,
   ): void {
     if (!Reflect.has(listener, kBoundListener)) {
-      const boundListener = listener.bind(this.socket)
+      const boundListener = listener.bind(this.socket);
 
       // Store the bound listener on the original listener
       // so the exact bound function can be accessed in "removeEventListener()".
@@ -111,14 +111,14 @@ export class WebSocketClientConnection
         value: boundListener,
         enumerable: false,
         configurable: false,
-      })
+      });
     }
 
     this[kEmitter].addEventListener(
       type,
       Reflect.get(listener, kBoundListener) as EventListener,
-      options
-    )
+      options,
+    );
   }
 
   /**
@@ -127,20 +127,20 @@ export class WebSocketClientConnection
   public removeEventListener<EventType extends keyof WebSocketClientEventMap>(
     event: EventType,
     listener: WebSocketEventListener<WebSocketClientEventMap[EventType]>,
-    options?: EventListenerOptions | boolean
+    options?: EventListenerOptions | boolean,
   ): void {
     this[kEmitter].removeEventListener(
       event,
       Reflect.get(listener, kBoundListener) as EventListener,
-      options
-    )
+      options,
+    );
   }
 
   /**
    * Send data to the connected client.
    */
   public send(data: WebSocketData): void {
-    this.transport.send(data)
+    this.transport.send(data);
   }
 
   /**
@@ -149,6 +149,6 @@ export class WebSocketClientConnection
    * @param {string} reason A custom connection close reason.
    */
   public close(code?: number, reason?: string): void {
-    this.transport.close(code, reason)
+    this.transport.close(code, reason);
   }
 }

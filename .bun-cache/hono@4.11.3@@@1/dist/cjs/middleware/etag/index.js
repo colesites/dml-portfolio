@@ -8,18 +8,22 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var etag_exports = {};
 __export(etag_exports, {
   RETAINED_304_HEADERS: () => RETAINED_304_HEADERS,
-  etag: () => etag
+  etag: () => etag,
 });
 module.exports = __toCommonJS(etag_exports);
 var import_digest = require("./digest");
@@ -29,21 +33,25 @@ const RETAINED_304_HEADERS = [
   "date",
   "etag",
   "expires",
-  "vary"
+  "vary",
 ];
 const stripWeak = (tag) => tag.replace(/^W\//, "");
 function etagMatches(etag2, ifNoneMatch) {
-  return ifNoneMatch != null && ifNoneMatch.split(/,\s*/).some((t) => stripWeak(t) === stripWeak(etag2));
+  return (
+    ifNoneMatch != null &&
+    ifNoneMatch.split(/,\s*/).some((t) => stripWeak(t) === stripWeak(etag2))
+  );
 }
 function initializeGenerator(generator) {
   if (!generator) {
     if (crypto && crypto.subtle) {
-      generator = (body) => crypto.subtle.digest(
-        {
-          name: "SHA-1"
-        },
-        body
-      );
+      generator = (body) =>
+        crypto.subtle.digest(
+          {
+            name: "SHA-1",
+          },
+          body,
+        );
     }
   }
   return generator;
@@ -64,7 +72,7 @@ const etag = (options) => {
       const hash = await (0, import_digest.generateDigest)(
         // This type casing avoids the type error for `deno publish`
         res.clone().body,
-        generator
+        generator,
       );
       if (hash === null) {
         return;
@@ -76,8 +84,8 @@ const etag = (options) => {
         status: 304,
         statusText: "Not Modified",
         headers: {
-          ETag: etag3
-        }
+          ETag: etag3,
+        },
       });
       c.res.headers.forEach((_, key) => {
         if (retainedHeaders.indexOf(key.toLowerCase()) === -1) {
@@ -90,7 +98,8 @@ const etag = (options) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  RETAINED_304_HEADERS,
-  etag
-});
+0 &&
+  (module.exports = {
+    RETAINED_304_HEADERS,
+    etag,
+  });

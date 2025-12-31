@@ -2,7 +2,7 @@
 var requestId = ({
   limitLength = 255,
   headerName = "X-Request-Id",
-  generator = () => crypto.randomUUID()
+  generator = () => crypto.randomUUID(),
 } = {}) => {
   return async function requestId2(c, next) {
     let reqId = headerName ? c.req.header(headerName) : void 0;
@@ -16,6 +16,4 @@ var requestId = ({
     await next();
   };
 };
-export {
-  requestId
-};
+export { requestId };

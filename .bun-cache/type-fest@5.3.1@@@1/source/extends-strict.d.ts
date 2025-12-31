@@ -1,5 +1,5 @@
-import type {IsNever} from './is-never.d.ts';
-import type {IsAny} from './is-any.d.ts';
+import type { IsNever } from "./is-never.d.ts";
+import type { IsAny } from "./is-any.d.ts";
 
 /**
 A stricter, non-distributive version of `extends` for checking whether one type is assignable to another.
@@ -32,13 +32,10 @@ type T5 = ExtendsStrict<string, string>;
 
 @category Improved Built-in
 */
-export type ExtendsStrict<Left, Right> =
-	IsAny<Left | Right> extends true
-		? true
-		: IsNever<Left> extends true
-			? IsNever<Right>
-			: [Left] extends [Right]
-				? true
-				: false;
-
-export {};
+export type ExtendsStrict<Left, Right> = IsAny<Left | Right> extends true
+  ? true
+  : IsNever<Left> extends true
+    ? IsNever<Right>
+    : [Left] extends [Right]
+      ? true
+      : false;

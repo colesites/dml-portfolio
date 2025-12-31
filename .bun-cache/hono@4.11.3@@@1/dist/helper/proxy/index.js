@@ -1,5 +1,6 @@
 // src/helper/proxy/index.ts
 import { HTTPException } from "../../http-exception.js";
+
 var hopByHopHeaders = [
   "connection",
   "keep-alive",
@@ -8,7 +9,7 @@ var hopByHopHeaders = [
   "te",
   "trailer",
   "transfer-encoding",
-  "upgrade"
+  "upgrade",
 ];
 var ALLOWED_TOKEN_PATTERN = /^[!#$%&'*+\-.0-9A-Z^_`a-z|~]+$/;
 var buildRequestInitFromRequest = (request, strictConnectionProcessing) => {
@@ -20,10 +21,12 @@ var buildRequestInitFromRequest = (request, strictConnectionProcessing) => {
     const connectionValue = headers.get("connection");
     if (connectionValue) {
       const headerNames = connectionValue.split(",").map((h) => h.trim());
-      const invalidHeaders = headerNames.filter((h) => !ALLOWED_TOKEN_PATTERN.test(h));
+      const invalidHeaders = headerNames.filter(
+        (h) => !ALLOWED_TOKEN_PATTERN.test(h),
+      );
       if (invalidHeaders.length > 0) {
         throw new HTTPException(400, {
-          message: `Invalid Connection header value: ${invalidHeaders.join(", ")}`
+          message: `Invalid Connection header value: ${invalidHeaders.join(", ")}`,
         });
       }
       headerNames.forEach((headerName) => {
@@ -39,11 +42,15 @@ var buildRequestInitFromRequest = (request, strictConnectionProcessing) => {
     body: request.body,
     duplex: request.body ? "half" : void 0,
     headers,
-    signal: request.signal
+    signal: request.signal,
   };
 };
 var preprocessRequestInit = (requestInit) => {
-  if (!requestInit.headers || Array.isArray(requestInit.headers) || requestInit.headers instanceof Headers) {
+  if (
+    !requestInit.headers ||
+    Array.isArray(requestInit.headers) ||
+    requestInit.headers instanceof Headers
+  ) {
     return requestInit;
   }
   const headers = new Headers();
@@ -63,10 +70,10 @@ var proxy = async (input, proxyInit) => {
     customFetch,
     strictConnectionProcessing = false,
     ...requestInit
-  } = proxyInit instanceof Request ? { raw: proxyInit } : proxyInit ?? {};
+  } = proxyInit instanceof Request ? { raw: proxyInit } : (proxyInit ?? {});
   const req = new Request(input, {
     ...buildRequestInitFromRequest(raw, strictConnectionProcessing),
-    ...preprocessRequestInit(requestInit)
+    ...preprocessRequestInit(requestInit),
   });
   req.headers.delete("accept-encoding");
   const res = await (customFetch || fetch)(req);
@@ -81,9 +88,7 @@ var proxy = async (input, proxyInit) => {
   return new Response(res.body, {
     status: res.status,
     statusText: res.statusText,
-    headers: resHeaders
+    headers: resHeaders,
   });
 };
-export {
-  proxy
-};
+export { proxy };

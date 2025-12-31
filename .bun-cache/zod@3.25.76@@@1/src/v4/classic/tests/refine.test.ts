@@ -8,7 +8,10 @@ describe("basic refinement functionality", () => {
       second: z.string(),
     });
     const obj2 = obj1.partial().strict();
-    const obj3 = obj2.refine((data) => data.first || data.second, "Either first or second should be filled in.");
+    const obj3 = obj2.refine(
+      (data) => data.first || data.second,
+      "Either first or second should be filled in.",
+    );
 
     expect(obj1 === (obj2 as any)).toEqual(false);
     expect(obj2 === (obj3 as any)).toEqual(false);
@@ -22,7 +25,10 @@ describe("basic refinement functionality", () => {
       })
       .partial()
       .strict()
-      .refine((data) => data.first || data.second, "Either first or second should be filled in.");
+      .refine(
+        (data) => data.first || data.second,
+        "Either first or second should be filled in.",
+      );
 
     // Should fail on empty object
     expect(() => schema.parse({})).toThrow();
@@ -34,7 +40,10 @@ describe("basic refinement functionality", () => {
     expect(schema.parse({ second: "a" })).toEqual({ second: "a" });
 
     // Should pass with both properties
-    expect(schema.parse({ first: "a", second: "a" })).toEqual({ first: "a", second: "a" });
+    expect(schema.parse({ first: "a", second: "a" })).toEqual({
+      first: "a",
+      second: "a",
+    });
   });
 
   test("should validate strict mode correctly", () => {
@@ -59,7 +68,10 @@ describe("refinement with custom error messages", () => {
         password: z.string(),
         confirmPassword: z.string(),
       })
-      .refine((data) => data.password === data.confirmPassword, "Both password and confirmation must match");
+      .refine(
+        (data) => data.password === data.confirmPassword,
+        "Both password and confirmation must match",
+      );
 
     const result = validationSchema.safeParse({
       email: "aaaa@gmail.com",
@@ -69,7 +81,9 @@ describe("refinement with custom error messages", () => {
 
     expect(result.success).toEqual(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toEqual("Both password and confirmation must match");
+      expect(result.error.issues[0].message).toEqual(
+        "Both password and confirmation must match",
+      );
     }
   });
 });
@@ -83,8 +97,9 @@ describe("async refinements", () => {
         confirmPassword: z.string(),
       })
       .refine(
-        (data) => Promise.resolve().then(() => data.password === data.confirmPassword),
-        "Both password and confirmation must match"
+        (data) =>
+          Promise.resolve().then(() => data.password === data.confirmPassword),
+        "Both password and confirmation must match",
       );
 
     // Should pass with matching passwords
@@ -94,7 +109,9 @@ describe("async refinements", () => {
       confirmPassword: "password",
     };
 
-    await expect(validationSchema.parseAsync(validData)).resolves.toEqual(validData);
+    await expect(validationSchema.parseAsync(validData)).resolves.toEqual(
+      validData,
+    );
 
     // Should fail with non-matching passwords
     await expect(
@@ -102,7 +119,7 @@ describe("async refinements", () => {
         email: "aaaa@gmail.com",
         password: "password",
         confirmPassword: "different",
-      })
+      }),
     ).rejects.toThrow();
   });
 });
@@ -241,7 +258,12 @@ describe("superRefine functionality", () => {
     });
 
     // Should fail with too many items and duplicates
-    const result = await Strings.safeParseAsync(["asfd", "asfd", "asfd", "asfd"]);
+    const result = await Strings.safeParseAsync([
+      "asfd",
+      "asfd",
+      "asfd",
+      "asfd",
+    ]);
     expect(result.success).toEqual(false);
     if (!result.success) {
       expect(result.error.issues.length).toEqual(2);
@@ -443,9 +465,13 @@ test("when", () => {
           if (payload.value === undefined) return false;
           if (payload.value === null) return false;
           // no issues with confirmPassword or password
-          return payload.issues.every((iss) => iss.path?.[0] !== "confirmPassword" && iss.path?.[0] !== "password");
+          return payload.issues.every(
+            (iss) =>
+              iss.path?.[0] !== "confirmPassword" &&
+              iss.path?.[0] !== "password",
+          );
         },
-      }
+      },
     );
 
   expect(schema.safeParse(undefined)).toMatchInlineSnapshot(`
@@ -479,7 +505,7 @@ test("when", () => {
       password: "asdf",
       confirmPassword: "asdfg",
       other: "qwer",
-    })
+    }),
   ).toMatchInlineSnapshot(`
     {
       "error": [ZodError: [
@@ -503,7 +529,7 @@ test("when", () => {
       password: "asdf",
       confirmPassword: "asdfg",
       other: 1234,
-    })
+    }),
   ).toMatchInlineSnapshot(`
     {
       "error": [ZodError: [

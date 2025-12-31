@@ -8,34 +8,35 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var concurrent_exports = {};
 __export(concurrent_exports, {
-  createPool: () => createPool
+  createPool: () => createPool,
 });
 module.exports = __toCommonJS(concurrent_exports);
 const DEFAULT_CONCURRENCY = 1024;
-const createPool = ({
-  concurrency,
-  interval
-} = {}) => {
+const createPool = ({ concurrency, interval } = {}) => {
   concurrency ||= DEFAULT_CONCURRENCY;
   if (concurrency === Infinity) {
     return {
-      run: async (fn) => fn()
+      run: async (fn) => fn(),
     };
   }
   const pool = /* @__PURE__ */ new Set();
   const run = async (fn, promise, resolve) => {
     if (pool.size >= concurrency) {
-      promise ||= new Promise((r) => resolve = r);
+      promise ||= new Promise((r) => (resolve = r));
       setTimeout(() => run(fn, promise, resolve));
       return promise;
     }
@@ -57,6 +58,7 @@ const createPool = ({
   return { run };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  createPool
-});
+0 &&
+  (module.exports = {
+    createPool,
+  });

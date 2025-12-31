@@ -1,5 +1,6 @@
-import { cleanUrl } from '../url/cleanUrl.mjs';
-import { getAbsoluteUrl } from '../url/getAbsoluteUrl.mjs';
+import { cleanUrl } from "../url/cleanUrl.mjs";
+import { getAbsoluteUrl } from "../url/getAbsoluteUrl.mjs";
+
 function normalizePath(path, baseUrl) {
   if (path instanceof RegExp) {
     return path;
@@ -7,7 +8,5 @@ function normalizePath(path, baseUrl) {
   const maybeAbsoluteUrl = getAbsoluteUrl(path, baseUrl);
   return cleanUrl(maybeAbsoluteUrl);
 }
-export {
-  normalizePath
-};
+export { normalizePath };
 //# sourceMappingURL=normalizePath.mjs.map

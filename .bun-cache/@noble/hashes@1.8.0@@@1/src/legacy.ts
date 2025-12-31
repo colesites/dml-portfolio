@@ -8,8 +8,8 @@ Don't use them in a new protocol. What "weak" means:
 - HMAC seems kinda ok: https://datatracker.ietf.org/doc/html/rfc6151
  * @module
  */
-import { Chi, HashMD, Maj } from './_md.ts';
-import { type CHash, clean, createHasher, rotl } from './utils.ts';
+import { Chi, HashMD, Maj } from "./_md.ts";
+import { type CHash, clean, createHasher, rotl } from "./utils.ts";
 
 /** Initial SHA1 state */
 const SHA1_IV = /* @__PURE__ */ Uint32Array.from([
@@ -42,9 +42,13 @@ export class SHA1 extends HashMD<SHA1> {
     this.E = E | 0;
   }
   protected process(view: DataView, offset: number): void {
-    for (let i = 0; i < 16; i++, offset += 4) SHA1_W[i] = view.getUint32(offset, false);
+    for (let i = 0; i < 16; i++, offset += 4)
+      SHA1_W[i] = view.getUint32(offset, false);
     for (let i = 16; i < 80; i++)
-      SHA1_W[i] = rotl(SHA1_W[i - 3] ^ SHA1_W[i - 8] ^ SHA1_W[i - 14] ^ SHA1_W[i - 16], 1);
+      SHA1_W[i] = rotl(
+        SHA1_W[i - 3] ^ SHA1_W[i - 8] ^ SHA1_W[i - 14] ^ SHA1_W[i - 16],
+        1,
+      );
     // Compression function main loop, 80 rounds
     let { A, B, C, D, E } = this;
     for (let i = 0; i < 80; i++) {
@@ -90,9 +94,9 @@ export class SHA1 extends HashMD<SHA1> {
 export const sha1: CHash = /* @__PURE__ */ createHasher(() => new SHA1());
 
 /** Per-round constants */
-const p32 = /* @__PURE__ */ Math.pow(2, 32);
+const p32 = /* @__PURE__ */ 2 ** 32;
 const K = /* @__PURE__ */ Array.from({ length: 64 }, (_, i) =>
-  Math.floor(p32 * Math.abs(Math.sin(i + 1)))
+  Math.floor(p32 * Math.abs(Math.sin(i + 1))),
 );
 
 /** md5 initial state: same as sha1, but 4 u32 instead of 5. */
@@ -121,7 +125,8 @@ export class MD5 extends HashMD<MD5> {
     this.D = D | 0;
   }
   protected process(view: DataView, offset: number): void {
-    for (let i = 0; i < 16; i++, offset += 4) MD5_W[i] = view.getUint32(offset, true);
+    for (let i = 0; i < 16; i++, offset += 4)
+      MD5_W[i] = view.getUint32(offset, true);
     // Compression function main loop, 64 rounds
     let { A, B, C, D } = this;
     for (let i = 0; i < 64; i++) {
@@ -181,13 +186,15 @@ export const md5: CHash = /* @__PURE__ */ createHasher(() => new MD5());
 const Rho160 = /* @__PURE__ */ Uint8Array.from([
   7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
 ]);
-const Id160 = /* @__PURE__ */ (() => Uint8Array.from(new Array(16).fill(0).map((_, i) => i)))();
+const Id160 = /* @__PURE__ */ (() =>
+  Uint8Array.from(new Array(16).fill(0).map((_, i) => i)))();
 const Pi160 = /* @__PURE__ */ (() => Id160.map((i) => (9 * i + 5) % 16))();
 const idxLR = /* @__PURE__ */ (() => {
   const L = [Id160];
   const R = [Pi160];
   const res = [L, R];
-  for (let i = 0; i < 4; i++) for (let j of res) j.push(j[i].map((k) => Rho160[k]));
+  for (let i = 0; i < 4; i++)
+    for (const j of res) j.push(j[i].map((k) => Rho160[k]));
   return res;
 })();
 const idxL = /* @__PURE__ */ (() => idxLR[0])();
@@ -201,8 +208,12 @@ const shifts160 = /* @__PURE__ */ [
   [14, 11, 12, 14, 8, 6, 5, 5, 15, 12, 15, 14, 9, 9, 8, 6],
   [15, 12, 13, 13, 9, 5, 8, 6, 14, 11, 12, 11, 8, 6, 5, 5],
 ].map((i) => Uint8Array.from(i));
-const shiftsL160 = /* @__PURE__ */ idxL.map((idx, i) => idx.map((j) => shifts160[i][j]));
-const shiftsR160 = /* @__PURE__ */ idxR.map((idx, i) => idx.map((j) => shifts160[i][j]));
+const shiftsL160 = /* @__PURE__ */ idxL.map((idx, i) =>
+  idx.map((j) => shifts160[i][j]),
+);
+const shiftsR160 = /* @__PURE__ */ idxR.map((idx, i) =>
+  idx.map((j) => shifts160[i][j]),
+);
 const Kl160 = /* @__PURE__ */ Uint32Array.from([
   0x00000000, 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xa953fd4e,
 ]);
@@ -233,7 +244,13 @@ export class RIPEMD160 extends HashMD<RIPEMD160> {
     const { h0, h1, h2, h3, h4 } = this;
     return [h0, h1, h2, h3, h4];
   }
-  protected set(h0: number, h1: number, h2: number, h3: number, h4: number): void {
+  protected set(
+    h0: number,
+    h1: number,
+    h2: number,
+    h3: number,
+    h4: number,
+  ): void {
     this.h0 = h0 | 0;
     this.h1 = h1 | 0;
     this.h2 = h2 | 0;
@@ -241,29 +258,50 @@ export class RIPEMD160 extends HashMD<RIPEMD160> {
     this.h4 = h4 | 0;
   }
   protected process(view: DataView, offset: number): void {
-    for (let i = 0; i < 16; i++, offset += 4) BUF_160[i] = view.getUint32(offset, true);
+    for (let i = 0; i < 16; i++, offset += 4)
+      BUF_160[i] = view.getUint32(offset, true);
     // prettier-ignore
-    let al = this.h0 | 0, ar = al,
-        bl = this.h1 | 0, br = bl,
-        cl = this.h2 | 0, cr = cl,
-        dl = this.h3 | 0, dr = dl,
-        el = this.h4 | 0, er = el;
+    let al = this.h0 | 0,
+      ar = al,
+      bl = this.h1 | 0,
+      br = bl,
+      cl = this.h2 | 0,
+      cr = cl,
+      dl = this.h3 | 0,
+      dr = dl,
+      el = this.h4 | 0,
+      er = el;
 
     // Instead of iterating 0 to 80, we split it into 5 groups
     // And use the groups in constants, functions, etc. Much simpler
     for (let group = 0; group < 5; group++) {
       const rGroup = 4 - group;
-      const hbl = Kl160[group], hbr = Kr160[group]; // prettier-ignore
-      const rl = idxL[group], rr = idxR[group]; // prettier-ignore
-      const sl = shiftsL160[group], sr = shiftsR160[group]; // prettier-ignore
+      const hbl = Kl160[group],
+        hbr = Kr160[group]; // prettier-ignore
+      const rl = idxL[group],
+        rr = idxR[group]; // prettier-ignore
+      const sl = shiftsL160[group],
+        sr = shiftsR160[group]; // prettier-ignore
       for (let i = 0; i < 16; i++) {
-        const tl = (rotl(al + ripemd_f(group, bl, cl, dl) + BUF_160[rl[i]] + hbl, sl[i]) + el) | 0;
-        al = el, el = dl, dl = rotl(cl, 10) | 0, cl = bl, bl = tl; // prettier-ignore
+        const tl =
+          (rotl(
+            al + ripemd_f(group, bl, cl, dl) + BUF_160[rl[i]] + hbl,
+            sl[i],
+          ) +
+            el) |
+          0;
+        (al = el), (el = dl), (dl = rotl(cl, 10) | 0), (cl = bl), (bl = tl); // prettier-ignore
       }
       // 2 loops are 10% faster
       for (let i = 0; i < 16; i++) {
-        const tr = (rotl(ar + ripemd_f(rGroup, br, cr, dr) + BUF_160[rr[i]] + hbr, sr[i]) + er) | 0;
-        ar = er, er = dr, dr = rotl(cr, 10) | 0, cr = br, br = tr; // prettier-ignore
+        const tr =
+          (rotl(
+            ar + ripemd_f(rGroup, br, cr, dr) + BUF_160[rr[i]] + hbr,
+            sr[i],
+          ) +
+            er) |
+          0;
+        (ar = er), (er = dr), (dr = rotl(cr, 10) | 0), (cr = br), (br = tr); // prettier-ignore
       }
     }
     // Add the compressed chunk to the current hash value
@@ -272,7 +310,7 @@ export class RIPEMD160 extends HashMD<RIPEMD160> {
       (this.h2 + dl + er) | 0,
       (this.h3 + el + ar) | 0,
       (this.h4 + al + br) | 0,
-      (this.h0 + bl + cr) | 0
+      (this.h0 + bl + cr) | 0,
     );
   }
   protected roundClean(): void {
@@ -290,4 +328,6 @@ export class RIPEMD160 extends HashMD<RIPEMD160> {
  * * https://homes.esat.kuleuven.be/~bosselae/ripemd160.html
  * * https://homes.esat.kuleuven.be/~bosselae/ripemd160/pdf/AB-9601/AB-9601.pdf
  */
-export const ripemd160: CHash = /* @__PURE__ */ createHasher(() => new RIPEMD160());
+export const ripemd160: CHash = /* @__PURE__ */ createHasher(
+  () => new RIPEMD160(),
+);

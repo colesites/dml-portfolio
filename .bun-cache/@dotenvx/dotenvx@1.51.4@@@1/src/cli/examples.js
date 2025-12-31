@@ -1,5 +1,4 @@
-const run = function () {
-  return `
+const run = () => `
 Examples:
 
   \`\`\`
@@ -19,11 +18,9 @@ Try it:
   [dotenvx] injecting env (1) from .env
   Hello World
   \`\`\`
-  `
-}
+  `;
 
-const precommit = function () {
-  return `
+const precommit = () => `
 Examples:
 
   \`\`\`
@@ -37,11 +34,9 @@ Try it:
   $ dotenvx ext precommit
   [dotenvx@0.45.0][precommit] success
   \`\`\`
-  `
-}
+  `;
 
-const prebuild = function () {
-  return `
+const prebuild = () => `
 Examples:
 
   \`\`\`
@@ -54,11 +49,9 @@ Try it:
   $ dotenvx ext prebuild
   [dotenvx@0.10.0][prebuild] success
   \`\`\`
-  `
-}
+  `;
 
-const gitignore = function () {
-  return `
+const gitignore = () => `
 Examples:
 
   \`\`\`
@@ -72,11 +65,9 @@ Try it:
   $ dotenvx ext gitignore
   ✔ ignored .env* (.gitignore)
   \`\`\`
-  `
-}
+  `;
 
-const set = function () {
-  return `
+const set = () => `
 Examples:
 
   \`\`\`
@@ -87,13 +78,12 @@ Examples:
                         b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
                         -----END OPENSSH PRIVATE KEY-----"
   \`\`\`
-  `
-}
+  `;
 
 module.exports = {
   run,
   precommit,
   prebuild,
   gitignore,
-  set
-}
+  set,
+};

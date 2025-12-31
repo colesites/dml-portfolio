@@ -1,12 +1,12 @@
-import { type KDFInput } from './utils.ts';
+import { type KDFInput } from "./utils.ts";
 export type ScryptOpts = {
-    N: number;
-    r: number;
-    p: number;
-    dkLen?: number;
-    asyncTick?: number;
-    maxmem?: number;
-    onProgress?: (progress: number) => void;
+  N: number;
+  r: number;
+  p: number;
+  dkLen?: number;
+  asyncTick?: number;
+  maxmem?: number;
+  onProgress?: (progress: number) => void;
 };
 /**
  * Scrypt KDF from RFC 7914.
@@ -24,11 +24,19 @@ export type ScryptOpts = {
  * @example
  * scrypt('password', 'salt', { N: 2**18, r: 8, p: 1, dkLen: 32 });
  */
-export declare function scrypt(password: KDFInput, salt: KDFInput, opts: ScryptOpts): Uint8Array;
+export declare function scrypt(
+  password: KDFInput,
+  salt: KDFInput,
+  opts: ScryptOpts,
+): Uint8Array;
 /**
  * Scrypt KDF from RFC 7914. Async version.
  * @example
  * await scryptAsync('password', 'salt', { N: 2**18, r: 8, p: 1, dkLen: 32 });
  */
-export declare function scryptAsync(password: KDFInput, salt: KDFInput, opts: ScryptOpts): Promise<Uint8Array>;
+export declare function scryptAsync(
+  password: KDFInput,
+  salt: KDFInput,
+  opts: ScryptOpts,
+): Promise<Uint8Array>;
 //# sourceMappingURL=scrypt.d.ts.map

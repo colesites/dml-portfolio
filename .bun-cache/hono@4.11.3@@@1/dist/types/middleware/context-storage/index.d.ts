@@ -2,8 +2,8 @@
  * @module
  * Context Storage Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { Env, MiddlewareHandler } from '../../types';
+import type { Context } from "../../context";
+import type { Env, MiddlewareHandler } from "../../types";
 /**
  * Context Storage Middleware for Hono.
  *
@@ -36,5 +36,7 @@ import type { Env, MiddlewareHandler } from '../../types';
  * ```
  */
 export declare const contextStorage: () => MiddlewareHandler;
-export declare const tryGetContext: <E extends Env = Env>() => Context<E> | undefined;
+export declare const tryGetContext: <E extends Env = Env>() =>
+  | Context<E>
+  | undefined;
 export declare const getContext: <E extends Env = Env>() => Context<E>;

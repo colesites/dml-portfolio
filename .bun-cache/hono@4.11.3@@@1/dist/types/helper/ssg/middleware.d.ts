@@ -1,5 +1,5 @@
-import type { Context } from '../../context';
-import type { Env, MiddlewareHandler } from '../../types';
+import type { Context } from "../../context";
+import type { Env, MiddlewareHandler } from "../../types";
 export declare const SSG_CONTEXT = "HONO_SSG_CONTEXT";
 export declare const X_HONO_DISABLE_SSG_HEADER_KEY = "x-hono-disable-ssg";
 /**
@@ -9,15 +9,17 @@ export declare const X_HONO_DISABLE_SSG_HEADER_KEY = "x-hono-disable-ssg";
  */
 export declare const SSG_DISABLED_RESPONSE: Response;
 interface SSGParam {
-    [key: string]: string;
+  [key: string]: string;
 }
 export type SSGParams = SSGParam[];
 interface SSGParamsMiddleware {
-    <E extends Env = Env>(generateParams: (c: Context<E>) => SSGParams | Promise<SSGParams>): MiddlewareHandler<E>;
-    <E extends Env = Env>(params: SSGParams): MiddlewareHandler<E>;
+  <E extends Env = Env>(
+    generateParams: (c: Context<E>) => SSGParams | Promise<SSGParams>,
+  ): MiddlewareHandler<E>;
+  <E extends Env = Env>(params: SSGParams): MiddlewareHandler<E>;
 }
 export type AddedSSGDataRequest = Request & {
-    ssgParams?: SSGParams;
+  ssgParams?: SSGParams;
 };
 /**
  * Define SSG Route
@@ -41,4 +43,3 @@ export declare const disableSSG: () => MiddlewareHandler;
  * The API might be changed.
  */
 export declare const onlySSG: () => MiddlewareHandler;
-export {};

@@ -1,28 +1,28 @@
-import { invariant } from 'outvariant'
-import { Emitter, TypedEvent } from 'rettime'
-import { isObject } from '~/core/utils/internal/isObject'
-import type { StringifiedResponse } from '../setupWorker/glossary'
-import { supportsServiceWorker } from '../utils/supports'
+import { invariant } from "outvariant";
+import { Emitter, TypedEvent } from "rettime";
+import { isObject } from "~/core/utils/internal/isObject";
+import type { StringifiedResponse } from "../setupWorker/glossary";
+import { supportsServiceWorker } from "../utils/supports";
 
 export interface WorkerChannelOptions {
-  worker: Promise<ServiceWorker>
+  worker: Promise<ServiceWorker>;
 }
 
 export type WorkerChannelEventMap = {
-  REQUEST: WorkerEvent<IncomingWorkerRequest>
-  RESPONSE: WorkerEvent<IncomingWorkerResponse>
+  REQUEST: WorkerEvent<IncomingWorkerRequest>;
+  RESPONSE: WorkerEvent<IncomingWorkerResponse>;
   MOCKING_ENABLED: WorkerEvent<{
     client: {
-      id: string
-      frameType: string
-    }
-  }>
+      id: string;
+      frameType: string;
+    };
+  }>;
   INTEGRITY_CHECK_RESPONSE: WorkerEvent<{
-    packageVersion: string
-    checksum: string
-  }>
-  KEEPALIVE_RESPONSE: TypedEvent<never>
-}
+    packageVersion: string;
+    checksum: string;
+  }>;
+  KEEPALIVE_RESPONSE: TypedEvent<never>;
+};
 
 /**
  * Request representation received from the worker message event.
@@ -30,55 +30,55 @@ export type WorkerChannelEventMap = {
 export interface IncomingWorkerRequest
   extends Omit<
     Request,
-    | 'text'
-    | 'body'
-    | 'json'
-    | 'blob'
-    | 'arrayBuffer'
-    | 'formData'
-    | 'clone'
-    | 'signal'
-    | 'isHistoryNavigation'
-    | 'isReloadNavigation'
+    | "text"
+    | "body"
+    | "json"
+    | "blob"
+    | "arrayBuffer"
+    | "formData"
+    | "clone"
+    | "signal"
+    | "isHistoryNavigation"
+    | "isReloadNavigation"
   > {
   /**
    * Unique ID of the request generated once the request is
    * intercepted by the "fetch" event in the Service Worker.
    */
-  id: string
-  interceptedAt: number
-  body?: ArrayBuffer | null
+  id: string;
+  interceptedAt: number;
+  body?: ArrayBuffer | null;
 }
 
 type IncomingWorkerResponse = {
-  isMockedResponse: boolean
-  request: IncomingWorkerRequest
+  isMockedResponse: boolean;
+  request: IncomingWorkerRequest;
   response: Pick<
     Response,
-    'type' | 'ok' | 'status' | 'statusText' | 'body' | 'headers' | 'redirected'
-  >
-}
+    "type" | "ok" | "status" | "statusText" | "body" | "headers" | "redirected"
+  >;
+};
 
 export type WorkerEventResponse = {
   MOCK_RESPONSE: [
     data: StringifiedResponse,
     transfer?: [ReadableStream<Uint8Array>],
-  ]
-  PASSTHROUGH: []
-}
+  ];
+  PASSTHROUGH: [];
+};
 
-const SUPPORTS_SERVICE_WORKER = supportsServiceWorker()
+const SUPPORTS_SERVICE_WORKER = supportsServiceWorker();
 
 export class WorkerEvent<
   DataType,
   ReturnType = any,
   EventType extends string = string,
 > extends TypedEvent<DataType, ReturnType, EventType> {
-  #workerEvent: MessageEvent
+  #workerEvent: MessageEvent;
 
   constructor(workerEvent: MessageEvent) {
-    const type = workerEvent.data.type as EventType
-    const data = workerEvent.data.payload as DataType
+    const type = workerEvent.data.type as EventType;
+    const data = workerEvent.data.payload as DataType;
 
     /**
      * @note This is the only place we're mapping { type, payload }
@@ -89,12 +89,12 @@ export class WorkerEvent<
       // @ts-expect-error Troublesome `TypedEvent` extension.
       type,
       { data },
-    )
-    this.#workerEvent = workerEvent
+    );
+    this.#workerEvent = workerEvent;
   }
 
   get ports() {
-    return this.#workerEvent.ports
+    return this.#workerEvent.ports;
   }
 
   /**
@@ -107,7 +107,7 @@ export class WorkerEvent<
     this.#workerEvent.ports[0].postMessage(
       { type, data: rest[0] },
       { transfer: rest[1] },
-    )
+    );
   }
 }
 
@@ -116,30 +116,30 @@ export class WorkerEvent<
  * from any execution context.
  */
 type OutgoingWorkerEvents =
-  | 'MOCK_ACTIVATE'
-  | 'INTEGRITY_CHECK_REQUEST'
-  | 'KEEPALIVE_REQUEST'
-  | 'CLIENT_CLOSED'
+  | "MOCK_ACTIVATE"
+  | "INTEGRITY_CHECK_REQUEST"
+  | "KEEPALIVE_REQUEST"
+  | "CLIENT_CLOSED";
 
 export class WorkerChannel extends Emitter<WorkerChannelEventMap> {
   constructor(protected readonly options: WorkerChannelOptions) {
-    super()
+    super();
 
     if (!SUPPORTS_SERVICE_WORKER) {
-      return
+      return;
     }
 
-    navigator.serviceWorker.addEventListener('message', async (event) => {
-      const worker = await this.options.worker
+    navigator.serviceWorker.addEventListener("message", async (event) => {
+      const worker = await this.options.worker;
 
       if (event.source != null && event.source !== worker) {
-        return
+        return;
       }
 
-      if (event.data && isObject(event.data) && 'type' in event.data) {
-        this.emit(new WorkerEvent<any, any, any>(event))
+      if (event.data && isObject(event.data) && "type" in event.data) {
+        this.emit(new WorkerEvent<any, any, any>(event));
       }
-    })
+    });
   }
 
   /**
@@ -149,11 +149,11 @@ export class WorkerChannel extends Emitter<WorkerChannelEventMap> {
   public postMessage(type: OutgoingWorkerEvents): void {
     invariant(
       SUPPORTS_SERVICE_WORKER,
-      'Failed to post message on a WorkerChannel: the Service Worker API is unavailable in this context. This is likely an issue with MSW. Please report it on GitHub: https://github.com/mswjs/msw/issues',
-    )
+      "Failed to post message on a WorkerChannel: the Service Worker API is unavailable in this context. This is likely an issue with MSW. Please report it on GitHub: https://github.com/mswjs/msw/issues",
+    );
 
     this.options.worker.then((worker) => {
-      worker.postMessage(type)
-    })
+      worker.postMessage(type);
+    });
   }
 }

@@ -1,29 +1,27 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.GraphQLSchema = void 0;
 exports.assertSchema = assertSchema;
 exports.isSchema = isSchema;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _instanceOf = require('../jsutils/instanceOf.js');
+var _instanceOf = require("../jsutils/instanceOf.js");
 
-var _isObjectLike = require('../jsutils/isObjectLike.js');
+var _isObjectLike = require("../jsutils/isObjectLike.js");
 
-var _toObjMap = require('../jsutils/toObjMap.js');
+var _toObjMap = require("../jsutils/toObjMap.js");
 
-var _ast = require('../language/ast.js');
+var _ast = require("../language/ast.js");
 
-var _definition = require('./definition.js');
+var _definition = require("./definition.js");
 
-var _directives = require('./directives.js');
+var _directives = require("./directives.js");
 
-var _introspection = require('./introspection.js');
+var _introspection = require("./introspection.js");
 
 /**
  * Test if the given value is a GraphQL schema.
@@ -129,7 +127,7 @@ class GraphQLSchema {
     this.__validationErrors = config.assumeValid === true ? [] : undefined; // Check for common mistakes during construction to produce early errors.
 
     (0, _isObjectLike.isObjectLike)(config) ||
-      (0, _devAssert.devAssert)(false, 'Must provide configuration object.');
+      (0, _devAssert.devAssert)(false, "Must provide configuration object.");
     !config.types ||
       Array.isArray(config.types) ||
       (0, _devAssert.devAssert)(
@@ -212,7 +210,7 @@ class GraphQLSchema {
       typeName ||
         (0, _devAssert.devAssert)(
           false,
-          'One of the provided types for building the Schema is missing a name.',
+          "One of the provided types for building the Schema is missing a name.",
         );
 
       if (this._typeMap[typeName] !== undefined) {
@@ -260,7 +258,7 @@ class GraphQLSchema {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLSchema';
+    return "GraphQLSchema";
   }
 
   getQueryType() {

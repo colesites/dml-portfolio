@@ -1,6 +1,4 @@
-"use strict"
-
-var mergeModules = require("../lib/helpers/merge-exports")
+var mergeModules = require("../lib/helpers/merge-exports");
 
 // Update this array if you add/rename/remove files in this directory.
 // We support Browserify by skipping automatic module discovery and requiring modules directly.
@@ -13,11 +11,11 @@ var modules = [
   require("./sbcs-data"),
   require("./sbcs-data-generated"),
   require("./dbcs-codec"),
-  require("./dbcs-data")
-]
+  require("./dbcs-data"),
+];
 
 // Put all encoding/alias/codec definitions to single object and export it.
 for (var i = 0; i < modules.length; i++) {
-  var module = modules[i]
-  mergeModules(exports, module)
+  var module = modules[i];
+  mergeModules(exports, module);
 }

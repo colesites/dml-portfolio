@@ -1,9 +1,9 @@
-import { q as HttpResponse } from './HttpResponse-Cw4ELwIN.mjs';
-import '@mswjs/interceptors';
-import './utils/internal/isIterable.mjs';
-import './typeUtils.mjs';
-import 'graphql';
-import './utils/matching/matchRequestUrl.mjs';
+import { q as HttpResponse } from "./HttpResponse-Cw4ELwIN.mjs";
+import "@mswjs/interceptors";
+import "./utils/internal/isIterable.mjs";
+import "./typeUtils.mjs";
+import "graphql";
+import "./utils/matching/matchRequestUrl.mjs";
 
 /**
  * Performs the intercepted request as-is.

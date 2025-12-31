@@ -87,6 +87,6 @@ export function formatContextForPrompt(context: PortfolioContext) {
 
   return `${contextString.slice(
     0,
-    MAX_CONTEXT_CHAR_LENGTH
+    MAX_CONTEXT_CHAR_LENGTH,
   )}\n...context truncated for length`;
 }

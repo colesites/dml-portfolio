@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var language_exports = {};
 __export(language_exports, {
   DEFAULT_OPTIONS: () => DEFAULT_OPTIONS,
@@ -27,7 +31,7 @@ __export(language_exports, {
   languageDetector: () => languageDetector,
   normalizeLanguage: () => normalizeLanguage,
   parseAcceptLanguage: () => parseAcceptLanguage,
-  validateOptions: () => validateOptions
+  validateOptions: () => validateOptions,
 });
 module.exports = __toCommonJS(language_exports);
 var import_cookie = require("../../helper/cookie");
@@ -46,12 +50,15 @@ const DEFAULT_OPTIONS = {
     sameSite: "Strict",
     secure: true,
     maxAge: 365 * 24 * 60 * 60,
-    httpOnly: true
+    httpOnly: true,
   },
-  debug: false
+  debug: false,
 };
 function parseAcceptLanguage(header) {
-  return (0, import_accept.parseAccept)(header).map(({ type, q }) => ({ lang: type, q }));
+  return (0, import_accept.parseAccept)(header).map(({ type, q }) => ({
+    lang: type,
+    q,
+  }));
 }
 const normalizeLanguage = (lang, options) => {
   if (!lang) {
@@ -62,12 +69,16 @@ const normalizeLanguage = (lang, options) => {
     if (options.convertDetectedLanguage) {
       normalizedLang = options.convertDetectedLanguage(normalizedLang);
     }
-    const compLang = options.ignoreCase ? normalizedLang.toLowerCase() : normalizedLang;
-    const compSupported = options.supportedLanguages.map(
-      (l) => options.ignoreCase ? l.toLowerCase() : l
+    const compLang = options.ignoreCase
+      ? normalizedLang.toLowerCase()
+      : normalizedLang;
+    const compSupported = options.supportedLanguages.map((l) =>
+      options.ignoreCase ? l.toLowerCase() : l,
     );
     const matchedLang = compSupported.find((l) => l === compLang);
-    return matchedLang ? options.supportedLanguages[compSupported.indexOf(matchedLang)] : void 0;
+    return matchedLang
+      ? options.supportedLanguages[compSupported.indexOf(matchedLang)]
+      : void 0;
   } catch {
     return void 0;
   }
@@ -120,16 +131,22 @@ const detectors = {
   querystring: detectFromQuery,
   cookie: detectFromCookie,
   header: detectFromHeader,
-  path: detectFromPath
+  path: detectFromPath,
 };
 function validateOptions(options) {
   if (!options.supportedLanguages.includes(options.fallbackLanguage)) {
-    throw new Error("Fallback language must be included in supported languages");
+    throw new Error(
+      "Fallback language must be included in supported languages",
+    );
   }
   if (options.lookupFromPathIndex < 0) {
     throw new Error("Path index must be non-negative");
   }
-  if (!options.order.every((detector) => Object.keys(detectors).includes(detector))) {
+  if (
+    !options.order.every((detector) =>
+      Object.keys(detectors).includes(detector),
+    )
+  ) {
     throw new Error("Invalid detector type in order array");
   }
 }
@@ -138,7 +155,12 @@ function cacheLanguage(c, language, options) {
     return;
   }
   try {
-    (0, import_cookie.setCookie)(c, options.lookupCookie, language, options.cookieOptions);
+    (0, import_cookie.setCookie)(
+      c,
+      options.lookupCookie,
+      language,
+      options.cookieOptions,
+    );
   } catch (error) {
     if (options.debug) {
       console.error("Failed to cache language:", error);
@@ -156,7 +178,9 @@ const detectLanguage = (c, options) => {
       detectedLang = detector(c, options);
       if (detectedLang) {
         if (options.debug) {
-          console.log(`Language detected from ${detectorName}: ${detectedLang}`);
+          console.log(
+            `Language detected from ${detectorName}: ${detectedLang}`,
+          );
         }
         break;
       }
@@ -164,7 +188,6 @@ const detectLanguage = (c, options) => {
       if (options.debug) {
         console.error(`Error in ${detectorName} detector:`, error);
       }
-      continue;
     }
   }
   const finalLang = detectedLang || options.fallbackLanguage;
@@ -179,8 +202,8 @@ const languageDetector = (userOptions) => {
     ...userOptions,
     cookieOptions: {
       ...DEFAULT_OPTIONS.cookieOptions,
-      ...userOptions.cookieOptions
-    }
+      ...userOptions.cookieOptions,
+    },
   };
   validateOptions(options);
   return async function languageDetector2(ctx, next) {
@@ -197,15 +220,16 @@ const languageDetector = (userOptions) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  DEFAULT_OPTIONS,
-  detectFromCookie,
-  detectFromHeader,
-  detectFromPath,
-  detectFromQuery,
-  detectors,
-  languageDetector,
-  normalizeLanguage,
-  parseAcceptLanguage,
-  validateOptions
-});
+0 &&
+  (module.exports = {
+    DEFAULT_OPTIONS,
+    detectFromCookie,
+    detectFromHeader,
+    detectFromPath,
+    detectFromQuery,
+    detectors,
+    languageDetector,
+    normalizeLanguage,
+    parseAcceptLanguage,
+    validateOptions,
+  });

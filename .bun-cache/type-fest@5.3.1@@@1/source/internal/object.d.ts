@@ -1,15 +1,15 @@
-import type {Simplify} from '../simplify.d.ts';
-import type {IsEqual} from '../is-equal.d.ts';
-import type {KeysOfUnion} from '../keys-of-union.d.ts';
-import type {RequiredKeysOf} from '../required-keys-of.d.ts';
-import type {Merge} from '../merge.d.ts';
-import type {OptionalKeysOf} from '../optional-keys-of.d.ts';
-import type {IsAny} from '../is-any.d.ts';
-import type {If} from '../if.d.ts';
-import type {IsNever} from '../is-never.d.ts';
-import type {FilterDefinedKeys, FilterOptionalKeys} from './keys.d.ts';
-import type {MapsSetsOrArrays, NonRecursiveType} from './type.d.ts';
-import type {ToString} from './string.d.ts';
+import type { Simplify } from "../simplify.d.ts";
+import type { IsEqual } from "../is-equal.d.ts";
+import type { KeysOfUnion } from "../keys-of-union.d.ts";
+import type { RequiredKeysOf } from "../required-keys-of.d.ts";
+import type { Merge } from "../merge.d.ts";
+import type { OptionalKeysOf } from "../optional-keys-of.d.ts";
+import type { IsAny } from "../is-any.d.ts";
+import type { If } from "../if.d.ts";
+import type { IsNever } from "../is-never.d.ts";
+import type { FilterDefinedKeys, FilterOptionalKeys } from "./keys.d.ts";
+import type { MapsSetsOrArrays, NonRecursiveType } from "./type.d.ts";
+import type { ToString } from "./string.d.ts";
 
 /**
 Create an object type with the given key `<Key>` and value `<Value>`.
@@ -26,42 +26,43 @@ type B = BuildObject<'a', string, {readonly a?: any}>;
 //=> {readonly a?: string}
 ```
 */
-export type BuildObject<Key extends PropertyKey, Value, CopiedFrom extends object = {}> =
-	Key extends keyof CopiedFrom
-		? Pick<{[_ in keyof CopiedFrom]: Value}, Key>
-		: Key extends `${infer NumberKey extends number}`
-			? NumberKey extends keyof CopiedFrom
-				? Pick<{[_ in keyof CopiedFrom]: Value}, NumberKey>
-				: {[_ in Key]: Value}
-			: {[_ in Key]: Value};
+export type BuildObject<
+  Key extends PropertyKey,
+  Value,
+  CopiedFrom extends object = {},
+> = Key extends keyof CopiedFrom
+  ? Pick<{ [_ in keyof CopiedFrom]: Value }, Key>
+  : Key extends `${infer NumberKey extends number}`
+    ? NumberKey extends keyof CopiedFrom
+      ? Pick<{ [_ in keyof CopiedFrom]: Value }, NumberKey>
+      : { [_ in Key]: Value }
+    : { [_ in Key]: Value };
 
 /**
 Returns a boolean for whether the given type is a plain key-value object.
 */
-export type IsPlainObject<T> =
-	IsNever<T> extends true
-		? false
-		: T extends NonRecursiveType | MapsSetsOrArrays
-			? false
-			: T extends object
-				? true
-				: false;
+export type IsPlainObject<T> = IsNever<T> extends true
+  ? false
+  : T extends NonRecursiveType | MapsSetsOrArrays
+    ? false
+    : T extends object
+      ? true
+      : false;
 
 /**
 Extract the object field type if T is an object and K is a key of T, return `never` otherwise.
 
 It creates a type-safe way to access the member type of `unknown` type.
 */
-export type ObjectValue<T, K> =
-	K extends keyof T
-		? T[K]
-		: ToString<K> extends keyof T
-			? T[ToString<K>]
-			: K extends `${infer NumberK extends number}`
-				? NumberK extends keyof T
-					? T[NumberK]
-					: never
-				: never;
+export type ObjectValue<T, K> = K extends keyof T
+  ? T[K]
+  : ToString<K> extends keyof T
+    ? T[ToString<K>]
+    : K extends `${infer NumberK extends number}`
+      ? NumberK extends keyof T
+        ? T[NumberK]
+        : never
+      : never;
 
 /**
 For an object T, if it has any properties that are a union with `undefined`, make those into optional properties instead.
@@ -81,13 +82,13 @@ type OptionalizedUser = UndefinedToOptional<User>;
 ```
 */
 export type UndefinedToOptional<T extends object> = Simplify<
-	{
-	// Property is not a union with `undefined`, keep it as-is.
-		[Key in keyof Pick<T, FilterDefinedKeys<T>>]: T[Key];
-	} & {
-	// Property _is_ a union with defined value. Set as optional (via `?`) and remove `undefined` from the union.
-		[Key in keyof Pick<T, FilterOptionalKeys<T>>]?: Exclude<T[Key], undefined>;
-	}
+  {
+    // Property is not a union with `undefined`, keep it as-is.
+    [Key in keyof Pick<T, FilterDefinedKeys<T>>]: T[Key];
+  } & {
+    // Property _is_ a union with defined value. Set as optional (via `?`) and remove `undefined` from the union.
+    [Key in keyof Pick<T, FilterOptionalKeys<T>>]?: Exclude<T[Key], undefined>;
+  }
 >;
 
 /**
@@ -128,7 +129,7 @@ type IndexSignature = HomomorphicPick<{[k: string]: unknown}, number>;
 //=> {}
 */
 export type HomomorphicPick<T, Keys extends KeysOfUnion<T>> = {
-	[P in keyof T as Extract<P, Keys>]: T[P]
+  [P in keyof T as Extract<P, Keys>]: T[P];
 };
 
 /**
@@ -140,8 +141,14 @@ type Statuses = ValueOfUnion<{id: 1; status: 'open'} | {id: 2; status: 'closed'}
 //=> "open" | "closed"
 ```
 */
-export type ValueOfUnion<Union, Key extends KeysOfUnion<Union>> =
-	Union extends unknown ? Key extends keyof Union ? Union[Key] : never : never;
+export type ValueOfUnion<
+  Union,
+  Key extends KeysOfUnion<Union>,
+> = Union extends unknown
+  ? Key extends keyof Union
+    ? Union[Key]
+    : never
+  : never;
 
 /**
 Extract all readonly keys from a union of object types.
@@ -163,9 +170,16 @@ type ReadonlyKeys = ReadonlyKeysOfUnion<User | Post>;
 //=> "id" | "author"
 ```
 */
-export type ReadonlyKeysOfUnion<Union> = Union extends unknown ? keyof {
-	[Key in keyof Union as IsEqual<{[K in Key]: Union[Key]}, {readonly [K in Key]: Union[Key]}> extends true ? Key : never]: never
-} : never;
+export type ReadonlyKeysOfUnion<Union> = Union extends unknown
+  ? keyof {
+      [Key in keyof Union as IsEqual<
+        { [K in Key]: Union[Key] },
+        { readonly [K in Key]: Union[Key] }
+      > extends true
+        ? Key
+        : never]: never;
+    }
+  : never;
 
 /**
 Merges user specified options with default options.
@@ -220,17 +234,33 @@ type Result = ApplyDefaultOptions<PathsOptions, DefaultPathsOptions, SpecifiedOp
 ```
 */
 export type ApplyDefaultOptions<
-	Options extends object,
-	Defaults extends Simplify<Omit<Required<Options>, RequiredKeysOf<Options>> & Partial<Record<RequiredKeysOf<Options>, never>>>,
-	SpecifiedOptions extends Options,
-> =
-	If<IsAny<SpecifiedOptions>, Defaults,
-		If<IsNever<SpecifiedOptions>, Defaults,
-			Simplify<Merge<Defaults, {
-				[Key in keyof SpecifiedOptions
-				as Key extends OptionalKeysOf<Options> ? undefined extends SpecifiedOptions[Key] ? never : Key : Key
-				]: SpecifiedOptions[Key]
-			}> & Required<Options>>>>; // `& Required<Options>` ensures that `ApplyDefaultOptions<SomeOption, ...>` is always assignable to `Required<SomeOption>`
+  Options extends object,
+  Defaults extends Simplify<
+    Omit<Required<Options>, RequiredKeysOf<Options>> &
+      Partial<Record<RequiredKeysOf<Options>, never>>
+  >,
+  SpecifiedOptions extends Options,
+> = If<
+  IsAny<SpecifiedOptions>,
+  Defaults,
+  If<
+    IsNever<SpecifiedOptions>,
+    Defaults,
+    Simplify<
+      Merge<
+        Defaults,
+        {
+          [Key in keyof SpecifiedOptions as Key extends OptionalKeysOf<Options>
+            ? undefined extends SpecifiedOptions[Key]
+              ? never
+              : Key
+            : Key]: SpecifiedOptions[Key];
+        }
+      > &
+        Required<Options>
+    >
+  >
+>; // `& Required<Options>` ensures that `ApplyDefaultOptions<SomeOption, ...>` is always assignable to `Required<SomeOption>`
 
 /**
 Collapses literal types in a union into their corresponding primitive types, when possible. For example, `CollapseLiterals<'foo' | 'bar' | (string & {})>` returns `string`.
@@ -260,9 +290,7 @@ type E = CollapseLiterals<LiteralUnion<'foo' | 'bar', string> | null | undefined
 ```
 */
 export type CollapseLiterals<T> = {} extends T
-	? T
-	: T extends infer U & {}
-		? U
-		: T;
-
-export {};
+  ? T
+  : T extends infer U & {}
+    ? U
+    : T;

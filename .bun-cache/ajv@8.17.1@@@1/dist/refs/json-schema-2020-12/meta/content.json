@@ -10,8 +10,8 @@
 
   "type": ["object", "boolean"],
   "properties": {
-    "contentEncoding": {"type": "string"},
-    "contentMediaType": {"type": "string"},
-    "contentSchema": {"$dynamicRef": "#meta"}
+    "contentEncoding": { "type": "string" },
+    "contentMediaType": { "type": "string" },
+    "contentSchema": { "$dynamicRef": "#meta" }
   }
 }

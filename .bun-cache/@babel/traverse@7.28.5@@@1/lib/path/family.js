@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports._getKey = _getKey;
 exports._getPattern = _getPattern;
@@ -25,20 +25,20 @@ const {
   getBindingIdentifiers: _getBindingIdentifiers,
   getOuterBindingIdentifiers: _getOuterBindingIdentifiers,
   numericLiteral,
-  unaryExpression
+  unaryExpression,
 } = _t;
 const NORMAL_COMPLETION = 0;
 const BREAK_COMPLETION = 1;
 function NormalCompletion(path) {
   return {
     type: NORMAL_COMPLETION,
-    path
+    path,
   };
 }
 function BreakCompletion(path) {
   return {
     type: BREAK_COMPLETION,
-    path
+    path,
   };
 }
 function getOpposite() {
@@ -79,15 +79,17 @@ function completionRecordForSwitch(cases, records, context) {
   return records;
 }
 function normalCompletionToBreak(completions) {
-  completions.forEach(c => {
+  completions.forEach((c) => {
     c.type = BREAK_COMPLETION;
   });
 }
 function replaceBreakStatementInBreakCompletion(completions, reachable) {
-  completions.forEach(c => {
-    if (c.path.isBreakStatement({
-      label: null
-    })) {
+  completions.forEach((c) => {
+    if (
+      c.path.isBreakStatement({
+        label: null,
+      })
+    ) {
       if (reachable) {
         c.path.replaceWith(unaryExpression("void", numericLiteral(0)));
       } else {
@@ -103,24 +105,38 @@ function getStatementListCompletion(paths, context) {
     for (let i = 0; i < paths.length; i++) {
       const path = paths[i];
       const newContext = Object.assign({}, context, {
-        inCaseClause: false
+        inCaseClause: false,
       });
-      if (path.isBlockStatement() && (context.inCaseClause || context.shouldPopulateBreak)) {
+      if (
+        path.isBlockStatement() &&
+        (context.inCaseClause || context.shouldPopulateBreak)
+      ) {
         newContext.shouldPopulateBreak = true;
       } else {
         newContext.shouldPopulateBreak = false;
       }
       const statementCompletions = _getCompletionRecords(path, newContext);
-      if (statementCompletions.length > 0 && statementCompletions.every(c => c.type === BREAK_COMPLETION)) {
-        if (lastNormalCompletions.length > 0 && statementCompletions.every(c => c.path.isBreakStatement({
-          label: null
-        }))) {
+      if (
+        statementCompletions.length > 0 &&
+        statementCompletions.every((c) => c.type === BREAK_COMPLETION)
+      ) {
+        if (
+          lastNormalCompletions.length > 0 &&
+          statementCompletions.every((c) =>
+            c.path.isBreakStatement({
+              label: null,
+            }),
+          )
+        ) {
           normalCompletionToBreak(lastNormalCompletions);
           completions.push(...lastNormalCompletions);
-          if (lastNormalCompletions.some(c => c.path.isDeclaration())) {
+          if (lastNormalCompletions.some((c) => c.path.isDeclaration())) {
             completions.push(...statementCompletions);
             if (!context.shouldPreserveBreak) {
-              replaceBreakStatementInBreakCompletion(statementCompletions, true);
+              replaceBreakStatementInBreakCompletion(
+                statementCompletions,
+                true,
+              );
             }
           }
           if (!context.shouldPreserveBreak) {
@@ -152,7 +168,12 @@ function getStatementListCompletion(paths, context) {
   } else if (paths.length) {
     for (let i = paths.length - 1; i >= 0; i--) {
       const pathCompletions = _getCompletionRecords(paths[i], context);
-      if (pathCompletions.length > 1 || pathCompletions.length === 1 && !pathCompletions[0].path.isVariableDeclaration() && !pathCompletions[0].path.isEmptyStatement()) {
+      if (
+        pathCompletions.length > 1 ||
+        (pathCompletions.length === 1 &&
+          !pathCompletions[0].path.isVariableDeclaration() &&
+          !pathCompletions[0].path.isEmptyStatement())
+      ) {
         completions.push(...pathCompletions);
         break;
       }
@@ -165,7 +186,12 @@ function _getCompletionRecords(path, context) {
   if (path.isIfStatement()) {
     records = addCompletionRecords(path.get("consequent"), records, context);
     records = addCompletionRecords(path.get("alternate"), records, context);
-  } else if (path.isDoExpression() || path.isFor() || path.isWhile() || path.isLabeledStatement()) {
+  } else if (
+    path.isDoExpression() ||
+    path.isFor() ||
+    path.isWhile() ||
+    path.isLabeledStatement()
+  ) {
     return addCompletionRecords(path.get("body"), records, context);
   } else if (path.isProgram() || path.isBlockStatement()) {
     return getStatementListCompletion(path.get("body"), context);
@@ -183,7 +209,7 @@ function _getCompletionRecords(path, context) {
       canHaveBreak: true,
       shouldPopulateBreak: false,
       inCaseClause: true,
-      shouldPreserveBreak: context.shouldPreserveBreak
+      shouldPreserveBreak: context.shouldPreserveBreak,
     });
   } else if (path.isBreakStatement()) {
     records.push(BreakCompletion(path));
@@ -197,18 +223,20 @@ function getCompletionRecords(shouldPreserveBreak = false) {
     canHaveBreak: false,
     shouldPopulateBreak: false,
     inCaseClause: false,
-    shouldPreserveBreak
+    shouldPreserveBreak,
   });
-  return records.map(r => r.path);
+  return records.map((r) => r.path);
 }
 function getSibling(key) {
-  return _index.default.get({
-    parentPath: this.parentPath,
-    parent: this.parent,
-    container: this.container,
-    listKey: this.listKey,
-    key: key
-  }).setContext(this.context);
+  return _index.default
+    .get({
+      parentPath: this.parentPath,
+      parent: this.parent,
+      container: this.container,
+      listKey: this.listKey,
+      key: key,
+    })
+    .setContext(this.context);
 }
 function getPrevSibling() {
   return this.getSibling(this.key - 1);
@@ -250,21 +278,25 @@ function _getKey(key, context) {
   const container = node[key];
   if (Array.isArray(container)) {
     return container.map((_, i) => {
-      return _index.default.get({
-        listKey: key,
-        parentPath: this,
-        parent: node,
-        container: container,
-        key: i
-      }).setContext(context);
+      return _index.default
+        .get({
+          listKey: key,
+          parentPath: this,
+          parent: node,
+          container: container,
+          key: i,
+        })
+        .setContext(context);
     });
   } else {
-    return _index.default.get({
-      parentPath: this,
-      parent: node,
-      container: node,
-      key: key
-    }).setContext(context);
+    return _index.default
+      .get({
+        parentPath: this,
+        parent: node,
+        container: node,
+        key: key,
+      })
+      .setContext(context);
   }
 }
 function _getPattern(parts, context) {
@@ -292,8 +324,7 @@ function getOuterBindingIdentifiers(duplicates) {
   return _getOuterBindingIdentifiers(this.node, duplicates);
 }
 function getBindingIdentifierPaths(duplicates = false, outerOnly = false) {
-  const path = this;
-  const search = [path];
+  const search = [this];
   const ids = Object.create(null);
   while (search.length) {
     const id = search.shift();
@@ -302,7 +333,7 @@ function getBindingIdentifierPaths(duplicates = false, outerOnly = false) {
     const keys = _getBindingIdentifiers.keys[id.node.type];
     if (id.isIdentifier()) {
       if (duplicates) {
-        const _ids = ids[id.node.name] = ids[id.node.name] || [];
+        const _ids = (ids[id.node.name] = ids[id.node.name] || []);
         _ids.push(id);
       } else {
         ids[id.node.name] = id;

@@ -13,6 +13,4 @@ var defaultJoin = (...paths) => {
   }
   return resolved.join("/") || ".";
 };
-export {
-  defaultJoin
-};
+export { defaultJoin };

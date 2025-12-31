@@ -1,5 +1,6 @@
 // src/utils/buffer.ts
 import { sha256 } from "./crypto.js";
+
 var equal = (a, b) => {
   if (a === b) {
     return true;
@@ -37,14 +38,9 @@ var bufferToString = (buffer) => {
 var bufferToFormData = (arrayBuffer, contentType) => {
   const response = new Response(arrayBuffer, {
     headers: {
-      "Content-Type": contentType
-    }
+      "Content-Type": contentType,
+    },
   });
   return response.formData();
 };
-export {
-  bufferToFormData,
-  bufferToString,
-  equal,
-  timingSafeEqual
-};
+export { bufferToFormData, bufferToString, equal, timingSafeEqual };

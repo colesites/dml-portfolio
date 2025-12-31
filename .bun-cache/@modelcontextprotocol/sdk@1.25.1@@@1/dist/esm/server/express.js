@@ -1,5 +1,8 @@
-import express from 'express';
-import { hostHeaderValidation, localhostHostValidation } from './middleware/hostHeaderValidation.js';
+import express from "express";
+import {
+  hostHeaderValidation,
+  localhostHostValidation,
+} from "./middleware/hostHeaderValidation.js";
 /**
  * Creates an Express application pre-configured for MCP servers.
  *
@@ -24,27 +27,27 @@ import { hostHeaderValidation, localhostHostValidation } from './middleware/host
  * ```
  */
 export function createMcpExpressApp(options = {}) {
-    const { host = '127.0.0.1', allowedHosts } = options;
-    const app = express();
-    app.use(express.json());
-    // If allowedHosts is explicitly provided, use that for validation
-    if (allowedHosts) {
-        app.use(hostHeaderValidation(allowedHosts));
+  const { host = "127.0.0.1", allowedHosts } = options;
+  const app = express();
+  app.use(express.json());
+  // If allowedHosts is explicitly provided, use that for validation
+  if (allowedHosts) {
+    app.use(hostHeaderValidation(allowedHosts));
+  } else {
+    // Apply DNS rebinding protection automatically for localhost hosts
+    const localhostHosts = ["127.0.0.1", "localhost", "::1"];
+    if (localhostHosts.includes(host)) {
+      app.use(localhostHostValidation());
+    } else if (host === "0.0.0.0" || host === "::") {
+      // Warn when binding to all interfaces without DNS rebinding protection
+      // eslint-disable-next-line no-console
+      console.warn(
+        `Warning: Server is binding to ${host} without DNS rebinding protection. ` +
+          "Consider using the allowedHosts option to restrict allowed hosts, " +
+          "or use authentication to protect your server.",
+      );
     }
-    else {
-        // Apply DNS rebinding protection automatically for localhost hosts
-        const localhostHosts = ['127.0.0.1', 'localhost', '::1'];
-        if (localhostHosts.includes(host)) {
-            app.use(localhostHostValidation());
-        }
-        else if (host === '0.0.0.0' || host === '::') {
-            // Warn when binding to all interfaces without DNS rebinding protection
-            // eslint-disable-next-line no-console
-            console.warn(`Warning: Server is binding to ${host} without DNS rebinding protection. ` +
-                'Consider using the allowedHosts option to restrict allowed hosts, ' +
-                'or use authentication to protect your server.');
-        }
-    }
-    return app;
+  }
+  return app;
 }
 //# sourceMappingURL=express.js.map

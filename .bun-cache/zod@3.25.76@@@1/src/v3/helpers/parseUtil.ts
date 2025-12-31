@@ -1,6 +1,6 @@
-import type { IssueData, ZodErrorMap, ZodIssue } from "../ZodError.js";
 import { getErrorMap } from "../errors.js";
 import defaultErrorMap from "../locales/en.js";
+import type { IssueData, ZodErrorMap, ZodIssue } from "../ZodError.js";
 import type { ZodParsedType } from "./util.js";
 
 export const makeIssue = (params: {
@@ -69,7 +69,10 @@ export type ParseInput = {
   parent: ParseContext;
 };
 
-export function addIssueToContext(ctx: ParseContext, issueData: IssueData): void {
+export function addIssueToContext(
+  ctx: ParseContext,
+  issueData: IssueData,
+): void {
   const overrideMap = getErrorMap();
   const issue = makeIssue({
     issueData: issueData,
@@ -98,7 +101,10 @@ export class ParseStatus {
     if (this.value !== "aborted") this.value = "aborted";
   }
 
-  static mergeArray(status: ParseStatus, results: SyncParseReturnType<any>[]): SyncParseReturnType {
+  static mergeArray(
+    status: ParseStatus,
+    results: SyncParseReturnType<any>[],
+  ): SyncParseReturnType {
     const arrayValue: any[] = [];
     for (const s of results) {
       if (s.status === "aborted") return INVALID;
@@ -111,7 +117,7 @@ export class ParseStatus {
 
   static async mergeObjectAsync(
     status: ParseStatus,
-    pairs: { key: ParseReturnType<any>; value: ParseReturnType<any> }[]
+    pairs: { key: ParseReturnType<any>; value: ParseReturnType<any> }[],
   ): Promise<SyncParseReturnType<any>> {
     const syncPairs: ObjectPair[] = [];
     for (const pair of pairs) {
@@ -131,7 +137,7 @@ export class ParseStatus {
       key: SyncParseReturnType<any>;
       value: SyncParseReturnType<any>;
       alwaysSet?: boolean;
-    }[]
+    }[],
   ): SyncParseReturnType {
     const finalObject: any = {};
     for (const pair of pairs) {
@@ -141,7 +147,10 @@ export class ParseStatus {
       if (key.status === "dirty") status.dirty();
       if (value.status === "dirty") status.dirty();
 
-      if (key.value !== "__proto__" && (typeof value.value !== "undefined" || pair.alwaysSet)) {
+      if (
+        key.value !== "__proto__" &&
+        (typeof value.value !== "undefined" || pair.alwaysSet)
+      ) {
         finalObject[key.value] = value.value;
       }
     }
@@ -167,10 +176,17 @@ export const OK = <T>(value: T): OK<T> => ({ status: "valid", value });
 
 export type SyncParseReturnType<T = any> = OK<T> | DIRTY<T> | INVALID;
 export type AsyncParseReturnType<T> = Promise<SyncParseReturnType<T>>;
-export type ParseReturnType<T> = SyncParseReturnType<T> | AsyncParseReturnType<T>;
+export type ParseReturnType<T> =
+  | SyncParseReturnType<T>
+  | AsyncParseReturnType<T>;
 
-export const isAborted = (x: ParseReturnType<any>): x is INVALID => (x as any).status === "aborted";
-export const isDirty = <T>(x: ParseReturnType<T>): x is OK<T> | DIRTY<T> => (x as any).status === "dirty";
-export const isValid = <T>(x: ParseReturnType<T>): x is OK<T> => (x as any).status === "valid";
-export const isAsync = <T>(x: ParseReturnType<T>): x is AsyncParseReturnType<T> =>
+export const isAborted = (x: ParseReturnType<any>): x is INVALID =>
+  (x as any).status === "aborted";
+export const isDirty = <T>(x: ParseReturnType<T>): x is OK<T> | DIRTY<T> =>
+  (x as any).status === "dirty";
+export const isValid = <T>(x: ParseReturnType<T>): x is OK<T> =>
+  (x as any).status === "valid";
+export const isAsync = <T>(
+  x: ParseReturnType<T>,
+): x is AsyncParseReturnType<T> =>
   typeof Promise !== "undefined" && x instanceof Promise;

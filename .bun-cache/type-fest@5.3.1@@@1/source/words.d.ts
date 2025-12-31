@@ -1,19 +1,19 @@
 import type {
-	ApplyDefaultOptions,
-	IsNumeric,
-	WordSeparators,
-} from './internal/index.d.ts';
-import type {IsLowercase} from './is-lowercase.d.ts';
-import type {IsUppercase} from './is-uppercase.d.ts';
+  ApplyDefaultOptions,
+  IsNumeric,
+  WordSeparators,
+} from "./internal/index.d.ts";
+import type { IsLowercase } from "./is-lowercase.d.ts";
+import type { IsUppercase } from "./is-uppercase.d.ts";
 
-type SkipEmptyWord<Word extends string> = Word extends '' ? [] : [Word];
+type SkipEmptyWord<Word extends string> = Word extends "" ? [] : [Word];
 
 type RemoveLastCharacter<
-	Sentence extends string,
-	Character extends string,
+  Sentence extends string,
+  Character extends string,
 > = Sentence extends `${infer LeftSide}${Character}`
-	? SkipEmptyWord<LeftSide>
-	: never;
+  ? SkipEmptyWord<LeftSide>
+  : never;
 
 /**
 Words options.
@@ -21,7 +21,7 @@ Words options.
 @see {@link Words}
 */
 export type WordsOptions = {
-	/**
+  /**
 	Split on numeric sequence.
 
 	@default true
@@ -37,11 +37,11 @@ export type WordsOptions = {
 	//=> ["p2p", "Network"]
 	```
 	*/
-	splitOnNumbers?: boolean;
+  splitOnNumbers?: boolean;
 };
 
 export type _DefaultWordsOptions = {
-	splitOnNumbers: true;
+  splitOnNumbers: true;
 };
 
 /**
@@ -77,46 +77,124 @@ type Words5 = Words<'p2pNetwork', {splitOnNumbers: false}>;
 @category Change case
 @category Template literal
 */
-export type Words<Sentence extends string, Options extends WordsOptions = {}> =
-	WordsImplementation<Sentence, ApplyDefaultOptions<WordsOptions, _DefaultWordsOptions, Options>>;
+export type Words<
+  Sentence extends string,
+  Options extends WordsOptions = {},
+> = WordsImplementation<
+  Sentence,
+  ApplyDefaultOptions<WordsOptions, _DefaultWordsOptions, Options>
+>;
 
 type WordsImplementation<
-	Sentence extends string,
-	Options extends Required<WordsOptions>,
-	LastCharacter extends string = '',
-	CurrentWord extends string = '',
+  Sentence extends string,
+  Options extends Required<WordsOptions>,
+  LastCharacter extends string = "",
+  CurrentWord extends string = "",
 > = Sentence extends `${infer FirstCharacter}${infer RemainingCharacters}`
-	? FirstCharacter extends WordSeparators
-		// Skip word separator
-		? [...SkipEmptyWord<CurrentWord>, ...WordsImplementation<RemainingCharacters, Options>]
-		: LastCharacter extends ''
-			// Fist char of word
-			? WordsImplementation<RemainingCharacters, Options, FirstCharacter, FirstCharacter>
-			// Case change: non-numeric to numeric
-			: [false, true] extends [IsNumeric<LastCharacter>, IsNumeric<FirstCharacter>]
-				? Options['splitOnNumbers'] extends true
-					// Split on number: push word
-					? [...SkipEmptyWord<CurrentWord>, ...WordsImplementation<RemainingCharacters, Options, FirstCharacter, FirstCharacter>]
-					// No split on number: concat word
-					: WordsImplementation<RemainingCharacters, Options, FirstCharacter, `${CurrentWord}${FirstCharacter}`>
-				// Case change: numeric to non-numeric
-				: [true, false] extends [IsNumeric<LastCharacter>, IsNumeric<FirstCharacter>]
-					? Options['splitOnNumbers'] extends true
-						// Split on number: push word
-						? [...SkipEmptyWord<CurrentWord>, ...WordsImplementation<RemainingCharacters, Options, FirstCharacter, FirstCharacter>]
-						// No split on number: concat word
-						: WordsImplementation<RemainingCharacters, Options, FirstCharacter, `${CurrentWord}${FirstCharacter}`>
-					// No case change: concat word
-					: [true, true] extends [IsNumeric<LastCharacter>, IsNumeric<FirstCharacter>]
-						? WordsImplementation<RemainingCharacters, Options, FirstCharacter, `${CurrentWord}${FirstCharacter}`>
-					// Case change: lower to upper, push word
-						: [true, true] extends [IsLowercase<LastCharacter>, IsUppercase<FirstCharacter>]
-							? [...SkipEmptyWord<CurrentWord>, ...WordsImplementation<RemainingCharacters, Options, FirstCharacter, FirstCharacter>]
-						// Case change: upper to lower, brings back the last character, push word
-							: [true, true] extends [IsUppercase<LastCharacter>, IsLowercase<FirstCharacter>]
-								? [...RemoveLastCharacter<CurrentWord, LastCharacter>, ...WordsImplementation<RemainingCharacters, Options, FirstCharacter, `${LastCharacter}${FirstCharacter}`>]
-							// No case change: concat word
-								: WordsImplementation<RemainingCharacters, Options, FirstCharacter, `${CurrentWord}${FirstCharacter}`>
-	: [...SkipEmptyWord<CurrentWord>];
-
-export {};
+  ? FirstCharacter extends WordSeparators
+    ? // Skip word separator
+      [
+        ...SkipEmptyWord<CurrentWord>,
+        ...WordsImplementation<RemainingCharacters, Options>,
+      ]
+    : LastCharacter extends ""
+      ? // Fist char of word
+        WordsImplementation<
+          RemainingCharacters,
+          Options,
+          FirstCharacter,
+          FirstCharacter
+        >
+      : // Case change: non-numeric to numeric
+        [false, true] extends [
+            IsNumeric<LastCharacter>,
+            IsNumeric<FirstCharacter>,
+          ]
+        ? Options["splitOnNumbers"] extends true
+          ? // Split on number: push word
+            [
+              ...SkipEmptyWord<CurrentWord>,
+              ...WordsImplementation<
+                RemainingCharacters,
+                Options,
+                FirstCharacter,
+                FirstCharacter
+              >,
+            ]
+          : // No split on number: concat word
+            WordsImplementation<
+              RemainingCharacters,
+              Options,
+              FirstCharacter,
+              `${CurrentWord}${FirstCharacter}`
+            >
+        : // Case change: numeric to non-numeric
+          [true, false] extends [
+              IsNumeric<LastCharacter>,
+              IsNumeric<FirstCharacter>,
+            ]
+          ? Options["splitOnNumbers"] extends true
+            ? // Split on number: push word
+              [
+                ...SkipEmptyWord<CurrentWord>,
+                ...WordsImplementation<
+                  RemainingCharacters,
+                  Options,
+                  FirstCharacter,
+                  FirstCharacter
+                >,
+              ]
+            : // No split on number: concat word
+              WordsImplementation<
+                RemainingCharacters,
+                Options,
+                FirstCharacter,
+                `${CurrentWord}${FirstCharacter}`
+              >
+          : // No case change: concat word
+            [true, true] extends [
+                IsNumeric<LastCharacter>,
+                IsNumeric<FirstCharacter>,
+              ]
+            ? WordsImplementation<
+                RemainingCharacters,
+                Options,
+                FirstCharacter,
+                `${CurrentWord}${FirstCharacter}`
+              >
+            : // Case change: lower to upper, push word
+              [true, true] extends [
+                  IsLowercase<LastCharacter>,
+                  IsUppercase<FirstCharacter>,
+                ]
+              ? [
+                  ...SkipEmptyWord<CurrentWord>,
+                  ...WordsImplementation<
+                    RemainingCharacters,
+                    Options,
+                    FirstCharacter,
+                    FirstCharacter
+                  >,
+                ]
+              : // Case change: upper to lower, brings back the last character, push word
+                [true, true] extends [
+                    IsUppercase<LastCharacter>,
+                    IsLowercase<FirstCharacter>,
+                  ]
+                ? [
+                    ...RemoveLastCharacter<CurrentWord, LastCharacter>,
+                    ...WordsImplementation<
+                      RemainingCharacters,
+                      Options,
+                      FirstCharacter,
+                      `${LastCharacter}${FirstCharacter}`
+                    >,
+                  ]
+                : // No case change: concat word
+                  WordsImplementation<
+                    RemainingCharacters,
+                    Options,
+                    FirstCharacter,
+                    `${CurrentWord}${FirstCharacter}`
+                  >
+  : [...SkipEmptyWord<CurrentWord>];

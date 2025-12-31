@@ -36,37 +36,37 @@ export declare function FpSqrt(P: bigint): <T>(Fp: IField<T>, n: T) => T;
 export declare const isNegativeLE: (num: bigint, modulo: bigint) => boolean;
 /** Field is not always over prime: for example, Fp2 has ORDER(q)=p^m. */
 export interface IField<T> {
-    ORDER: bigint;
-    isLE: boolean;
-    BYTES: number;
-    BITS: number;
-    MASK: bigint;
-    ZERO: T;
-    ONE: T;
-    create: (num: T) => T;
-    isValid: (num: T) => boolean;
-    is0: (num: T) => boolean;
-    isValidNot0: (num: T) => boolean;
-    neg(num: T): T;
-    inv(num: T): T;
-    sqrt(num: T): T;
-    sqr(num: T): T;
-    eql(lhs: T, rhs: T): boolean;
-    add(lhs: T, rhs: T): T;
-    sub(lhs: T, rhs: T): T;
-    mul(lhs: T, rhs: T | bigint): T;
-    pow(lhs: T, power: bigint): T;
-    div(lhs: T, rhs: T | bigint): T;
-    addN(lhs: T, rhs: T): T;
-    subN(lhs: T, rhs: T): T;
-    mulN(lhs: T, rhs: T | bigint): T;
-    sqrN(num: T): T;
-    isOdd?(num: T): boolean;
-    allowedLengths?: number[];
-    invertBatch: (lst: T[]) => T[];
-    toBytes(num: T): Uint8Array;
-    fromBytes(bytes: Uint8Array, skipValidation?: boolean): T;
-    cmov(a: T, b: T, c: boolean): T;
+  ORDER: bigint;
+  isLE: boolean;
+  BYTES: number;
+  BITS: number;
+  MASK: bigint;
+  ZERO: T;
+  ONE: T;
+  create: (num: T) => T;
+  isValid: (num: T) => boolean;
+  is0: (num: T) => boolean;
+  isValidNot0: (num: T) => boolean;
+  neg(num: T): T;
+  inv(num: T): T;
+  sqrt(num: T): T;
+  sqr(num: T): T;
+  eql(lhs: T, rhs: T): boolean;
+  add(lhs: T, rhs: T): T;
+  sub(lhs: T, rhs: T): T;
+  mul(lhs: T, rhs: T | bigint): T;
+  pow(lhs: T, power: bigint): T;
+  div(lhs: T, rhs: T | bigint): T;
+  addN(lhs: T, rhs: T): T;
+  subN(lhs: T, rhs: T): T;
+  mulN(lhs: T, rhs: T | bigint): T;
+  sqrN(num: T): T;
+  isOdd?(num: T): boolean;
+  allowedLengths?: number[];
+  invertBatch: (lst: T[]) => T[];
+  toBytes(num: T): Uint8Array;
+  fromBytes(bytes: Uint8Array, skipValidation?: boolean): T;
+  cmov(a: T, b: T, c: boolean): T;
 }
 export declare function validateField<T>(field: IField<T>): IField<T>;
 /**
@@ -79,7 +79,11 @@ export declare function FpPow<T>(Fp: IField<T>, num: T, power: bigint): T;
  * Exception-free. Will return `undefined` for 0 elements.
  * @param passZero map 0 to 0 (instead of undefined)
  */
-export declare function FpInvertBatch<T>(Fp: IField<T>, nums: T[], passZero?: boolean): T[];
+export declare function FpInvertBatch<T>(
+  Fp: IField<T>,
+  nums: T[],
+  passZero?: boolean,
+): T[];
 export declare function FpDiv<T>(Fp: IField<T>, lhs: T, rhs: T | bigint): T;
 /**
  * Legendre symbol.
@@ -93,18 +97,18 @@ export declare function FpDiv<T>(Fp: IField<T>, lhs: T, rhs: T | bigint): T;
 export declare function FpLegendre<T>(Fp: IField<T>, n: T): -1 | 0 | 1;
 export declare function FpIsSquare<T>(Fp: IField<T>, n: T): boolean;
 export type NLength = {
-    nByteLength: number;
-    nBitLength: number;
+  nByteLength: number;
+  nBitLength: number;
 };
 export declare function nLength(n: bigint, nBitLength?: number): NLength;
-type FpField = IField<bigint> & Required<Pick<IField<bigint>, 'isOdd'>>;
+type FpField = IField<bigint> & Required<Pick<IField<bigint>, "isOdd">>;
 type SqrtFn = (n: bigint) => bigint;
 type FieldOpts = Partial<{
-    sqrt: SqrtFn;
-    isLE: boolean;
-    BITS: number;
-    modFromBytes: boolean;
-    allowedLengths?: readonly number[];
+  sqrt: SqrtFn;
+  isLE: boolean;
+  BITS: number;
+  modFromBytes: boolean;
+  allowedLengths?: readonly number[];
 }>;
 /**
  * Creates a finite field. Major performance optimizations:
@@ -125,10 +129,14 @@ type FieldOpts = Partial<{
  * @param isLE (default: false) if encoding / decoding should be in little-endian
  * @param redef optional faster redefinitions of sqrt and other methods
  */
-export declare function Field(ORDER: bigint, bitLenOrOpts?: number | FieldOpts, // TODO: use opts only in v2?
-isLE?: boolean, opts?: {
+export declare function Field(
+  ORDER: bigint,
+  bitLenOrOpts?: number | FieldOpts, // TODO: use opts only in v2?
+  isLE?: boolean,
+  opts?: {
     sqrt?: SqrtFn;
-}): Readonly<FpField>;
+  },
+): Readonly<FpField>;
 export declare function FpSqrtOdd<T>(Fp: IField<T>, elm: T): T;
 export declare function FpSqrtEven<T>(Fp: IField<T>, elm: T): T;
 /**
@@ -137,7 +145,11 @@ export declare function FpSqrtEven<T>(Fp: IField<T>, elm: T): T;
  * Which makes it slightly more biased, less secure.
  * @deprecated use `mapKeyToField` instead
  */
-export declare function hashToPrivateScalar(hash: string | Uint8Array, groupOrder: bigint, isLE?: boolean): bigint;
+export declare function hashToPrivateScalar(
+  hash: string | Uint8Array,
+  groupOrder: bigint,
+  isLE?: boolean,
+): bigint;
 /**
  * Returns total number of bytes consumed by the field element.
  * For example, 32 bytes for usual 256-bit weierstrass curve.
@@ -166,6 +178,9 @@ export declare function getMinHashLength(fieldOrder: bigint): number;
  * @param isLE interpret hash bytes as LE num
  * @returns valid private scalar
  */
-export declare function mapHashToField(key: Uint8Array, fieldOrder: bigint, isLE?: boolean): Uint8Array;
-export {};
+export declare function mapHashToField(
+  key: Uint8Array,
+  fieldOrder: bigint,
+  isLE?: boolean,
+): Uint8Array;
 //# sourceMappingURL=modular.d.ts.map

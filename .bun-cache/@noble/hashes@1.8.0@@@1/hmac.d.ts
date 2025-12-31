@@ -2,21 +2,21 @@
  * HMAC: RFC2104 message authentication code.
  * @module
  */
-import { Hash, type CHash, type Input } from './utils.ts';
+import { Hash, type CHash, type Input } from "./utils.ts";
 export declare class HMAC<T extends Hash<T>> extends Hash<HMAC<T>> {
-    oHash: T;
-    iHash: T;
-    blockLen: number;
-    outputLen: number;
-    private finished;
-    private destroyed;
-    constructor(hash: CHash, _key: Input);
-    update(buf: Input): this;
-    digestInto(out: Uint8Array): void;
-    digest(): Uint8Array;
-    _cloneInto(to?: HMAC<T>): HMAC<T>;
-    clone(): HMAC<T>;
-    destroy(): void;
+  oHash: T;
+  iHash: T;
+  blockLen: number;
+  outputLen: number;
+  private finished;
+  private destroyed;
+  constructor(hash: CHash, _key: Input);
+  update(buf: Input): this;
+  digestInto(out: Uint8Array): void;
+  digest(): Uint8Array;
+  _cloneInto(to?: HMAC<T>): HMAC<T>;
+  clone(): HMAC<T>;
+  destroy(): void;
 }
 /**
  * HMAC: RFC2104 message authentication code.
@@ -29,7 +29,7 @@ export declare class HMAC<T extends Hash<T>> extends Hash<HMAC<T>> {
  * const mac1 = hmac(sha256, 'key', 'message');
  */
 export declare const hmac: {
-    (hash: CHash, key: Input, message: Input): Uint8Array;
-    create(hash: CHash, key: Input): HMAC<any>;
+  (hash: CHash, key: Input, message: Input): Uint8Array;
+  create(hash: CHash, key: Input): HMAC<any>;
 };
 //# sourceMappingURL=hmac.d.ts.map

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = regeneratorDefine;
 function regeneratorDefine(obj, key, value, noFlags) {
@@ -11,7 +11,7 @@ function regeneratorDefine(obj, key, value, noFlags) {
   } catch (_) {
     define = 0;
   }
-  exports.default = regeneratorDefine = function (obj, key, value, noFlags) {
+  exports.default = regeneratorDefine = (obj, key, value, noFlags) => {
     function defineIteratorMethod(method, i) {
       regeneratorDefine(obj, method, function (arg) {
         return this._invoke(method, i, arg);
@@ -27,7 +27,7 @@ function regeneratorDefine(obj, key, value, noFlags) {
           value: value,
           enumerable: !noFlags,
           configurable: !noFlags,
-          writable: !noFlags
+          writable: !noFlags,
         });
       } else {
         obj[key] = value;

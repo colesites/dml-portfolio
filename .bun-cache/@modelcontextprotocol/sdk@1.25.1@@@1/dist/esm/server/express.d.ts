@@ -1,22 +1,22 @@
-import { Express } from 'express';
+import { Express } from "express";
 /**
  * Options for creating an MCP Express application.
  */
 export interface CreateMcpExpressAppOptions {
-    /**
-     * The hostname to bind to. Defaults to '127.0.0.1'.
-     * When set to '127.0.0.1', 'localhost', or '::1', DNS rebinding protection is automatically enabled.
-     */
-    host?: string;
-    /**
-     * List of allowed hostnames for DNS rebinding protection.
-     * If provided, host header validation will be applied using this list.
-     * For IPv6, provide addresses with brackets (e.g., '[::1]').
-     *
-     * This is useful when binding to '0.0.0.0' or '::' but still wanting
-     * to restrict which hostnames are allowed.
-     */
-    allowedHosts?: string[];
+  /**
+   * The hostname to bind to. Defaults to '127.0.0.1'.
+   * When set to '127.0.0.1', 'localhost', or '::1', DNS rebinding protection is automatically enabled.
+   */
+  host?: string;
+  /**
+   * List of allowed hostnames for DNS rebinding protection.
+   * If provided, host header validation will be applied using this list.
+   * For IPv6, provide addresses with brackets (e.g., '[::1]').
+   *
+   * This is useful when binding to '0.0.0.0' or '::' but still wanting
+   * to restrict which hostnames are allowed.
+   */
+  allowedHosts?: string[];
 }
 /**
  * Creates an Express application pre-configured for MCP servers.
@@ -41,5 +41,7 @@ export interface CreateMcpExpressAppOptions {
  * const app = createMcpExpressApp({ host: '0.0.0.0', allowedHosts: ['myapp.local', 'localhost'] });
  * ```
  */
-export declare function createMcpExpressApp(options?: CreateMcpExpressAppOptions): Express;
+export declare function createMcpExpressApp(
+  options?: CreateMcpExpressAppOptions,
+): Express;
 //# sourceMappingURL=express.d.ts.map

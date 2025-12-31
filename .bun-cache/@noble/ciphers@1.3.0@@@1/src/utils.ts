@@ -6,24 +6,30 @@
 
 /** Checks if something is Uint8Array. Be careful: nodejs Buffer will return true. */
 export function isBytes(a: unknown): a is Uint8Array {
-  return a instanceof Uint8Array || (ArrayBuffer.isView(a) && a.constructor.name === 'Uint8Array');
+  return (
+    a instanceof Uint8Array ||
+    (ArrayBuffer.isView(a) && a.constructor.name === "Uint8Array")
+  );
 }
 
 /** Asserts something is boolean. */
 export function abool(b: boolean): void {
-  if (typeof b !== 'boolean') throw new Error(`boolean expected, not ${b}`);
+  if (typeof b !== "boolean") throw new Error(`boolean expected, not ${b}`);
 }
 
 /** Asserts something is positive integer. */
 export function anumber(n: number): void {
-  if (!Number.isSafeInteger(n) || n < 0) throw new Error('positive integer expected, got ' + n);
+  if (!Number.isSafeInteger(n) || n < 0)
+    throw new Error("positive integer expected, got " + n);
 }
 
 /** Asserts something is Uint8Array. */
 export function abytes(b: Uint8Array | undefined, ...lengths: number[]): void {
-  if (!isBytes(b)) throw new Error('Uint8Array expected');
+  if (!isBytes(b)) throw new Error("Uint8Array expected");
   if (lengths.length > 0 && !lengths.includes(b.length))
-    throw new Error('Uint8Array expected of length ' + lengths + ', got length=' + b.length);
+    throw new Error(
+      "Uint8Array expected of length " + lengths + ", got length=" + b.length,
+    );
 }
 
 /**
@@ -32,16 +38,17 @@ export function abytes(b: Uint8Array | undefined, ...lengths: number[]): void {
  * @deprecated
  */
 export function ahash(h: IHash): void {
-  if (typeof h !== 'function' || typeof h.create !== 'function')
-    throw new Error('Hash should be wrapped by utils.createHasher');
+  if (typeof h !== "function" || typeof h.create !== "function")
+    throw new Error("Hash should be wrapped by utils.createHasher");
   anumber(h.outputLen);
   anumber(h.blockLen);
 }
 
 /** Asserts a hash instance has not been destroyed / finished */
 export function aexists(instance: any, checkFinished = true): void {
-  if (instance.destroyed) throw new Error('Hash instance has been destroyed');
-  if (checkFinished && instance.finished) throw new Error('Hash#digest() has already been called');
+  if (instance.destroyed) throw new Error("Hash instance has been destroyed");
+  if (checkFinished && instance.finished)
+    throw new Error("Hash#digest() has already been called");
 }
 
 /** Asserts output is properly-sized byte array */
@@ -49,7 +56,9 @@ export function aoutput(out: any, instance: any): void {
   abytes(out);
   const min = instance.outputLen;
   if (out.length < min) {
-    throw new Error('digestInto() expects output buffer of length at least ' + min);
+    throw new Error(
+      "digestInto() expects output buffer of length at least " + min,
+    );
   }
 }
 
@@ -62,8 +71,14 @@ export type IHash = {
 
 /** Generic type encompassing 8/16/32-byte arrays - but not 64-byte. */
 // prettier-ignore
-export type TypedArray = Int8Array | Uint8ClampedArray | Uint8Array |
-  Uint16Array | Int16Array | Uint32Array | Int32Array;
+export type TypedArray =
+  | Int8Array
+  | Uint8ClampedArray
+  | Uint8Array
+  | Uint16Array
+  | Int16Array
+  | Uint32Array
+  | Int32Array;
 
 /** Cast u8 / u16 / u32 to u8. */
 export function u8(arr: TypedArray): Uint8Array {
@@ -72,7 +87,11 @@ export function u8(arr: TypedArray): Uint8Array {
 
 /** Cast u8 / u16 / u32 to u32. */
 export function u32(arr: TypedArray): Uint32Array {
-  return new Uint32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
+  return new Uint32Array(
+    arr.buffer,
+    arr.byteOffset,
+    Math.floor(arr.byteLength / 4),
+  );
 }
 
 /** Zeroize a byte array. Warning: JS provides no guarantees. */
@@ -93,12 +112,13 @@ export const isLE: boolean = /* @__PURE__ */ (() =>
 
 // Built-in hex conversion https://caniuse.com/mdn-javascript_builtins_uint8array_fromhex
 const hasHexBuiltin: boolean = /* @__PURE__ */ (() =>
-  // @ts-ignore
-  typeof Uint8Array.from([]).toHex === 'function' && typeof Uint8Array.fromHex === 'function')();
+  // @ts-expect-error
+  typeof Uint8Array.from([]).toHex === "function" &&
+  typeof Uint8Array.fromHex === "function")();
 
 // Array where index 0xf0 (240) is mapped to string 'f0'
 const hexes = /* @__PURE__ */ Array.from({ length: 256 }, (_, i) =>
-  i.toString(16).padStart(2, '0')
+  i.toString(16).padStart(2, "0"),
 );
 
 /**
@@ -107,10 +127,10 @@ const hexes = /* @__PURE__ */ Array.from({ length: 256 }, (_, i) =>
  */
 export function bytesToHex(bytes: Uint8Array): string {
   abytes(bytes);
-  // @ts-ignore
+  // @ts-expect-error
   if (hasHexBuiltin) return bytes.toHex();
   // pre-caching improves the speed 6x
-  let hex = '';
+  let hex = "";
   for (let i = 0; i < bytes.length; i++) {
     hex += hexes[bytes[i]];
   }
@@ -131,19 +151,26 @@ function asciiToBase16(ch: number): number | undefined {
  * @example hexToBytes('cafe0123') // Uint8Array.from([0xca, 0xfe, 0x01, 0x23])
  */
 export function hexToBytes(hex: string): Uint8Array {
-  if (typeof hex !== 'string') throw new Error('hex string expected, got ' + typeof hex);
-  // @ts-ignore
+  if (typeof hex !== "string")
+    throw new Error("hex string expected, got " + typeof hex);
+  // @ts-expect-error
   if (hasHexBuiltin) return Uint8Array.fromHex(hex);
   const hl = hex.length;
   const al = hl / 2;
-  if (hl % 2) throw new Error('hex string expected, got unpadded hex of length ' + hl);
+  if (hl % 2)
+    throw new Error("hex string expected, got unpadded hex of length " + hl);
   const array = new Uint8Array(al);
   for (let ai = 0, hi = 0; ai < al; ai++, hi += 2) {
     const n1 = asciiToBase16(hex.charCodeAt(hi));
     const n2 = asciiToBase16(hex.charCodeAt(hi + 1));
     if (n1 === undefined || n2 === undefined) {
       const char = hex[hi] + hex[hi + 1];
-      throw new Error('hex string expected, got non-hex character "' + char + '" at index ' + hi);
+      throw new Error(
+        'hex string expected, got non-hex character "' +
+          char +
+          '" at index ' +
+          hi,
+      );
     }
     array[ai] = n1 * 16 + n2; // multiply first octet, e.g. 'a3' => 10*16+3 => 160 + 3 => 163
   }
@@ -152,8 +179,9 @@ export function hexToBytes(hex: string): Uint8Array {
 
 // Used in micro
 export function hexToNumber(hex: string): bigint {
-  if (typeof hex !== 'string') throw new Error('hex string expected, got ' + typeof hex);
-  return BigInt(hex === '' ? '0' : '0x' + hex); // Big Endian
+  if (typeof hex !== "string")
+    throw new Error("hex string expected, got " + typeof hex);
+  return BigInt(hex === "" ? "0" : "0x" + hex); // Big Endian
 }
 
 // Used in ff1
@@ -164,7 +192,7 @@ export function bytesToNumberBE(bytes: Uint8Array): bigint {
 
 // Used in micro, ff1
 export function numberToBytesBE(n: number | bigint, len: number): Uint8Array {
-  return hexToBytes(n.toString(16).padStart(len * 2, '0'));
+  return hexToBytes(n.toString(16).padStart(len * 2, "0"));
 }
 
 // TODO: remove
@@ -182,7 +210,7 @@ declare const TextDecoder: any;
  * @example utf8ToBytes('abc') // new Uint8Array([97, 98, 99])
  */
 export function utf8ToBytes(str: string): Uint8Array {
-  if (typeof str !== 'string') throw new Error('string expected');
+  if (typeof str !== "string") throw new Error("string expected");
   return new Uint8Array(new TextEncoder().encode(str)); // https://bugzil.la/1681809
 }
 
@@ -202,9 +230,9 @@ export type Input = Uint8Array | string;
  * Keep in mind for future mutable operations.
  */
 export function toBytes(data: string | Uint8Array): Uint8Array {
-  if (typeof data === 'string') data = utf8ToBytes(data);
+  if (typeof data === "string") data = utf8ToBytes(data);
   else if (isBytes(data)) data = copyBytes(data);
-  else throw new Error('Uint8Array expected, got ' + typeof data);
+  else throw new Error("Uint8Array expected, got " + typeof data);
   return data;
 }
 
@@ -224,11 +252,14 @@ export function overlapBytes(a: Uint8Array, b: Uint8Array): boolean {
  * If input and output overlap and input starts before output, we will overwrite end of input before
  * we start processing it, so this is not supported for most ciphers (except chacha/salse, which designed with this)
  */
-export function complexOverlapBytes(input: Uint8Array, output: Uint8Array): void {
+export function complexOverlapBytes(
+  input: Uint8Array,
+  output: Uint8Array,
+): void {
   // This is very cursed. It works somehow, but I'm completely unsure,
   // reasoning about overlapping aligned windows is very hard.
   if (overlapBytes(input, output) && input.byteOffset < output.byteOffset)
-    throw new Error('complex overlap of input and output is not supported');
+    throw new Error("complex overlap of input and output is not supported");
 }
 
 /**
@@ -254,9 +285,10 @@ export function concatBytes(...arrays: Uint8Array[]): Uint8Array {
 type EmptyObj = {};
 export function checkOpts<T1 extends EmptyObj, T2 extends EmptyObj>(
   defaults: T1,
-  opts: T2
+  opts: T2,
 ): T1 & T2 {
-  if (opts == null || typeof opts !== 'object') throw new Error('options must be defined');
+  if (opts == null || typeof opts !== "object")
+    throw new Error("options must be defined");
   const merged = Object.assign(defaults, opts);
   return merged as T1 & T2;
 }
@@ -321,32 +353,36 @@ export type CipherParams = {
 export type ARXCipher = ((
   key: Uint8Array,
   nonce: Uint8Array,
-  AAD?: Uint8Array
+  AAD?: Uint8Array,
 ) => CipherWithOutput) & {
   blockSize: number;
   nonceLength: number;
   tagLength: number;
 };
-export type CipherCons<T extends any[]> = (key: Uint8Array, ...args: T) => Cipher;
+export type CipherCons<T extends any[]> = (
+  key: Uint8Array,
+  ...args: T
+) => Cipher;
 /**
  * Wraps a cipher: validates args, ensures encrypt() can only be called once.
  * @__NO_SIDE_EFFECTS__
  */
 export const wrapCipher = <C extends CipherCons<any>, P extends CipherParams>(
   params: P,
-  constructor: C
+  constructor: C,
 ): C & P => {
   function wrappedCipher(key: Uint8Array, ...args: any[]): CipherWithOutput {
     // Validate key
     abytes(key);
 
     // Big-Endian hardware is rare. Just in case someone still decides to run ciphers:
-    if (!isLE) throw new Error('Non little-endian hardware is not yet supported');
+    if (!isLE)
+      throw new Error("Non little-endian hardware is not yet supported");
 
     // Validate nonce if nonceLength is present
     if (params.nonceLength !== undefined) {
       const nonce = args[0];
-      if (!nonce) throw new Error('nonce / iv required');
+      if (!nonce) throw new Error("nonce / iv required");
       if (params.varSizeNonce) abytes(nonce);
       else abytes(nonce, params.nonceLength);
     }
@@ -360,7 +396,7 @@ export const wrapCipher = <C extends CipherCons<any>, P extends CipherParams>(
     const cipher = constructor(key, ...args);
     const checkOutput = (fnLength: number, output?: Uint8Array) => {
       if (output !== undefined) {
-        if (fnLength !== 2) throw new Error('cipher output not supported');
+        if (fnLength !== 2) throw new Error("cipher output not supported");
         abytes(output);
       }
     };
@@ -368,7 +404,8 @@ export const wrapCipher = <C extends CipherCons<any>, P extends CipherParams>(
     let called = false;
     const wrCipher = {
       encrypt(data: Uint8Array, output?: Uint8Array) {
-        if (called) throw new Error('cannot encrypt() twice with same key + nonce');
+        if (called)
+          throw new Error("cannot encrypt() twice with same key + nonce");
         called = true;
         abytes(data);
         checkOutput(cipher.encrypt.length, output);
@@ -377,7 +414,9 @@ export const wrapCipher = <C extends CipherCons<any>, P extends CipherParams>(
       decrypt(data: Uint8Array, output?: Uint8Array) {
         abytes(data);
         if (tagl && data.length < tagl)
-          throw new Error('invalid ciphertext length: smaller than tagLength=' + tagl);
+          throw new Error(
+            "invalid ciphertext length: smaller than tagLength=" + tagl,
+          );
         checkOutput(cipher.decrypt.length, output);
         return (cipher as CipherWithOutput).decrypt(data, output);
       },
@@ -396,7 +435,7 @@ export type XorStream = (
   nonce: Uint8Array,
   data: Uint8Array,
   output?: Uint8Array,
-  counter?: number
+  counter?: number,
 ) => Uint8Array;
 
 /**
@@ -406,12 +445,18 @@ export type XorStream = (
 export function getOutput(
   expectedLength: number,
   out?: Uint8Array,
-  onlyAligned = true
+  onlyAligned = true,
 ): Uint8Array {
   if (out === undefined) return new Uint8Array(expectedLength);
   if (out.length !== expectedLength)
-    throw new Error('invalid output length, expected ' + expectedLength + ', got: ' + out.length);
-  if (onlyAligned && !isAligned32(out)) throw new Error('invalid output, must be aligned');
+    throw new Error(
+      "invalid output length, expected " +
+        expectedLength +
+        ", got: " +
+        out.length,
+    );
+  if (onlyAligned && !isAligned32(out))
+    throw new Error("invalid output, must be aligned");
   return out;
 }
 
@@ -420,9 +465,10 @@ export function setBigUint64(
   view: DataView,
   byteOffset: number,
   value: bigint,
-  isLE: boolean
+  isLE: boolean,
 ): void {
-  if (typeof view.setBigUint64 === 'function') return view.setBigUint64(byteOffset, value, isLE);
+  if (typeof view.setBigUint64 === "function")
+    return view.setBigUint64(byteOffset, value, isLE);
   const _32n = BigInt(32);
   const _u32_max = BigInt(0xffffffff);
   const wh = Number((value >> _32n) & _u32_max);
@@ -433,7 +479,11 @@ export function setBigUint64(
   view.setUint32(byteOffset + l, wl, isLE);
 }
 
-export function u64Lengths(dataLength: number, aadLength: number, isLE: boolean): Uint8Array {
+export function u64Lengths(
+  dataLength: number,
+  aadLength: number,
+  isLE: boolean,
+): Uint8Array {
   abool(isLE);
   const num = new Uint8Array(16);
   const view = createView(num);

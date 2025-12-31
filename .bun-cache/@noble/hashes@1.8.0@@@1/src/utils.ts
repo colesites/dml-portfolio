@@ -10,37 +10,44 @@
 // from `crypto` to `cryptoNode`, which imports native module.
 // Makes the utils un-importable in browsers without a bundler.
 // Once node.js 18 is deprecated (2025-04-30), we can just drop the import.
-import { crypto } from '@noble/hashes/crypto';
+import { crypto } from "@noble/hashes/crypto";
 
 /** Checks if something is Uint8Array. Be careful: nodejs Buffer will return true. */
 export function isBytes(a: unknown): a is Uint8Array {
-  return a instanceof Uint8Array || (ArrayBuffer.isView(a) && a.constructor.name === 'Uint8Array');
+  return (
+    a instanceof Uint8Array ||
+    (ArrayBuffer.isView(a) && a.constructor.name === "Uint8Array")
+  );
 }
 
 /** Asserts something is positive integer. */
 export function anumber(n: number): void {
-  if (!Number.isSafeInteger(n) || n < 0) throw new Error('positive integer expected, got ' + n);
+  if (!Number.isSafeInteger(n) || n < 0)
+    throw new Error("positive integer expected, got " + n);
 }
 
 /** Asserts something is Uint8Array. */
 export function abytes(b: Uint8Array | undefined, ...lengths: number[]): void {
-  if (!isBytes(b)) throw new Error('Uint8Array expected');
+  if (!isBytes(b)) throw new Error("Uint8Array expected");
   if (lengths.length > 0 && !lengths.includes(b.length))
-    throw new Error('Uint8Array expected of length ' + lengths + ', got length=' + b.length);
+    throw new Error(
+      "Uint8Array expected of length " + lengths + ", got length=" + b.length,
+    );
 }
 
 /** Asserts something is hash */
 export function ahash(h: IHash): void {
-  if (typeof h !== 'function' || typeof h.create !== 'function')
-    throw new Error('Hash should be wrapped by utils.createHasher');
+  if (typeof h !== "function" || typeof h.create !== "function")
+    throw new Error("Hash should be wrapped by utils.createHasher");
   anumber(h.outputLen);
   anumber(h.blockLen);
 }
 
 /** Asserts a hash instance has not been destroyed / finished */
 export function aexists(instance: any, checkFinished = true): void {
-  if (instance.destroyed) throw new Error('Hash instance has been destroyed');
-  if (checkFinished && instance.finished) throw new Error('Hash#digest() has already been called');
+  if (instance.destroyed) throw new Error("Hash instance has been destroyed");
+  if (checkFinished && instance.finished)
+    throw new Error("Hash#digest() has already been called");
 }
 
 /** Asserts output is properly-sized byte array */
@@ -48,14 +55,22 @@ export function aoutput(out: any, instance: any): void {
   abytes(out);
   const min = instance.outputLen;
   if (out.length < min) {
-    throw new Error('digestInto() expects output buffer of length at least ' + min);
+    throw new Error(
+      "digestInto() expects output buffer of length at least " + min,
+    );
   }
 }
 
 /** Generic type encompassing 8/16/32-byte arrays - but not 64-byte. */
 // prettier-ignore
-export type TypedArray = Int8Array | Uint8ClampedArray | Uint8Array |
-  Uint16Array | Int16Array | Uint32Array | Int32Array;
+export type TypedArray =
+  | Int8Array
+  | Uint8ClampedArray
+  | Uint8Array
+  | Uint16Array
+  | Int16Array
+  | Uint32Array
+  | Int32Array;
 
 /** Cast u8 / u16 / u32 to u8. */
 export function u8(arr: TypedArray): Uint8Array {
@@ -64,7 +79,11 @@ export function u8(arr: TypedArray): Uint8Array {
 
 /** Cast u8 / u16 / u32 to u32. */
 export function u32(arr: TypedArray): Uint32Array {
-  return new Uint32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
+  return new Uint32Array(
+    arr.buffer,
+    arr.byteOffset,
+    Math.floor(arr.byteLength / 4),
+  );
 }
 
 /** Zeroize a byte array. Warning: JS provides no guarantees. */
@@ -123,12 +142,13 @@ export const swap32IfBE: (u: Uint32Array) => Uint32Array = isLE
 
 // Built-in hex conversion https://caniuse.com/mdn-javascript_builtins_uint8array_fromhex
 const hasHexBuiltin: boolean = /* @__PURE__ */ (() =>
-  // @ts-ignore
-  typeof Uint8Array.from([]).toHex === 'function' && typeof Uint8Array.fromHex === 'function')();
+  // @ts-expect-error
+  typeof Uint8Array.from([]).toHex === "function" &&
+  typeof Uint8Array.fromHex === "function")();
 
 // Array where index 0xf0 (240) is mapped to string 'f0'
 const hexes = /* @__PURE__ */ Array.from({ length: 256 }, (_, i) =>
-  i.toString(16).padStart(2, '0')
+  i.toString(16).padStart(2, "0"),
 );
 
 /**
@@ -137,10 +157,10 @@ const hexes = /* @__PURE__ */ Array.from({ length: 256 }, (_, i) =>
  */
 export function bytesToHex(bytes: Uint8Array): string {
   abytes(bytes);
-  // @ts-ignore
+  // @ts-expect-error
   if (hasHexBuiltin) return bytes.toHex();
   // pre-caching improves the speed 6x
-  let hex = '';
+  let hex = "";
   for (let i = 0; i < bytes.length; i++) {
     hex += hexes[bytes[i]];
   }
@@ -161,19 +181,26 @@ function asciiToBase16(ch: number): number | undefined {
  * @example hexToBytes('cafe0123') // Uint8Array.from([0xca, 0xfe, 0x01, 0x23])
  */
 export function hexToBytes(hex: string): Uint8Array {
-  if (typeof hex !== 'string') throw new Error('hex string expected, got ' + typeof hex);
-  // @ts-ignore
+  if (typeof hex !== "string")
+    throw new Error("hex string expected, got " + typeof hex);
+  // @ts-expect-error
   if (hasHexBuiltin) return Uint8Array.fromHex(hex);
   const hl = hex.length;
   const al = hl / 2;
-  if (hl % 2) throw new Error('hex string expected, got unpadded hex of length ' + hl);
+  if (hl % 2)
+    throw new Error("hex string expected, got unpadded hex of length " + hl);
   const array = new Uint8Array(al);
   for (let ai = 0, hi = 0; ai < al; ai++, hi += 2) {
     const n1 = asciiToBase16(hex.charCodeAt(hi));
     const n2 = asciiToBase16(hex.charCodeAt(hi + 1));
     if (n1 === undefined || n2 === undefined) {
       const char = hex[hi] + hex[hi + 1];
-      throw new Error('hex string expected, got non-hex character "' + char + '" at index ' + hi);
+      throw new Error(
+        'hex string expected, got non-hex character "' +
+          char +
+          '" at index ' +
+          hi,
+      );
     }
     array[ai] = n1 * 16 + n2; // multiply first octet, e.g. 'a3' => 10*16+3 => 160 + 3 => 163
   }
@@ -191,7 +218,7 @@ export const nextTick = async (): Promise<void> => {};
 export async function asyncLoop(
   iters: number,
   tick: number,
-  cb: (i: number) => void
+  cb: (i: number) => void,
 ): Promise<void> {
   let ts = Date.now();
   for (let i = 0; i < iters; i++) {
@@ -213,7 +240,7 @@ declare const TextDecoder: any;
  * @example utf8ToBytes('abc') // Uint8Array.from([97, 98, 99])
  */
 export function utf8ToBytes(str: string): Uint8Array {
-  if (typeof str !== 'string') throw new Error('string expected');
+  if (typeof str !== "string") throw new Error("string expected");
   return new Uint8Array(new TextEncoder().encode(str)); // https://bugzil.la/1681809
 }
 
@@ -233,7 +260,7 @@ export type Input = string | Uint8Array;
  * Keep in mind for future mutable operations.
  */
 export function toBytes(data: Input): Uint8Array {
-  if (typeof data === 'string') data = utf8ToBytes(data);
+  if (typeof data === "string") data = utf8ToBytes(data);
   abytes(data);
   return data;
 }
@@ -245,7 +272,7 @@ export type KDFInput = string | Uint8Array;
  * When string is passed, does utf8 decoding, using TextDecoder.
  */
 export function kdfInputToBytes(data: KDFInput): Uint8Array {
-  if (typeof data === 'string') data = utf8ToBytes(data);
+  if (typeof data === "string") data = utf8ToBytes(data);
   abytes(data);
   return data;
 }
@@ -270,10 +297,10 @@ export function concatBytes(...arrays: Uint8Array[]): Uint8Array {
 type EmptyObj = {};
 export function checkOpts<T1 extends EmptyObj, T2 extends EmptyObj>(
   defaults: T1,
-  opts?: T2
+  opts?: T2,
 ): T1 & T2 {
-  if (opts !== undefined && {}.toString.call(opts) !== '[object Object]')
-    throw new Error('options should be object or undefined');
+  if (opts !== undefined && {}.toString.call(opts) !== "[object Object]")
+    throw new Error("options should be object or undefined");
   const merged = Object.assign(defaults, opts);
   return merged as T1 & T2;
 }
@@ -332,14 +359,15 @@ export type CHashXO = ReturnType<typeof createXOFer>;
 
 /** Wraps hash function, creating an interface on top of it */
 export function createHasher<T extends Hash<T>>(
-  hashCons: () => Hash<T>
+  hashCons: () => Hash<T>,
 ): {
   (msg: Input): Uint8Array;
   outputLen: number;
   blockLen: number;
   create(): Hash<T>;
 } {
-  const hashC = (msg: Input): Uint8Array => hashCons().update(toBytes(msg)).digest();
+  const hashC = (msg: Input): Uint8Array =>
+    hashCons().update(toBytes(msg)).digest();
   const tmp = hashCons();
   hashC.outputLen = tmp.outputLen;
   hashC.blockLen = tmp.blockLen;
@@ -348,14 +376,15 @@ export function createHasher<T extends Hash<T>>(
 }
 
 export function createOptHasher<H extends Hash<H>, T extends Object>(
-  hashCons: (opts?: T) => Hash<H>
+  hashCons: (opts?: T) => Hash<H>,
 ): {
   (msg: Input, opts?: T): Uint8Array;
   outputLen: number;
   blockLen: number;
   create(opts?: T): Hash<H>;
 } {
-  const hashC = (msg: Input, opts?: T): Uint8Array => hashCons(opts).update(toBytes(msg)).digest();
+  const hashC = (msg: Input, opts?: T): Uint8Array =>
+    hashCons(opts).update(toBytes(msg)).digest();
   const tmp = hashCons({} as T);
   hashC.outputLen = tmp.outputLen;
   hashC.blockLen = tmp.blockLen;
@@ -364,14 +393,15 @@ export function createOptHasher<H extends Hash<H>, T extends Object>(
 }
 
 export function createXOFer<H extends HashXOF<H>, T extends Object>(
-  hashCons: (opts?: T) => HashXOF<H>
+  hashCons: (opts?: T) => HashXOF<H>,
 ): {
   (msg: Input, opts?: T): Uint8Array;
   outputLen: number;
   blockLen: number;
   create(opts?: T): HashXOF<H>;
 } {
-  const hashC = (msg: Input, opts?: T): Uint8Array => hashCons(opts).update(toBytes(msg)).digest();
+  const hashC = (msg: Input, opts?: T): Uint8Array =>
+    hashCons(opts).update(toBytes(msg)).digest();
   const tmp = hashCons({} as T);
   hashC.outputLen = tmp.outputLen;
   hashC.blockLen = tmp.blockLen;
@@ -384,12 +414,12 @@ export const wrapXOFConstructorWithOpts: typeof createXOFer = createXOFer;
 
 /** Cryptographically secure PRNG. Uses internal OS-level `crypto.getRandomValues`. */
 export function randomBytes(bytesLength = 32): Uint8Array {
-  if (crypto && typeof crypto.getRandomValues === 'function') {
+  if (crypto && typeof crypto.getRandomValues === "function") {
     return crypto.getRandomValues(new Uint8Array(bytesLength));
   }
   // Legacy Node.js compatibility
-  if (crypto && typeof crypto.randomBytes === 'function') {
+  if (crypto && typeof crypto.randomBytes === "function") {
     return Uint8Array.from(crypto.randomBytes(bytesLength));
   }
-  throw new Error('crypto.getRandomValues must be defined');
+  throw new Error("crypto.getRandomValues must be defined");
 }

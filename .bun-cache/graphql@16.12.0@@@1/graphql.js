@@ -1,22 +1,20 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.graphql = graphql;
 exports.graphqlSync = graphqlSync;
 
-var _devAssert = require('./jsutils/devAssert.js');
+var _devAssert = require("./jsutils/devAssert.js");
 
-var _isPromise = require('./jsutils/isPromise.js');
+var _isPromise = require("./jsutils/isPromise.js");
 
-var _parser = require('./language/parser.js');
+var _parser = require("./language/parser.js");
 
-var _validate = require('./type/validate.js');
+var _validate = require("./type/validate.js");
 
-var _validate2 = require('./validation/validate.js');
+var _validate2 = require("./validation/validate.js");
 
-var _execute = require('./execution/execute.js');
+var _execute = require("./execution/execute.js");
 
 function graphql(args) {
   // Always return a Promise for a consistent API.
@@ -33,7 +31,7 @@ function graphqlSync(args) {
   const result = graphqlImpl(args); // Assert that the execution was synchronous.
 
   if ((0, _isPromise.isPromise)(result)) {
-    throw new Error('GraphQL execution failed to complete synchronously.');
+    throw new Error("GraphQL execution failed to complete synchronously.");
   }
 
   return result;
@@ -44,7 +42,7 @@ function graphqlImpl(args) {
   arguments.length < 2 ||
     (0, _devAssert.devAssert)(
       false,
-      'graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.',
+      "graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.",
     );
   const {
     schema,

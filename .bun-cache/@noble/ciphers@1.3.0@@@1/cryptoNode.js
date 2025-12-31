@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.crypto = void 0;
 /**
@@ -8,11 +7,12 @@ exports.crypto = void 0;
  * See utils.ts for details.
  * @module
  */
-// @ts-ignore
+// @ts-expect-error
 const nc = require("node:crypto");
-exports.crypto = nc && typeof nc === 'object' && 'webcrypto' in nc
+exports.crypto =
+  nc && typeof nc === "object" && "webcrypto" in nc
     ? nc.webcrypto
-    : nc && typeof nc === 'object' && 'randomBytes' in nc
-        ? nc
-        : undefined;
+    : nc && typeof nc === "object" && "randomBytes" in nc
+      ? nc
+      : undefined;
 //# sourceMappingURL=cryptoNode.js.map

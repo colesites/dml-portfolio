@@ -13,8 +13,5 @@ function getStatusCodeColor(status) {
   }
   return "#E95F5D" /* Danger */;
 }
-export {
-  StatusCodeColor,
-  getStatusCodeColor
-};
+export { StatusCodeColor, getStatusCodeColor };
 //# sourceMappingURL=getStatusCodeColor.mjs.map

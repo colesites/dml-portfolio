@@ -2,23 +2,23 @@
  * @module
  * Pretty JSON Middleware for Hono.
  */
-import type { MiddlewareHandler } from '../../types';
+import type { MiddlewareHandler } from "../../types";
 interface PrettyOptions {
-    /**
-     * Number of spaces for indentation.
-     * @default 2
-     */
-    space?: number;
-    /**
-     * Query conditions for when to Pretty.
-     * @default 'pretty'
-     */
-    query?: string;
-    /**
-     * Force prettification of JSON responses regardless of query parameters.
-     * @default false
-     */
-    force?: boolean;
+  /**
+   * Number of spaces for indentation.
+   * @default 2
+   */
+  space?: number;
+  /**
+   * Query conditions for when to Pretty.
+   * @default 'pretty'
+   */
+  query?: string;
+  /**
+   * Force prettification of JSON responses regardless of query parameters.
+   * @default false
+   */
+  force?: boolean;
 }
 /**
  * Pretty JSON Middleware for Hono.
@@ -39,4 +39,3 @@ interface PrettyOptions {
  * ```
  */
 export declare const prettyJSON: (options?: PrettyOptions) => MiddlewareHandler;
-export {};

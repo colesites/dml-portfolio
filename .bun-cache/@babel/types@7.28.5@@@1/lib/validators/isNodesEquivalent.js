@@ -1,12 +1,17 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = isNodesEquivalent;
 var _index = require("../definitions/index.js");
 function isNodesEquivalent(a, b) {
-  if (typeof a !== "object" || typeof b !== "object" || a == null || b == null) {
+  if (
+    typeof a !== "object" ||
+    typeof b !== "object" ||
+    a == null ||
+    b == null
+  ) {
     return a === b;
   }
   if (a.type !== b.type) {
@@ -39,7 +44,10 @@ function isNodesEquivalent(a, b) {
       }
       continue;
     }
-    if (typeof val_a === "object" && !(visitorKeys != null && visitorKeys.includes(field))) {
+    if (
+      typeof val_a === "object" &&
+      !(visitorKeys != null && visitorKeys.includes(field))
+    ) {
       for (const key of Object.keys(val_a)) {
         if (val_a[key] !== val_b[key]) {
           return false;

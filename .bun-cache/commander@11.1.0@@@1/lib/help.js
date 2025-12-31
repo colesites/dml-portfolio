@@ -1,4 +1,4 @@
-const { humanReadableArgName } = require('./argument.js');
+const { humanReadableArgName } = require("./argument.js");
 
 /**
  * TypeScript import types for JSDoc, used by Visual Studio Code IntelliSense and `npm run typescript-checkJS`
@@ -25,12 +25,12 @@ class Help {
    */
 
   visibleCommands(cmd) {
-    const visibleCommands = cmd.commands.filter(cmd => !cmd._hidden);
+    const visibleCommands = cmd.commands.filter((cmd) => !cmd._hidden);
     if (cmd._hasImplicitHelpCommand()) {
       // Create a command matching the implicit help command.
-      const [, helpName, helpArgs] = cmd._helpCommandnameAndArgs.match(/([^ ]+) *(.*)/);
-      const helpCommand = cmd.createCommand(helpName)
-        .helpOption(false);
+      const [, helpName, helpArgs] =
+        cmd._helpCommandnameAndArgs.match(/([^ ]+) *(.*)/);
+      const helpCommand = cmd.createCommand(helpName).helpOption(false);
       helpCommand.description(cmd._helpCommandDescription);
       if (helpArgs) helpCommand.arguments(helpArgs);
       visibleCommands.push(helpCommand);
@@ -54,7 +54,9 @@ class Help {
   compareOptions(a, b) {
     const getSortKey = (option) => {
       // WYSIWYG for order displayed in help. Short used for comparison if present. No special handling for negated.
-      return option.short ? option.short.replace(/^-/, '') : option.long.replace(/^--/, '');
+      return option.short
+        ? option.short.replace(/^-/, "")
+        : option.long.replace(/^--/, "");
     };
     return getSortKey(a).localeCompare(getSortKey(b));
   }
@@ -69,8 +71,12 @@ class Help {
   visibleOptions(cmd) {
     const visibleOptions = cmd.options.filter((option) => !option.hidden);
     // Implicit help
-    const showShortHelpFlag = cmd._hasHelpOption && cmd._helpShortFlag && !cmd._findOption(cmd._helpShortFlag);
-    const showLongHelpFlag = cmd._hasHelpOption && !cmd._findOption(cmd._helpLongFlag);
+    const showShortHelpFlag =
+      cmd._hasHelpOption &&
+      cmd._helpShortFlag &&
+      !cmd._findOption(cmd._helpShortFlag);
+    const showLongHelpFlag =
+      cmd._hasHelpOption && !cmd._findOption(cmd._helpLongFlag);
     if (showShortHelpFlag || showLongHelpFlag) {
       let helpOption;
       if (!showShortHelpFlag) {
@@ -99,8 +105,14 @@ class Help {
     if (!this.showGlobalOptions) return [];
 
     const globalOptions = [];
-    for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
-      const visibleOptions = ancestorCmd.options.filter((option) => !option.hidden);
+    for (
+      let ancestorCmd = cmd.parent;
+      ancestorCmd;
+      ancestorCmd = ancestorCmd.parent
+    ) {
+      const visibleOptions = ancestorCmd.options.filter(
+        (option) => !option.hidden,
+      );
       globalOptions.push(...visibleOptions);
     }
     if (this.sortOptions) {
@@ -119,13 +131,14 @@ class Help {
   visibleArguments(cmd) {
     // Side effect! Apply the legacy descriptions before the arguments are displayed.
     if (cmd._argsDescription) {
-      cmd.registeredArguments.forEach(argument => {
-        argument.description = argument.description || cmd._argsDescription[argument.name()] || '';
+      cmd.registeredArguments.forEach((argument) => {
+        argument.description =
+          argument.description || cmd._argsDescription[argument.name()] || "";
       });
     }
 
     // If there are any arguments with a description then return all the arguments.
-    if (cmd.registeredArguments.find(argument => argument.description)) {
+    if (cmd.registeredArguments.find((argument) => argument.description)) {
       return cmd.registeredArguments;
     }
     return [];
@@ -140,11 +153,15 @@ class Help {
 
   subcommandTerm(cmd) {
     // Legacy. Ignores custom usage string, and nested commands.
-    const args = cmd.registeredArguments.map(arg => humanReadableArgName(arg)).join(' ');
-    return cmd._name +
-      (cmd._aliases[0] ? '|' + cmd._aliases[0] : '') +
-      (cmd.options.length ? ' [options]' : '') + // simplistic check for non-help option
-      (args ? ' ' + args : '');
+    const args = cmd.registeredArguments
+      .map((arg) => humanReadableArgName(arg))
+      .join(" ");
+    return (
+      cmd._name +
+      (cmd._aliases[0] ? "|" + cmd._aliases[0] : "") +
+      (cmd.options.length ? " [options]" : "") + // simplistic check for non-help option
+      (args ? " " + args : "")
+    );
   }
 
   /**
@@ -236,13 +253,17 @@ class Help {
     // Usage
     let cmdName = cmd._name;
     if (cmd._aliases[0]) {
-      cmdName = cmdName + '|' + cmd._aliases[0];
+      cmdName = cmdName + "|" + cmd._aliases[0];
     }
-    let ancestorCmdNames = '';
-    for (let ancestorCmd = cmd.parent; ancestorCmd; ancestorCmd = ancestorCmd.parent) {
-      ancestorCmdNames = ancestorCmd.name() + ' ' + ancestorCmdNames;
+    let ancestorCmdNames = "";
+    for (
+      let ancestorCmd = cmd.parent;
+      ancestorCmd;
+      ancestorCmd = ancestorCmd.parent
+    ) {
+      ancestorCmdNames = ancestorCmd.name() + " " + ancestorCmdNames;
     }
-    return ancestorCmdNames + cmdName + ' ' + cmd.usage();
+    return ancestorCmdNames + cmdName + " " + cmd.usage();
   }
 
   /**
@@ -283,15 +304,20 @@ class Help {
     if (option.argChoices) {
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${option.argChoices.map((choice) => JSON.stringify(choice)).join(', ')}`);
+        `choices: ${option.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`,
+      );
     }
     if (option.defaultValue !== undefined) {
       // default for boolean and negated more for programmer than end user,
       // but show true/false for boolean option as may be for hand-rolled env or config processing.
-      const showDefault = option.required || option.optional ||
-        (option.isBoolean() && typeof option.defaultValue === 'boolean');
+      const showDefault =
+        option.required ||
+        option.optional ||
+        (option.isBoolean() && typeof option.defaultValue === "boolean");
       if (showDefault) {
-        extraInfo.push(`default: ${option.defaultValueDescription || JSON.stringify(option.defaultValue)}`);
+        extraInfo.push(
+          `default: ${option.defaultValueDescription || JSON.stringify(option.defaultValue)}`,
+        );
       }
     }
     // preset for boolean and negated are more for programmer than end user
@@ -302,7 +328,7 @@ class Help {
       extraInfo.push(`env: ${option.envVar}`);
     }
     if (extraInfo.length > 0) {
-      return `${option.description} (${extraInfo.join(', ')})`;
+      return `${option.description} (${extraInfo.join(", ")})`;
     }
 
     return option.description;
@@ -320,13 +346,16 @@ class Help {
     if (argument.argChoices) {
       extraInfo.push(
         // use stringify to match the display of the default value
-        `choices: ${argument.argChoices.map((choice) => JSON.stringify(choice)).join(', ')}`);
+        `choices: ${argument.argChoices.map((choice) => JSON.stringify(choice)).join(", ")}`,
+      );
     }
     if (argument.defaultValue !== undefined) {
-      extraInfo.push(`default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue)}`);
+      extraInfo.push(
+        `default: ${argument.defaultValueDescription || JSON.stringify(argument.defaultValue)}`,
+      );
     }
     if (extraInfo.length > 0) {
-      const extraDescripton = `(${extraInfo.join(', ')})`;
+      const extraDescripton = `(${extraInfo.join(", ")})`;
       if (argument.description) {
         return `${argument.description} ${extraDescripton}`;
       }
@@ -351,57 +380,82 @@ class Help {
     function formatItem(term, description) {
       if (description) {
         const fullText = `${term.padEnd(termWidth + itemSeparatorWidth)}${description}`;
-        return helper.wrap(fullText, helpWidth - itemIndentWidth, termWidth + itemSeparatorWidth);
+        return helper.wrap(
+          fullText,
+          helpWidth - itemIndentWidth,
+          termWidth + itemSeparatorWidth,
+        );
       }
       return term;
     }
     function formatList(textArray) {
-      return textArray.join('\n').replace(/^/gm, ' '.repeat(itemIndentWidth));
+      return textArray.join("\n").replace(/^/gm, " ".repeat(itemIndentWidth));
     }
 
     // Usage
-    let output = [`Usage: ${helper.commandUsage(cmd)}`, ''];
+    let output = [`Usage: ${helper.commandUsage(cmd)}`, ""];
 
     // Description
     const commandDescription = helper.commandDescription(cmd);
     if (commandDescription.length > 0) {
-      output = output.concat([helper.wrap(commandDescription, helpWidth, 0), '']);
+      output = output.concat([
+        helper.wrap(commandDescription, helpWidth, 0),
+        "",
+      ]);
     }
 
     // Arguments
     const argumentList = helper.visibleArguments(cmd).map((argument) => {
-      return formatItem(helper.argumentTerm(argument), helper.argumentDescription(argument));
+      return formatItem(
+        helper.argumentTerm(argument),
+        helper.argumentDescription(argument),
+      );
     });
     if (argumentList.length > 0) {
-      output = output.concat(['Arguments:', formatList(argumentList), '']);
+      output = output.concat(["Arguments:", formatList(argumentList), ""]);
     }
 
     // Options
     const optionList = helper.visibleOptions(cmd).map((option) => {
-      return formatItem(helper.optionTerm(option), helper.optionDescription(option));
+      return formatItem(
+        helper.optionTerm(option),
+        helper.optionDescription(option),
+      );
     });
     if (optionList.length > 0) {
-      output = output.concat(['Options:', formatList(optionList), '']);
+      output = output.concat(["Options:", formatList(optionList), ""]);
     }
 
     if (this.showGlobalOptions) {
-      const globalOptionList = helper.visibleGlobalOptions(cmd).map((option) => {
-        return formatItem(helper.optionTerm(option), helper.optionDescription(option));
-      });
+      const globalOptionList = helper
+        .visibleGlobalOptions(cmd)
+        .map((option) => {
+          return formatItem(
+            helper.optionTerm(option),
+            helper.optionDescription(option),
+          );
+        });
       if (globalOptionList.length > 0) {
-        output = output.concat(['Global Options:', formatList(globalOptionList), '']);
+        output = output.concat([
+          "Global Options:",
+          formatList(globalOptionList),
+          "",
+        ]);
       }
     }
 
     // Commands
     const commandList = helper.visibleCommands(cmd).map((cmd) => {
-      return formatItem(helper.subcommandTerm(cmd), helper.subcommandDescription(cmd));
+      return formatItem(
+        helper.subcommandTerm(cmd),
+        helper.subcommandDescription(cmd),
+      );
     });
     if (commandList.length > 0) {
-      output = output.concat(['Commands:', formatList(commandList), '']);
+      output = output.concat(["Commands:", formatList(commandList), ""]);
     }
 
-    return output.join('\n');
+    return output.join("\n");
   }
 
   /**
@@ -417,7 +471,7 @@ class Help {
       helper.longestOptionTermLength(cmd, helper),
       helper.longestGlobalOptionTermLength(cmd, helper),
       helper.longestSubcommandTermLength(cmd, helper),
-      helper.longestArgumentTermLength(cmd, helper)
+      helper.longestArgumentTermLength(cmd, helper),
     );
   }
 
@@ -435,7 +489,8 @@ class Help {
 
   wrap(str, width, indent, minColumnWidth = 40) {
     // Full \s characters, minus the linefeeds.
-    const indents = ' \\f\\t\\v\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\ufeff';
+    const indents =
+      " \\f\\t\\v\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\ufeff";
     // Detect manually wrapped and indented strings by searching for line break followed by spaces.
     const manualIndent = new RegExp(`[\\n][${indents}]+`);
     if (str.match(manualIndent)) return str;
@@ -444,18 +499,26 @@ class Help {
     if (columnWidth < minColumnWidth) return str;
 
     const leadingStr = str.slice(0, indent);
-    const columnText = str.slice(indent).replace('\r\n', '\n');
-    const indentString = ' '.repeat(indent);
-    const zeroWidthSpace = '\u200B';
+    const columnText = str.slice(indent).replace("\r\n", "\n");
+    const indentString = " ".repeat(indent);
+    const zeroWidthSpace = "\u200B";
     const breaks = `\\s${zeroWidthSpace}`;
     // Match line end (so empty lines don't collapse),
     // or as much text as will fit in column, or excess text up to first break.
-    const regex = new RegExp(`\n|.{1,${columnWidth - 1}}([${breaks}]|$)|[^${breaks}]+?([${breaks}]|$)`, 'g');
+    const regex = new RegExp(
+      `\n|.{1,${columnWidth - 1}}([${breaks}]|$)|[^${breaks}]+?([${breaks}]|$)`,
+      "g",
+    );
     const lines = columnText.match(regex) || [];
-    return leadingStr + lines.map((line, i) => {
-      if (line === '\n') return ''; // preserve empty lines
-      return ((i > 0) ? indentString : '') + line.trimEnd();
-    }).join('\n');
+    return (
+      leadingStr +
+      lines
+        .map((line, i) => {
+          if (line === "\n") return ""; // preserve empty lines
+          return (i > 0 ? indentString : "") + line.trimEnd();
+        })
+        .join("\n")
+    );
   }
 }
 

@@ -12,5 +12,6 @@ export const secp521r1 = p521n;
 /** @deprecated use `import { p521_hasher } from '@noble/curves/nist.js';` */
 export const hashToCurve = /* @__PURE__ */ (() => p521_hasher.hashToCurve)();
 /** @deprecated use `import { p521_hasher } from '@noble/curves/nist.js';` */
-export const encodeToCurve = /* @__PURE__ */ (() => p521_hasher.encodeToCurve)();
+export const encodeToCurve = /* @__PURE__ */ (() =>
+  p521_hasher.encodeToCurve)();
 //# sourceMappingURL=p521.js.map

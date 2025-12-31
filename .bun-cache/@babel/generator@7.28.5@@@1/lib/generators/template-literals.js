@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.TaggedTemplateExpression = TaggedTemplateExpression;
 exports.TemplateElement = TemplateElement;
@@ -9,9 +9,7 @@ exports.TemplateLiteral = TemplateLiteral;
 exports._printTemplate = _printTemplate;
 function TaggedTemplateExpression(node) {
   this.print(node.tag);
-  {
-    this.print(node.typeParameters);
-  }
+  this.print(node.typeParameters);
   this.print(node.quasi);
 }
 function TemplateElement() {

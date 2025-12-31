@@ -1,10 +1,8 @@
-'use strict';
+const DatePart = require("./datepart");
 
-const DatePart = require('./datepart');
-
-const pos = n => {
+const pos = (n) => {
   n = n % 10;
-  return n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th';
+  return n === 1 ? "st" : n === 2 ? "nd" : n === 3 ? "rd" : "th";
 };
 
 class Day extends DatePart {
@@ -25,11 +23,20 @@ class Day extends DatePart {
   }
 
   toString() {
-    let date = this.date.getDate();
-    let day = this.date.getDay();
-    return this.token === 'DD' ? String(date).padStart(2, '0') : this.token === 'Do' ? date + pos(date) : this.token === 'd' ? day + 1 : this.token === 'ddd' ? this.locales.weekdaysShort[day] : this.token === 'dddd' ? this.locales.weekdays[day] : date;
+    const date = this.date.getDate();
+    const day = this.date.getDay();
+    return this.token === "DD"
+      ? String(date).padStart(2, "0")
+      : this.token === "Do"
+        ? date + pos(date)
+        : this.token === "d"
+          ? day + 1
+          : this.token === "ddd"
+            ? this.locales.weekdaysShort[day]
+            : this.token === "dddd"
+              ? this.locales.weekdays[day]
+              : date;
   }
-
 }
 
 module.exports = Day;

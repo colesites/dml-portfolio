@@ -10,13 +10,16 @@
  * @module
  */
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
-import { bitGet, bitLen, concatBytes, notImplemented } from '../utils.ts';
-import * as mod from './modular.ts';
-import type { WeierstrassPoint, WeierstrassPointCons } from './weierstrass.ts';
+import { bitGet, bitLen, concatBytes, notImplemented } from "../utils.ts";
+import * as mod from "./modular.ts";
+import type { WeierstrassPoint, WeierstrassPointCons } from "./weierstrass.ts";
 
 // Be friendly to bad ECMAScript parsers by not using bigint literals
 // prettier-ignore
-const _0n = BigInt(0), _1n = BigInt(1), _2n = BigInt(2), _3n = BigInt(3);
+const _0n = BigInt(0),
+  _1n = BigInt(1),
+  _2n = BigInt(2),
+  _3n = BigInt(3);
 
 // Fp₂ over complex plane
 export type BigintTuple = [bigint, bigint];
@@ -29,8 +32,18 @@ export type Fp6 = { c0: Fp2; c1: Fp2; c2: Fp2 };
 export type Fp12 = { c0: Fp6; c1: Fp6 }; // Fp₁₂ = Fp₆² => Fp₂³, Fp₆(w) / (w² - γ) where γ = v
 // prettier-ignore
 export type BigintTwelve = [
-  bigint, bigint, bigint, bigint, bigint, bigint,
-  bigint, bigint, bigint, bigint, bigint, bigint
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
+  bigint,
 ];
 
 export type Fp2Bls = mod.IField<Fp2> & {
@@ -73,7 +86,7 @@ function calcFrobeniusCoefficients<T>(
   modulus: bigint,
   degree: number,
   num: number = 1,
-  divisor?: number
+  divisor?: number,
 ) {
   const _divisor = BigInt(divisor === undefined ? degree : divisor);
   const towerModulus: any = modulus ** BigInt(degree);
@@ -95,12 +108,18 @@ function calcFrobeniusCoefficients<T>(
 export function psiFrobenius(
   Fp: mod.IField<Fp>,
   Fp2: Fp2Bls,
-  base: Fp2
+  base: Fp2,
 ): {
   psi: (x: Fp2, y: Fp2) => [Fp2, Fp2];
   psi2: (x: Fp2, y: Fp2) => [Fp2, Fp2];
-  G2psi: (c: WeierstrassPointCons<Fp2>, P: WeierstrassPoint<Fp2>) => WeierstrassPoint<Fp2>;
-  G2psi2: (c: WeierstrassPointCons<Fp2>, P: WeierstrassPoint<Fp2>) => WeierstrassPoint<Fp2>;
+  G2psi: (
+    c: WeierstrassPointCons<Fp2>,
+    P: WeierstrassPoint<Fp2>,
+  ) => WeierstrassPoint<Fp2>;
+  G2psi2: (
+    c: WeierstrassPointCons<Fp2>,
+    P: WeierstrassPoint<Fp2>,
+  ) => WeierstrassPoint<Fp2>;
   PSI_X: Fp2;
   PSI_Y: Fp2;
   PSI2_X: Fp2;
@@ -120,7 +139,8 @@ export function psiFrobenius(
   // This equals -1, which causes y to be Fp2.neg(y).
   // But not sure if there are case when this is not true?
   const PSI2_Y = Fp2.pow(base, (Fp.ORDER ** _2n - _1n) / _2n); // u^((p^2 - 1)/3)
-  if (!Fp2.eql(PSI2_Y, Fp2.neg(Fp2.ONE))) throw new Error('psiFrobenius: PSI2_Y!==-1');
+  if (!Fp2.eql(PSI2_Y, Fp2.neg(Fp2.ONE)))
+    throw new Error("psiFrobenius: PSI2_Y!==-1");
   function psi2(x: Fp2, y: Fp2): [Fp2, Fp2] {
     return [Fp2.mul(x, PSI2_X), Fp2.neg(y)];
   }
@@ -147,8 +167,11 @@ export type Tower12Opts = {
   Fp12finalExponentiate: (num: Fp12) => Fp12;
 };
 
-const Fp2fromBigTuple = (Fp: mod.IField<bigint>, tuple: BigintTuple | bigint[]) => {
-  if (tuple.length !== 2) throw new Error('invalid tuple');
+const Fp2fromBigTuple = (
+  Fp: mod.IField<bigint>,
+  tuple: BigintTuple | bigint[],
+) => {
+  if (tuple.length !== 2) throw new Error("invalid tuple");
   const fps = tuple.map((n) => Fp.create(n)) as BigintTuple;
   return { c0: fps[0], c1: fps[1] };
 };
@@ -165,7 +188,7 @@ class _Field2 implements mod.IField<Fp2> {
   readonly Fp: mod.IField<bigint>;
 
   readonly NONRESIDUE: Fp2;
-  readonly mulByB: Tower12Opts['Fp2mulByB'];
+  readonly mulByB: Tower12Opts["Fp2mulByB"];
   readonly Fp_NONRESIDUE: bigint;
   readonly Fp_div2: bigint;
   readonly FROBENIUS_COEFFICIENTS: Fp[];
@@ -175,8 +198,8 @@ class _Field2 implements mod.IField<Fp2> {
     opts: Partial<{
       NONRESIDUE: bigint;
       FP2_NONRESIDUE: BigintTuple;
-      Fp2mulByB: Tower12Opts['Fp2mulByB'];
-    }> = {}
+      Fp2mulByB: Tower12Opts["Fp2mulByB"];
+    }> = {},
   ) {
     const ORDER = Fp.ORDER;
     const FP2_ORDER = ORDER * ORDER;
@@ -192,7 +215,12 @@ class _Field2 implements mod.IField<Fp2> {
     this.Fp_div2 = Fp.div(Fp.ONE, _2n); // 1/2
     this.NONRESIDUE = Fp2fromBigTuple(Fp, opts.FP2_NONRESIDUE!);
     // const Fp2Nonresidue = Fp2fromBigTuple(opts.FP2_NONRESIDUE);
-    this.FROBENIUS_COEFFICIENTS = calcFrobeniusCoefficients(Fp, this.Fp_NONRESIDUE, Fp.ORDER, 2)[0];
+    this.FROBENIUS_COEFFICIENTS = calcFrobeniusCoefficients(
+      Fp,
+      this.Fp_NONRESIDUE,
+      Fp.ORDER,
+      2,
+    )[0];
     this.mulByB = opts.Fp2mulByB!;
     Object.seal(this);
   }
@@ -204,7 +232,7 @@ class _Field2 implements mod.IField<Fp2> {
   }
   isValid({ c0, c1 }: Fp2) {
     function isValidC(num: bigint, ORDER: bigint) {
-      return typeof num === 'bigint' && _0n <= num && num < ORDER;
+      return typeof num === "bigint" && _0n <= num && num < ORDER;
     }
     return isValidC(c0, this.ORDER) && isValidC(c1, this.ORDER);
   }
@@ -243,11 +271,12 @@ class _Field2 implements mod.IField<Fp2> {
   }
   mul({ c0, c1 }: Fp2, rhs: Fp2) {
     const { Fp } = this;
-    if (typeof rhs === 'bigint') return { c0: Fp.mul(c0, rhs), c1: Fp.mul(c1, rhs) };
+    if (typeof rhs === "bigint")
+      return { c0: Fp.mul(c0, rhs), c1: Fp.mul(c1, rhs) };
     // (a+bi)(c+di) = (ac−bd) + (ad+bc)i
     const { c0: r0, c1: r1 } = rhs;
-    let t1 = Fp.mul(c0, r0); // c0 * o0
-    let t2 = Fp.mul(c1, r1); // c1 * o1
+    const t1 = Fp.mul(c0, r0); // c0 * o0
+    const t2 = Fp.mul(c1, r1); // c1 * o1
     // (T1 - T2) + ((c0 + c1) * (r0 + r1) - (T1 + T2))*i
     const o0 = Fp.sub(t1, t2);
     const o1 = Fp.sub(Fp.mul(Fp.add(c0, c1), Fp.add(r0, r1)), Fp.add(t1, t2));
@@ -276,8 +305,11 @@ class _Field2 implements mod.IField<Fp2> {
   // Why inversion for bigint inside Fp instead of Fp2? it is even used in that context?
   div(lhs: Fp2, rhs: Fp2): Fp2 {
     const { Fp } = this;
-    // @ts-ignore
-    return this.mul(lhs, typeof rhs === 'bigint' ? Fp.inv(Fp.create(rhs)) : this.inv(rhs));
+    // @ts-expect-error
+    return this.mul(
+      lhs,
+      typeof rhs === "bigint" ? Fp.inv(Fp.create(rhs)) : this.inv(rhs),
+    );
   }
   inv({ c0: a, c1: b }: Fp2): Fp2 {
     // We wish to find the multiplicative inverse of a nonzero
@@ -295,31 +327,44 @@ class _Field2 implements mod.IField<Fp2> {
     // only a single inversion in Fp.
     const { Fp } = this;
     const factor = Fp.inv(Fp.create(a * a + b * b));
-    return { c0: Fp.mul(factor, Fp.create(a)), c1: Fp.mul(factor, Fp.create(-b)) };
+    return {
+      c0: Fp.mul(factor, Fp.create(a)),
+      c1: Fp.mul(factor, Fp.create(-b)),
+    };
   }
   sqrt(num: Fp2) {
     // This is generic for all quadratic extensions (Fp2)
     const { Fp } = this;
-    const Fp2 = this;
     const { c0, c1 } = num;
     if (Fp.is0(c1)) {
       // if c0 is quadratic residue
-      if (mod.FpLegendre(Fp, c0) === 1) return Fp2.create({ c0: Fp.sqrt(c0), c1: Fp.ZERO });
-      else return Fp2.create({ c0: Fp.ZERO, c1: Fp.sqrt(Fp.div(c0, this.Fp_NONRESIDUE)) });
+      if (mod.FpLegendre(Fp, c0) === 1)
+        return this.create({ c0: Fp.sqrt(c0), c1: Fp.ZERO });
+      else
+        return this.create({
+          c0: Fp.ZERO,
+          c1: Fp.sqrt(Fp.div(c0, this.Fp_NONRESIDUE)),
+        });
     }
-    const a = Fp.sqrt(Fp.sub(Fp.sqr(c0), Fp.mul(Fp.sqr(c1), this.Fp_NONRESIDUE)));
+    const a = Fp.sqrt(
+      Fp.sub(Fp.sqr(c0), Fp.mul(Fp.sqr(c1), this.Fp_NONRESIDUE)),
+    );
     let d = Fp.mul(Fp.add(a, c0), this.Fp_div2);
     const legendre = mod.FpLegendre(Fp, d);
     // -1, Quadratic non residue
     if (legendre === -1) d = Fp.sub(d, a);
     const a0 = Fp.sqrt(d);
-    const candidateSqrt = Fp2.create({ c0: a0, c1: Fp.div(Fp.mul(c1, this.Fp_div2), a0) });
-    if (!Fp2.eql(Fp2.sqr(candidateSqrt), num)) throw new Error('Cannot find square root');
+    const candidateSqrt = this.create({
+      c0: a0,
+      c1: Fp.div(Fp.mul(c1, this.Fp_div2), a0),
+    });
+    if (!this.eql(this.sqr(candidateSqrt), num))
+      throw new Error("Cannot find square root");
     // Normalize root: at this point candidateSqrt ** 2 = num, but also -candidateSqrt ** 2 = num
     const x1 = candidateSqrt;
-    const x2 = Fp2.neg(x1);
-    const { re: re1, im: im1 } = Fp2.reim(x1);
-    const { re: re2, im: im2 } = Fp2.reim(x2);
+    const x2 = this.neg(x1);
+    const { re: re1, im: im1 } = this.reim(x1);
+    const { re: re2, im: im2 } = this.reim(x2);
     if (im1 > im2 || (im1 === im2 && re1 > re2)) return x1;
     return x2;
   }
@@ -334,8 +379,12 @@ class _Field2 implements mod.IField<Fp2> {
   // Bytes util
   fromBytes(b: Uint8Array): Fp2 {
     const { Fp } = this;
-    if (b.length !== this.BYTES) throw new Error('fromBytes invalid length=' + b.length);
-    return { c0: Fp.fromBytes(b.subarray(0, Fp.BYTES)), c1: Fp.fromBytes(b.subarray(Fp.BYTES)) };
+    if (b.length !== this.BYTES)
+      throw new Error("fromBytes invalid length=" + b.length);
+    return {
+      c0: Fp.fromBytes(b.subarray(0, Fp.BYTES)),
+      c1: Fp.fromBytes(b.subarray(Fp.BYTES)),
+    };
   }
   toBytes({ c0, c1 }: Fp2) {
     return concatBytes(this.Fp.toBytes(c0), this.Fp.toBytes(c1));
@@ -350,12 +399,11 @@ class _Field2 implements mod.IField<Fp2> {
     return { re: c0, im: c1 };
   }
   Fp4Square(a: Fp2, b: Fp2): { first: Fp2; second: Fp2 } {
-    const Fp2 = this;
-    const a2 = Fp2.sqr(a);
-    const b2 = Fp2.sqr(b);
+    const a2 = this.sqr(a);
+    const b2 = this.sqr(b);
     return {
-      first: Fp2.add(Fp2.mulByNonresidue(b2), a2), // b² * Nonresidue + a²
-      second: Fp2.sub(Fp2.sub(Fp2.sqr(Fp2.add(a, b)), a2), b2), // (a + b)² - a² - b²
+      first: this.add(this.mulByNonresidue(b2), a2), // b² * Nonresidue + a²
+      second: this.sub(this.sub(this.sqr(this.add(a, b)), a2), b2), // (a + b)² - a² - b²
     };
   }
   // multiply by u + 1
@@ -392,7 +440,14 @@ class _Field6 implements Fp6Bls {
     this.ZERO = { c0: Fp2.ZERO, c1: Fp2.ZERO, c2: Fp2.ZERO };
     this.ONE = { c0: Fp2.ONE, c1: Fp2.ZERO, c2: Fp2.ZERO };
     const { Fp } = Fp2;
-    const frob = calcFrobeniusCoefficients(Fp2, Fp2.NONRESIDUE, Fp.ORDER, 6, 2, 3);
+    const frob = calcFrobeniusCoefficients(
+      Fp2,
+      Fp2.NONRESIDUE,
+      Fp.ORDER,
+      6,
+      2,
+      3,
+    );
     this.FROBENIUS_COEFFICIENTS_1 = frob[0];
     this.FROBENIUS_COEFFICIENTS_2 = frob[1];
     Object.seal(this);
@@ -415,7 +470,7 @@ class _Field6 implements Fp6Bls {
   }
   mul({ c0, c1, c2 }: Fp6, rhs: Fp6 | bigint) {
     const { Fp2 } = this;
-    if (typeof rhs === 'bigint') {
+    if (typeof rhs === "bigint") {
       return {
         c0: Fp2.mul(c0, rhs),
         c1: Fp2.mul(c1, rhs),
@@ -430,28 +485,39 @@ class _Field6 implements Fp6Bls {
       // t0 + (c1 + c2) * (r1 * r2) - (T1 + T2) * (u + 1)
       c0: Fp2.add(
         t0,
-        Fp2.mulByNonresidue(Fp2.sub(Fp2.mul(Fp2.add(c1, c2), Fp2.add(r1, r2)), Fp2.add(t1, t2)))
+        Fp2.mulByNonresidue(
+          Fp2.sub(Fp2.mul(Fp2.add(c1, c2), Fp2.add(r1, r2)), Fp2.add(t1, t2)),
+        ),
       ),
       // (c0 + c1) * (r0 + r1) - (T0 + T1) + T2 * (u + 1)
       c1: Fp2.add(
         Fp2.sub(Fp2.mul(Fp2.add(c0, c1), Fp2.add(r0, r1)), Fp2.add(t0, t1)),
-        Fp2.mulByNonresidue(t2)
+        Fp2.mulByNonresidue(t2),
       ),
       // T1 + (c0 + c2) * (r0 + r2) - T0 + T2
-      c2: Fp2.sub(Fp2.add(t1, Fp2.mul(Fp2.add(c0, c2), Fp2.add(r0, r2))), Fp2.add(t0, t2)),
+      c2: Fp2.sub(
+        Fp2.add(t1, Fp2.mul(Fp2.add(c0, c2), Fp2.add(r0, r2))),
+        Fp2.add(t0, t2),
+      ),
     };
   }
   sqr({ c0, c1, c2 }: Fp6) {
     const { Fp2 } = this;
-    let t0 = Fp2.sqr(c0); // c0²
-    let t1 = Fp2.mul(Fp2.mul(c0, c1), _2n); // 2 * c0 * c1
-    let t3 = Fp2.mul(Fp2.mul(c1, c2), _2n); // 2 * c1 * c2
-    let t4 = Fp2.sqr(c2); // c2²
+    const t0 = Fp2.sqr(c0); // c0²
+    const t1 = Fp2.mul(Fp2.mul(c0, c1), _2n); // 2 * c0 * c1
+    const t3 = Fp2.mul(Fp2.mul(c1, c2), _2n); // 2 * c1 * c2
+    const t4 = Fp2.sqr(c2); // c2²
     return {
       c0: Fp2.add(Fp2.mulByNonresidue(t3), t0), // T3 * (u + 1) + T0
       c1: Fp2.add(Fp2.mulByNonresidue(t4), t1), // T4 * (u + 1) + T1
       // T1 + (c0 - c1 + c2)² + T3 - T0 - T4
-      c2: Fp2.sub(Fp2.sub(Fp2.add(Fp2.add(t1, Fp2.sqr(Fp2.add(Fp2.sub(c0, c1), c2))), t3), t0), t4),
+      c2: Fp2.sub(
+        Fp2.sub(
+          Fp2.add(Fp2.add(t1, Fp2.sqr(Fp2.add(Fp2.sub(c0, c1), c2))), t3),
+          t0,
+        ),
+        t4,
+      ),
     };
   }
   addN(a: Fp6, b: Fp6): Fp6 {
@@ -497,7 +563,10 @@ class _Field6 implements Fp6Bls {
   div(lhs: Fp6, rhs: Fp6) {
     const { Fp2 } = this;
     const { Fp } = Fp2;
-    return this.mul(lhs, typeof rhs === 'bigint' ? Fp.inv(Fp.create(rhs)) : this.inv(rhs));
+    return this.mul(
+      lhs,
+      typeof rhs === "bigint" ? Fp.inv(Fp.create(rhs)) : this.inv(rhs),
+    );
   }
   pow(num: Fp6, power: Fp): Fp6 {
     return mod.FpPow(this, num, power);
@@ -508,19 +577,23 @@ class _Field6 implements Fp6Bls {
 
   inv({ c0, c1, c2 }: Fp6) {
     const { Fp2 } = this;
-    let t0 = Fp2.sub(Fp2.sqr(c0), Fp2.mulByNonresidue(Fp2.mul(c2, c1))); // c0² - c2 * c1 * (u + 1)
-    let t1 = Fp2.sub(Fp2.mulByNonresidue(Fp2.sqr(c2)), Fp2.mul(c0, c1)); // c2² * (u + 1) - c0 * c1
-    let t2 = Fp2.sub(Fp2.sqr(c1), Fp2.mul(c0, c2)); // c1² - c0 * c2
+    const t0 = Fp2.sub(Fp2.sqr(c0), Fp2.mulByNonresidue(Fp2.mul(c2, c1))); // c0² - c2 * c1 * (u + 1)
+    const t1 = Fp2.sub(Fp2.mulByNonresidue(Fp2.sqr(c2)), Fp2.mul(c0, c1)); // c2² * (u + 1) - c0 * c1
+    const t2 = Fp2.sub(Fp2.sqr(c1), Fp2.mul(c0, c2)); // c1² - c0 * c2
     // 1/(((c2 * T1 + c1 * T2) * v) + c0 * T0)
-    let t4 = Fp2.inv(
-      Fp2.add(Fp2.mulByNonresidue(Fp2.add(Fp2.mul(c2, t1), Fp2.mul(c1, t2))), Fp2.mul(c0, t0))
+    const t4 = Fp2.inv(
+      Fp2.add(
+        Fp2.mulByNonresidue(Fp2.add(Fp2.mul(c2, t1), Fp2.mul(c1, t2))),
+        Fp2.mul(c0, t0),
+      ),
     );
     return { c0: Fp2.mul(t4, t0), c1: Fp2.mul(t4, t1), c2: Fp2.mul(t4, t2) };
   }
   // Bytes utils
   fromBytes(b: Uint8Array): Fp6 {
     const { Fp2 } = this;
-    if (b.length !== this.BYTES) throw new Error('fromBytes invalid length=' + b.length);
+    if (b.length !== this.BYTES)
+      throw new Error("fromBytes invalid length=" + b.length);
     const B2 = Fp2.BYTES;
     return {
       c0: Fp2.fromBytes(b.subarray(0, B2)),
@@ -542,7 +615,8 @@ class _Field6 implements Fp6Bls {
   }
   fromBigSix(t: BigintSix): Fp6 {
     const { Fp2 } = this;
-    if (!Array.isArray(t) || t.length !== 6) throw new Error('invalid Fp6 usage');
+    if (!Array.isArray(t) || t.length !== 6)
+      throw new Error("invalid Fp6 usage");
     return {
       c0: Fp2.fromBigTuple(t.slice(0, 2) as BigintTuple),
       c1: Fp2.fromBigTuple(t.slice(2, 4) as BigintTuple),
@@ -553,8 +627,14 @@ class _Field6 implements Fp6Bls {
     const { Fp2 } = this;
     return {
       c0: Fp2.frobeniusMap(c0, power),
-      c1: Fp2.mul(Fp2.frobeniusMap(c1, power), this.FROBENIUS_COEFFICIENTS_1[power % 6]),
-      c2: Fp2.mul(Fp2.frobeniusMap(c2, power), this.FROBENIUS_COEFFICIENTS_2[power % 6]),
+      c1: Fp2.mul(
+        Fp2.frobeniusMap(c1, power),
+        this.FROBENIUS_COEFFICIENTS_1[power % 6],
+      ),
+      c2: Fp2.mul(
+        Fp2.frobeniusMap(c2, power),
+        this.FROBENIUS_COEFFICIENTS_2[power % 6],
+      ),
     };
   }
   mulByFp2({ c0, c1, c2 }: Fp6, rhs: Fp2): Fp6 {
@@ -581,11 +661,14 @@ class _Field6 implements Fp6Bls {
   // Sparse multiplication
   mul01({ c0, c1, c2 }: Fp6, b0: Fp2, b1: Fp2): Fp6 {
     const { Fp2 } = this;
-    let t0 = Fp2.mul(c0, b0); // c0 * b0
-    let t1 = Fp2.mul(c1, b1); // c1 * b1
+    const t0 = Fp2.mul(c0, b0); // c0 * b0
+    const t1 = Fp2.mul(c1, b1); // c1 * b1
     return {
       // ((c1 + c2) * b1 - T1) * (u + 1) + T0
-      c0: Fp2.add(Fp2.mulByNonresidue(Fp2.sub(Fp2.mul(Fp2.add(c1, c2), b1), t1)), t0),
+      c0: Fp2.add(
+        Fp2.mulByNonresidue(Fp2.sub(Fp2.mul(Fp2.add(c1, c2), b1), t1)),
+        t0,
+      ),
       // (b0 + b1) * (c0 + c1) - T0 - T1
       c1: Fp2.sub(Fp2.sub(Fp2.mul(Fp2.add(b0, b1), Fp2.add(c0, c1)), t0), t1),
       // (c0 + c2) * b0 - T0 + T1
@@ -607,7 +690,7 @@ class _Field12 implements Fp12Bls {
   readonly Fp6: Fp6Bls;
   readonly FROBENIUS_COEFFICIENTS: Fp2[];
   readonly X_LEN: number;
-  readonly finalExponentiate: Tower12Opts['Fp12finalExponentiate'];
+  readonly finalExponentiate: Tower12Opts["Fp12finalExponentiate"];
 
   constructor(Fp6: Fp6Bls, opts: Tower12Opts) {
     const { Fp2 } = Fp6;
@@ -627,7 +710,7 @@ class _Field12 implements Fp12Bls {
       Fp.ORDER,
       12,
       1,
-      6
+      6,
     )[0];
     this.X_LEN = opts.X_LEN;
     this.finalExponentiate = opts.Fp12finalExponentiate;
@@ -659,14 +742,17 @@ class _Field12 implements Fp12Bls {
   }
   inv({ c0, c1 }: Fp12) {
     const { Fp6 } = this;
-    let t = Fp6.inv(Fp6.sub(Fp6.sqr(c0), Fp6.mulByNonresidue(Fp6.sqr(c1)))); // 1 / (c0² - c1² * v)
+    const t = Fp6.inv(Fp6.sub(Fp6.sqr(c0), Fp6.mulByNonresidue(Fp6.sqr(c1)))); // 1 / (c0² - c1² * v)
     return { c0: Fp6.mul(c0, t), c1: Fp6.neg(Fp6.mul(c1, t)) }; // ((C0 * T) * T) + (-C1 * T) * w
   }
   div(lhs: Fp12, rhs: Fp12) {
     const { Fp6 } = this;
     const { Fp2 } = Fp6;
     const { Fp } = Fp2;
-    return this.mul(lhs, typeof rhs === 'bigint' ? Fp.inv(Fp.create(rhs)) : this.inv(rhs));
+    return this.mul(
+      lhs,
+      typeof rhs === "bigint" ? Fp.inv(Fp.create(rhs)) : this.inv(rhs),
+    );
   }
   pow(num: Fp12, power: bigint): Fp12 {
     return mod.FpPow(this, num, power);
@@ -692,10 +778,11 @@ class _Field12 implements Fp12Bls {
   }
   mul({ c0, c1 }: Fp12, rhs: Fp12 | bigint) {
     const { Fp6 } = this;
-    if (typeof rhs === 'bigint') return { c0: Fp6.mul(c0, rhs), c1: Fp6.mul(c1, rhs) };
-    let { c0: r0, c1: r1 } = rhs;
-    let t1 = Fp6.mul(c0, r0); // c0 * r0
-    let t2 = Fp6.mul(c1, r1); // c1 * r1
+    if (typeof rhs === "bigint")
+      return { c0: Fp6.mul(c0, rhs), c1: Fp6.mul(c1, rhs) };
+    const { c0: r0, c1: r1 } = rhs;
+    const t1 = Fp6.mul(c0, r0); // c0 * r0
+    const t2 = Fp6.mul(c1, r1); // c1 * r1
     return {
       c0: Fp6.add(t1, Fp6.mulByNonresidue(t2)), // T1 + T2 * v
       // (c0 + c1) * (r0 + r1) - (T1 + T2)
@@ -704,12 +791,15 @@ class _Field12 implements Fp12Bls {
   }
   sqr({ c0, c1 }: Fp12) {
     const { Fp6 } = this;
-    let ab = Fp6.mul(c0, c1); // c0 * c1
+    const ab = Fp6.mul(c0, c1); // c0 * c1
     return {
       // (c1 * v + c0) * (c0 + c1) - AB - AB * v
       c0: Fp6.sub(
-        Fp6.sub(Fp6.mul(Fp6.add(Fp6.mulByNonresidue(c1), c0), Fp6.add(c0, c1)), ab),
-        Fp6.mulByNonresidue(ab)
+        Fp6.sub(
+          Fp6.mul(Fp6.add(Fp6.mulByNonresidue(c1), c0), Fp6.add(c0, c1)),
+          ab,
+        ),
+        Fp6.mulByNonresidue(ab),
       ),
       c1: Fp6.add(ab, ab),
     }; // AB + AB
@@ -731,7 +821,8 @@ class _Field12 implements Fp12Bls {
   // Bytes utils
   fromBytes(b: Uint8Array): Fp12 {
     const { Fp6 } = this;
-    if (b.length !== this.BYTES) throw new Error('fromBytes invalid length=' + b.length);
+    if (b.length !== this.BYTES)
+      throw new Error("fromBytes invalid length=" + b.length);
     return {
       c0: Fp6.fromBytes(b.subarray(0, Fp6.BYTES)),
       c1: Fp6.fromBytes(b.subarray(Fp6.BYTES)),
@@ -791,12 +882,15 @@ class _Field12 implements Fp12Bls {
   mul014({ c0, c1 }: Fp12, o0: Fp2, o1: Fp2, o4: Fp2) {
     const { Fp6 } = this;
     const { Fp2 } = Fp6;
-    let t0 = Fp6.mul01(c0, o0, o1);
-    let t1 = Fp6.mul1(c1, o4);
+    const t0 = Fp6.mul01(c0, o0, o1);
+    const t1 = Fp6.mul1(c1, o4);
     return {
       c0: Fp6.add(Fp6.mulByNonresidue(t1), t0), // T1 * v + T0
       // (c1 + c0) * [o0, o1+o4] - T0 - T1
-      c1: Fp6.sub(Fp6.sub(Fp6.mul01(Fp6.add(c1, c0), o0, Fp2.add(o1, o4)), t0), t1),
+      c1: Fp6.sub(
+        Fp6.sub(Fp6.mul01(Fp6.add(c1, c0), o0, Fp2.add(o1, o4)), t0),
+        t1,
+      ),
     };
   }
   mul034({ c0, c1 }: Fp12, o0: Fp2, o3: Fp2, o4: Fp2) {
@@ -854,7 +948,9 @@ class _Field12 implements Fp12Bls {
 }
 
 export function tower12(opts: Tower12Opts): {
-  Fp: Readonly<mod.IField<bigint> & Required<Pick<mod.IField<bigint>, 'isOdd'>>>;
+  Fp: Readonly<
+    mod.IField<bigint> & Required<Pick<mod.IField<bigint>, "isOdd">>
+  >;
   Fp2: Fp2Bls;
   Fp6: Fp6Bls;
   Fp12: Fp12Bls;

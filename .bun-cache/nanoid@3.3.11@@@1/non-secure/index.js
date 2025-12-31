@@ -1,21 +1,21 @@
-let urlAlphabet =
-  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
-let customAlphabet = (alphabet, defaultSize = 21) => {
+const urlAlphabet =
+  "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
+const customAlphabet = (alphabet, defaultSize = 21) => {
   return (size = defaultSize) => {
-    let id = ''
-    let i = size | 0
+    let id = "";
+    let i = size | 0;
     while (i--) {
-      id += alphabet[(Math.random() * alphabet.length) | 0]
+      id += alphabet[(Math.random() * alphabet.length) | 0];
     }
-    return id
-  }
-}
-let nanoid = (size = 21) => {
-  let id = ''
-  let i = size | 0
+    return id;
+  };
+};
+const nanoid = (size = 21) => {
+  let id = "";
+  let i = size | 0;
   while (i--) {
-    id += urlAlphabet[(Math.random() * 64) | 0]
+    id += urlAlphabet[(Math.random() * 64) | 0];
   }
-  return id
-}
-export { nanoid, customAlphabet }
+  return id;
+};
+export { nanoid, customAlphabet };

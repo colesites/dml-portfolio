@@ -2,10 +2,10 @@
  * @module
  * This module provides APIs for `hono/jsx/dom/client`, which is compatible with `react-dom/client`.
  */
-import type { Child } from '../base';
+import type { Child } from "../base";
 export interface Root {
-    render(children: Child): void;
-    unmount(): void;
+  render(children: Child): void;
+  unmount(): void;
 }
 export type RootOptions = Record<string, unknown>;
 /**
@@ -14,7 +14,10 @@ export type RootOptions = Record<string, unknown>;
  * @param options Options for createRoot (not supported yet)
  * @returns Root object has `render` and `unmount` methods
  */
-export declare const createRoot: (element: HTMLElement | DocumentFragment, options?: RootOptions) => Root;
+export declare const createRoot: (
+  element: HTMLElement | DocumentFragment,
+  options?: RootOptions,
+) => Root;
 /**
  * Create a root object and hydrate app to the target element.
  * In hono/jsx/dom, hydrate is equivalent to render.
@@ -23,9 +26,20 @@ export declare const createRoot: (element: HTMLElement | DocumentFragment, optio
  * @param options Options for createRoot (not supported yet)
  * @returns Root object has `render` and `unmount` methods
  */
-export declare const hydrateRoot: (element: HTMLElement | DocumentFragment, reactNode: Child, options?: RootOptions) => Root;
+export declare const hydrateRoot: (
+  element: HTMLElement | DocumentFragment,
+  reactNode: Child,
+  options?: RootOptions,
+) => Root;
 declare const _default: {
-    createRoot: (element: HTMLElement | DocumentFragment, options?: RootOptions) => Root;
-    hydrateRoot: (element: HTMLElement | DocumentFragment, reactNode: Child, options?: RootOptions) => Root;
+  createRoot: (
+    element: HTMLElement | DocumentFragment,
+    options?: RootOptions,
+  ) => Root;
+  hydrateRoot: (
+    element: HTMLElement | DocumentFragment,
+    reactNode: Child,
+    options?: RootOptions,
+  ) => Root;
 };
 export default _default;

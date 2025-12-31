@@ -1,7 +1,11 @@
-import { COLUMN, SOURCES_INDEX, SOURCE_LINE, SOURCE_COLUMN } from './sourcemap-segment';
-import { sortComparator } from './sort';
-
-import type { ReverseSegment, SourceMapSegment } from './sourcemap-segment';
+import { sortComparator } from "./sort";
+import type { ReverseSegment, SourceMapSegment } from "./sourcemap-segment";
+import {
+  COLUMN,
+  SOURCE_COLUMN,
+  SOURCE_LINE,
+  SOURCES_INDEX,
+} from "./sourcemap-segment";
 
 export type Source = ReverseSegment[][];
 

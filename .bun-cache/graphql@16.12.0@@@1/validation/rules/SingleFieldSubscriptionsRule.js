@@ -1,15 +1,13 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.SingleFieldSubscriptionsRule = SingleFieldSubscriptionsRule;
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _collectFields = require('../../execution/collectFields.js');
+var _collectFields = require("../../execution/collectFields.js");
 
 /**
  * Subscriptions must only include a non-introspection field.
@@ -22,7 +20,7 @@ var _collectFields = require('../../execution/collectFields.js');
 function SingleFieldSubscriptionsRule(context) {
   return {
     OperationDefinition(node) {
-      if (node.operation === 'subscription') {
+      if (node.operation === "subscription") {
         const schema = context.getSchema();
         const subscriptionType = schema.getSubscriptionType();
 
@@ -54,7 +52,7 @@ function SingleFieldSubscriptionsRule(context) {
               new _GraphQLError.GraphQLError(
                 operationName != null
                   ? `Subscription "${operationName}" must select only one top level field.`
-                  : 'Anonymous Subscription must select only one top level field.',
+                  : "Anonymous Subscription must select only one top level field.",
                 {
                   nodes: extraFieldSelections,
                 },
@@ -66,12 +64,12 @@ function SingleFieldSubscriptionsRule(context) {
             const field = fieldNodes[0];
             const fieldName = field.name.value;
 
-            if (fieldName.startsWith('__')) {
+            if (fieldName.startsWith("__")) {
               context.reportError(
                 new _GraphQLError.GraphQLError(
                   operationName != null
                     ? `Subscription "${operationName}" must not select an introspection top level field.`
-                    : 'Anonymous Subscription must not select an introspection top level field.',
+                    : "Anonymous Subscription must not select an introspection top level field.",
                   {
                     nodes: fieldNodes,
                   },

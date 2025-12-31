@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.ArgumentPlaceholder = ArgumentPlaceholder;
 exports.ArrayPattern = exports.ArrayExpression = ArrayExpression;
@@ -26,28 +26,26 @@ exports.VoidPattern = VoidPattern;
 exports._getRawIdentifier = _getRawIdentifier;
 var _t = require("@babel/types");
 var _jsesc = require("jsesc");
-const {
-  isAssignmentPattern,
-  isIdentifier
-} = _t;
+const { isAssignmentPattern, isIdentifier } = _t;
 let lastRawIdentNode = null;
 let lastRawIdentResult = "";
 function _getRawIdentifier(node) {
   if (node === lastRawIdentNode) return lastRawIdentResult;
   lastRawIdentNode = node;
-  const {
-    name
-  } = node;
-  const token = this.tokenMap.find(node, tok => tok.value === name);
+  const { name } = node;
+  const token = this.tokenMap.find(node, (tok) => tok.value === name);
   if (token) {
     lastRawIdentResult = this._originalCode.slice(token.start, token.end);
     return lastRawIdentResult;
   }
-  return lastRawIdentResult = node.name;
+  return (lastRawIdentResult = node.name);
 }
 function Identifier(node) {
   var _node$loc;
-  this.sourceIdentifierName(((_node$loc = node.loc) == null ? void 0 : _node$loc.identifierName) || node.name);
+  this.sourceIdentifierName(
+    ((_node$loc = node.loc) == null ? void 0 : _node$loc.identifierName) ||
+      node.name,
+  );
   this.word(this.tokenMap ? this._getRawIdentifier(node) : node.name);
 }
 function ArgumentPlaceholder() {
@@ -83,12 +81,21 @@ function ObjectProperty(node) {
     this.print(node.key);
     this.tokenChar(93);
   } else {
-    if (isAssignmentPattern(node.value) && isIdentifier(node.key) && node.key.name === node.value.left.name) {
+    if (
+      isAssignmentPattern(node.value) &&
+      isIdentifier(node.key) &&
+      node.key.name === node.value.left.name
+    ) {
       this.print(node.value);
       return;
     }
     this.print(node.key);
-    if (node.shorthand && isIdentifier(node.key) && isIdentifier(node.value) && node.key.name === node.value.name) {
+    if (
+      node.shorthand &&
+      isIdentifier(node.key) &&
+      isIdentifier(node.value) &&
+      node.key.name === node.value.name
+    ) {
       return;
     }
   }
@@ -120,16 +127,19 @@ function RecordExpression(node) {
   const props = node.properties;
   let startToken;
   let endToken;
-  {
-    if (this.format.recordAndTupleSyntaxType === "bar") {
-      startToken = "{|";
-      endToken = "|}";
-    } else if (this.format.recordAndTupleSyntaxType !== "hash" && this.format.recordAndTupleSyntaxType != null) {
-      throw new Error(`The "recordAndTupleSyntaxType" generator option must be "bar" or "hash" (${JSON.stringify(this.format.recordAndTupleSyntaxType)} received).`);
-    } else {
-      startToken = "#{";
-      endToken = "}";
-    }
+  if (this.format.recordAndTupleSyntaxType === "bar") {
+    startToken = "{|";
+    endToken = "|}";
+  } else if (
+    this.format.recordAndTupleSyntaxType !== "hash" &&
+    this.format.recordAndTupleSyntaxType != null
+  ) {
+    throw new Error(
+      `The "recordAndTupleSyntaxType" generator option must be "bar" or "hash" (${JSON.stringify(this.format.recordAndTupleSyntaxType)} received).`,
+    );
+  } else {
+    startToken = "#{";
+    endToken = "}";
   }
   this.token(startToken);
   if (props.length) {
@@ -144,16 +154,16 @@ function TupleExpression(node) {
   const len = elems.length;
   let startToken;
   let endToken;
-  {
-    if (this.format.recordAndTupleSyntaxType === "bar") {
-      startToken = "[|";
-      endToken = "|]";
-    } else if (this.format.recordAndTupleSyntaxType === "hash") {
-      startToken = "#[";
-      endToken = "]";
-    } else {
-      throw new Error(`${this.format.recordAndTupleSyntaxType} is not a valid recordAndTuple syntax type`);
-    }
+  if (this.format.recordAndTupleSyntaxType === "bar") {
+    startToken = "[|";
+    endToken = "|]";
+  } else if (this.format.recordAndTupleSyntaxType === "hash") {
+    startToken = "#[";
+    endToken = "]";
+  } else {
+    throw new Error(
+      `${this.format.recordAndTupleSyntaxType} is not a valid recordAndTuple syntax type`,
+    );
   }
   this.token(startToken);
   for (let i = 0; i < elems.length; i++) {
@@ -211,15 +221,18 @@ function BigIntLiteral(node) {
 }
 const validTopicTokenSet = new Set(["^^", "@@", "^", "%", "#"]);
 function TopicReference() {
-  const {
-    topicToken
-  } = this.format;
+  const { topicToken } = this.format;
   if (validTopicTokenSet.has(topicToken)) {
     this.token(topicToken);
   } else {
     const givenTopicTokenJSON = JSON.stringify(topicToken);
-    const validTopics = Array.from(validTopicTokenSet, v => JSON.stringify(v));
-    throw new Error(`The "topicToken" generator option must be one of ` + `${validTopics.join(", ")} (${givenTopicTokenJSON} received instead).`);
+    const validTopics = Array.from(validTopicTokenSet, (v) =>
+      JSON.stringify(v),
+    );
+    throw new Error(
+      `The "topicToken" generator option must be one of ` +
+        `${validTopics.join(", ")} (${givenTopicTokenJSON} received instead).`,
+    );
   }
 }
 function PipelineTopicExpression(node) {

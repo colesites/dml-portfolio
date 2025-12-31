@@ -13,7 +13,7 @@ export default function extractHostname(
   // If url is not already a valid hostname, then try to extract hostname.
   if (!urlIsValidHostname) {
     // Special handling of data URLs
-    if (url.startsWith('data:')) {
+    if (url.startsWith("data:")) {
       return null;
     }
 
@@ -34,7 +34,7 @@ export default function extractHostname(
     ) {
       start += 2;
     } else {
-      const indexOfProtocol = url.indexOf(':/', start);
+      const indexOfProtocol = url.indexOf(":/", start);
       if (indexOfProtocol !== -1) {
         // Implement fast-path for common protocols. We expect most protocols
         // should be one of these 4 and thus we will not need to perform the

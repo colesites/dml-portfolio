@@ -1,8 +1,13 @@
 import type { CodeKeywordDefinition, ErrorObject } from "../../types";
-export type FormatError = ErrorObject<"format", {
+export type FormatError = ErrorObject<
+  "format",
+  {
     format: string;
-}, string | {
-    $data: string;
-}>;
+  },
+  | string
+  | {
+      $data: string;
+    }
+>;
 declare const def: CodeKeywordDefinition;
 export default def;

@@ -1,8 +1,13 @@
 import type { CodeKeywordDefinition, ErrorObject } from "../../types";
-export type MultipleOfError = ErrorObject<"multipleOf", {
+export type MultipleOfError = ErrorObject<
+  "multipleOf",
+  {
     multipleOf: number;
-}, number | {
-    $data: string;
-}>;
+  },
+  | number
+  | {
+      $data: string;
+    }
+>;
 declare const def: CodeKeywordDefinition;
 export default def;

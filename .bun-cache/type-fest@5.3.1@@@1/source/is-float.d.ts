@@ -31,13 +31,11 @@ type F = IsFloat<1.23e+21>;
 @category Numeric
 */
 export type IsFloat<T> = T extends number
-	? `${T}` extends `${number}e${infer E extends '-' | '+'}${number}`
-		? E extends '-'
-			? true
-			: false
-		: `${T}` extends `${number}.${number}`
-			? true
-			: false
-	: false;
-
-export {};
+  ? `${T}` extends `${number}e${infer E extends "-" | "+"}${number}`
+    ? E extends "-"
+      ? true
+      : false
+    : `${T}` extends `${number}.${number}`
+      ? true
+      : false
+  : false;

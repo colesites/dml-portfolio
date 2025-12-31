@@ -2,12 +2,12 @@
  * @module
  * JWK Auth Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
-import type { CookiePrefixOptions } from '../../utils/cookie';
-import '../../context';
-import type { HonoJsonWebKey } from '../../utils/jwt/jws';
-import type { VerifyOptions } from '../../utils/jwt/jwt';
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
+import type { CookiePrefixOptions } from "../../utils/cookie";
+import "../../context";
+import type { HonoJsonWebKey } from "../../utils/jwt/jws";
+import type { VerifyOptions } from "../../utils/jwt/jwt";
 /**
  * JWK Auth Middleware for Hono.
  *
@@ -37,15 +37,22 @@ import type { VerifyOptions } from '../../utils/jwt/jwt';
  * })
  * ```
  */
-export declare const jwk: (options: {
-    keys?: HonoJsonWebKey[] | ((ctx: Context) => Promise<HonoJsonWebKey[]> | HonoJsonWebKey[]);
+export declare const jwk: (
+  options: {
+    keys?:
+      | HonoJsonWebKey[]
+      | ((ctx: Context) => Promise<HonoJsonWebKey[]> | HonoJsonWebKey[]);
     jwks_uri?: string | ((ctx: Context) => Promise<string> | string);
     allow_anon?: boolean;
-    cookie?: string | {
-        key: string;
-        secret?: string | BufferSource;
-        prefixOptions?: CookiePrefixOptions;
-    };
+    cookie?:
+      | string
+      | {
+          key: string;
+          secret?: string | BufferSource;
+          prefixOptions?: CookiePrefixOptions;
+        };
     headerName?: string;
     verification?: VerifyOptions;
-}, init?: RequestInit) => MiddlewareHandler;
+  },
+  init?: RequestInit,
+) => MiddlewareHandler;

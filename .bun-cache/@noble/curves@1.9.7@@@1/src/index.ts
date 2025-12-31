@@ -12,4 +12,6 @@ import { bn254 } from '@noble/curves/bn254.js';
 import { bytesToHex, hexToBytes, concatBytes, utf8ToBytes } from '@noble/curves/abstract/utils.js';
 ```
  */
-throw new Error('root module cannot be imported: import submodules instead. Check out README');
+throw new Error(
+  "root module cannot be imported: import submodules instead. Check out README",
+);

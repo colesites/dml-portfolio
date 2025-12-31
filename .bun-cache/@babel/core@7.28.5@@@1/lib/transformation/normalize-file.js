@@ -1,54 +1,43 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = normalizeFile;
 function _fs() {
   const data = require("fs");
-  _fs = function () {
-    return data;
-  };
+  _fs = () => data;
   return data;
 }
 function _path() {
   const data = require("path");
-  _path = function () {
-    return data;
-  };
+  _path = () => data;
   return data;
 }
 function _debug() {
   const data = require("debug");
-  _debug = function () {
-    return data;
-  };
+  _debug = () => data;
   return data;
 }
 function _t() {
   const data = require("@babel/types");
-  _t = function () {
-    return data;
-  };
+  _t = () => data;
   return data;
 }
 function _convertSourceMap() {
   const data = require("convert-source-map");
-  _convertSourceMap = function () {
-    return data;
-  };
+  _convertSourceMap = () => data;
   return data;
 }
 var _file = require("./file/file.js");
 var _index = require("../parser/index.js");
 var _cloneDeep = require("./util/clone-deep.js");
-const {
-  file,
-  traverseFast
-} = _t();
+const { file, traverseFast } = _t();
 const debug = _debug()("babel:transform:file");
-const INLINE_SOURCEMAP_REGEX = /^[@#]\s+sourceMappingURL=data:(?:application|text)\/json;(?:charset[:=]\S+?;)?base64,.*$/;
-const EXTERNAL_SOURCEMAP_REGEX = /^[@#][ \t]+sourceMappingURL=([^\s'"`]+)[ \t]*$/;
+const INLINE_SOURCEMAP_REGEX =
+  /^[@#]\s+sourceMappingURL=data:(?:application|text)\/json;(?:charset[:=]\S+?;)?base64,.*$/;
+const EXTERNAL_SOURCEMAP_REGEX =
+  /^[@#][ \t]+sourceMappingURL=([^\s'"`]+)[ \t]*$/;
 function* normalizeFile(pluginPasses, options, code, ast) {
   code = `${code || ""}`;
   if (ast) {
@@ -74,9 +63,7 @@ function* normalizeFile(pluginPasses, options, code, ast) {
         try {
           inputMap = _convertSourceMap().fromComment("//" + lastComment);
         } catch (err) {
-          {
-            debug("discarding unknown inline input sourcemap");
-          }
+          debug("discarding unknown inline input sourcemap");
         }
       }
     }
@@ -85,7 +72,10 @@ function* normalizeFile(pluginPasses, options, code, ast) {
       if (typeof options.filename === "string" && lastComment) {
         try {
           const match = EXTERNAL_SOURCEMAP_REGEX.exec(lastComment);
-          const inputMapContent = _fs().readFileSync(_path().resolve(_path().dirname(options.filename), match[1]), "utf8");
+          const inputMapContent = _fs().readFileSync(
+            _path().resolve(_path().dirname(options.filename), match[1]),
+            "utf8",
+          );
           inputMap = _convertSourceMap().fromJSON(inputMapContent);
         } catch (err) {
           debug("discarding unknown file input sourcemap", err);
@@ -98,14 +88,12 @@ function* normalizeFile(pluginPasses, options, code, ast) {
   return new _file.default(options, {
     code,
     ast: ast,
-    inputMap
+    inputMap,
   });
 }
 function extractCommentsFromList(regex, comments, lastComment) {
   if (comments) {
-    comments = comments.filter(({
-      value
-    }) => {
+    comments = comments.filter(({ value }) => {
       if (regex.test(value)) {
         lastComment = value;
         return false;
@@ -117,10 +105,22 @@ function extractCommentsFromList(regex, comments, lastComment) {
 }
 function extractComments(regex, ast) {
   let lastComment = null;
-  traverseFast(ast, node => {
-    [node.leadingComments, lastComment] = extractCommentsFromList(regex, node.leadingComments, lastComment);
-    [node.innerComments, lastComment] = extractCommentsFromList(regex, node.innerComments, lastComment);
-    [node.trailingComments, lastComment] = extractCommentsFromList(regex, node.trailingComments, lastComment);
+  traverseFast(ast, (node) => {
+    [node.leadingComments, lastComment] = extractCommentsFromList(
+      regex,
+      node.leadingComments,
+      lastComment,
+    );
+    [node.innerComments, lastComment] = extractCommentsFromList(
+      regex,
+      node.innerComments,
+      lastComment,
+    );
+    [node.trailingComments, lastComment] = extractCommentsFromList(
+      regex,
+      node.trailingComments,
+      lastComment,
+    );
   });
   return lastComment;
 }

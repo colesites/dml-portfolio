@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var RequestHandler_exports = {};
 __export(RequestHandler_exports, {
-  RequestHandler: () => RequestHandler
+  RequestHandler: () => RequestHandler,
 });
 module.exports = __toCommonJS(RequestHandler_exports);
 var import_getCallFrame = require("../utils/internal/getCallFrame");
@@ -42,7 +46,7 @@ class RequestHandler {
     const callFrame = (0, import_getCallFrame.getCallFrame)(new Error());
     this.info = {
       ...args.info,
-      callFrame
+      callFrame,
     };
     this.isUsed = false;
     this.__kind = "RequestHandler";
@@ -64,12 +68,12 @@ class RequestHandler {
   async test(args) {
     const parsedResult = await this.parse({
       request: args.request,
-      resolutionContext: args.resolutionContext
+      resolutionContext: args.resolutionContext,
     });
     return this.predicate({
       request: args.request,
       parsedResult,
-      resolutionContext: args.resolutionContext
+      resolutionContext: args.resolutionContext,
     });
   }
   extendResolverArgs(_args) {
@@ -98,12 +102,12 @@ class RequestHandler {
     const requestClone = this.cloneRequestOrGetFromCache(args.request);
     const parsedResult = await this.parse({
       request: args.request,
-      resolutionContext: args.resolutionContext
+      resolutionContext: args.resolutionContext,
     });
     const shouldInterceptRequest = await this.predicate({
       request: args.request,
       parsedResult,
-      resolutionContext: args.resolutionContext
+      resolutionContext: args.resolutionContext,
     });
     if (!shouldInterceptRequest) {
       return null;
@@ -115,12 +119,12 @@ class RequestHandler {
     const executeResolver = this.wrapResolver(this.resolver);
     const resolverExtras = this.extendResolverArgs({
       request: args.request,
-      parsedResult
+      parsedResult,
     });
     const mockedResponsePromise = executeResolver({
       ...resolverExtras,
       requestId: args.requestId,
-      request: args.request
+      request: args.request,
     }).catch((errorOrResponse) => {
       if (errorOrResponse instanceof Response) {
         return errorOrResponse;
@@ -134,7 +138,7 @@ class RequestHandler {
       request: requestClone,
       requestId: args.requestId,
       response: mockedResponse,
-      parsedResult
+      parsedResult,
     });
     return executionResult;
   }
@@ -145,7 +149,10 @@ class RequestHandler {
         if (!(0, import_isIterable.isIterable)(result)) {
           return result;
         }
-        this.resolverIterator = Symbol.iterator in result ? result[Symbol.iterator]() : result[Symbol.asyncIterator]();
+        this.resolverIterator =
+          Symbol.iterator in result
+            ? result[Symbol.iterator]()
+            : result[Symbol.asyncIterator]();
       }
       this.isUsed = false;
       const { done, value } = await this.resolverIterator.next();
@@ -166,7 +173,7 @@ class RequestHandler {
       request: args.request,
       requestId: args.requestId,
       response: args.response,
-      parsedResult: args.parsedResult
+      parsedResult: args.parsedResult,
     };
   }
 }

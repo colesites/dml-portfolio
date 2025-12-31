@@ -1,16 +1,14 @@
-"use strict";
+const color = require("kleur");
 
-const color = require('kleur');
+const Prompt = require("./prompt");
 
-const Prompt = require('./prompt');
+const _require = require("../util"),
+  style = _require.style,
+  clear = _require.clear;
 
-const _require = require('../util'),
-      style = _require.style,
-      clear = _require.clear;
-
-const _require2 = require('sisteransi'),
-      cursor = _require2.cursor,
-      erase = _require2.erase;
+const _require2 = require("sisteransi"),
+  cursor = _require2.cursor,
+  erase = _require2.erase;
 /**
  * TogglePrompt Base Element
  * @param {Object} opts Options
@@ -22,14 +20,13 @@ const _require2 = require('sisteransi'),
  * @param {Stream} [opts.stdout] The Writable stream to write readline data to
  */
 
-
 class TogglePrompt extends Prompt {
   constructor(opts = {}) {
     super(opts);
     this.msg = opts.message;
     this.value = !!opts.initial;
-    this.active = opts.active || 'on';
-    this.inactive = opts.inactive || 'off';
+    this.active = opts.active || "on";
+    this.inactive = opts.inactive || "off";
     this.initialValue = this.value;
     this.render();
   }
@@ -48,7 +45,7 @@ class TogglePrompt extends Prompt {
     this.done = this.aborted = true;
     this.fire();
     this.render();
-    this.out.write('\n');
+    this.out.write("\n");
     this.close();
   }
 
@@ -57,7 +54,7 @@ class TogglePrompt extends Prompt {
     this.aborted = false;
     this.fire();
     this.render();
-    this.out.write('\n');
+    this.out.write("\n");
     this.close();
   }
 
@@ -100,11 +97,11 @@ class TogglePrompt extends Prompt {
   }
 
   _(c, key) {
-    if (c === ' ') {
+    if (c === " ") {
       this.value = !this.value;
-    } else if (c === '1') {
+    } else if (c === "1") {
       this.value = true;
-    } else if (c === '0') {
+    } else if (c === "0") {
       this.value = false;
     } else return this.bell();
 
@@ -113,12 +110,19 @@ class TogglePrompt extends Prompt {
 
   render() {
     if (this.closed) return;
-    if (this.firstRender) this.out.write(cursor.hide);else this.out.write(clear(this.outputText, this.out.columns));
+    if (this.firstRender) this.out.write(cursor.hide);
+    else this.out.write(clear(this.outputText, this.out.columns));
     super.render();
-    this.outputText = [style.symbol(this.done, this.aborted), color.bold(this.msg), style.delimiter(this.done), this.value ? this.inactive : color.cyan().underline(this.inactive), color.gray('/'), this.value ? color.cyan().underline(this.active) : this.active].join(' ');
+    this.outputText = [
+      style.symbol(this.done, this.aborted),
+      color.bold(this.msg),
+      style.delimiter(this.done),
+      this.value ? this.inactive : color.cyan().underline(this.inactive),
+      color.gray("/"),
+      this.value ? color.cyan().underline(this.active) : this.active,
+    ].join(" ");
     this.out.write(erase.line + cursor.to(0) + this.outputText);
   }
-
 }
 
 module.exports = TogglePrompt;

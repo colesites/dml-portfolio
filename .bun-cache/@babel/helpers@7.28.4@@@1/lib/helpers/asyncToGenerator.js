@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _asyncToGenerator;
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
@@ -20,10 +20,9 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
 }
 function _asyncToGenerator(fn) {
   return function () {
-    var self = this,
-      args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
+    var args = arguments;
+    return new Promise((resolve, reject) => {
+      var gen = fn.apply(this, args);
       function _next(value) {
         asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
       }

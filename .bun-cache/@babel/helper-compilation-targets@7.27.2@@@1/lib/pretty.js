@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.prettifyTargets = prettifyTargets;
 exports.prettifyVersion = prettifyVersion;
@@ -11,11 +11,7 @@ function prettifyVersion(version) {
   if (typeof version !== "string") {
     return version;
   }
-  const {
-    major,
-    minor,
-    patch
-  } = _semver.parse(version);
+  const { major, minor, patch } = _semver.parse(version);
   const parts = [major];
   if (minor || patch) {
     parts.push(minor);

@@ -1,18 +1,22 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _isValidIdentifier = require("../validators/isValidIdentifier.js");
 var _index = require("../builders/generated/index.js");
-var _default = exports.default = valueToNode;
+var _default = (exports.default = valueToNode);
 const objectToString = Function.call.bind(Object.prototype.toString);
 function isRegExp(value) {
   return objectToString(value) === "[object RegExp]";
 }
 function isPlainObject(value) {
-  if (typeof value !== "object" || value === null || Object.prototype.toString.call(value) !== "[object Object]") {
+  if (
+    typeof value !== "object" ||
+    value === null ||
+    Object.prototype.toString.call(value) !== "[object Object]"
+  ) {
     return false;
   }
   const proto = Object.getPrototypeOf(value);
@@ -42,7 +46,11 @@ function valueToNode(value) {
       } else {
         numerator = (0, _index.numericLiteral)(1);
       }
-      result = (0, _index.binaryExpression)("/", numerator, (0, _index.numericLiteral)(0));
+      result = (0, _index.binaryExpression)(
+        "/",
+        numerator,
+        (0, _index.numericLiteral)(0),
+      );
     }
     if (value < 0 || Object.is(value, -0)) {
       result = (0, _index.unaryExpression)("-", result);
@@ -51,7 +59,10 @@ function valueToNode(value) {
   }
   if (typeof value === "bigint") {
     if (value < 0) {
-      return (0, _index.unaryExpression)("-", (0, _index.bigIntLiteral)(-value));
+      return (0, _index.unaryExpression)(
+        "-",
+        (0, _index.bigIntLiteral)(-value),
+      );
     } else {
       return (0, _index.bigIntLiteral)(value);
     }
@@ -79,7 +90,9 @@ function valueToNode(value) {
       } else {
         nodeKey = (0, _index.stringLiteral)(key);
       }
-      props.push((0, _index.objectProperty)(nodeKey, valueToNode(value[key]), computed));
+      props.push(
+        (0, _index.objectProperty)(nodeKey, valueToNode(value[key]), computed),
+      );
     }
     return (0, _index.objectExpression)(props);
   }

@@ -2,8 +2,8 @@
  * @module
  * Combine Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
 type Condition = (c: Context) => boolean;
 /**
  * Create a composed middleware that runs the first middleware that returns true.
@@ -29,7 +29,9 @@ type Condition = (c: Context) => boolean;
  * ));
  * ```
  */
-export declare const some: (...middleware: (MiddlewareHandler | Condition)[]) => MiddlewareHandler;
+export declare const some: (
+  ...middleware: (MiddlewareHandler | Condition)[]
+) => MiddlewareHandler;
 /**
  * Create a composed middleware that runs all middleware and throws an error if any of them fail.
  *
@@ -58,7 +60,9 @@ export declare const some: (...middleware: (MiddlewareHandler | Condition)[]) =>
  * ));
  * ```
  */
-export declare const every: (...middleware: (MiddlewareHandler | Condition)[]) => MiddlewareHandler;
+export declare const every: (
+  ...middleware: (MiddlewareHandler | Condition)[]
+) => MiddlewareHandler;
 /**
  * Create a composed middleware that runs all middleware except when the condition is met.
  *
@@ -81,5 +85,7 @@ export declare const every: (...middleware: (MiddlewareHandler | Condition)[]) =
  * ));
  * ```
  */
-export declare const except: (condition: string | Condition | (string | Condition)[], ...middleware: MiddlewareHandler[]) => MiddlewareHandler;
-export {};
+export declare const except: (
+  condition: string | Condition | (string | Condition)[],
+  ...middleware: MiddlewareHandler[]
+) => MiddlewareHandler;

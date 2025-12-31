@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.isTransparentExprWrapper = isTransparentExprWrapper;
 exports.skipTransparentExprWrapperNodes = skipTransparentExprWrapperNodes;
@@ -13,10 +13,17 @@ const {
   isTSNonNullExpression,
   isTSSatisfiesExpression,
   isTSTypeAssertion,
-  isTypeCastExpression
+  isTypeCastExpression,
 } = _t;
 function isTransparentExprWrapper(node) {
-  return isTSAsExpression(node) || isTSSatisfiesExpression(node) || isTSTypeAssertion(node) || isTSNonNullExpression(node) || isTypeCastExpression(node) || isParenthesizedExpression(node);
+  return (
+    isTSAsExpression(node) ||
+    isTSSatisfiesExpression(node) ||
+    isTSTypeAssertion(node) ||
+    isTSNonNullExpression(node) ||
+    isTypeCastExpression(node) ||
+    isParenthesizedExpression(node)
+  );
 }
 function skipTransparentExprWrappers(path) {
   while (isTransparentExprWrapper(path.node)) {

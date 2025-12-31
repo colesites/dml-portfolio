@@ -1,5 +1,5 @@
-import { cookieStore } from '../cookieStore'
-import { kSetCookie } from '../HttpResponse/decorators'
+import { cookieStore } from "../cookieStore";
+import { kSetCookie } from "../HttpResponse/decorators";
 
 export async function storeResponseCookies(
   request: Request,
@@ -9,9 +9,9 @@ export async function storeResponseCookies(
   // in the HeadersInit for this mocked response.
   const responseCookies = Reflect.get(response, kSetCookie) as
     | string
-    | undefined
+    | undefined;
 
   if (responseCookies) {
-    await cookieStore.setCookie(responseCookies, request.url)
+    await cookieStore.setCookie(responseCookies, request.url);
   }
 }

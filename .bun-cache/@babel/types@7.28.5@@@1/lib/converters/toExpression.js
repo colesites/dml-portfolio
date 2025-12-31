@@ -1,11 +1,11 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _index = require("../validators/generated/index.js");
-var _default = exports.default = toExpression;
+var _default = (exports.default = toExpression);
 function toExpression(node) {
   if ((0, _index.isExpressionStatement)(node)) {
     node = node.expression;

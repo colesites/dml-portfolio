@@ -1,7 +1,5 @@
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.canUseDynamicImport = canUseDynamicImport;
 
@@ -11,7 +9,7 @@ let result;
 function canUseDynamicImport() {
   if (result === undefined) {
     try {
-      new Function('id', 'return import(id);');
+      new Function("id", "return import(id);");
       result = true;
     } catch (e) {
       result = false;

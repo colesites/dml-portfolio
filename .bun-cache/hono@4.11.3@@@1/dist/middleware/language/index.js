@@ -1,15 +1,15 @@
 // src/middleware/language/index.ts
 import {
-  languageDetector,
   detectFromCookie,
   detectFromHeader,
   detectFromPath,
-  detectFromQuery
+  detectFromQuery,
+  languageDetector,
 } from "./language.js";
 export {
   detectFromCookie,
   detectFromHeader,
   detectFromPath,
   detectFromQuery,
-  languageDetector
+  languageDetector,
 };

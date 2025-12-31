@@ -1,20 +1,118 @@
-"use strict";
-
 exports.__esModule = true;
 exports["default"] = void 0;
 var _node = _interopRequireDefault(require("./node"));
 var types = _interopRequireWildcard(require("./types"));
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-function _createForOfIteratorHelperLoose(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (it) return (it = it.call(o)).next.bind(it); if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-var Container = /*#__PURE__*/function (_Node) {
+function _getRequireWildcardCache(nodeInterop) {
+  if (typeof WeakMap !== "function") return null;
+  var cacheBabelInterop = new WeakMap();
+  var cacheNodeInterop = new WeakMap();
+  return (_getRequireWildcardCache = function _getRequireWildcardCache(
+    nodeInterop,
+  ) {
+    return nodeInterop ? cacheNodeInterop : cacheBabelInterop;
+  })(nodeInterop);
+}
+function _interopRequireWildcard(obj, nodeInterop) {
+  if (!nodeInterop && obj && obj.__esModule) {
+    return obj;
+  }
+  if (obj === null || (typeof obj !== "object" && typeof obj !== "function")) {
+    return { default: obj };
+  }
+  var cache = _getRequireWildcardCache(nodeInterop);
+  if (cache && cache.has(obj)) {
+    return cache.get(obj);
+  }
+  var newObj = {};
+  var hasPropertyDescriptor =
+    Object.defineProperty && Object.getOwnPropertyDescriptor;
+  for (var key in obj) {
+    if (key !== "default" && Object.hasOwn(obj, key)) {
+      var desc = hasPropertyDescriptor
+        ? Object.getOwnPropertyDescriptor(obj, key)
+        : null;
+      if (desc && (desc.get || desc.set)) {
+        Object.defineProperty(newObj, key, desc);
+      } else {
+        newObj[key] = obj[key];
+      }
+    }
+  }
+  newObj["default"] = obj;
+  if (cache) {
+    cache.set(obj, newObj);
+  }
+  return newObj;
+}
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+  var it =
+    (typeof Symbol !== "undefined" && o[Symbol.iterator]) || o["@@iterator"];
+  if (it) return (it = it.call(o)).next.bind(it);
+  if (
+    Array.isArray(o) ||
+    (it = _unsupportedIterableToArray(o)) ||
+    (allowArrayLike && o && typeof o.length === "number")
+  ) {
+    if (it) o = it;
+    var i = 0;
+    return () => {
+      if (i >= o.length) return { done: true };
+      return { done: false, value: o[i++] };
+    };
+  }
+  throw new TypeError(
+    "Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.",
+  );
+}
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
+    return _arrayLikeToArray(o, minLen);
+}
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+  return arr2;
+}
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  Object.defineProperty(Constructor, "prototype", { writable: false });
+  return Constructor;
+}
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  _setPrototypeOf(subClass, superClass);
+}
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf
+    ? Object.setPrototypeOf.bind()
+    : function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+  return _setPrototypeOf(o, p);
+}
+var Container = /*#__PURE__*/ ((_Node) => {
   _inheritsLoose(Container, _Node);
   function Container(opts) {
     var _this;
@@ -42,7 +140,7 @@ var Container = /*#__PURE__*/function (_Node) {
     return this.nodes[index];
   };
   _proto.index = function index(child) {
-    if (typeof child === 'number') {
+    if (typeof child === "number") {
       return child;
     }
     return this.nodes.indexOf(child);
@@ -61,7 +159,10 @@ var Container = /*#__PURE__*/function (_Node) {
     return this;
   };
   _proto.removeAll = function removeAll() {
-    for (var _iterator = _createForOfIteratorHelperLoose(this.nodes), _step; !(_step = _iterator()).done;) {
+    for (
+      var _iterator = _createForOfIteratorHelperLoose(this.nodes), _step;
+      !(_step = _iterator()).done;
+    ) {
       var node = _step.value;
       node.parent = undefined;
     }
@@ -79,7 +180,10 @@ var Container = /*#__PURE__*/function (_Node) {
     for (var i = 2; i < arguments.length; i++) {
       resetNode.push(arguments[i]);
     }
-    (_this$nodes = this.nodes).splice.apply(_this$nodes, [oldIndex + 1, 0, newNode].concat(resetNode));
+    (_this$nodes = this.nodes).splice.apply(
+      _this$nodes,
+      [oldIndex + 1, 0, newNode].concat(resetNode),
+    );
     newNode.parent = this;
     var index;
     for (var id in this.indexes) {
@@ -98,7 +202,10 @@ var Container = /*#__PURE__*/function (_Node) {
     for (var i = 2; i < arguments.length; i++) {
       resetNode.push(arguments[i]);
     }
-    (_this$nodes2 = this.nodes).splice.apply(_this$nodes2, [oldIndex, 0, newNode].concat(resetNode));
+    (_this$nodes2 = this.nodes).splice.apply(
+      _this$nodes2,
+      [oldIndex, 0, newNode].concat(resetNode),
+    );
     newNode.parent = this;
     var index;
     for (var id in this.indexes) {
@@ -110,8 +217,8 @@ var Container = /*#__PURE__*/function (_Node) {
     return this;
   };
   _proto._findChildAtPosition = function _findChildAtPosition(line, col) {
-    var found = undefined;
-    this.each(function (node) {
+    var found;
+    this.each((node) => {
       if (node.atPosition) {
         var foundChild = node.atPosition(line, col);
         if (foundChild) {
@@ -124,7 +231,7 @@ var Container = /*#__PURE__*/function (_Node) {
       }
     });
     return found;
-  }
+  };
 
   /**
    * Return the most specific node at the line and column number given.
@@ -138,7 +245,7 @@ var Container = /*#__PURE__*/function (_Node) {
    * If not found, returns undefined.
    * @param {number} line The line number of the node to find. (1-based index)
    * @param {number} col  The column number of the node to find. (1-based index)
-   */;
+   */
   _proto.atPosition = function atPosition(line, col) {
     if (this.isAtPosition(line, col)) {
       return this._findChildAtPosition(line, col) || this;
@@ -181,7 +288,7 @@ var Container = /*#__PURE__*/function (_Node) {
     }
   };
   _proto.walk = function walk(callback) {
-    return this.each(function (node, i) {
+    return this.each((node, i) => {
       var result = callback(node, i);
       if (result !== false && node.length) {
         result = node.walk(callback);
@@ -192,87 +299,77 @@ var Container = /*#__PURE__*/function (_Node) {
     });
   };
   _proto.walkAttributes = function walkAttributes(callback) {
-    var _this2 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.ATTRIBUTE) {
-        return callback.call(_this2, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.walkClasses = function walkClasses(callback) {
-    var _this3 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.CLASS) {
-        return callback.call(_this3, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.walkCombinators = function walkCombinators(callback) {
-    var _this4 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.COMBINATOR) {
-        return callback.call(_this4, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.walkComments = function walkComments(callback) {
-    var _this5 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.COMMENT) {
-        return callback.call(_this5, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.walkIds = function walkIds(callback) {
-    var _this6 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.ID) {
-        return callback.call(_this6, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.walkNesting = function walkNesting(callback) {
-    var _this7 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.NESTING) {
-        return callback.call(_this7, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.walkPseudos = function walkPseudos(callback) {
-    var _this8 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.PSEUDO) {
-        return callback.call(_this8, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.walkTags = function walkTags(callback) {
-    var _this9 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.TAG) {
-        return callback.call(_this9, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.walkUniversals = function walkUniversals(callback) {
-    var _this10 = this;
-    return this.walk(function (selector) {
+    return this.walk((selector) => {
       if (selector.type === types.UNIVERSAL) {
-        return callback.call(_this10, selector);
+        return callback.call(this, selector);
       }
     });
   };
   _proto.split = function split(callback) {
-    var _this11 = this;
     var current = [];
-    return this.reduce(function (memo, node, index) {
-      var split = callback.call(_this11, node);
+    return this.reduce((memo, node, index) => {
+      var split = callback.call(this, node);
       current.push(node);
       if (split) {
         memo.push(current);
         current = [];
-      } else if (index === _this11.length - 1) {
+      } else if (index === this.length - 1) {
         memo.push(current);
       }
       return memo;
@@ -297,25 +394,29 @@ var Container = /*#__PURE__*/function (_Node) {
     return this.nodes.sort(callback);
   };
   _proto.toString = function toString() {
-    return this.map(String).join('');
+    return this.map(String).join("");
   };
-  _createClass(Container, [{
-    key: "first",
-    get: function get() {
-      return this.at(0);
-    }
-  }, {
-    key: "last",
-    get: function get() {
-      return this.at(this.length - 1);
-    }
-  }, {
-    key: "length",
-    get: function get() {
-      return this.nodes.length;
-    }
-  }]);
+  _createClass(Container, [
+    {
+      key: "first",
+      get: function get() {
+        return this.at(0);
+      },
+    },
+    {
+      key: "last",
+      get: function get() {
+        return this.at(this.length - 1);
+      },
+    },
+    {
+      key: "length",
+      get: function get() {
+        return this.nodes.length;
+      },
+    },
+  ]);
   return Container;
-}(_node["default"]);
+})(_node["default"]);
 exports["default"] = Container;
 module.exports = exports.default;

@@ -1,6 +1,14 @@
-import type { CodeKeywordDefinition, ErrorObject, AnySchema } from "../../types";
-export type IfKeywordError = ErrorObject<"if", {
+import type {
+  CodeKeywordDefinition,
+  ErrorObject,
+  AnySchema,
+} from "../../types";
+export type IfKeywordError = ErrorObject<
+  "if",
+  {
     failingKeyword: string;
-}, AnySchema>;
+  },
+  AnySchema
+>;
 declare const def: CodeKeywordDefinition;
 export default def;

@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -23,7 +23,7 @@ test("nativeEnum test with real enum", () => {
     Apple = "apple",
     Banana = "banana",
   }
-  // @ts-ignore
+  // @ts-expect-error
   const fruitEnum = z.nativeEnum(Fruits);
   type fruitEnum = z.infer<typeof fruitEnum>;
   fruitEnum.parse("apple");
@@ -37,7 +37,7 @@ test("nativeEnum test with const with numeric keys", () => {
   const FruitValues = {
     Apple: 10,
     Banana: 20,
-    // @ts-ignore
+    // @ts-expect-error
   } as const;
   const fruitEnum = z.nativeEnum(FruitValues);
   type fruitEnum = z.infer<typeof fruitEnum>;
@@ -71,7 +71,7 @@ test("from const", () => {
     Alpha: "a",
     Beta: "b",
     Gamma: 3,
-    // @ts-ignore
+    // @ts-expect-error
   } as const;
 
   const GreekEnum = z.nativeEnum(Greek);

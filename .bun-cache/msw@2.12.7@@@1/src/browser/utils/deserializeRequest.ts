@@ -1,5 +1,5 @@
-import { pruneGetRequestBody } from './pruneGetRequestBody'
-import type { ServiceWorkerIncomingRequest } from '../setupWorker/glossary'
+import type { ServiceWorkerIncomingRequest } from "../setupWorker/glossary";
+import { pruneGetRequestBody } from "./pruneGetRequestBody";
 
 /**
  * Converts a given request received from the Service Worker
@@ -11,5 +11,5 @@ export function deserializeRequest(
   return new Request(serializedRequest.url, {
     ...serializedRequest,
     body: pruneGetRequestBody(serializedRequest),
-  })
+  });
 }

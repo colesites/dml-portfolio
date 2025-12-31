@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hkdf = void 0;
 exports.extract = extract;
@@ -18,13 +17,16 @@ const utils_ts_1 = require("./utils.js");
  * @param salt - optional salt value (a non-secret random value)
  */
 function extract(hash, ikm, salt) {
-    (0, utils_ts_1.ahash)(hash);
-    // NOTE: some libraries treat zero-length array as 'not provided';
-    // we don't, since we have undefined as 'not provided'
-    // https://github.com/RustCrypto/KDFs/issues/15
-    if (salt === undefined)
-        salt = new Uint8Array(hash.outputLen);
-    return (0, hmac_ts_1.hmac)(hash, (0, utils_ts_1.toBytes)(salt), (0, utils_ts_1.toBytes)(ikm));
+  (0, utils_ts_1.ahash)(hash);
+  // NOTE: some libraries treat zero-length array as 'not provided';
+  // we don't, since we have undefined as 'not provided'
+  // https://github.com/RustCrypto/KDFs/issues/15
+  if (salt === undefined) salt = new Uint8Array(hash.outputLen);
+  return (0, hmac_ts_1.hmac)(
+    hash,
+    (0, utils_ts_1.toBytes)(salt),
+    (0, utils_ts_1.toBytes)(ikm),
+  );
 }
 const HKDF_COUNTER = /* @__PURE__ */ Uint8Array.from([0]);
 const EMPTY_BUFFER = /* @__PURE__ */ Uint8Array.of();
@@ -36,35 +38,33 @@ const EMPTY_BUFFER = /* @__PURE__ */ Uint8Array.of();
  * @param length - length of output keying material in bytes
  */
 function expand(hash, prk, info, length = 32) {
-    (0, utils_ts_1.ahash)(hash);
-    (0, utils_ts_1.anumber)(length);
-    const olen = hash.outputLen;
-    if (length > 255 * olen)
-        throw new Error('Length should be <= 255*HashLen');
-    const blocks = Math.ceil(length / olen);
-    if (info === undefined)
-        info = EMPTY_BUFFER;
-    // first L(ength) octets of T
-    const okm = new Uint8Array(blocks * olen);
-    // Re-use HMAC instance between blocks
-    const HMAC = hmac_ts_1.hmac.create(hash, prk);
-    const HMACTmp = HMAC._cloneInto();
-    const T = new Uint8Array(HMAC.outputLen);
-    for (let counter = 0; counter < blocks; counter++) {
-        HKDF_COUNTER[0] = counter + 1;
-        // T(0) = empty string (zero length)
-        // T(N) = HMAC-Hash(PRK, T(N-1) | info | N)
-        HMACTmp.update(counter === 0 ? EMPTY_BUFFER : T)
-            .update(info)
-            .update(HKDF_COUNTER)
-            .digestInto(T);
-        okm.set(T, olen * counter);
-        HMAC._cloneInto(HMACTmp);
-    }
-    HMAC.destroy();
-    HMACTmp.destroy();
-    (0, utils_ts_1.clean)(T, HKDF_COUNTER);
-    return okm.slice(0, length);
+  (0, utils_ts_1.ahash)(hash);
+  (0, utils_ts_1.anumber)(length);
+  const olen = hash.outputLen;
+  if (length > 255 * olen) throw new Error("Length should be <= 255*HashLen");
+  const blocks = Math.ceil(length / olen);
+  if (info === undefined) info = EMPTY_BUFFER;
+  // first L(ength) octets of T
+  const okm = new Uint8Array(blocks * olen);
+  // Re-use HMAC instance between blocks
+  const HMAC = hmac_ts_1.hmac.create(hash, prk);
+  const HMACTmp = HMAC._cloneInto();
+  const T = new Uint8Array(HMAC.outputLen);
+  for (let counter = 0; counter < blocks; counter++) {
+    HKDF_COUNTER[0] = counter + 1;
+    // T(0) = empty string (zero length)
+    // T(N) = HMAC-Hash(PRK, T(N-1) | info | N)
+    HMACTmp.update(counter === 0 ? EMPTY_BUFFER : T)
+      .update(info)
+      .update(HKDF_COUNTER)
+      .digestInto(T);
+    okm.set(T, olen * counter);
+    HMAC._cloneInto(HMACTmp);
+  }
+  HMAC.destroy();
+  HMACTmp.destroy();
+  (0, utils_ts_1.clean)(T, HKDF_COUNTER);
+  return okm.slice(0, length);
 }
 /**
  * HKDF (RFC 5869): derive keys from an initial input.
@@ -83,6 +83,7 @@ function expand(hash, prk, info, length = 32) {
  * const info = 'application-key';
  * const hk1 = hkdf(sha256, inputKey, salt, info, 32);
  */
-const hkdf = (hash, ikm, salt, info, length) => expand(hash, extract(hash, ikm, salt), info, length);
+const hkdf = (hash, ikm, salt, info, length) =>
+  expand(hash, extract(hash, ikm, salt), info, length);
 exports.hkdf = hkdf;
 //# sourceMappingURL=hkdf.js.map

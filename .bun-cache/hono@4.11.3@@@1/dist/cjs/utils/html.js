@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var html_exports = {};
 __export(html_exports, {
   HtmlEscapedCallbackPhase: () => HtmlEscapedCallbackPhase,
@@ -23,13 +27,13 @@ __export(html_exports, {
   raw: () => raw,
   resolveCallback: () => resolveCallback,
   resolveCallbackSync: () => resolveCallbackSync,
-  stringBufferToString: () => stringBufferToString
+  stringBufferToString: () => stringBufferToString,
 });
 module.exports = __toCommonJS(html_exports);
 const HtmlEscapedCallbackPhase = {
   Stringify: 1,
   BeforeStream: 2,
-  Stream: 3
+  Stream: 3,
 };
 const raw = (value, callbacks) => {
   const escapedString = new String(value);
@@ -50,12 +54,12 @@ const stringBufferToString = async (buffer, callbacks) => {
     }
     let r = resolvedBuffer[i];
     if (typeof r === "object") {
-      callbacks.push(...r.callbacks || []);
+      callbacks.push(...(r.callbacks || []));
     }
     const isEscaped = r.isEscaped;
     r = await (typeof r === "object" ? r.toString() : r);
     if (typeof r === "object") {
-      callbacks.push(...r.callbacks || []);
+      callbacks.push(...(r.callbacks || []));
     }
     if (r.isEscaped ?? isEscaped) {
       str += r;
@@ -108,10 +112,18 @@ const resolveCallbackSync = (str) => {
   }
   const buffer = [str];
   const context = {};
-  callbacks.forEach((c) => c({ phase: HtmlEscapedCallbackPhase.Stringify, buffer, context }));
+  callbacks.forEach((c) =>
+    c({ phase: HtmlEscapedCallbackPhase.Stringify, buffer, context }),
+  );
   return buffer[0];
 };
-const resolveCallback = async (str, phase, preserveCallbacks, context, buffer) => {
+const resolveCallback = async (
+  str,
+  phase,
+  preserveCallbacks,
+  context,
+  buffer,
+) => {
   if (typeof str === "object" && !(str instanceof String)) {
     if (!(str instanceof Promise)) {
       str = str.toString();
@@ -129,10 +141,14 @@ const resolveCallback = async (str, phase, preserveCallbacks, context, buffer) =
   } else {
     buffer = [str];
   }
-  const resStr = Promise.all(callbacks.map((c) => c({ phase, buffer, context }))).then(
-    (res) => Promise.all(
-      res.filter(Boolean).map((str2) => resolveCallback(str2, phase, false, context, buffer))
-    ).then(() => buffer[0])
+  const resStr = Promise.all(
+    callbacks.map((c) => c({ phase, buffer, context })),
+  ).then((res) =>
+    Promise.all(
+      res
+        .filter(Boolean)
+        .map((str2) => resolveCallback(str2, phase, false, context, buffer)),
+    ).then(() => buffer[0]),
   );
   if (preserveCallbacks) {
     return raw(await resStr, callbacks);
@@ -141,11 +157,12 @@ const resolveCallback = async (str, phase, preserveCallbacks, context, buffer) =
   }
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  HtmlEscapedCallbackPhase,
-  escapeToBuffer,
-  raw,
-  resolveCallback,
-  resolveCallbackSync,
-  stringBufferToString
-});
+0 &&
+  (module.exports = {
+    HtmlEscapedCallbackPhase,
+    escapeToBuffer,
+    raw,
+    resolveCallback,
+    resolveCallbackSync,
+    stringBufferToString,
+  });

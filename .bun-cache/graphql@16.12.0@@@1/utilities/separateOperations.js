@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.separateOperations = separateOperations;
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _visitor = require('../language/visitor.js');
+var _visitor = require("../language/visitor.js");
 
 /**
  * separateOperations accepts a single AST document which may contain many
@@ -45,7 +43,7 @@ function separateOperations(documentAST) {
       collectTransitiveDependencies(dependencies, depGraph, fragmentName);
     } // Provides the empty string for anonymous operations.
 
-    const operationName = operation.name ? operation.name.value : ''; // The list of definition nodes to be included for this operation, sorted
+    const operationName = operation.name ? operation.name.value : ""; // The list of definition nodes to be included for this operation, sorted
     // to retain the same order as the original document.
 
     separatedDocumentASTs[operationName] = {

@@ -1,5 +1,5 @@
-import type { Maybe } from '../jsutils/Maybe';
-import type { GraphQLError } from '../error/GraphQLError';
+import type { Maybe } from "../jsutils/Maybe";
+import type { GraphQLError } from "../error/GraphQLError";
 import type {
   ArgumentNode,
   ConstArgumentNode,
@@ -50,11 +50,11 @@ import type {
   ValueNode,
   VariableDefinitionNode,
   VariableNode,
-} from './ast';
-import { Location, OperationTypeNode } from './ast';
-import type { LexerInterface } from './lexer';
-import { Source } from './source';
-import { TokenKind } from './tokenKind';
+} from "./ast";
+import { Location, OperationTypeNode } from "./ast";
+import type { LexerInterface } from "./lexer";
+import { Source } from "./source";
+import { TokenKind } from "./tokenKind";
 /**
  * Configuration options to control parser behavior
  */
@@ -163,7 +163,7 @@ export declare function parseSchemaCoordinate(
  * @internal
  */
 export declare class Parser {
-  protected _options: Omit<ParseOptions, 'lexer'>;
+  protected _options: Omit<ParseOptions, "lexer">;
   protected _lexer: LexerInterface;
   protected _tokenCounter: number;
   constructor(source: string | Source, options?: ParseOptions);

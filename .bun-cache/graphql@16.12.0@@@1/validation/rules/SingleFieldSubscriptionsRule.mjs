@@ -1,6 +1,6 @@
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
-import { collectFields } from '../../execution/collectFields.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { collectFields } from "../../execution/collectFields.mjs";
+import { Kind } from "../../language/kinds.mjs";
 
 /**
  * Subscriptions must only include a non-introspection field.
@@ -13,7 +13,7 @@ import { collectFields } from '../../execution/collectFields.mjs';
 export function SingleFieldSubscriptionsRule(context) {
   return {
     OperationDefinition(node) {
-      if (node.operation === 'subscription') {
+      if (node.operation === "subscription") {
         const schema = context.getSchema();
         const subscriptionType = schema.getSubscriptionType();
 
@@ -45,7 +45,7 @@ export function SingleFieldSubscriptionsRule(context) {
               new GraphQLError(
                 operationName != null
                   ? `Subscription "${operationName}" must select only one top level field.`
-                  : 'Anonymous Subscription must select only one top level field.',
+                  : "Anonymous Subscription must select only one top level field.",
                 {
                   nodes: extraFieldSelections,
                 },
@@ -57,12 +57,12 @@ export function SingleFieldSubscriptionsRule(context) {
             const field = fieldNodes[0];
             const fieldName = field.name.value;
 
-            if (fieldName.startsWith('__')) {
+            if (fieldName.startsWith("__")) {
               context.reportError(
                 new GraphQLError(
                   operationName != null
                     ? `Subscription "${operationName}" must not select an introspection top level field.`
-                    : 'Anonymous Subscription must not select an introspection top level field.',
+                    : "Anonymous Subscription must not select an introspection top level field.",
                   {
                     nodes: fieldNodes,
                   },

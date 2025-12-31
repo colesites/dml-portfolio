@@ -1,10 +1,10 @@
-import { didYouMean } from '../../jsutils/didYouMean.mjs';
-import { inspect } from '../../jsutils/inspect.mjs';
-import { invariant } from '../../jsutils/invariant.mjs';
-import { suggestionList } from '../../jsutils/suggestionList.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
-import { isTypeDefinitionNode } from '../../language/predicates.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { didYouMean } from "../../jsutils/didYouMean.mjs";
+import { inspect } from "../../jsutils/inspect.mjs";
+import { invariant } from "../../jsutils/invariant.mjs";
+import { suggestionList } from "../../jsutils/suggestionList.mjs";
+import { Kind } from "../../language/kinds.mjs";
+import { isTypeDefinitionNode } from "../../language/predicates.mjs";
 import {
   isEnumType,
   isInputObjectType,
@@ -12,7 +12,7 @@ import {
   isObjectType,
   isScalarType,
   isUnionType,
-} from '../../type/definition.mjs';
+} from "../../type/definition.mjs";
 
 /**
  * Possible type extension
@@ -116,33 +116,33 @@ function typeToExtKind(type) {
   /* c8 ignore next 3 */
   // Not reachable. All possible types have been considered
 
-  false || invariant(false, 'Unexpected type: ' + inspect(type));
+  false || invariant(false, "Unexpected type: " + inspect(type));
 }
 
 function extensionKindToTypeName(kind) {
   switch (kind) {
     case Kind.SCALAR_TYPE_EXTENSION:
-      return 'scalar';
+      return "scalar";
 
     case Kind.OBJECT_TYPE_EXTENSION:
-      return 'object';
+      return "object";
 
     case Kind.INTERFACE_TYPE_EXTENSION:
-      return 'interface';
+      return "interface";
 
     case Kind.UNION_TYPE_EXTENSION:
-      return 'union';
+      return "union";
 
     case Kind.ENUM_TYPE_EXTENSION:
-      return 'enum';
+      return "enum";
 
     case Kind.INPUT_OBJECT_TYPE_EXTENSION:
-      return 'input object';
+      return "input object";
     // Not reachable. All possible types have been considered
 
     /* c8 ignore next */
 
     default:
-      false || invariant(false, 'Unexpected kind: ' + inspect(kind));
+      false || invariant(false, "Unexpected kind: " + inspect(kind));
   }
 }

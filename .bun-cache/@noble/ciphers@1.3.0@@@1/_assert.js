@@ -1,6 +1,10 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.aoutput = exports.anumber = exports.aexists = exports.abytes = exports.abool = void 0;
+exports.aoutput =
+  exports.anumber =
+  exports.aexists =
+  exports.abytes =
+  exports.abool =
+    void 0;
 /**
  * Internal assertion helpers.
  * @module

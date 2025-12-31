@@ -1,9 +1,9 @@
-import type { Maybe } from '../jsutils/Maybe';
-import { GraphQLError } from '../error/GraphQLError';
-import type { DocumentNode } from '../language/ast';
-import type { GraphQLSchema } from '../type/schema';
-import { TypeInfo } from '../utilities/TypeInfo';
-import type { SDLValidationRule, ValidationRule } from './ValidationContext';
+import type { Maybe } from "../jsutils/Maybe";
+import { GraphQLError } from "../error/GraphQLError";
+import type { DocumentNode } from "../language/ast";
+import type { GraphQLSchema } from "../type/schema";
+import { TypeInfo } from "../utilities/TypeInfo";
+import type { SDLValidationRule, ValidationRule } from "./ValidationContext";
 /**
  * Implements the "Validation" section of the spec.
  *

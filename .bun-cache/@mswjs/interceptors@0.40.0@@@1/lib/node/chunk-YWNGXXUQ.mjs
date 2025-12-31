@@ -1,6 +1,5 @@
 var __accessCheck = (obj, member, msg) => {
-  if (!member.has(obj))
-    throw TypeError("Cannot " + msg);
+  if (!member.has(obj)) throw TypeError("Cannot " + msg);
 };
 var __privateGet = (obj, member, getter) => {
   __accessCheck(obj, member, "read from private field");
@@ -21,10 +20,5 @@ function setRawRequest(request, rawRequest) {
   Reflect.set(request, kRawRequest, rawRequest);
 }
 
-export {
-  __privateGet,
-  __privateAdd,
-  getRawRequest,
-  setRawRequest
-};
+export { __privateGet, __privateAdd, getRawRequest, setRawRequest };
 //# sourceMappingURL=chunk-YWNGXXUQ.mjs.map

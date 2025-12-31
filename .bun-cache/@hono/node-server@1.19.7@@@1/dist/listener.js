@@ -1,4 +1,3 @@
-"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -10,27 +9,36 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toESM = (mod, isNodeMode, target) => (
+  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+  __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule
+      ? __defProp(target, "default", { value: mod, enumerable: true })
+      : target,
+    mod,
+  )
+);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/listener.ts
 var listener_exports = {};
 __export(listener_exports, {
-  getRequestListener: () => getRequestListener
+  getRequestListener: () => getRequestListener,
 });
 module.exports = __toCommonJS(listener_exports);
 var import_node_http22 = require("http2");
@@ -57,7 +65,6 @@ var Request = class extends GlobalRequest {
       input = input[getRequestCache]();
     }
     if (typeof options?.body?.getReader !== "undefined") {
-      ;
       options.duplex ??= "half";
     }
     super(input, options);
@@ -68,19 +75,24 @@ var newHeadersFromIncoming = (incoming) => {
   const rawHeaders = incoming.rawHeaders;
   for (let i = 0; i < rawHeaders.length; i += 2) {
     const { [i]: key, [i + 1]: value } = rawHeaders;
-    if (key.charCodeAt(0) !== /*:*/
-    58) {
+    if (key.charCodeAt(0) /*:*/ !== 58) {
       headerRecord.push([key, value]);
     }
   }
   return new Headers(headerRecord);
 };
 var wrapBodyStream = Symbol("wrapBodyStream");
-var newRequestFromIncoming = (method, url, headers, incoming, abortController) => {
+var newRequestFromIncoming = (
+  method,
+  url,
+  headers,
+  incoming,
+  abortController,
+) => {
   const init = {
     method,
     headers,
-    signal: abortController.signal
+    signal: abortController.signal,
   };
   if (method === "TRACE") {
     init.method = "GET";
@@ -88,7 +100,7 @@ var newRequestFromIncoming = (method, url, headers, incoming, abortController) =
     Object.defineProperty(req, "method", {
       get() {
         return "TRACE";
-      }
+      },
     });
     return req;
   }
@@ -98,7 +110,7 @@ var newRequestFromIncoming = (method, url, headers, incoming, abortController) =
         start(controller) {
           controller.enqueue(incoming.rawBody);
           controller.close();
-        }
+        },
       });
     } else if (incoming[wrapBodyStream]) {
       let reader;
@@ -115,7 +127,7 @@ var newRequestFromIncoming = (method, url, headers, incoming, abortController) =
           } catch (error) {
             controller.error(error);
           }
-        }
+        },
       });
     } else {
       init.body = import_node_stream.Readable.toWeb(incoming);
@@ -138,7 +150,7 @@ var requestPrototype = {
     return this[urlKey];
   },
   get headers() {
-    return this[headersKey] ||= newHeadersFromIncoming(this[incomingKey]);
+    return (this[headersKey] ||= newHeadersFromIncoming(this[incomingKey]));
   },
   [getAbortController]() {
     this[getRequestCache]();
@@ -146,14 +158,14 @@ var requestPrototype = {
   },
   [getRequestCache]() {
     this[abortControllerKey] ||= new AbortController();
-    return this[requestCache] ||= newRequestFromIncoming(
+    return (this[requestCache] ||= newRequestFromIncoming(
       this.method,
       this[urlKey],
       this.headers,
       this[incomingKey],
-      this[abortControllerKey]
-    );
-  }
+      this[abortControllerKey],
+    ));
+  },
 };
 [
   "body",
@@ -167,19 +179,19 @@ var requestPrototype = {
   "referrer",
   "referrerPolicy",
   "signal",
-  "keepalive"
+  "keepalive",
 ].forEach((k) => {
   Object.defineProperty(requestPrototype, k, {
     get() {
       return this[getRequestCache]()[k];
-    }
+    },
   });
 });
 ["arrayBuffer", "blob", "clone", "formData", "json", "text"].forEach((k) => {
   Object.defineProperty(requestPrototype, k, {
-    value: function() {
+    value: function () {
       return this[getRequestCache]()[k]();
-    }
+    },
   });
 });
 Object.setPrototypeOf(requestPrototype, Request.prototype);
@@ -187,8 +199,10 @@ var newRequest = (incoming, defaultHostname) => {
   const req = Object.create(requestPrototype);
   req[incomingKey] = incoming;
   const incomingUrl = incoming.url || "";
-  if (incomingUrl[0] !== "/" && // short-circuit for performance. most requests are relative URL.
-  (incomingUrl.startsWith("http://") || incomingUrl.startsWith("https://"))) {
+  if (
+    incomingUrl[0] !== "/" && // short-circuit for performance. most requests are relative URL.
+    (incomingUrl.startsWith("http://") || incomingUrl.startsWith("https://"))
+  ) {
     if (incoming instanceof import_node_http2.Http2ServerRequest) {
       throw new RequestError("Absolute URL for :path is not allowed in HTTP/2");
     }
@@ -200,7 +214,10 @@ var newRequest = (incoming, defaultHostname) => {
     }
     return req;
   }
-  const host = (incoming instanceof import_node_http2.Http2ServerRequest ? incoming.authority : incoming.headers.host) || defaultHostname;
+  const host =
+    (incoming instanceof import_node_http2.Http2ServerRequest
+      ? incoming.authority
+      : incoming.headers.host) || defaultHostname;
   if (!host) {
     throw new RequestError("Missing host header");
   }
@@ -214,7 +231,10 @@ var newRequest = (incoming, defaultHostname) => {
     scheme = incoming.socket && incoming.socket.encrypted ? "https" : "http";
   }
   const url = new URL(`${scheme}://${host}${incomingUrl}`);
-  if (url.hostname.length !== host.length && url.hostname !== host.replace(/:\d+$/, "")) {
+  if (
+    url.hostname.length !== host.length &&
+    url.hostname !== host.replace(/:\d+$/, "")
+  ) {
     throw new RequestError("Invalid host header");
   }
   req[urlKey] = url.href;
@@ -231,7 +251,7 @@ var Response2 = class _Response {
   #init;
   [getResponseCache]() {
     delete this[cacheKey];
-    return this[responseCache] ||= new GlobalResponse(this.#body, this.#init);
+    return (this[responseCache] ||= new GlobalResponse(this.#body, this.#init));
   }
   constructor(body, init) {
     let headers;
@@ -249,8 +269,15 @@ var Response2 = class _Response {
     } else {
       this.#init = init;
     }
-    if (typeof body === "string" || typeof body?.getReader !== "undefined" || body instanceof Blob || body instanceof Uint8Array) {
-      headers ||= init?.headers || { "content-type": "text/plain; charset=UTF-8" };
+    if (
+      typeof body === "string" ||
+      typeof body?.getReader !== "undefined" ||
+      body instanceof Blob ||
+      body instanceof Uint8Array
+    ) {
+      headers ||= init?.headers || {
+        "content-type": "text/plain; charset=UTF-8",
+      };
       this[cacheKey] = [init?.status || 200, body, headers];
     }
   }
@@ -272,18 +299,26 @@ var Response2 = class _Response {
     return status >= 200 && status < 300;
   }
 };
-["body", "bodyUsed", "redirected", "statusText", "trailers", "type", "url"].forEach((k) => {
+[
+  "body",
+  "bodyUsed",
+  "redirected",
+  "statusText",
+  "trailers",
+  "type",
+  "url",
+].forEach((k) => {
   Object.defineProperty(Response2.prototype, k, {
     get() {
       return this[getResponseCache]()[k];
-    }
+    },
   });
 });
 ["arrayBuffer", "blob", "clone", "formData", "json", "text"].forEach((k) => {
   Object.defineProperty(Response2.prototype, k, {
-    value: function() {
+    value: function () {
       return this[getResponseCache]()[k]();
-    }
+    },
   });
 });
 Object.setPrototypeOf(Response2, GlobalResponse);
@@ -291,12 +326,18 @@ Object.setPrototypeOf(Response2.prototype, GlobalResponse.prototype);
 
 // src/utils.ts
 async function readWithoutBlocking(readPromise) {
-  return Promise.race([readPromise, Promise.resolve().then(() => Promise.resolve(void 0))]);
+  return Promise.race([
+    readPromise,
+    Promise.resolve().then(() => Promise.resolve(void 0)),
+  ]);
 }
-function writeFromReadableStreamDefaultReader(reader, writable, currentReadPromise) {
+function writeFromReadableStreamDefaultReader(
+  reader,
+  writable,
+  currentReadPromise,
+) {
   const cancel = (error) => {
-    reader.cancel(error).catch(() => {
-    });
+    reader.cancel(error).catch(() => {});
   };
   writable.on("close", cancel);
   writable.on("error", cancel);
@@ -369,19 +410,25 @@ global.fetch = (info, init) => {
     // Disable compression handling so people can return the result of a fetch
     // directly in the loader without messing with the Content-Encoding header.
     compress: false,
-    ...init
+    ...init,
   };
   return webFetch(info, init);
 };
 
 // src/listener.ts
 var outgoingEnded = Symbol("outgoingEnded");
-var handleRequestError = () => new Response(null, {
-  status: 400
-});
-var handleFetchError = (e) => new Response(null, {
-  status: e instanceof Error && (e.name === "TimeoutError" || e.constructor.name === "TimeoutError") ? 504 : 500
-});
+var handleRequestError = () =>
+  new Response(null, {
+    status: 400,
+  });
+var handleFetchError = (e) =>
+  new Response(null, {
+    status:
+      e instanceof Error &&
+      (e.name === "TimeoutError" || e.constructor.name === "TimeoutError")
+        ? 504
+        : 500,
+  });
 var handleResponseError = (e, outgoing) => {
   const err = e instanceof Error ? e : new Error("unknown error", { cause: e });
   if (err.code === "ERR_STREAM_PREMATURE_CLOSE") {
@@ -419,11 +466,10 @@ var responseViaCache = async (res, outgoing) => {
     outgoing.end(new Uint8Array(await body.arrayBuffer()));
   } else {
     flushHeaders(outgoing);
-    await writeFromReadableStream(body, outgoing)?.catch(
-      (e) => handleResponseError(e, outgoing)
+    await writeFromReadableStream(body, outgoing)?.catch((e) =>
+      handleResponseError(e, outgoing),
     );
   }
-  ;
   outgoing[outgoingEnded]?.();
 };
 var isPromise = (res) => typeof res.then === "function";
@@ -456,10 +502,12 @@ var responseViaResponseObject = async (res, outgoing, options = {}) => {
       let maxReadCount = 2;
       for (let i = 0; i < maxReadCount; i++) {
         currentReadPromise ||= reader.read();
-        const chunk = await readWithoutBlocking(currentReadPromise).catch((e) => {
-          console.error(e);
-          done = true;
-        });
+        const chunk = await readWithoutBlocking(currentReadPromise).catch(
+          (e) => {
+            console.error(e);
+            done = true;
+          },
+        );
         if (!chunk) {
           if (i === 1) {
             await new Promise((resolve) => setTimeout(resolve));
@@ -478,12 +526,14 @@ var responseViaResponseObject = async (res, outgoing, options = {}) => {
         }
       }
       if (done && !("content-length" in resHeaderRecord)) {
-        resHeaderRecord["content-length"] = values.reduce((acc, value) => acc + value.length, 0);
+        resHeaderRecord["content-length"] = values.reduce(
+          (acc, value) => acc + value.length,
+          0,
+        );
       }
     }
     outgoing.writeHead(res.status, resHeaderRecord);
     values.forEach((value) => {
-      ;
       outgoing.write(value);
     });
     if (done) {
@@ -492,39 +542,43 @@ var responseViaResponseObject = async (res, outgoing, options = {}) => {
       if (values.length === 0) {
         flushHeaders(outgoing);
       }
-      await writeFromReadableStreamDefaultReader(reader, outgoing, currentReadPromise);
+      await writeFromReadableStreamDefaultReader(
+        reader,
+        outgoing,
+        currentReadPromise,
+      );
     }
   } else if (resHeaderRecord[X_ALREADY_SENT]) {
   } else {
     outgoing.writeHead(res.status, resHeaderRecord);
     outgoing.end();
   }
-  ;
   outgoing[outgoingEnded]?.();
 };
 var getRequestListener = (fetchCallback, options = {}) => {
   const autoCleanupIncoming = options.autoCleanupIncoming ?? true;
   if (options.overrideGlobalObjects !== false && global.Request !== Request) {
     Object.defineProperty(global, "Request", {
-      value: Request
+      value: Request,
     });
     Object.defineProperty(global, "Response", {
-      value: Response2
+      value: Response2,
     });
   }
   return async (incoming, outgoing) => {
     let res, req;
     try {
       req = newRequest(incoming, options.hostname);
-      let incomingEnded = !autoCleanupIncoming || incoming.method === "GET" || incoming.method === "HEAD";
+      let incomingEnded =
+        !autoCleanupIncoming ||
+        incoming.method === "GET" ||
+        incoming.method === "HEAD";
       if (!incomingEnded) {
-        ;
         incoming[wrapBodyStream] = true;
         incoming.on("end", () => {
           incomingEnded = true;
         });
         if (incoming instanceof import_node_http22.Http2ServerRequest) {
-          ;
           outgoing[outgoingEnded] = () => {
             if (!incomingEnded) {
               setTimeout(() => {
@@ -545,7 +599,9 @@ var getRequestListener = (fetchCallback, options = {}) => {
           if (incoming.errored) {
             req[abortControllerKey].abort(incoming.errored.toString());
           } else if (!outgoing.writableFinished) {
-            req[abortControllerKey].abort("Client connection prematurely closed.");
+            req[abortControllerKey].abort(
+              "Client connection prematurely closed.",
+            );
           }
         }
         if (!incomingEnded) {
@@ -586,6 +642,7 @@ var getRequestListener = (fetchCallback, options = {}) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  getRequestListener
-});
+0 &&
+  (module.exports = {
+    getRequestListener,
+  });

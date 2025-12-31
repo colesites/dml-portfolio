@@ -13,15 +13,18 @@
  * @returns An object containing validation result and any warnings
  */
 export declare function validateToolName(name: string): {
-    isValid: boolean;
-    warnings: string[];
+  isValid: boolean;
+  warnings: string[];
 };
 /**
  * Issues warnings for non-conforming tool names
  * @param name - The tool name that triggered the warnings
  * @param warnings - Array of warning messages
  */
-export declare function issueToolNameWarning(name: string, warnings: string[]): void;
+export declare function issueToolNameWarning(
+  name: string,
+  warnings: string[],
+): void;
 /**
  * Validates a tool name and issues warnings for non-conforming names
  * @param name - The tool name to validate

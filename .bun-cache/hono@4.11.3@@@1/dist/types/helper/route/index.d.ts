@@ -1,5 +1,5 @@
-import type { Context } from '../../context';
-import type { RouterRoute } from '../../types';
+import type { Context } from "../../context";
+import type { RouterRoute } from "../../types";
 /**
  * Get matched routes in the handler
  *

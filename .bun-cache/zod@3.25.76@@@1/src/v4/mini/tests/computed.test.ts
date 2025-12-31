@@ -1,9 +1,18 @@
 import { expect, test } from "vitest";
-import * as z from "zod/v4-mini";
 import { util as zc } from "zod/v4/core";
+import * as z from "zod/v4-mini";
 
 test("min/max", () => {
-  const a = z.number().check(z.minimum(5), z.minimum(6), z.minimum(7), z.maximum(10), z.maximum(11), z.maximum(12));
+  const a = z
+    .number()
+    .check(
+      z.minimum(5),
+      z.minimum(6),
+      z.minimum(7),
+      z.maximum(10),
+      z.maximum(11),
+      z.maximum(12),
+    );
 
   expect(a._zod.bag.minimum).toEqual(7);
   expect(a._zod.bag.maximum).toEqual(10);

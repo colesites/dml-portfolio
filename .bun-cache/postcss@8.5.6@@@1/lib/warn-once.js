@@ -1,13 +1,10 @@
-/* eslint-disable no-console */
-'use strict'
-
-let printed = {}
+const printed = {};
 
 module.exports = function warnOnce(message) {
-  if (printed[message]) return
-  printed[message] = true
+  if (printed[message]) return;
+  printed[message] = true;
 
-  if (typeof console !== 'undefined' && console.warn) {
-    console.warn(message)
+  if (typeof console !== "undefined" && console.warn) {
+    console.warn(message);
   }
-}
+};

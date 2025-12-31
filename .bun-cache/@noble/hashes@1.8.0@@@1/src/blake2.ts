@@ -3,15 +3,25 @@
  * b could have been faster, but there is no fast u64 in js, so s is 1.5x faster.
  * @module
  */
-import { BSIGMA, G1s, G2s } from './_blake.ts';
-import { SHA256_IV } from './_md.ts';
-import * as u64 from './_u64.ts';
+import { BSIGMA, G1s, G2s } from "./_blake.ts";
+import { SHA256_IV } from "./_md.ts";
+import * as u64 from "./_u64.ts";
 // prettier-ignore
 import {
-  abytes, aexists, anumber, aoutput,
-  clean, createOptHasher, Hash, swap32IfBE, swap8IfBE, toBytes, u32,
-  type CHashO, type Input
-} from './utils.ts';
+  abytes,
+  aexists,
+  anumber,
+  aoutput,
+  type CHashO,
+  clean,
+  createOptHasher,
+  Hash,
+  type Input,
+  swap8IfBE,
+  swap32IfBE,
+  toBytes,
+  u32,
+} from "./utils.ts";
 
 /** Blake hash options. dkLen is output length. key is used in MAC mode. salt is used in KDF mode. */
 export type Blake2Opts = {
@@ -23,22 +33,35 @@ export type Blake2Opts = {
 
 // Same as SHA512_IV, but swapped endianness: LE instead of BE. iv[1] is iv[0], etc.
 const B2B_IV = /* @__PURE__ */ Uint32Array.from([
-  0xf3bcc908, 0x6a09e667, 0x84caa73b, 0xbb67ae85, 0xfe94f82b, 0x3c6ef372, 0x5f1d36f1, 0xa54ff53a,
-  0xade682d1, 0x510e527f, 0x2b3e6c1f, 0x9b05688c, 0xfb41bd6b, 0x1f83d9ab, 0x137e2179, 0x5be0cd19,
+  0xf3bcc908, 0x6a09e667, 0x84caa73b, 0xbb67ae85, 0xfe94f82b, 0x3c6ef372,
+  0x5f1d36f1, 0xa54ff53a, 0xade682d1, 0x510e527f, 0x2b3e6c1f, 0x9b05688c,
+  0xfb41bd6b, 0x1f83d9ab, 0x137e2179, 0x5be0cd19,
 ]);
 // Temporary buffer
 const BBUF = /* @__PURE__ */ new Uint32Array(32);
 
 // Mixing function G splitted in two halfs
-function G1b(a: number, b: number, c: number, d: number, msg: Uint32Array, x: number) {
+function G1b(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  msg: Uint32Array,
+  x: number,
+) {
   // NOTE: V is LE here
-  const Xl = msg[x], Xh = msg[x + 1]; // prettier-ignore
-  let Al = BBUF[2 * a], Ah = BBUF[2 * a + 1]; // prettier-ignore
-  let Bl = BBUF[2 * b], Bh = BBUF[2 * b + 1]; // prettier-ignore
-  let Cl = BBUF[2 * c], Ch = BBUF[2 * c + 1]; // prettier-ignore
-  let Dl = BBUF[2 * d], Dh = BBUF[2 * d + 1]; // prettier-ignore
+  const Xl = msg[x],
+    Xh = msg[x + 1]; // prettier-ignore
+  let Al = BBUF[2 * a],
+    Ah = BBUF[2 * a + 1]; // prettier-ignore
+  let Bl = BBUF[2 * b],
+    Bh = BBUF[2 * b + 1]; // prettier-ignore
+  let Cl = BBUF[2 * c],
+    Ch = BBUF[2 * c + 1]; // prettier-ignore
+  let Dl = BBUF[2 * d],
+    Dh = BBUF[2 * d + 1]; // prettier-ignore
   // v[a] = (v[a] + v[b] + x) | 0;
-  let ll = u64.add3L(Al, Bl, Xl);
+  const ll = u64.add3L(Al, Bl, Xl);
   Ah = u64.add3H(ll, Ah, Bh, Xh);
   Al = ll | 0;
   // v[d] = rotr(v[d] ^ v[a], 32)
@@ -55,15 +78,27 @@ function G1b(a: number, b: number, c: number, d: number, msg: Uint32Array, x: nu
   (BBUF[2 * d] = Dl), (BBUF[2 * d + 1] = Dh);
 }
 
-function G2b(a: number, b: number, c: number, d: number, msg: Uint32Array, x: number) {
+function G2b(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  msg: Uint32Array,
+  x: number,
+) {
   // NOTE: V is LE here
-  const Xl = msg[x], Xh = msg[x + 1]; // prettier-ignore
-  let Al = BBUF[2 * a], Ah = BBUF[2 * a + 1]; // prettier-ignore
-  let Bl = BBUF[2 * b], Bh = BBUF[2 * b + 1]; // prettier-ignore
-  let Cl = BBUF[2 * c], Ch = BBUF[2 * c + 1]; // prettier-ignore
-  let Dl = BBUF[2 * d], Dh = BBUF[2 * d + 1]; // prettier-ignore
+  const Xl = msg[x],
+    Xh = msg[x + 1]; // prettier-ignore
+  let Al = BBUF[2 * a],
+    Ah = BBUF[2 * a + 1]; // prettier-ignore
+  let Bl = BBUF[2 * b],
+    Bh = BBUF[2 * b + 1]; // prettier-ignore
+  let Cl = BBUF[2 * c],
+    Ch = BBUF[2 * c + 1]; // prettier-ignore
+  let Dl = BBUF[2 * d],
+    Dh = BBUF[2 * d + 1]; // prettier-ignore
   // v[a] = (v[a] + v[b] + x) | 0;
-  let ll = u64.add3L(Al, Bl, Xl);
+  const ll = u64.add3L(Al, Bl, Xl);
   Ah = u64.add3H(ll, Ah, Bh, Xh);
   Al = ll | 0;
   // v[d] = rotr(v[d] ^ v[a], 16)
@@ -85,22 +120,27 @@ function checkBlake2Opts(
   opts: Blake2Opts | undefined = {},
   keyLen: number,
   saltLen: number,
-  persLen: number
+  persLen: number,
 ) {
   anumber(keyLen);
-  if (outputLen < 0 || outputLen > keyLen) throw new Error('outputLen bigger than keyLen');
+  if (outputLen < 0 || outputLen > keyLen)
+    throw new Error("outputLen bigger than keyLen");
   const { key, salt, personalization } = opts;
   if (key !== undefined && (key.length < 1 || key.length > keyLen))
-    throw new Error('key length must be undefined or 1..' + keyLen);
+    throw new Error("key length must be undefined or 1.." + keyLen);
   if (salt !== undefined && salt.length !== saltLen)
-    throw new Error('salt must be undefined or ' + saltLen);
+    throw new Error("salt must be undefined or " + saltLen);
   if (personalization !== undefined && personalization.length !== persLen)
-    throw new Error('personalization must be undefined or ' + persLen);
+    throw new Error("personalization must be undefined or " + persLen);
 }
 
 /** Class, from which others are subclassed. */
 export abstract class BLAKE2<T extends BLAKE2<T>> extends Hash<T> {
-  protected abstract compress(msg: Uint32Array, offset: number, isLast: boolean): void;
+  protected abstract compress(
+    msg: Uint32Array,
+    offset: number,
+    isLast: boolean,
+  ): void;
   protected abstract get(): number[];
   protected abstract set(...args: number[]): void;
   abstract destroy(): void;
@@ -146,9 +186,17 @@ export abstract class BLAKE2<T extends BLAKE2<T>> extends Hash<T> {
       const dataOffset = offset + pos;
       // full block && aligned to 4 bytes && not last in input
       if (take === blockLen && !(dataOffset % 4) && pos + take < len) {
-        const data32 = new Uint32Array(buf, dataOffset, Math.floor((len - pos) / 4));
+        const data32 = new Uint32Array(
+          buf,
+          dataOffset,
+          Math.floor((len - pos) / 4),
+        );
         swap32IfBE(data32);
-        for (let pos32 = 0; pos + blockLen < len; pos32 += buffer32.length, pos += blockLen) {
+        for (
+          let pos32 = 0;
+          pos + blockLen < len;
+          pos32 += buffer32.length, pos += blockLen
+        ) {
           this.length += blockLen;
           this.compress(data32, pos32, false);
         }
@@ -191,7 +239,7 @@ export abstract class BLAKE2<T extends BLAKE2<T>> extends Hash<T> {
     to.finished = finished;
     to.length = length;
     to.pos = pos;
-    // @ts-ignore
+    // @ts-expect-error
     to.outputLen = outputLen;
     return to;
   }
@@ -255,18 +303,78 @@ export class BLAKE2b extends BLAKE2<BLAKE2b> {
   }
   // prettier-ignore
   protected get(): [
-    number, number, number, number, number, number, number, number,
-    number, number, number, number, number, number, number, number
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
   ] {
-    let { v0l, v0h, v1l, v1h, v2l, v2h, v3l, v3h, v4l, v4h, v5l, v5h, v6l, v6h, v7l, v7h } = this;
-    return [v0l, v0h, v1l, v1h, v2l, v2h, v3l, v3h, v4l, v4h, v5l, v5h, v6l, v6h, v7l, v7h];
+    const {
+      v0l,
+      v0h,
+      v1l,
+      v1h,
+      v2l,
+      v2h,
+      v3l,
+      v3h,
+      v4l,
+      v4h,
+      v5l,
+      v5h,
+      v6l,
+      v6h,
+      v7l,
+      v7h,
+    } = this;
+    return [
+      v0l,
+      v0h,
+      v1l,
+      v1h,
+      v2l,
+      v2h,
+      v3l,
+      v3h,
+      v4l,
+      v4h,
+      v5l,
+      v5h,
+      v6l,
+      v6h,
+      v7l,
+      v7h,
+    ];
   }
   // prettier-ignore
   protected set(
-    v0l: number, v0h: number, v1l: number, v1h: number,
-    v2l: number, v2h: number, v3l: number, v3h: number,
-    v4l: number, v4h: number, v5l: number, v5h: number,
-    v6l: number, v6h: number, v7l: number, v7h: number
+    v0l: number,
+    v0h: number,
+    v1l: number,
+    v1h: number,
+    v2l: number,
+    v2h: number,
+    v3l: number,
+    v3h: number,
+    v4l: number,
+    v4h: number,
+    v5l: number,
+    v5h: number,
+    v6l: number,
+    v6h: number,
+    v7l: number,
+    v7h: number,
   ): void {
     this.v0l = v0l | 0;
     this.v0h = v0h | 0;
@@ -288,7 +396,7 @@ export class BLAKE2b extends BLAKE2<BLAKE2b> {
   protected compress(msg: Uint32Array, offset: number, isLast: boolean): void {
     this.get().forEach((v, i) => (BBUF[i] = v)); // First half from state.
     BBUF.set(B2B_IV, 16); // Second half from IV.
-    let { h, l } = u64.fromBig(BigInt(this.length));
+    const { h, l } = u64.fromBig(BigInt(this.length));
     BBUF[24] = B2B_IV[8] ^ l; // Low word of the offset.
     BBUF[25] = B2B_IV[9] ^ h; // High word.
     // Invert all bits for last block
@@ -347,9 +455,10 @@ export class BLAKE2b extends BLAKE2<BLAKE2b> {
  * @param msg - message that would be hashed
  * @param opts - dkLen output length, key for MAC mode, salt, personalization
  */
-export const blake2b: CHashO = /* @__PURE__ */ createOptHasher<BLAKE2b, Blake2Opts>(
-  (opts) => new BLAKE2b(opts)
-);
+export const blake2b: CHashO = /* @__PURE__ */ createOptHasher<
+  BLAKE2b,
+  Blake2Opts
+>((opts) => new BLAKE2b(opts));
 
 // =================
 // Blake2S
@@ -357,38 +466,165 @@ export const blake2b: CHashO = /* @__PURE__ */ createOptHasher<BLAKE2b, Blake2Op
 
 // prettier-ignore
 export type Num16 = {
-  v0: number; v1: number; v2: number; v3: number;
-  v4: number; v5: number; v6: number; v7: number;
-  v8: number; v9: number; v10: number; v11: number;
-  v12: number; v13: number; v14: number; v15: number;
+  v0: number;
+  v1: number;
+  v2: number;
+  v3: number;
+  v4: number;
+  v5: number;
+  v6: number;
+  v7: number;
+  v8: number;
+  v9: number;
+  v10: number;
+  v11: number;
+  v12: number;
+  v13: number;
+  v14: number;
+  v15: number;
 };
 
 // prettier-ignore
-export function compress(s: Uint8Array, offset: number, msg: Uint32Array, rounds: number,
-  v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number,
-  v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number,
+export function compress(
+  s: Uint8Array,
+  offset: number,
+  msg: Uint32Array,
+  rounds: number,
+  v0: number,
+  v1: number,
+  v2: number,
+  v3: number,
+  v4: number,
+  v5: number,
+  v6: number,
+  v7: number,
+  v8: number,
+  v9: number,
+  v10: number,
+  v11: number,
+  v12: number,
+  v13: number,
+  v14: number,
+  v15: number,
 ): Num16 {
   let j = 0;
   for (let i = 0; i < rounds; i++) {
-    ({ a: v0, b: v4, c: v8, d: v12 } = G1s(v0, v4, v8, v12, msg[offset + s[j++]]));
-    ({ a: v0, b: v4, c: v8, d: v12 } = G2s(v0, v4, v8, v12, msg[offset + s[j++]]));
-    ({ a: v1, b: v5, c: v9, d: v13 } = G1s(v1, v5, v9, v13, msg[offset + s[j++]]));
-    ({ a: v1, b: v5, c: v9, d: v13 } = G2s(v1, v5, v9, v13, msg[offset + s[j++]]));
-    ({ a: v2, b: v6, c: v10, d: v14 } = G1s(v2, v6, v10, v14, msg[offset + s[j++]]));
-    ({ a: v2, b: v6, c: v10, d: v14 } = G2s(v2, v6, v10, v14, msg[offset + s[j++]]));
-    ({ a: v3, b: v7, c: v11, d: v15 } = G1s(v3, v7, v11, v15, msg[offset + s[j++]]));
-    ({ a: v3, b: v7, c: v11, d: v15 } = G2s(v3, v7, v11, v15, msg[offset + s[j++]]));
+    ({
+      a: v0,
+      b: v4,
+      c: v8,
+      d: v12,
+    } = G1s(v0, v4, v8, v12, msg[offset + s[j++]]));
+    ({
+      a: v0,
+      b: v4,
+      c: v8,
+      d: v12,
+    } = G2s(v0, v4, v8, v12, msg[offset + s[j++]]));
+    ({
+      a: v1,
+      b: v5,
+      c: v9,
+      d: v13,
+    } = G1s(v1, v5, v9, v13, msg[offset + s[j++]]));
+    ({
+      a: v1,
+      b: v5,
+      c: v9,
+      d: v13,
+    } = G2s(v1, v5, v9, v13, msg[offset + s[j++]]));
+    ({
+      a: v2,
+      b: v6,
+      c: v10,
+      d: v14,
+    } = G1s(v2, v6, v10, v14, msg[offset + s[j++]]));
+    ({
+      a: v2,
+      b: v6,
+      c: v10,
+      d: v14,
+    } = G2s(v2, v6, v10, v14, msg[offset + s[j++]]));
+    ({
+      a: v3,
+      b: v7,
+      c: v11,
+      d: v15,
+    } = G1s(v3, v7, v11, v15, msg[offset + s[j++]]));
+    ({
+      a: v3,
+      b: v7,
+      c: v11,
+      d: v15,
+    } = G2s(v3, v7, v11, v15, msg[offset + s[j++]]));
 
-    ({ a: v0, b: v5, c: v10, d: v15 } = G1s(v0, v5, v10, v15, msg[offset + s[j++]]));
-    ({ a: v0, b: v5, c: v10, d: v15 } = G2s(v0, v5, v10, v15, msg[offset + s[j++]]));
-    ({ a: v1, b: v6, c: v11, d: v12 } = G1s(v1, v6, v11, v12, msg[offset + s[j++]]));
-    ({ a: v1, b: v6, c: v11, d: v12 } = G2s(v1, v6, v11, v12, msg[offset + s[j++]]));
-    ({ a: v2, b: v7, c: v8, d: v13 } = G1s(v2, v7, v8, v13, msg[offset + s[j++]]));
-    ({ a: v2, b: v7, c: v8, d: v13 } = G2s(v2, v7, v8, v13, msg[offset + s[j++]]));
-    ({ a: v3, b: v4, c: v9, d: v14 } = G1s(v3, v4, v9, v14, msg[offset + s[j++]]));
-    ({ a: v3, b: v4, c: v9, d: v14 } = G2s(v3, v4, v9, v14, msg[offset + s[j++]]));
+    ({
+      a: v0,
+      b: v5,
+      c: v10,
+      d: v15,
+    } = G1s(v0, v5, v10, v15, msg[offset + s[j++]]));
+    ({
+      a: v0,
+      b: v5,
+      c: v10,
+      d: v15,
+    } = G2s(v0, v5, v10, v15, msg[offset + s[j++]]));
+    ({
+      a: v1,
+      b: v6,
+      c: v11,
+      d: v12,
+    } = G1s(v1, v6, v11, v12, msg[offset + s[j++]]));
+    ({
+      a: v1,
+      b: v6,
+      c: v11,
+      d: v12,
+    } = G2s(v1, v6, v11, v12, msg[offset + s[j++]]));
+    ({
+      a: v2,
+      b: v7,
+      c: v8,
+      d: v13,
+    } = G1s(v2, v7, v8, v13, msg[offset + s[j++]]));
+    ({
+      a: v2,
+      b: v7,
+      c: v8,
+      d: v13,
+    } = G2s(v2, v7, v8, v13, msg[offset + s[j++]]));
+    ({
+      a: v3,
+      b: v4,
+      c: v9,
+      d: v14,
+    } = G1s(v3, v4, v9, v14, msg[offset + s[j++]]));
+    ({
+      a: v3,
+      b: v4,
+      c: v9,
+      d: v14,
+    } = G2s(v3, v4, v9, v14, msg[offset + s[j++]]));
   }
-  return { v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15 };
+  return {
+    v0,
+    v1,
+    v2,
+    v3,
+    v4,
+    v5,
+    v6,
+    v7,
+    v8,
+    v9,
+    v10,
+    v11,
+    v12,
+    v13,
+    v14,
+    v15,
+  };
 }
 
 const B2S_IV = SHA256_IV;
@@ -434,13 +670,29 @@ export class BLAKE2s extends BLAKE2<BLAKE2s> {
       this.update(tmp);
     }
   }
-  protected get(): [number, number, number, number, number, number, number, number] {
+  protected get(): [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ] {
     const { v0, v1, v2, v3, v4, v5, v6, v7 } = this;
     return [v0, v1, v2, v3, v4, v5, v6, v7];
   }
   // prettier-ignore
   protected set(
-    v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number
+    v0: number,
+    v1: number,
+    v2: number,
+    v3: number,
+    v4: number,
+    v5: number,
+    v6: number,
+    v7: number,
   ): void {
     this.v0 = v0 | 0;
     this.v1 = v1 | 0;
@@ -454,12 +706,45 @@ export class BLAKE2s extends BLAKE2<BLAKE2s> {
   protected compress(msg: Uint32Array, offset: number, isLast: boolean): void {
     const { h, l } = u64.fromBig(BigInt(this.length));
     // prettier-ignore
-    const { v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15 } =
-      compress(
-        BSIGMA, offset, msg, 10,
-        this.v0, this.v1, this.v2, this.v3, this.v4, this.v5, this.v6, this.v7,
-        B2S_IV[0], B2S_IV[1], B2S_IV[2], B2S_IV[3], l ^ B2S_IV[4], h ^ B2S_IV[5], isLast ? ~B2S_IV[6] : B2S_IV[6], B2S_IV[7]
-      );
+    const {
+      v0,
+      v1,
+      v2,
+      v3,
+      v4,
+      v5,
+      v6,
+      v7,
+      v8,
+      v9,
+      v10,
+      v11,
+      v12,
+      v13,
+      v14,
+      v15,
+    } = compress(
+      BSIGMA,
+      offset,
+      msg,
+      10,
+      this.v0,
+      this.v1,
+      this.v2,
+      this.v3,
+      this.v4,
+      this.v5,
+      this.v6,
+      this.v7,
+      B2S_IV[0],
+      B2S_IV[1],
+      B2S_IV[2],
+      B2S_IV[3],
+      l ^ B2S_IV[4],
+      h ^ B2S_IV[5],
+      isLast ? ~B2S_IV[6] : B2S_IV[6],
+      B2S_IV[7],
+    );
     this.v0 ^= v0 ^ v8;
     this.v1 ^= v1 ^ v9;
     this.v2 ^= v2 ^ v10;
@@ -481,6 +766,7 @@ export class BLAKE2s extends BLAKE2<BLAKE2s> {
  * @param msg - message that would be hashed
  * @param opts - dkLen output length, key for MAC mode, salt, personalization
  */
-export const blake2s: CHashO = /* @__PURE__ */ createOptHasher<BLAKE2s, Blake2Opts>(
-  (opts) => new BLAKE2s(opts)
-);
+export const blake2s: CHashO = /* @__PURE__ */ createOptHasher<
+  BLAKE2s,
+  Blake2Opts
+>((opts) => new BLAKE2s(opts));

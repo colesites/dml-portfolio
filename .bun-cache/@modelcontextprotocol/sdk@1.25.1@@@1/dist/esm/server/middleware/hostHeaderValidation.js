@@ -18,48 +18,47 @@
  * ```
  */
 export function hostHeaderValidation(allowedHostnames) {
-    return (req, res, next) => {
-        const hostHeader = req.headers.host;
-        if (!hostHeader) {
-            res.status(403).json({
-                jsonrpc: '2.0',
-                error: {
-                    code: -32000,
-                    message: 'Missing Host header'
-                },
-                id: null
-            });
-            return;
-        }
-        // Use URL API to parse hostname (handles IPv4, IPv6, and regular hostnames)
-        let hostname;
-        try {
-            hostname = new URL(`http://${hostHeader}`).hostname;
-        }
-        catch {
-            res.status(403).json({
-                jsonrpc: '2.0',
-                error: {
-                    code: -32000,
-                    message: `Invalid Host header: ${hostHeader}`
-                },
-                id: null
-            });
-            return;
-        }
-        if (!allowedHostnames.includes(hostname)) {
-            res.status(403).json({
-                jsonrpc: '2.0',
-                error: {
-                    code: -32000,
-                    message: `Invalid Host: ${hostname}`
-                },
-                id: null
-            });
-            return;
-        }
-        next();
-    };
+  return (req, res, next) => {
+    const hostHeader = req.headers.host;
+    if (!hostHeader) {
+      res.status(403).json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32000,
+          message: "Missing Host header",
+        },
+        id: null,
+      });
+      return;
+    }
+    // Use URL API to parse hostname (handles IPv4, IPv6, and regular hostnames)
+    let hostname;
+    try {
+      hostname = new URL(`http://${hostHeader}`).hostname;
+    } catch {
+      res.status(403).json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32000,
+          message: `Invalid Host header: ${hostHeader}`,
+        },
+        id: null,
+      });
+      return;
+    }
+    if (!allowedHostnames.includes(hostname)) {
+      res.status(403).json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32000,
+          message: `Invalid Host: ${hostname}`,
+        },
+        id: null,
+      });
+      return;
+    }
+    next();
+  };
 }
 /**
  * Convenience middleware for localhost DNS rebinding protection.
@@ -71,6 +70,6 @@ export function hostHeaderValidation(allowedHostnames) {
  * ```
  */
 export function localhostHostValidation() {
-    return hostHeaderValidation(['localhost', '127.0.0.1', '[::1]']);
+  return hostHeaderValidation(["localhost", "127.0.0.1", "[::1]"]);
 }
 //# sourceMappingURL=hostHeaderValidation.js.map

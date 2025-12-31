@@ -1,5 +1,5 @@
-const {toString} = Object.prototype;
+const { toString } = Object.prototype;
 
 export default function isRegexp(value) {
-	return toString.call(value) === '[object RegExp]';
+  return toString.call(value) === "[object RegExp]";
 }

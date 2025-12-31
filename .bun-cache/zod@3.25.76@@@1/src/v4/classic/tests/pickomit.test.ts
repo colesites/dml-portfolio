@@ -55,7 +55,10 @@ test("omit type inference", () => {
   const nonameFish = fish.omit({ name: true });
   type nonameFish = z.infer<typeof nonameFish>;
 
-  expectTypeOf<nonameFish>().toEqualTypeOf<{ age: number; nested: Record<string, never> }>();
+  expectTypeOf<nonameFish>().toEqualTypeOf<{
+    age: number;
+    nested: Record<string, never>;
+  }>();
 });
 
 test("omit parse - success", () => {

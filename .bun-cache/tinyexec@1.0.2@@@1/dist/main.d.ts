@@ -18,9 +18,13 @@ interface Output {
   exitCode: number | undefined;
 }
 interface PipeOptions extends Options {}
-type KillSignal = Parameters<ChildProcess['kill']>[0];
+type KillSignal = Parameters<ChildProcess["kill"]>[0];
 interface OutputApi extends AsyncIterable<string> {
-  pipe(command: string, args?: string[], options?: Partial<PipeOptions>): Result;
+  pipe(
+    command: string,
+    args?: string[],
+    options?: Partial<PipeOptions>,
+  ): Result;
   process: ChildProcess | undefined;
   kill(signal?: KillSignal): boolean;
   get pid(): number | undefined;
@@ -37,9 +41,11 @@ interface Options {
   stdin: ExecProcess;
   throwOnError: boolean;
 }
-interface TinyExec {
-  (command: string, args?: string[], options?: Partial<Options>): Result;
-}
+type TinyExec = (
+  command: string,
+  args?: string[],
+  options?: Partial<Options>,
+) => Result;
 declare class ExecProcess implements Result {
   protected _process?: ChildProcess;
   protected _aborted: boolean;
@@ -56,10 +62,17 @@ declare class ExecProcess implements Result {
   kill(signal?: KillSignal): boolean;
   get aborted(): boolean;
   get killed(): boolean;
-  pipe(command: string, args?: string[], options?: Partial<PipeOptions>): Result;
+  pipe(
+    command: string,
+    args?: string[],
+    options?: Partial<PipeOptions>,
+  ): Result;
   [Symbol.asyncIterator](): AsyncIterator<string>;
   protected _waitForOutput(): Promise<Output>;
-  then<TResult1 = Output, TResult2 = never>(onfulfilled?: ((value: Output) => TResult1 | PromiseLike<TResult1>) | null, onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null): Promise<TResult1 | TResult2>;
+  then<TResult1 = Output, TResult2 = never>(
+    onfulfilled?: ((value: Output) => TResult1 | PromiseLike<TResult1>) | null,
+    onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null,
+  ): Promise<TResult1 | TResult2>;
   protected _streamOut?: Readable;
   protected _streamErr?: Readable;
   spawn(): void;
@@ -71,4 +84,16 @@ declare const x: TinyExec;
 declare const exec: TinyExec;
 
 //#endregion
-export { ExecProcess, KillSignal, NonZeroExitError, Options, Output, OutputApi, PipeOptions, Result, TinyExec, exec, x };
+export {
+  ExecProcess,
+  KillSignal,
+  NonZeroExitError,
+  Options,
+  Output,
+  OutputApi,
+  PipeOptions,
+  Result,
+  TinyExec,
+  exec,
+  x,
+};

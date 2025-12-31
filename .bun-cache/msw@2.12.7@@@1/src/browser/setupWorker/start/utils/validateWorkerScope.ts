@@ -1,5 +1,5 @@
-import { devUtils } from '~/core/utils/internal/devUtils'
-import { StartOptions } from '../../glossary'
+import { devUtils } from "~/core/utils/internal/devUtils";
+import type { StartOptions } from "../../glossary";
 
 export function validateWorkerScope(
   registration: ServiceWorkerRegistration,
@@ -13,6 +13,6 @@ Cannot intercept requests on this page because it's outside of the worker's scop
 - (Recommended) Register the worker at the root level ("/") of your application.
 - Set the "Service-Worker-Allowed" response header to allow out-of-scope workers.\
 `,
-    )
+    );
   }
 }

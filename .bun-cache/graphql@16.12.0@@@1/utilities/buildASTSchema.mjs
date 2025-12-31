@@ -1,10 +1,10 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { Kind } from '../language/kinds.mjs';
-import { parse } from '../language/parser.mjs';
-import { specifiedDirectives } from '../type/directives.mjs';
-import { GraphQLSchema } from '../type/schema.mjs';
-import { assertValidSDL } from '../validation/validate.mjs';
-import { extendSchemaImpl } from './extendSchema.mjs';
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { Kind } from "../language/kinds.mjs";
+import { parse } from "../language/parser.mjs";
+import { specifiedDirectives } from "../type/directives.mjs";
+import { GraphQLSchema } from "../type/schema.mjs";
+import { assertValidSDL } from "../validation/validate.mjs";
+import { extendSchemaImpl } from "./extendSchema.mjs";
 
 /**
  * This takes the ast of a schema document produced by the parse function in
@@ -18,7 +18,7 @@ import { extendSchemaImpl } from './extendSchema.mjs';
  */
 export function buildASTSchema(documentAST, options) {
   (documentAST != null && documentAST.kind === Kind.DOCUMENT) ||
-    devAssert(false, 'Must provide valid Document AST.');
+    devAssert(false, "Must provide valid Document AST.");
 
   if (
     (options === null || options === void 0 ? void 0 : options.assumeValid) !==
@@ -46,17 +46,17 @@ export function buildASTSchema(documentAST, options) {
         // Note: While this could make early assertions to get the correctly
         // typed values below, that would throw immediately while type system
         // validation with validateSchema() will produce more actionable results.
-        case 'Query':
+        case "Query":
           // @ts-expect-error validated in `validateSchema`
           config.query = type;
           break;
 
-        case 'Mutation':
+        case "Mutation":
           // @ts-expect-error validated in `validateSchema`
           config.mutation = type;
           break;
 
-        case 'Subscription':
+        case "Subscription":
           // @ts-expect-error validated in `validateSchema`
           config.subscription = type;
           break;

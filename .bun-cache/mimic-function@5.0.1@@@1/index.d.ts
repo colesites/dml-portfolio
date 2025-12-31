@@ -1,10 +1,10 @@
 export type Options = {
-	/**
+  /**
 	Skip modifying [non-configurable properties](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor#Description) instead of throwing an error.
 
 	@default false
 	*/
-	readonly ignoreNonConfigurable?: boolean;
+  readonly ignoreNonConfigurable?: boolean;
 };
 
 /**
@@ -42,11 +42,11 @@ console.log(wrapper.unicorn);
 ```
 */
 export default function mimicFunction<
-	ArgumentsType extends unknown[],
-	ReturnType,
-	FunctionType extends (...arguments_: ArgumentsType) => ReturnType,
+  ArgumentsType extends unknown[],
+  ReturnType,
+  FunctionType extends (...arguments_: ArgumentsType) => ReturnType,
 >(
-	to: (...arguments_: ArgumentsType) => ReturnType,
-	from: FunctionType,
-	options?: Options,
+  to: (...arguments_: ArgumentsType) => ReturnType,
+  from: FunctionType,
+  options?: Options,
 ): FunctionType;

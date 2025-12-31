@@ -1,19 +1,19 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { inspect } from '../jsutils/inspect.mjs';
-import { isAsyncIterable } from '../jsutils/isAsyncIterable.mjs';
-import { addPath, pathToArray } from '../jsutils/Path.mjs';
-import { GraphQLError } from '../error/GraphQLError.mjs';
-import { locatedError } from '../error/locatedError.mjs';
-import { collectFields } from './collectFields.mjs';
+import { GraphQLError } from "../error/GraphQLError.mjs";
+import { locatedError } from "../error/locatedError.mjs";
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { isAsyncIterable } from "../jsutils/isAsyncIterable.mjs";
+import { addPath, pathToArray } from "../jsutils/Path.mjs";
+import { collectFields } from "./collectFields.mjs";
 import {
   assertValidExecutionArguments,
   buildExecutionContext,
   buildResolveInfo,
   execute,
   getFieldDef,
-} from './execute.mjs';
-import { mapAsyncIterator } from './mapAsyncIterator.mjs';
-import { getArgumentValues } from './values.mjs';
+} from "./execute.mjs";
+import { mapAsyncIterator } from "./mapAsyncIterator.mjs";
+import { getArgumentValues } from "./values.mjs";
 /**
  * Implements the "Subscribe" algorithm described in the GraphQL specification.
  *
@@ -41,7 +41,7 @@ export async function subscribe(args) {
   arguments.length < 2 ||
     devAssert(
       false,
-      'graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.',
+      "graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.",
     );
   const resultOrStream = await createSourceEventStream(args);
 
@@ -63,7 +63,7 @@ export async function subscribe(args) {
 function toNormalizedArgs(args) {
   const firstArg = args[0];
 
-  if (firstArg && 'document' in firstArg) {
+  if (firstArg && "document" in firstArg) {
     return firstArg;
   }
 
@@ -117,7 +117,7 @@ export async function createSourceEventStream(...rawArgs) {
 
   const exeContext = buildExecutionContext(args); // Return early errors if execution context failed.
 
-  if (!('schema' in exeContext)) {
+  if (!("schema" in exeContext)) {
     return {
       errors: exeContext,
     };
@@ -128,7 +128,7 @@ export async function createSourceEventStream(...rawArgs) {
 
     if (!isAsyncIterable(eventStream)) {
       throw new Error(
-        'Subscription field must return Async Iterable. ' +
+        "Subscription field must return Async Iterable. " +
           `Received: ${inspect(eventStream)}.`,
       );
     }
@@ -154,7 +154,7 @@ async function executeSubscription(exeContext) {
 
   if (rootType == null) {
     throw new GraphQLError(
-      'Schema is not configured to execute subscription operation.',
+      "Schema is not configured to execute subscription operation.",
       {
         nodes: operation,
       },

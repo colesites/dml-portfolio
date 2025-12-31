@@ -28,7 +28,7 @@ test("opt passthrough", () => {
       a: "hello",
       b: undefined,
     },
-    { jitless: true }
+    { jitless: true },
   );
   expect(result).toEqual({
     a: "hello",
@@ -42,8 +42,12 @@ test("opt passthrough", () => {
   expect(z.lazy(() => z.string().optional())._zod.optin).toEqual("optional");
   expect(z.lazy(() => z.string().optional())._zod.optout).toEqual("optional");
 
-  expect(z.lazy(() => z.string().default("asdf"))._zod.optin).toEqual("optional");
-  expect(z.lazy(() => z.string().default("asdf"))._zod.optout).toEqual(undefined);
+  expect(z.lazy(() => z.string().default("asdf"))._zod.optin).toEqual(
+    "optional",
+  );
+  expect(z.lazy(() => z.string().default("asdf"))._zod.optout).toEqual(
+    undefined,
+  );
 });
 
 //////////////   LAZY   //////////////
@@ -88,7 +92,7 @@ test("recursion with z.lazy", () => {
     z.object({
       name: z.string(),
       subcategories: z.array(Category),
-    })
+    }),
   );
   Category.parse(testCategory);
 });
@@ -117,7 +121,7 @@ test("recursive union wit z.lazy", () => {
         value: z.number(),
         next: LinkedListSchema,
       }),
-    ])
+    ]),
   );
   LinkedListSchema.parse(linkedListExample);
 });
@@ -137,14 +141,14 @@ test("mutual recursion with lazy", () => {
     z.object({
       val: z.number(),
       b: Blazy,
-    })
+    }),
   );
 
   const Blazy: z.ZodType<B> = z.lazy(() =>
     z.object({
       val: z.number(),
       a: Alazy.optional(),
-    })
+    }),
   );
 
   const testData = {

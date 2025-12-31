@@ -2,7 +2,7 @@
  * Deprecated module: moved from curves/abstract/utils.js to curves/utils.js
  * @module
  */
-import * as u from '../utils.ts';
+import * as u from "../utils.ts";
 /** @deprecated moved to `@noble/curves/utils.js` */
 export type Hex = u.Hex;
 /** @deprecated moved to `@noble/curves/utils.js` */

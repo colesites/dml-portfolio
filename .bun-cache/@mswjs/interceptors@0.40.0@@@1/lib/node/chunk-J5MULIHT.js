@@ -1,6 +1,6 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 
-var _chunkDOWWQYXZjs = require('./chunk-DOWWQYXZ.js');
+var _chunkDOWWQYXZjs = require("./chunk-DOWWQYXZ.js");
 
 // src/BatchInterceptor.ts
 var BatchInterceptor = class extends _chunkDOWWQYXZjs.Interceptor {
@@ -44,8 +44,6 @@ var BatchInterceptor = class extends _chunkDOWWQYXZjs.Interceptor {
     return this;
   }
 };
-
-
 
 exports.BatchInterceptor = BatchInterceptor;
 //# sourceMappingURL=chunk-J5MULIHT.js.map

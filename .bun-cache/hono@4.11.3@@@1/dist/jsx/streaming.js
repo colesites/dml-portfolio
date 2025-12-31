@@ -7,12 +7,10 @@ import { DOM_RENDERER, DOM_STASH } from "./constants.js";
 import { createContext, useContext } from "./context.js";
 import { Suspense as SuspenseDomRenderer } from "./dom/components.js";
 import { buildDataStack } from "./dom/render.js";
+
 var StreamingContext = createContext(null);
 var suspenseCounter = 0;
-var Suspense = async ({
-  children,
-  fallback
-}) => {
+var Suspense = async ({ children, fallback }) => {
   if (!Array.isArray(children)) {
     children = [children];
   }
@@ -26,8 +24,8 @@ var Suspense = async ({
   try {
     stackNode[DOM_STASH][0] = 0;
     buildDataStack.push([[], stackNode]);
-    resArray = children.map(
-      (c) => c == null || typeof c === "boolean" ? "" : c.toString()
+    resArray = children.map((c) =>
+      c == null || typeof c === "boolean" ? "" : c.toString(),
     );
   } catch (e) {
     if (e instanceof Promise) {
@@ -36,7 +34,7 @@ var Suspense = async ({
           stackNode[DOM_STASH][0] = 0;
           buildDataStack.push([[], stackNode]);
           return childrenToString(children).then(popNodeStack);
-        })
+        }),
       ];
     } else {
       throw e;
@@ -48,7 +46,7 @@ var Suspense = async ({
     const index = suspenseCounter++;
     const fallbackStr = await fallback.toString();
     return raw(`<template id="H:${index}"></template>${fallbackStr}<!--/$-->`, [
-      ...fallbackStr.callbacks || [],
+      ...(fallbackStr.callbacks || []),
       ({ phase, buffer, context }) => {
         if (phase === HtmlEscapedCallbackPhase.BeforeStream) {
           return;
@@ -59,10 +57,12 @@ var Suspense = async ({
           if (buffer) {
             buffer[0] = buffer[0].replace(
               new RegExp(`<template id="H:${index}"></template>.*?<!--/\\$-->`),
-              content
+              content,
             );
           }
-          let html = buffer ? "" : `<template data-hono-target="H:${index}">${content}</template><script${nonce ? ` nonce="${nonce}"` : ""}>
+          let html = buffer
+            ? ""
+            : `<template data-hono-target="H:${index}">${content}</template><script${nonce ? ` nonce="${nonce}"` : ""}>
 ((d,c,n) => {
 c=d.currentScript.previousSibling
 d=d.getElementById('H:${index}')
@@ -71,16 +71,21 @@ do{n=d.nextSibling;n.remove()}while(n.nodeType!=8||n.nodeValue!='/$')
 d.replaceWith(c.content)
 })(document)
 </script>`;
-          const callbacks = htmlArray.map((html2) => html2.callbacks || []).flat();
+          const callbacks = htmlArray.flatMap((html2) => html2.callbacks || []);
           if (!callbacks.length) {
             return html;
           }
           if (phase === HtmlEscapedCallbackPhase.Stream) {
-            html = await resolveCallback(html, HtmlEscapedCallbackPhase.BeforeStream, true, context);
+            html = await resolveCallback(
+              html,
+              HtmlEscapedCallbackPhase.BeforeStream,
+              true,
+              context,
+            );
           }
           return raw(html, callbacks);
         });
-      }
+      },
     ]);
   } else {
     return raw(resArray.join(""));
@@ -100,31 +105,41 @@ var renderToReadableStream = (content, onError = console.trace) => {
           content,
           HtmlEscapedCallbackPhase.BeforeStream,
           true,
-          context
+          context,
         );
         controller.enqueue(textEncoder.encode(resolved));
         let resolvedCount = 0;
         const callbacks = [];
         const then = (promise) => {
           callbacks.push(
-            promise.catch((err) => {
-              console.log(err);
-              onError(err);
-              return "";
-            }).then(async (res) => {
-              res = await resolveCallback(
-                res,
-                HtmlEscapedCallbackPhase.BeforeStream,
-                true,
-                context
-              );
-              res.callbacks?.map((c) => c({ phase: HtmlEscapedCallbackPhase.Stream, context })).filter(Boolean).forEach(then);
-              resolvedCount++;
-              controller.enqueue(textEncoder.encode(res));
-            })
+            promise
+              .catch((err) => {
+                console.log(err);
+                onError(err);
+                return "";
+              })
+              .then(async (res) => {
+                res = await resolveCallback(
+                  res,
+                  HtmlEscapedCallbackPhase.BeforeStream,
+                  true,
+                  context,
+                );
+                res.callbacks
+                  ?.map((c) =>
+                    c({ phase: HtmlEscapedCallbackPhase.Stream, context }),
+                  )
+                  .filter(Boolean)
+                  .forEach(then);
+                resolvedCount++;
+                controller.enqueue(textEncoder.encode(res));
+              }),
           );
         };
-        resolved.callbacks?.map((c) => c({ phase: HtmlEscapedCallbackPhase.Stream, context })).filter(Boolean).forEach(then);
+        resolved.callbacks
+          ?.map((c) => c({ phase: HtmlEscapedCallbackPhase.Stream, context }))
+          .filter(Boolean)
+          .forEach(then);
         while (resolvedCount !== callbacks.length) {
           await Promise.all(callbacks);
         }
@@ -132,12 +147,8 @@ var renderToReadableStream = (content, onError = console.trace) => {
         onError(e);
       }
       controller.close();
-    }
+    },
   });
   return reader;
 };
-export {
-  StreamingContext,
-  Suspense,
-  renderToReadableStream
-};
+export { StreamingContext, Suspense, renderToReadableStream };

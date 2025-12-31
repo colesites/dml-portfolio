@@ -1,15 +1,13 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.ExecutableDefinitionsRule = ExecutableDefinitionsRule;
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _predicates = require('../../language/predicates.js');
+var _predicates = require("../../language/predicates.js");
 
 /**
  * Executable definitions
@@ -27,7 +25,7 @@ function ExecutableDefinitionsRule(context) {
           const defName =
             definition.kind === _kinds.Kind.SCHEMA_DEFINITION ||
             definition.kind === _kinds.Kind.SCHEMA_EXTENSION
-              ? 'schema'
+              ? "schema"
               : '"' + definition.name.value + '"';
           context.reportError(
             new _GraphQLError.GraphQLError(

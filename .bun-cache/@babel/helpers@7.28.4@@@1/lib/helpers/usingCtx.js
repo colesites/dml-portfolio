@@ -1,26 +1,32 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _usingCtx;
 function _usingCtx() {
-  var _disposeSuppressedError = typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed) {
-      var err = new Error();
-      err.name = "SuppressedError";
-      err.error = error;
-      err.suppressed = suppressed;
-      return err;
-    },
+  var _disposeSuppressedError =
+      typeof SuppressedError === "function"
+        ? SuppressedError
+        : (error, suppressed) => {
+            var err = new Error();
+            err.name = "SuppressedError";
+            err.error = error;
+            err.suppressed = suppressed;
+            return err;
+          },
     empty = {},
     stack = [];
   function using(isAwait, value) {
     if (value != null) {
       if (Object(value) !== value) {
-        throw new TypeError("using declarations can only be used with objects, functions, null, or undefined.");
+        throw new TypeError(
+          "using declarations can only be used with objects, functions, null, or undefined.",
+        );
       }
       if (isAwait) {
-        var dispose = value[Symbol.asyncDispose || Symbol["for"]("Symbol.asyncDispose")];
+        var dispose =
+          value[Symbol.asyncDispose || Symbol["for"]("Symbol.asyncDispose")];
       }
       if (dispose === undefined) {
         dispose = value[Symbol.dispose || Symbol["for"]("Symbol.dispose")];
@@ -32,7 +38,7 @@ function _usingCtx() {
         throw new TypeError("Object is not disposable.");
       }
       if (inner) {
-        dispose = function () {
+        dispose = () => {
           try {
             inner.call(value);
           } catch (e) {
@@ -43,12 +49,12 @@ function _usingCtx() {
       stack.push({
         v: value,
         d: dispose,
-        a: isAwait
+        a: isAwait,
       });
     } else if (isAwait) {
       stack.push({
         d: value,
-        a: isAwait
+        a: isAwait,
       });
     }
     return value;
@@ -62,7 +68,7 @@ function _usingCtx() {
         state = 0,
         resource;
       function next() {
-        while (resource = stack.pop()) {
+        while ((resource = stack.pop())) {
           try {
             if (!resource.a && state === 1) {
               state = 0;
@@ -96,7 +102,7 @@ function _usingCtx() {
         return next();
       }
       return next();
-    }
+    },
   };
 }
 

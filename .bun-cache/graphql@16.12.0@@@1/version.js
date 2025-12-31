@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.versionInfo = exports.version = void 0;
@@ -10,7 +8,7 @@ exports.versionInfo = exports.version = void 0;
 /**
  * A string containing the version of the GraphQL.js library
  */
-const version = '16.12.0';
+const version = "16.12.0";
 /**
  * An object containing the components of the GraphQL.js version string
  */

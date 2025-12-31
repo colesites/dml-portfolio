@@ -2,75 +2,83 @@
  * @module
  * Secure Headers Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
-import type { PermissionsPolicyDirective } from './permissions-policy';
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
+import type { PermissionsPolicyDirective } from "./permissions-policy";
 export type SecureHeadersVariables = {
-    secureHeadersNonce?: string;
+  secureHeadersNonce?: string;
 };
-export type ContentSecurityPolicyOptionHandler = (ctx: Context, directive: string) => string;
-type ContentSecurityPolicyOptionValue = (string | ContentSecurityPolicyOptionHandler)[];
+export type ContentSecurityPolicyOptionHandler = (
+  ctx: Context,
+  directive: string,
+) => string;
+type ContentSecurityPolicyOptionValue = (
+  | string
+  | ContentSecurityPolicyOptionHandler
+)[];
 interface ContentSecurityPolicyOptions {
-    defaultSrc?: ContentSecurityPolicyOptionValue;
-    baseUri?: ContentSecurityPolicyOptionValue;
-    childSrc?: ContentSecurityPolicyOptionValue;
-    connectSrc?: ContentSecurityPolicyOptionValue;
-    fontSrc?: ContentSecurityPolicyOptionValue;
-    formAction?: ContentSecurityPolicyOptionValue;
-    frameAncestors?: ContentSecurityPolicyOptionValue;
-    frameSrc?: ContentSecurityPolicyOptionValue;
-    imgSrc?: ContentSecurityPolicyOptionValue;
-    manifestSrc?: ContentSecurityPolicyOptionValue;
-    mediaSrc?: ContentSecurityPolicyOptionValue;
-    objectSrc?: ContentSecurityPolicyOptionValue;
-    reportTo?: string;
-    reportUri?: string | string[];
-    sandbox?: ContentSecurityPolicyOptionValue;
-    scriptSrc?: ContentSecurityPolicyOptionValue;
-    scriptSrcAttr?: ContentSecurityPolicyOptionValue;
-    scriptSrcElem?: ContentSecurityPolicyOptionValue;
-    styleSrc?: ContentSecurityPolicyOptionValue;
-    styleSrcAttr?: ContentSecurityPolicyOptionValue;
-    styleSrcElem?: ContentSecurityPolicyOptionValue;
-    upgradeInsecureRequests?: ContentSecurityPolicyOptionValue;
-    workerSrc?: ContentSecurityPolicyOptionValue;
-    requireTrustedTypesFor?: ContentSecurityPolicyOptionValue;
-    trustedTypes?: ContentSecurityPolicyOptionValue;
+  defaultSrc?: ContentSecurityPolicyOptionValue;
+  baseUri?: ContentSecurityPolicyOptionValue;
+  childSrc?: ContentSecurityPolicyOptionValue;
+  connectSrc?: ContentSecurityPolicyOptionValue;
+  fontSrc?: ContentSecurityPolicyOptionValue;
+  formAction?: ContentSecurityPolicyOptionValue;
+  frameAncestors?: ContentSecurityPolicyOptionValue;
+  frameSrc?: ContentSecurityPolicyOptionValue;
+  imgSrc?: ContentSecurityPolicyOptionValue;
+  manifestSrc?: ContentSecurityPolicyOptionValue;
+  mediaSrc?: ContentSecurityPolicyOptionValue;
+  objectSrc?: ContentSecurityPolicyOptionValue;
+  reportTo?: string;
+  reportUri?: string | string[];
+  sandbox?: ContentSecurityPolicyOptionValue;
+  scriptSrc?: ContentSecurityPolicyOptionValue;
+  scriptSrcAttr?: ContentSecurityPolicyOptionValue;
+  scriptSrcElem?: ContentSecurityPolicyOptionValue;
+  styleSrc?: ContentSecurityPolicyOptionValue;
+  styleSrcAttr?: ContentSecurityPolicyOptionValue;
+  styleSrcElem?: ContentSecurityPolicyOptionValue;
+  upgradeInsecureRequests?: ContentSecurityPolicyOptionValue;
+  workerSrc?: ContentSecurityPolicyOptionValue;
+  requireTrustedTypesFor?: ContentSecurityPolicyOptionValue;
+  trustedTypes?: ContentSecurityPolicyOptionValue;
 }
 interface ReportToOptions {
-    group: string;
-    max_age: number;
-    endpoints: ReportToEndpoint[];
+  group: string;
+  max_age: number;
+  endpoints: ReportToEndpoint[];
 }
 interface ReportToEndpoint {
-    url: string;
+  url: string;
 }
 interface ReportingEndpointOptions {
-    name: string;
-    url: string;
+  name: string;
+  url: string;
 }
-type PermissionsPolicyValue = '*' | 'self' | 'src' | 'none' | string;
-type PermissionsPolicyOptions = Partial<Record<PermissionsPolicyDirective, PermissionsPolicyValue[] | boolean>>;
+type PermissionsPolicyValue = "*" | "self" | "src" | "none" | string;
+type PermissionsPolicyOptions = Partial<
+  Record<PermissionsPolicyDirective, PermissionsPolicyValue[] | boolean>
+>;
 type overridableHeader = boolean | string;
 interface SecureHeadersOptions {
-    contentSecurityPolicy?: ContentSecurityPolicyOptions;
-    contentSecurityPolicyReportOnly?: ContentSecurityPolicyOptions;
-    crossOriginEmbedderPolicy?: overridableHeader;
-    crossOriginResourcePolicy?: overridableHeader;
-    crossOriginOpenerPolicy?: overridableHeader;
-    originAgentCluster?: overridableHeader;
-    referrerPolicy?: overridableHeader;
-    reportingEndpoints?: ReportingEndpointOptions[];
-    reportTo?: ReportToOptions[];
-    strictTransportSecurity?: overridableHeader;
-    xContentTypeOptions?: overridableHeader;
-    xDnsPrefetchControl?: overridableHeader;
-    xDownloadOptions?: overridableHeader;
-    xFrameOptions?: overridableHeader;
-    xPermittedCrossDomainPolicies?: overridableHeader;
-    xXssProtection?: overridableHeader;
-    removePoweredBy?: boolean;
-    permissionsPolicy?: PermissionsPolicyOptions;
+  contentSecurityPolicy?: ContentSecurityPolicyOptions;
+  contentSecurityPolicyReportOnly?: ContentSecurityPolicyOptions;
+  crossOriginEmbedderPolicy?: overridableHeader;
+  crossOriginResourcePolicy?: overridableHeader;
+  crossOriginOpenerPolicy?: overridableHeader;
+  originAgentCluster?: overridableHeader;
+  referrerPolicy?: overridableHeader;
+  reportingEndpoints?: ReportingEndpointOptions[];
+  reportTo?: ReportToOptions[];
+  strictTransportSecurity?: overridableHeader;
+  xContentTypeOptions?: overridableHeader;
+  xDnsPrefetchControl?: overridableHeader;
+  xDownloadOptions?: overridableHeader;
+  xFrameOptions?: overridableHeader;
+  xPermittedCrossDomainPolicies?: overridableHeader;
+  xXssProtection?: overridableHeader;
+  removePoweredBy?: boolean;
+  permissionsPolicy?: PermissionsPolicyOptions;
 }
 export declare const NONCE: ContentSecurityPolicyOptionHandler;
 /**
@@ -105,5 +113,6 @@ export declare const NONCE: ContentSecurityPolicyOptionHandler;
  * app.use(secureHeaders())
  * ```
  */
-export declare const secureHeaders: (customOptions?: SecureHeadersOptions) => MiddlewareHandler;
-export {};
+export declare const secureHeaders: (
+  customOptions?: SecureHeadersOptions,
+) => MiddlewareHandler;

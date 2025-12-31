@@ -1,18 +1,26 @@
 // src/jsx/base.ts
 import { raw } from "../helper/html/index.js";
-import { escapeToBuffer, resolveCallbackSync, stringBufferToString } from "../utils/html.js";
-import { DOM_RENDERER, DOM_MEMO } from "./constants.js";
+import {
+  escapeToBuffer,
+  resolveCallbackSync,
+  stringBufferToString,
+} from "../utils/html.js";
+import { DOM_MEMO, DOM_RENDERER } from "./constants.js";
 import { createContext, globalContexts, useContext } from "./context.js";
 import { domRenderers } from "./intrinsic-element/common.js";
 import * as intrinsicElementTags from "./intrinsic-element/components.js";
 import { normalizeIntrinsicElementKey, styleObjectForEach } from "./utils.js";
+
 var nameSpaceContext = void 0;
 var getNameSpaceContext = () => nameSpaceContext;
-var toSVGAttributeName = (key) => /[A-Z]/.test(key) && // Presentation attributes are findable in style object. "clip-path", "font-size", "stroke-width", etc.
-// Or other un-deprecated kebab-case attributes. "overline-position", "paint-order", "strikethrough-position", etc.
-key.match(
-  /^(?:al|basel|clip(?:Path|Rule)$|co|do|fill|fl|fo|gl|let|lig|i|marker[EMS]|o|pai|pointe|sh|st[or]|text[^L]|tr|u|ve|w)/
-) ? key.replace(/([A-Z])/g, "-$1").toLowerCase() : key;
+var toSVGAttributeName = (key) =>
+  /[A-Z]/.test(key) && // Presentation attributes are findable in style object. "clip-path", "font-size", "stroke-width", etc.
+  // Or other un-deprecated kebab-case attributes. "overline-position", "paint-order", "strikethrough-position", etc.
+  key.match(
+    /^(?:al|basel|clip(?:Path|Rule)$|co|do|fill|fl|fo|gl|let|lig|i|marker[EMS]|o|pai|pointe|sh|st[or]|text[^L]|tr|u|ve|w)/,
+  )
+    ? key.replace(/([A-Z])/g, "-$1").toLowerCase()
+    : key;
 var emptyTags = [
   "area",
   "base",
@@ -28,7 +36,7 @@ var emptyTags = [
   "param",
   "source",
   "track",
-  "wbr"
+  "wbr",
 ];
 var booleanAttributes = [
   "allowfullscreen",
@@ -56,19 +64,21 @@ var booleanAttributes = [
   "readonly",
   "required",
   "reversed",
-  "selected"
+  "selected",
 ];
 var childrenToStringToBuffer = (children, buffer) => {
   for (let i = 0, len = children.length; i < len; i++) {
     const child = children[i];
     if (typeof child === "string") {
       escapeToBuffer(child, buffer);
-    } else if (typeof child === "boolean" || child === null || child === void 0) {
-      continue;
+    } else if (
+      typeof child === "boolean" ||
+      child === null ||
+      child === void 0
+    ) {
     } else if (child instanceof JSXNode) {
       child.toStringToBuffer(buffer);
     } else if (typeof child === "number" || child.isEscaped) {
-      ;
       buffer[0] += child;
     } else if (child instanceof Promise) {
       buffer.unshift("", child);
@@ -109,14 +119,21 @@ var JSXNode = class {
         context.values.pop();
       });
     }
-    return buffer.length === 1 ? "callbacks" in buffer ? resolveCallbackSync(raw(buffer[0], buffer.callbacks)).toString() : buffer[0] : stringBufferToString(buffer, buffer.callbacks);
+    return buffer.length === 1
+      ? "callbacks" in buffer
+        ? resolveCallbackSync(raw(buffer[0], buffer.callbacks)).toString()
+        : buffer[0]
+      : stringBufferToString(buffer, buffer.callbacks);
   }
   toStringToBuffer(buffer) {
     const tag = this.tag;
     const props = this.props;
     let { children } = this;
     buffer[0] += `<${tag}`;
-    const normalizeKey = nameSpaceContext && useContext(nameSpaceContext) === "svg" ? (key) => toSVGAttributeName(normalizeIntrinsicElementKey(key)) : (key) => normalizeIntrinsicElementKey(key);
+    const normalizeKey =
+      nameSpaceContext && useContext(nameSpaceContext) === "svg"
+        ? (key) => toSVGAttributeName(normalizeIntrinsicElementKey(key))
+        : (key) => normalizeIntrinsicElementKey(key);
     for (let [key, v] of Object.entries(props)) {
       key = normalizeKey(key);
       if (key === "children") {
@@ -143,7 +160,9 @@ var JSXNode = class {
         }
       } else if (key === "dangerouslySetInnerHTML") {
         if (children.length > 0) {
-          throw new Error("Can only set one of `children` or `props.dangerouslySetInnerHTML`.");
+          throw new Error(
+            "Can only set one of `children` or `props.dangerouslySetInnerHTML`.",
+          );
         }
         children = [raw(v.__html)];
       } else if (v instanceof Promise) {
@@ -151,7 +170,9 @@ var JSXNode = class {
         buffer.unshift('"', v);
       } else if (typeof v === "function") {
         if (!key.startsWith("on") && key !== "ref") {
-          throw new Error(`Invalid prop '${key}' of type 'function' supplied to '${tag}'.`);
+          throw new Error(
+            `Invalid prop '${key}' of type 'function' supplied to '${tag}'.`,
+          );
         }
       } else {
         buffer[0] += ` ${key}="`;
@@ -190,7 +211,7 @@ var JSXFunctionNode = class extends JSXNode {
               childRes.localContexts = currentContexts;
             }
             return childRes;
-          })
+          }),
         );
       }
     } else if (res instanceof JSXNode) {
@@ -226,7 +247,6 @@ var initDomRenderer = false;
 var jsxFn = (tag, props, children) => {
   if (!initDomRenderer) {
     for (const k in domRenderers) {
-      ;
       intrinsicElementTags[k][DOM_RENDERER] = domRenderers[k];
     }
     initDomRenderer = true;
@@ -234,21 +254,17 @@ var jsxFn = (tag, props, children) => {
   if (typeof tag === "function") {
     return new JSXFunctionNode(tag, props, children);
   } else if (intrinsicElementTags[tag]) {
-    return new JSXFunctionNode(
-      intrinsicElementTags[tag],
-      props,
-      children
-    );
+    return new JSXFunctionNode(intrinsicElementTags[tag], props, children);
   } else if (tag === "svg" || tag === "head") {
     nameSpaceContext ||= createContext("");
     return new JSXNode(tag, props, [
       new JSXFunctionNode(
         nameSpaceContext,
         {
-          value: tag
+          value: tag,
         },
-        children
-      )
+        children,
+      ),
     ]);
   } else {
     return new JSXNode(tag, props, children);
@@ -264,8 +280,12 @@ var shallowEqual = (a, b) => {
     return false;
   }
   for (let i = 0, len = aKeys.length; i < len; i++) {
-    if (aKeys[i] === "children" && bKeys[i] === "children" && !a.children?.length && !b.children?.length) {
-      continue;
+    if (
+      aKeys[i] === "children" &&
+      bKeys[i] === "children" &&
+      !a.children?.length &&
+      !b.children?.length
+    ) {
     } else if (a[aKeys[i]] !== b[aKeys[i]]) {
       return false;
     }
@@ -275,30 +295,33 @@ var shallowEqual = (a, b) => {
 var memo = (component, propsAreEqual = shallowEqual) => {
   let computed = null;
   let prevProps = void 0;
-  const wrapper = ((props) => {
+  const wrapper = (props) => {
     if (prevProps && !propsAreEqual(prevProps, props)) {
       computed = null;
     }
     prevProps = props;
-    return computed ||= component(props);
-  });
+    return (computed ||= component(props));
+  };
   wrapper[DOM_MEMO] = propsAreEqual;
   wrapper[DOM_RENDERER] = component;
   return wrapper;
 };
-var Fragment = ({
-  children
-}) => {
+var Fragment = ({ children }) => {
   return new JSXFragmentNode(
     "",
     {
-      children
+      children,
     },
-    Array.isArray(children) ? children : children ? [children] : []
+    Array.isArray(children) ? children : children ? [children] : [],
   );
 };
 var isValidElement = (element) => {
-  return !!(element && typeof element === "object" && "tag" in element && "props" in element);
+  return !!(
+    element &&
+    typeof element === "object" &&
+    "tag" in element &&
+    "props" in element
+  );
 };
 var cloneElement = (element, props, ...children) => {
   let childrenToClone;
@@ -308,11 +331,7 @@ var cloneElement = (element, props, ...children) => {
     const c = element.props.children;
     childrenToClone = Array.isArray(c) ? c : [c];
   }
-  return jsx(
-    element.tag,
-    { ...element.props, ...props },
-    ...childrenToClone
-  );
+  return jsx(element.tag, { ...element.props, ...props }, ...childrenToClone);
 };
 var reactAPICompatVersion = "19.0.0-hono-jsx";
 export {
@@ -327,5 +346,5 @@ export {
   jsxFn,
   memo,
   reactAPICompatVersion,
-  shallowEqual
+  shallowEqual,
 };

@@ -12,7 +12,7 @@ export class ErrorEvent extends Event {
    *
    * @public
    */
-  public code?: number | undefined
+  public code?: number | undefined;
 
   /**
    * Optional message attached to the error.
@@ -20,7 +20,7 @@ export class ErrorEvent extends Event {
    *
    * @public
    */
-  public message?: string | undefined
+  public message?: string | undefined;
 
   /**
    * Constructs a new `ErrorEvent` instance. This is typically not called directly,
@@ -31,11 +31,14 @@ export class ErrorEvent extends Event {
    */
   constructor(
     type: string,
-    errorEventInitDict?: {message?: string | undefined; code?: number | undefined},
+    errorEventInitDict?: {
+      message?: string | undefined;
+      code?: number | undefined;
+    },
   ) {
-    super(type)
-    this.code = errorEventInitDict?.code ?? undefined
-    this.message = errorEventInitDict?.message ?? undefined
+    super(type);
+    this.code = errorEventInitDict?.code ?? undefined;
+    this.message = errorEventInitDict?.message ?? undefined;
   }
 
   /**
@@ -50,12 +53,12 @@ export class ErrorEvent extends Event {
    * @param inspect - The inspect function to use (prevents having to import it from `util`)
    * @returns A string representation of the error
    */
-  [Symbol.for('nodejs.util.inspect.custom')](
+  [Symbol.for("nodejs.util.inspect.custom")](
     _depth: number,
-    options: {colors: boolean},
-    inspect: (obj: unknown, inspectOptions: {colors: boolean}) => string,
+    options: { colors: boolean },
+    inspect: (obj: unknown, inspectOptions: { colors: boolean }) => string,
   ): string {
-    return inspect(inspectableError(this), options)
+    return inspect(inspectableError(this), options);
   }
 
   /**
@@ -69,11 +72,11 @@ export class ErrorEvent extends Event {
    * @param options - The options passed to `Deno.inspect`
    * @returns A string representation of the error
    */
-  [Symbol.for('Deno.customInspect')](
-    inspect: (obj: unknown, inspectOptions: {colors: boolean}) => string,
-    options: {colors: boolean},
+  [Symbol.for("Deno.customInspect")](
+    inspect: (obj: unknown, inspectOptions: { colors: boolean }) => string,
+    options: { colors: boolean },
   ): string {
-    return inspect(inspectableError(this), options)
+    return inspect(inspectableError(this), options);
   }
 }
 
@@ -90,12 +93,12 @@ export function syntaxError(message: string): SyntaxError {
   // and without casting to `any`, please send a PR 🙏
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const DomException = (globalThis as any).DOMException
-  if (typeof DomException === 'function') {
-    return new DomException(message, 'SyntaxError')
+  const DomException = (globalThis as any).DOMException;
+  if (typeof DomException === "function") {
+    return new DomException(message, "SyntaxError");
   }
 
-  return new SyntaxError(message)
+  return new SyntaxError(message);
 }
 
 /**
@@ -108,18 +111,18 @@ export function syntaxError(message: string): SyntaxError {
  */
 export function flattenError(err: unknown): string {
   if (!(err instanceof Error)) {
-    return `${err}`
+    return `${err}`;
   }
 
-  if ('errors' in err && Array.isArray(err.errors)) {
-    return err.errors.map(flattenError).join(', ')
+  if ("errors" in err && Array.isArray(err.errors)) {
+    return err.errors.map(flattenError).join(", ");
   }
 
-  if ('cause' in err && err.cause instanceof Error) {
-    return `${err}: ${flattenError(err.cause)}`
+  if ("cause" in err && err.cause instanceof Error) {
+    return `${err}: ${flattenError(err.cause)}`;
   }
 
-  return err.message
+  return err.message;
 }
 
 /**
@@ -137,5 +140,5 @@ function inspectableError(err: ErrorEvent) {
     defaultPrevented: err.defaultPrevented,
     cancelable: err.cancelable,
     timeStamp: err.timeStamp,
-  }
+  };
 }

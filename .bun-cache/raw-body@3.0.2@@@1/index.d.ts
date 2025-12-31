@@ -57,29 +57,33 @@ declare namespace getRawBody {
  */
 declare function getRawBody(
   stream: NodeJS.ReadableStream,
-  callback: (err: getRawBody.RawBodyError, body: Buffer) => void
+  callback: (err: getRawBody.RawBodyError, body: Buffer) => void,
 ): void;
 
 declare function getRawBody(
   stream: NodeJS.ReadableStream,
-  options: (getRawBody.Options & { encoding: getRawBody.Encoding }) | getRawBody.Encoding,
-  callback: (err: getRawBody.RawBodyError, body: string) => void
+  options:
+    | (getRawBody.Options & { encoding: getRawBody.Encoding })
+    | getRawBody.Encoding,
+  callback: (err: getRawBody.RawBodyError, body: string) => void,
 ): void;
 
 declare function getRawBody(
   stream: NodeJS.ReadableStream,
   options: getRawBody.Options,
-  callback: (err: getRawBody.RawBodyError, body: Buffer) => void
+  callback: (err: getRawBody.RawBodyError, body: Buffer) => void,
 ): void;
 
 declare function getRawBody(
   stream: NodeJS.ReadableStream,
-  options: (getRawBody.Options & { encoding: getRawBody.Encoding }) | getRawBody.Encoding
+  options:
+    | (getRawBody.Options & { encoding: getRawBody.Encoding })
+    | getRawBody.Encoding,
 ): Promise<string>;
 
 declare function getRawBody(
   stream: NodeJS.ReadableStream,
-  options?: getRawBody.Options
+  options?: getRawBody.Options,
 ): Promise<Buffer>;
 
 export = getRawBody;

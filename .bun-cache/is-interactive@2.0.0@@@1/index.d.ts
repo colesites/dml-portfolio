@@ -1,10 +1,10 @@
 export interface Options {
-	/**
+  /**
 	The stream to check.
 
 	@default process.stdout
 	*/
-	readonly stream?: NodeJS.WritableStream;
+  readonly stream?: NodeJS.WritableStream;
 }
 
 /**

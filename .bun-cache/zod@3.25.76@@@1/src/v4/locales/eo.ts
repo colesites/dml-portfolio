@@ -17,7 +17,10 @@ export const parsedType = (data: any): string => {
         return "senvalora";
       }
 
-      if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+      if (
+        Object.getPrototypeOf(data) !== Object.prototype &&
+        data.constructor
+      ) {
         return data.constructor.name;
       }
     }
@@ -76,7 +79,8 @@ const error: () => errors.$ZodErrorMap = () => {
         return `Nevalida enigo: atendiĝis ${issue.expected}, riceviĝis ${parsedType(issue.input)}`;
 
       case "invalid_value":
-        if (issue.values.length === 1) return `Nevalida enigo: atendiĝis ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `Nevalida enigo: atendiĝis ${util.stringifyPrimitive(issue.values[0])}`;
         return `Nevalida opcio: atendiĝis unu el ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
@@ -96,10 +100,14 @@ const error: () => errors.$ZodErrorMap = () => {
       }
       case "invalid_format": {
         const _issue = issue as errors.$ZodStringFormatIssues;
-        if (_issue.format === "starts_with") return `Nevalida karaktraro: devas komenciĝi per "${_issue.prefix}"`;
-        if (_issue.format === "ends_with") return `Nevalida karaktraro: devas finiĝi per "${_issue.suffix}"`;
-        if (_issue.format === "includes") return `Nevalida karaktraro: devas inkluzivi "${_issue.includes}"`;
-        if (_issue.format === "regex") return `Nevalida karaktraro: devas kongrui kun la modelo ${_issue.pattern}`;
+        if (_issue.format === "starts_with")
+          return `Nevalida karaktraro: devas komenciĝi per "${_issue.prefix}"`;
+        if (_issue.format === "ends_with")
+          return `Nevalida karaktraro: devas finiĝi per "${_issue.suffix}"`;
+        if (_issue.format === "includes")
+          return `Nevalida karaktraro: devas inkluzivi "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `Nevalida karaktraro: devas kongrui kun la modelo ${_issue.pattern}`;
         return `Nevalida ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

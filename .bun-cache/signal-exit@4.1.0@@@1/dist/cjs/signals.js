@@ -28,15 +28,25 @@ exports.signals = void 0;
  * listeners.
  */
 exports.signals = [];
-exports.signals.push('SIGHUP', 'SIGINT', 'SIGTERM');
-if (process.platform !== 'win32') {
-    exports.signals.push('SIGALRM', 'SIGABRT', 'SIGVTALRM', 'SIGXCPU', 'SIGXFSZ', 'SIGUSR2', 'SIGTRAP', 'SIGSYS', 'SIGQUIT', 'SIGIOT'
+exports.signals.push("SIGHUP", "SIGINT", "SIGTERM");
+if (process.platform !== "win32") {
+  exports.signals.push(
+    "SIGALRM",
+    "SIGABRT",
+    "SIGVTALRM",
+    "SIGXCPU",
+    "SIGXFSZ",
+    "SIGUSR2",
+    "SIGTRAP",
+    "SIGSYS",
+    "SIGQUIT",
+    "SIGIOT",
     // should detect profiler and enable/disable accordingly.
     // see #21
     // 'SIGPROF'
-    );
+  );
 }
-if (process.platform === 'linux') {
-    exports.signals.push('SIGIO', 'SIGPOLL', 'SIGPWR', 'SIGSTKFLT');
+if (process.platform === "linux") {
+  exports.signals.push("SIGIO", "SIGPOLL", "SIGPWR", "SIGSTKFLT");
 }
 //# sourceMappingURL=signals.js.map

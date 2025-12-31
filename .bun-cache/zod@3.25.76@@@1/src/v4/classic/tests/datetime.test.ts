@@ -17,7 +17,9 @@ test("basic datetime parsing", () => {
 });
 
 test("datetime parsing with precision -1", () => {
-  const datetimeNoMs = z.string().datetime({ precision: -1, offset: true, local: true });
+  const datetimeNoMs = z
+    .string()
+    .datetime({ precision: -1, offset: true, local: true });
   datetimeNoMs.parse("1970-01-01T00:00Z");
   datetimeNoMs.parse("2022-10-13T09:52Z");
   datetimeNoMs.parse("2022-10-13T09:52+02:00");
@@ -65,7 +67,9 @@ test("datetime parsing with offset", () => {
 });
 
 test("datetime parsing with offset and precision 0", () => {
-  const datetimeOffsetNoMs = z.string().datetime({ offset: true, precision: 0 });
+  const datetimeOffsetNoMs = z
+    .string()
+    .datetime({ offset: true, precision: 0 });
   datetimeOffsetNoMs.parse("1970-01-01T00:00:00Z");
   datetimeOffsetNoMs.parse("2022-10-13T09:52:31Z");
   datetimeOffsetNoMs.parse("2020-10-14T17:42:29+00:00");
@@ -75,25 +79,37 @@ test("datetime parsing with offset and precision 0", () => {
   expect(() => datetimeOffsetNoMs.parse("1970-01-01T00:00:00.000Z")).toThrow();
   expect(() => datetimeOffsetNoMs.parse("1970-01-01T00:00:00.Z")).toThrow();
   expect(() => datetimeOffsetNoMs.parse("2022-10-13T09:52:31.816Z")).toThrow();
-  expect(() => datetimeOffsetNoMs.parse("2020-10-14T17:42:29.124+00:00")).toThrow();
+  expect(() =>
+    datetimeOffsetNoMs.parse("2020-10-14T17:42:29.124+00:00"),
+  ).toThrow();
 });
 
 test("datetime parsing with offset and precision 4", () => {
   const datetimeOffset4Ms = z.string().datetime({ offset: true, precision: 4 });
   datetimeOffset4Ms.parse("1970-01-01T00:00:00.1234Z");
   datetimeOffset4Ms.parse("2020-10-14T17:42:29.1234+00:00");
-  expect(() => datetimeOffset4Ms.parse("2020-10-14T17:42:29.1234+0000")).toThrow();
-  expect(() => datetimeOffset4Ms.parse("2020-10-14T17:42:29.1234+00")).toThrow();
+  expect(() =>
+    datetimeOffset4Ms.parse("2020-10-14T17:42:29.1234+0000"),
+  ).toThrow();
+  expect(() =>
+    datetimeOffset4Ms.parse("2020-10-14T17:42:29.1234+00"),
+  ).toThrow();
   expect(() => datetimeOffset4Ms.parse("tuna")).toThrow();
   expect(() => datetimeOffset4Ms.parse("1970-01-01T00:00:00.123Z")).toThrow();
-  expect(() => datetimeOffset4Ms.parse("2020-10-14T17:42:29.124+00:00")).toThrow();
+  expect(() =>
+    datetimeOffset4Ms.parse("2020-10-14T17:42:29.124+00:00"),
+  ).toThrow();
 });
 
 test("datetime offset normalization", () => {
   const a = z.iso.datetime({ offset: true });
 
-  expect(a.safeParse("2020-10-14T17:42:29+02")).toMatchObject({ success: false });
-  expect(a.safeParse("2020-10-14T17:42:29+0200")).toMatchObject({ success: false });
+  expect(a.safeParse("2020-10-14T17:42:29+02")).toMatchObject({
+    success: false,
+  });
+  expect(a.safeParse("2020-10-14T17:42:29+0200")).toMatchObject({
+    success: false,
+  });
   a.safeParse("2020-10-14T17:42:29+02:00");
 });
 
@@ -102,8 +118,12 @@ test("datetime parsing with local option", () => {
 
   expect(a.safeParse("1970-01-01T00:00")).toMatchObject({ success: true });
   expect(a.safeParse("1970-01-01T00:00:00")).toMatchObject({ success: true });
-  expect(a.safeParse("2022-10-13T09:52:31.816")).toMatchObject({ success: true });
-  expect(a.safeParse("1970-01-01T00:00:00.000")).toMatchObject({ success: true });
+  expect(a.safeParse("2022-10-13T09:52:31.816")).toMatchObject({
+    success: true,
+  });
+  expect(a.safeParse("1970-01-01T00:00:00.000")).toMatchObject({
+    success: true,
+  });
   expect(a.safeParse("1970-01-01T00")).toMatchObject({ success: false });
 
   // Should reject timezone indicators and invalid formats

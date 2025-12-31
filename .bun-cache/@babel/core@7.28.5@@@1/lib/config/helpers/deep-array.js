@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.finalize = finalize;
 exports.flattenToSet = flattenToSet;
@@ -13,7 +13,8 @@ function flattenToSet(arr) {
   const stack = [arr];
   while (stack.length > 0) {
     for (const el of stack.pop()) {
-      if (Array.isArray(el)) stack.push(el);else result.add(el);
+      if (Array.isArray(el)) stack.push(el);
+      else result.add(el);
     }
   }
   return result;

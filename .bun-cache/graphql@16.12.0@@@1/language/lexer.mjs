@@ -1,8 +1,8 @@
-import { syntaxError } from '../error/syntaxError.mjs';
-import { Token } from './ast.mjs';
-import { dedentBlockStringLines } from './blockString.mjs';
-import { isDigit, isNameContinue, isNameStart } from './characterClasses.mjs';
-import { TokenKind } from './tokenKind.mjs';
+import { syntaxError } from "../error/syntaxError.mjs";
+import { Token } from "./ast.mjs";
+import { dedentBlockStringLines } from "./blockString.mjs";
+import { isDigit, isNameContinue, isNameStart } from "./characterClasses.mjs";
+import { TokenKind } from "./tokenKind.mjs";
 /**
  * A Lexer interface which provides common properties and methods required for
  * lexing GraphQL source.
@@ -44,7 +44,7 @@ export class Lexer {
   }
 
   get [Symbol.toStringTag]() {
-    return 'Lexer';
+    return "Lexer";
   }
   /**
    * Advances the token stream to the next non-ignored token.
@@ -163,7 +163,7 @@ export function printCodePointAt(lexer, location) {
     return char === '"' ? "'\"'" : `"${char}"`;
   } // Unicode code point
 
-  return 'U+' + code.toString(16).toUpperCase().padStart(4, '0');
+  return "U+" + code.toString(16).toUpperCase().padStart(4, "0");
 }
 /**
  * Create a token with line and column location information.
@@ -342,10 +342,10 @@ function readNextToken(lexer, start) {
       lexer.source,
       position,
       code === 0x0027
-        ? 'Unexpected single quote character (\'), did you mean to use a double quote (")?'
+        ? "Unexpected single quote character ('), did you mean to use a double quote (\")?"
         : isUnicodeScalarValue(code) || isSupplementaryCodePoint(body, position)
-        ? `Unexpected character: ${printCodePointAt(lexer, position)}.`
-        : `Invalid character: ${printCodePointAt(lexer, position)}.`,
+          ? `Unexpected character: ${printCodePointAt(lexer, position)}.`
+          : `Invalid character: ${printCodePointAt(lexer, position)}.`,
     );
   }
 
@@ -537,7 +537,7 @@ function readString(lexer, start) {
   const bodyLength = body.length;
   let position = start + 1;
   let chunkStart = position;
-  let value = '';
+  let value = "";
 
   while (position < bodyLength) {
     const code = body.charCodeAt(position); // Closing Quote (")
@@ -581,7 +581,7 @@ function readString(lexer, start) {
     }
   }
 
-  throw syntaxError(lexer.source, position, 'Unterminated string.');
+  throw syntaxError(lexer.source, position, "Unterminated string.");
 } // The string value and lexed size of an escape sequence.
 
 function readEscapedUnicodeVariableWidth(lexer, position) {
@@ -699,10 +699,10 @@ function readHexDigit(code) {
   return code >= 0x0030 && code <= 0x0039 // 0-9
     ? code - 0x0030
     : code >= 0x0041 && code <= 0x0046 // A-F
-    ? code - 0x0037
-    : code >= 0x0061 && code <= 0x0066 // a-f
-    ? code - 0x0057
-    : -1;
+      ? code - 0x0037
+      : code >= 0x0061 && code <= 0x0066 // a-f
+        ? code - 0x0057
+        : -1;
 }
 /**
  * | Escaped Character | Code Point | Character Name               |
@@ -725,56 +725,56 @@ function readEscapedCharacter(lexer, position) {
     case 0x0022:
       // "
       return {
-        value: '\u0022',
+        value: "\u0022",
         size: 2,
       };
 
     case 0x005c:
       // \
       return {
-        value: '\u005c',
+        value: "\u005c",
         size: 2,
       };
 
     case 0x002f:
       // /
       return {
-        value: '\u002f',
+        value: "\u002f",
         size: 2,
       };
 
     case 0x0062:
       // b
       return {
-        value: '\u0008',
+        value: "\u0008",
         size: 2,
       };
 
     case 0x0066:
       // f
       return {
-        value: '\u000c',
+        value: "\u000c",
         size: 2,
       };
 
     case 0x006e:
       // n
       return {
-        value: '\u000a',
+        value: "\u000a",
         size: 2,
       };
 
     case 0x0072:
       // r
       return {
-        value: '\u000d',
+        value: "\u000d",
         size: 2,
       };
 
     case 0x0074:
       // t
       return {
-        value: '\u0009',
+        value: "\u0009",
         size: 2,
       };
   }
@@ -807,7 +807,7 @@ function readBlockString(lexer, start) {
   let lineStart = lexer.lineStart;
   let position = start + 3;
   let chunkStart = position;
-  let currentLine = '';
+  let currentLine = "";
   const blockLines = [];
 
   while (position < bodyLength) {
@@ -825,7 +825,7 @@ function readBlockString(lexer, start) {
         TokenKind.BLOCK_STRING,
         start,
         position + 3, // Return a string of the lines joined with U+000A.
-        dedentBlockStringLines(blockLines).join('\n'),
+        dedentBlockStringLines(blockLines).join("\n"),
       );
       lexer.line += blockLines.length - 1;
       lexer.lineStart = lineStart;
@@ -855,7 +855,7 @@ function readBlockString(lexer, start) {
         ++position;
       }
 
-      currentLine = '';
+      currentLine = "";
       chunkStart = position;
       lineStart = position;
       continue;
@@ -877,7 +877,7 @@ function readBlockString(lexer, start) {
     }
   }
 
-  throw syntaxError(lexer.source, position, 'Unterminated string.');
+  throw syntaxError(lexer.source, position, "Unterminated string.");
 }
 /**
  * Reads an alphanumeric + underscore name from the source.

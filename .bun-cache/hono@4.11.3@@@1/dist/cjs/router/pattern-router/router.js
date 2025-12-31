@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var router_exports = {};
 __export(router_exports, {
-  PatternRouter: () => PatternRouter
+  PatternRouter: () => PatternRouter,
 });
 module.exports = __toCommonJS(router_exports);
 var import_router = require("../../router");
@@ -35,17 +39,21 @@ class PatternRouter {
       path = path.slice(0, -1);
       this.add(method, path.replace(/\/[^/]+$/, ""), handler);
     }
-    const parts = (path.match(/\/?(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/?[^\/\?]+/g) || []).map(
-      (part) => {
-        const match = part.match(/^\/:([^{]+)(?:{(.*)})?/);
-        return match ? `/(?<${match[1]}>${match[2] || "[^/]+"})` : part === "/*" ? "/[^/]+" : part.replace(/[.\\+*[^\]$()]/g, "\\$&");
-      }
-    );
+    const parts = (
+      path.match(/\/?(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/?[^/?]+/g) || []
+    ).map((part) => {
+      const match = part.match(/^\/:([^{]+)(?:{(.*)})?/);
+      return match
+        ? `/(?<${match[1]}>${match[2] || "[^/]+"})`
+        : part === "/*"
+          ? "/[^/]+"
+          : part.replace(/[.\\+*[^\]$()]/g, "\\$&");
+    });
     try {
       this.#routes.push([
         new RegExp(`^${parts.join("")}${endsWithWildcard ? "" : "/?$"}`),
         method,
-        handler
+        handler,
       ]);
     } catch {
       throw new import_router.UnsupportedPathError();
@@ -55,7 +63,10 @@ class PatternRouter {
     const handlers = [];
     for (let i = 0, len = this.#routes.length; i < len; i++) {
       const [pattern, routeMethod, handler] = this.#routes[i];
-      if (routeMethod === method || routeMethod === import_router.METHOD_NAME_ALL) {
+      if (
+        routeMethod === method ||
+        routeMethod === import_router.METHOD_NAME_ALL
+      ) {
         const match = pattern.exec(path);
         if (match) {
           handlers.push([handler, match.groups || emptyParams]);
@@ -66,6 +77,7 @@ class PatternRouter {
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  PatternRouter
-});
+0 &&
+  (module.exports = {
+    PatternRouter,
+  });

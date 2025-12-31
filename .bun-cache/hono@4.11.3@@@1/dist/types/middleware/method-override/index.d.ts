@@ -2,23 +2,27 @@
  * @module
  * Method Override Middleware for Hono.
  */
-import type { Hono } from '../../hono';
-import type { MiddlewareHandler } from '../../types';
+import type { Hono } from "../../hono";
+import type { MiddlewareHandler } from "../../types";
 type MethodOverrideOptions = {
-    app: Hono<any, any, any>;
-} & ({
-    form?: string;
-    header?: never;
-    query?: never;
-} | {
-    form?: never;
-    header: string;
-    query?: never;
-} | {
-    form?: never;
-    header?: never;
-    query: string;
-});
+  app: Hono<any, any, any>;
+} & (
+  | {
+      form?: string;
+      header?: never;
+      query?: never;
+    }
+  | {
+      form?: never;
+      header: string;
+      query?: never;
+    }
+  | {
+      form?: never;
+      header?: never;
+      query: string;
+    }
+);
 /**
  * Method Override Middleware for Hono.
  *
@@ -44,5 +48,6 @@ type MethodOverrideOptions = {
  * })
  * ```
  */
-export declare const methodOverride: (options: MethodOverrideOptions) => MiddlewareHandler;
-export {};
+export declare const methodOverride: (
+  options: MethodOverrideOptions,
+) => MiddlewareHandler;

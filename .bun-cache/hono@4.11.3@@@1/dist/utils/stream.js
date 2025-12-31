@@ -28,7 +28,7 @@ var StreamingApi = class {
       },
       cancel: () => {
         this.abort();
-      }
+      },
     });
   }
   async write(input) {
@@ -37,8 +37,7 @@ var StreamingApi = class {
         input = this.encoder.encode(input);
       }
       await this.writer.write(input);
-    } catch {
-    }
+    } catch {}
     return this;
   }
   async writeln(input) {
@@ -51,8 +50,7 @@ var StreamingApi = class {
   async close() {
     try {
       await this.writer.close();
-    } catch {
-    }
+    } catch {}
     this.closed = true;
   }
   async pipe(body) {
@@ -74,6 +72,4 @@ var StreamingApi = class {
     }
   }
 };
-export {
-  StreamingApi
-};
+export { StreamingApi };

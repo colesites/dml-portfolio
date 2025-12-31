@@ -1,24 +1,24 @@
-import { RequiredDeep } from '~/core/typeUtils'
-import { mergeRight } from '~/core/utils/internal/mergeRight'
-import {
+import type { RequiredDeep } from "~/core/typeUtils";
+import { mergeRight } from "~/core/utils/internal/mergeRight";
+import type {
   SetupWorker,
   SetupWorkerInternalContext,
   StartHandler,
   StartOptions,
-} from '../../glossary'
+} from "../../glossary";
 
 export const DEFAULT_START_OPTIONS: RequiredDeep<StartOptions> = {
   serviceWorker: {
-    url: '/mockServiceWorker.js',
+    url: "/mockServiceWorker.js",
     options: null as any,
   },
   quiet: false,
   waitUntilReady: true,
-  onUnhandledRequest: 'warn',
+  onUnhandledRequest: "warn",
   findWorker(scriptURL, mockServiceWorkerUrl) {
-    return scriptURL === mockServiceWorkerUrl
+    return scriptURL === mockServiceWorkerUrl;
   },
-}
+};
 
 /**
  * Returns resolved worker start options, merging the default options
@@ -30,15 +30,15 @@ export function resolveStartOptions(
   return mergeRight(
     DEFAULT_START_OPTIONS,
     initialOptions || {},
-  ) as RequiredDeep<StartOptions>
+  ) as RequiredDeep<StartOptions>;
 }
 
 export function prepareStartHandler(
   handler: StartHandler,
   context: SetupWorkerInternalContext,
-): SetupWorker['start'] {
+): SetupWorker["start"] {
   return (initialOptions) => {
-    context.startOptions = resolveStartOptions(initialOptions)
-    return handler(context.startOptions, initialOptions || {})
-  }
+    context.startOptions = resolveStartOptions(initialOptions);
+    return handler(context.startOptions, initialOptions || {});
+  };
 }

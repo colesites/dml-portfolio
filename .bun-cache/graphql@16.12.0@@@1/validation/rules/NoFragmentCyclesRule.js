@@ -1,11 +1,9 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.NoFragmentCyclesRule = NoFragmentCyclesRule;
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
 /**
  * No fragment cycles
@@ -65,11 +63,11 @@ function NoFragmentCyclesRule(context) {
         const viaPath = cyclePath
           .slice(0, -1)
           .map((s) => '"' + s.name.value + '"')
-          .join(', ');
+          .join(", ");
         context.reportError(
           new _GraphQLError.GraphQLError(
             `Cannot spread fragment "${spreadName}" within itself` +
-              (viaPath !== '' ? ` via ${viaPath}.` : '.'),
+              (viaPath !== "" ? ` via ${viaPath}.` : "."),
             {
               nodes: cyclePath,
             },

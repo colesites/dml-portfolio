@@ -1,5 +1,5 @@
-import type { SourceMapSegment, ReverseSegment } from './sourcemap-segment';
-import { COLUMN } from './sourcemap-segment';
+import type { ReverseSegment, SourceMapSegment } from "./sourcemap-segment";
+import { COLUMN } from "./sourcemap-segment";
 
 export type MemoState = {
   lastKey: number;

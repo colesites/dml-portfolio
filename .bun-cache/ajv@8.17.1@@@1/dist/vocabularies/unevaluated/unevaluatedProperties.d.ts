@@ -1,6 +1,14 @@
-import type { CodeKeywordDefinition, ErrorObject, AnySchema } from "../../types";
-export type UnevaluatedPropertiesError = ErrorObject<"unevaluatedProperties", {
+import type {
+  CodeKeywordDefinition,
+  ErrorObject,
+  AnySchema,
+} from "../../types";
+export type UnevaluatedPropertiesError = ErrorObject<
+  "unevaluatedProperties",
+  {
     unevaluatedProperty: string;
-}, AnySchema>;
+  },
+  AnySchema
+>;
 declare const def: CodeKeywordDefinition;
 export default def;

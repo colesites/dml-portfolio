@@ -13,10 +13,10 @@ console.log(logSymbols.success, 'Finished successfully!');
 ```
 */
 declare const logSymbols: {
-	readonly info: string;
-	readonly success: string;
-	readonly warning: string;
-	readonly error: string;
+  readonly info: string;
+  readonly success: string;
+  readonly warning: string;
+  readonly error: string;
 };
 
 export default logSymbols;

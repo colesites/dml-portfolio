@@ -4,22 +4,25 @@ import { DOM_RENDERER } from "../../jsx/constants.js";
 import { createCssJsxDomObjects } from "../../jsx/dom/css.js";
 import {
   CLASS_NAME,
+  cssCommon,
+  cxCommon,
   DEFAULT_STYLE_ID,
+  keyframesCommon,
   PSEUDO_GLOBAL_SELECTOR,
+  rawCssString,
   SELECTOR,
   SELECTORS,
   STYLE_STRING,
-  cssCommon,
-  cxCommon,
-  keyframesCommon,
-  viewTransitionCommon
+  viewTransitionCommon,
 } from "./common.js";
-import { rawCssString } from "./common.js";
+
 var createCssContext = ({ id }) => {
   const [cssJsxDomObject, StyleRenderToDom] = createCssJsxDomObjects({ id });
   const contextMap = /* @__PURE__ */ new WeakMap();
   const nonceMap = /* @__PURE__ */ new WeakMap();
-  const replaceStyleRe = new RegExp(`(<style id="${id}"(?: nonce="[^"]*")?>.*?)(</style>)`);
+  const replaceStyleRe = new RegExp(
+    `(<style id="${id}"(?: nonce="[^"]*")?>.*?)(</style>)`,
+  );
   const newCssClassNameObject = (cssClassName) => {
     const appendStyle = ({ buffer, context }) => {
       const [toAdd, added] = contextMap.get(context);
@@ -30,11 +33,16 @@ var createCssContext = ({ id }) => {
       let stylesStr = "";
       names.forEach((className2) => {
         added[className2] = true;
-        stylesStr += className2.startsWith(PSEUDO_GLOBAL_SELECTOR) ? toAdd[className2] : `${className2[0] === "@" ? "" : "."}${className2}{${toAdd[className2]}}`;
+        stylesStr += className2.startsWith(PSEUDO_GLOBAL_SELECTOR)
+          ? toAdd[className2]
+          : `${className2[0] === "@" ? "" : "."}${className2}{${toAdd[className2]}}`;
       });
       contextMap.set(context, [{}, added]);
       if (buffer && replaceStyleRe.test(buffer[0])) {
-        buffer[0] = buffer[0].replace(replaceStyleRe, (_, pre, post) => `${pre}${stylesStr}${post}`);
+        buffer[0] = buffer[0].replace(
+          replaceStyleRe,
+          (_, pre, post) => `${pre}${stylesStr}${post}`,
+        );
         return;
       }
       const nonce = nonceMap.get(context);
@@ -61,7 +69,7 @@ var createCssContext = ({ id }) => {
             allAdded = false;
             toAdd[className2] = styleString;
           }
-        }
+        },
       );
       if (allAdded) {
         return;
@@ -85,29 +93,30 @@ var createCssContext = ({ id }) => {
     return css2(Array(args.length).fill(""), ...args);
   };
   const keyframes2 = keyframesCommon;
-  const viewTransition2 = ((strings, ...values) => {
+  const viewTransition2 = (strings, ...values) => {
     return newCssClassNameObject(viewTransitionCommon(strings, values));
-  });
-  const Style2 = ({ children, nonce } = {}) => raw(
-    `<style id="${id}"${nonce ? ` nonce="${nonce}"` : ""}>${children ? children[STYLE_STRING] : ""}</style>`,
-    [
-      ({ context }) => {
-        nonceMap.set(context, nonce);
-        return void 0;
-      }
-    ]
-  );
+  };
+  const Style2 = ({ children, nonce } = {}) =>
+    raw(
+      `<style id="${id}"${nonce ? ` nonce="${nonce}"` : ""}>${children ? children[STYLE_STRING] : ""}</style>`,
+      [
+        ({ context }) => {
+          nonceMap.set(context, nonce);
+          return void 0;
+        },
+      ],
+    );
   Style2[DOM_RENDERER] = StyleRenderToDom;
   return {
     css: css2,
     cx: cx2,
     keyframes: keyframes2,
     viewTransition: viewTransition2,
-    Style: Style2
+    Style: Style2,
   };
 };
 var defaultContext = createCssContext({
-  id: DEFAULT_STYLE_ID
+  id: DEFAULT_STYLE_ID,
 });
 var css = defaultContext.css;
 var cx = defaultContext.cx;
@@ -121,5 +130,5 @@ export {
   cx,
   keyframes,
   rawCssString,
-  viewTransition
+  viewTransition,
 };

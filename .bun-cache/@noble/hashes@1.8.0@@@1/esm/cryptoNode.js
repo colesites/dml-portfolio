@@ -5,11 +5,12 @@
  * See utils.ts for details.
  * @module
  */
-// @ts-ignore
-import * as nc from 'node:crypto';
-export const crypto = nc && typeof nc === 'object' && 'webcrypto' in nc
+// @ts-expect-error
+import * as nc from "node:crypto";
+export const crypto =
+  nc && typeof nc === "object" && "webcrypto" in nc
     ? nc.webcrypto
-    : nc && typeof nc === 'object' && 'randomBytes' in nc
-        ? nc
-        : undefined;
+    : nc && typeof nc === "object" && "randomBytes" in nc
+      ? nc
+      : undefined;
 //# sourceMappingURL=cryptoNode.js.map

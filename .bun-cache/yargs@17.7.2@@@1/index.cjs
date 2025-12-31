@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 // classic singleton yargs API, to use yargs
 // without running as a singleton do:
 // require('yargs/yargs')(process.argv.slice(2))
-const {Yargs, processArgv} = require('./build/index.cjs');
+const { Yargs, processArgv } = require("./build/index.cjs");
 
 Argv(processArgv.hideBin(process.argv));
 
@@ -24,7 +24,7 @@ function defineGetter(obj, key, getter) {
 }
 function lookupGetter(obj, key) {
   const desc = Object.getOwnPropertyDescriptor(obj, key);
-  if (typeof desc !== 'undefined') {
+  if (typeof desc !== "undefined") {
     return desc.get;
   }
 }
@@ -40,14 +40,14 @@ function singletonify(inst) {
   [
     ...Object.keys(inst),
     ...Object.getOwnPropertyNames(inst.constructor.prototype),
-  ].forEach(key => {
-    if (key === 'argv') {
+  ].forEach((key) => {
+    if (key === "argv") {
       defineGetter(Argv, key, lookupGetter(inst, key));
-    } else if (typeof inst[key] === 'function') {
+    } else if (typeof inst[key] === "function") {
       Argv[key] = inst[key].bind(inst);
     } else {
-      defineGetter(Argv, '$0', () => inst.$0);
-      defineGetter(Argv, 'parsed', () => inst.parsed);
+      defineGetter(Argv, "$0", () => inst.$0);
+      defineGetter(Argv, "parsed", () => inst.parsed);
     }
   });
 }

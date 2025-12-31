@@ -1,11 +1,9 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.promiseReduce = promiseReduce;
 
-var _isPromise = require('./isPromise.js');
+var _isPromise = require("./isPromise.js");
 
 /**
  * Similar to Array.prototype.reduce(), however the reducing callback may return

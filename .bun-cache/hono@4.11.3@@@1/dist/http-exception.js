@@ -21,15 +21,13 @@ var HTTPException = class extends Error {
     if (this.res) {
       const newResponse = new Response(this.res.body, {
         status: this.status,
-        headers: this.res.headers
+        headers: this.res.headers,
       });
       return newResponse;
     }
     return new Response(this.message, {
-      status: this.status
+      status: this.status,
     });
   }
 };
-export {
-  HTTPException
-};
+export { HTTPException };

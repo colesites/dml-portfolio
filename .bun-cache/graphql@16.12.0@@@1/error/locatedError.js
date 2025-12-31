@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.locatedError = locatedError;
 
-var _toError = require('../jsutils/toError.js');
+var _toError = require("../jsutils/toError.js");
 
-var _GraphQLError = require('./GraphQLError.js');
+var _GraphQLError = require("./GraphQLError.js");
 
 /**
  * Given an arbitrary value, presumably thrown while attempting to execute a

@@ -14,14 +14,21 @@ import {
   ensureBytes,
   numberToBytesBE,
   numberToBytesLE,
-} from '../utils.ts';
+} from "../utils.ts";
 
 // prettier-ignore
-const _0n = BigInt(0), _1n = BigInt(1), _2n = /* @__PURE__ */ BigInt(2), _3n = /* @__PURE__ */ BigInt(3);
+const _0n = BigInt(0),
+  _1n = BigInt(1),
+  _2n = /* @__PURE__ */ BigInt(2),
+  _3n = /* @__PURE__ */ BigInt(3);
 // prettier-ignore
-const _4n = /* @__PURE__ */ BigInt(4), _5n = /* @__PURE__ */ BigInt(5), _7n = /* @__PURE__ */ BigInt(7);
+const _4n = /* @__PURE__ */ BigInt(4),
+  _5n = /* @__PURE__ */ BigInt(5),
+  _7n = /* @__PURE__ */ BigInt(7);
 // prettier-ignore
-const _8n = /* @__PURE__ */ BigInt(8), _9n = /* @__PURE__ */ BigInt(9), _16n = /* @__PURE__ */ BigInt(16);
+const _8n = /* @__PURE__ */ BigInt(8),
+  _9n = /* @__PURE__ */ BigInt(9),
+  _16n = /* @__PURE__ */ BigInt(16);
 
 // Calculates a modulo b
 export function mod(a: bigint, b: bigint): bigint {
@@ -53,13 +60,17 @@ export function pow2(x: bigint, power: bigint, modulo: bigint): bigint {
  * Implemented using [Euclidean GCD](https://brilliant.org/wiki/extended-euclidean-algorithm/).
  */
 export function invert(number: bigint, modulo: bigint): bigint {
-  if (number === _0n) throw new Error('invert: expected non-zero number');
-  if (modulo <= _0n) throw new Error('invert: expected positive modulus, got ' + modulo);
+  if (number === _0n) throw new Error("invert: expected non-zero number");
+  if (modulo <= _0n)
+    throw new Error("invert: expected positive modulus, got " + modulo);
   // Fermat's little theorem "CT-like" version inv(n) = n^(m-2) mod m is 30x slower.
   let a = mod(number, modulo);
   let b = modulo;
   // prettier-ignore
-  let x = _0n, y = _1n, u = _1n, v = _0n;
+  let x = _0n,
+    y = _1n,
+    u = _1n,
+    v = _0n;
   while (a !== _0n) {
     // JIT applies optimization if those two lines follow each other
     const q = b / a;
@@ -67,15 +78,15 @@ export function invert(number: bigint, modulo: bigint): bigint {
     const m = x - u * q;
     const n = y - v * q;
     // prettier-ignore
-    b = a, a = r, x = u, y = v, u = m, v = n;
+    (b = a), (a = r), (x = u), (y = v), (u = m), (v = n);
   }
   const gcd = b;
-  if (gcd !== _1n) throw new Error('invert: does not exist');
+  if (gcd !== _1n) throw new Error("invert: does not exist");
   return mod(x, modulo);
 }
 
 function assertIsSquare<T>(Fp: IField<T>, root: T, n: T): void {
-  if (!Fp.eql(Fp.sqr(root), n)) throw new Error('Cannot find square root');
+  if (!Fp.eql(Fp.sqr(root), n)) throw new Error("Cannot find square root");
 }
 
 // Not all roots are possible! Example which will throw:
@@ -105,21 +116,21 @@ function sqrt5mod8<T>(Fp: IField<T>, n: T) {
 function sqrt9mod16(P: bigint): <T>(Fp: IField<T>, n: T) => T {
   const Fp_ = Field(P);
   const tn = tonelliShanks(P);
-  const c1 = tn(Fp_, Fp_.neg(Fp_.ONE));//  1. c1 = sqrt(-1) in F, i.e., (c1^2) == -1 in F
-  const c2 = tn(Fp_, c1);              //  2. c2 = sqrt(c1) in F, i.e., (c2^2) == c1 in F
-  const c3 = tn(Fp_, Fp_.neg(c1));     //  3. c3 = sqrt(-c1) in F, i.e., (c3^2) == -c1 in F
-  const c4 = (P + _7n) / _16n;         //  4. c4 = (q + 7) / 16        # Integer arithmetic
+  const c1 = tn(Fp_, Fp_.neg(Fp_.ONE)); //  1. c1 = sqrt(-1) in F, i.e., (c1^2) == -1 in F
+  const c2 = tn(Fp_, c1); //  2. c2 = sqrt(c1) in F, i.e., (c2^2) == c1 in F
+  const c3 = tn(Fp_, Fp_.neg(c1)); //  3. c3 = sqrt(-c1) in F, i.e., (c3^2) == -c1 in F
+  const c4 = (P + _7n) / _16n; //  4. c4 = (q + 7) / 16        # Integer arithmetic
   return <T>(Fp: IField<T>, n: T) => {
-    let tv1 = Fp.pow(n, c4);           //  1. tv1 = x^c4
-    let tv2 = Fp.mul(tv1, c1);         //  2. tv2 = c1 * tv1
-    const tv3 = Fp.mul(tv1, c2);       //  3. tv3 = c2 * tv1
-    const tv4 = Fp.mul(tv1, c3);       //  4. tv4 = c3 * tv1
+    let tv1 = Fp.pow(n, c4); //  1. tv1 = x^c4
+    let tv2 = Fp.mul(tv1, c1); //  2. tv2 = c1 * tv1
+    const tv3 = Fp.mul(tv1, c2); //  3. tv3 = c2 * tv1
+    const tv4 = Fp.mul(tv1, c3); //  4. tv4 = c3 * tv1
     const e1 = Fp.eql(Fp.sqr(tv2), n); //  5.  e1 = (tv2^2) == x
     const e2 = Fp.eql(Fp.sqr(tv3), n); //  6.  e2 = (tv3^2) == x
-    tv1 = Fp.cmov(tv1, tv2, e1);       //  7. tv1 = CMOV(tv1, tv2, e1)  # Select tv2 if (tv2^2) == x
-    tv2 = Fp.cmov(tv4, tv3, e2);       //  8. tv2 = CMOV(tv4, tv3, e2)  # Select tv3 if (tv3^2) == x
+    tv1 = Fp.cmov(tv1, tv2, e1); //  7. tv1 = CMOV(tv1, tv2, e1)  # Select tv2 if (tv2^2) == x
+    tv2 = Fp.cmov(tv4, tv3, e2); //  8. tv2 = CMOV(tv4, tv3, e2)  # Select tv3 if (tv3^2) == x
     const e3 = Fp.eql(Fp.sqr(tv2), n); //  9.  e3 = (tv2^2) == x
-    const root = Fp.cmov(tv1, tv2, e3);// 10.  z = CMOV(tv1, tv2, e3)   # Select sqrt from tv1 & tv2
+    const root = Fp.cmov(tv1, tv2, e3); // 10.  z = CMOV(tv1, tv2, e3)   # Select sqrt from tv1 & tv2
     assertIsSquare(Fp, root, n);
     return root;
   };
@@ -135,7 +146,7 @@ function sqrt9mod16(P: bigint): <T>(Fp: IField<T>, n: T) => T {
 export function tonelliShanks(P: bigint): <T>(Fp: IField<T>, n: T) => T {
   // Initialization (precomputation).
   // Caching initialization could boost perf by 7%.
-  if (P < _3n) throw new Error('sqrt is not defined for small field');
+  if (P < _3n) throw new Error("sqrt is not defined for small field");
   // Factor P - 1 = Q * 2^S, where Q is odd
   let Q = P - _1n;
   let S = 0;
@@ -150,19 +161,20 @@ export function tonelliShanks(P: bigint): <T>(Fp: IField<T>, n: T) => T {
   while (FpLegendre(_Fp, Z) === 1) {
     // Basic primality test for P. After x iterations, chance of
     // not finding quadratic non-residue is 2^x, so 2^1000.
-    if (Z++ > 1000) throw new Error('Cannot find square root: probably non-prime P');
+    if (Z++ > 1000)
+      throw new Error("Cannot find square root: probably non-prime P");
   }
   // Fast-path; usually done before Z, but we do "primality test".
   if (S === 1) return sqrt3mod4;
 
   // Slow-path
   // TODO: test on Fp2 and others
-  let cc = _Fp.pow(Z, Q); // c = z^Q
+  const cc = _Fp.pow(Z, Q); // c = z^Q
   const Q1div2 = (Q + _1n) / _2n;
   return function tonelliSlow<T>(Fp: IField<T>, n: T): T {
     if (Fp.is0(n)) return n;
     // Check if n is a quadratic residue using Legendre symbol
-    if (FpLegendre(Fp, n) !== 1) throw new Error('Cannot find square root');
+    if (FpLegendre(Fp, n) !== 1) throw new Error("Cannot find square root");
 
     // Initialize variables for the main loop
     let M = S;
@@ -181,7 +193,7 @@ export function tonelliShanks(P: bigint): <T>(Fp: IField<T>, n: T) => T {
       while (!Fp.eql(t_tmp, Fp.ONE)) {
         i++;
         t_tmp = Fp.sqr(t_tmp); // t^(2^2)...
-        if (i === M) throw new Error('Cannot find square root');
+        if (i === M) throw new Error("Cannot find square root");
       }
 
       // Calculate the exponent for b: 2^(M - i - 1)
@@ -270,19 +282,33 @@ export interface IField<T> {
 }
 // prettier-ignore
 const FIELD_FIELDS = [
-  'create', 'isValid', 'is0', 'neg', 'inv', 'sqrt', 'sqr',
-  'eql', 'add', 'sub', 'mul', 'pow', 'div',
-  'addN', 'subN', 'mulN', 'sqrN'
+  "create",
+  "isValid",
+  "is0",
+  "neg",
+  "inv",
+  "sqrt",
+  "sqr",
+  "eql",
+  "add",
+  "sub",
+  "mul",
+  "pow",
+  "div",
+  "addN",
+  "subN",
+  "mulN",
+  "sqrN",
 ] as const;
 export function validateField<T>(field: IField<T>): IField<T> {
   const initial = {
-    ORDER: 'bigint',
-    MASK: 'bigint',
-    BYTES: 'number',
-    BITS: 'number',
+    ORDER: "bigint",
+    MASK: "bigint",
+    BYTES: "number",
+    BITS: "number",
   } as Record<string, string>;
   const opts = FIELD_FIELDS.reduce((map, val: string) => {
-    map[val] = 'function';
+    map[val] = "function";
     return map;
   }, initial);
   _validateObject(field, opts);
@@ -299,7 +325,7 @@ export function validateField<T>(field: IField<T>): IField<T> {
  * Unsafe in some contexts: uses ladder, so can expose bigint bits.
  */
 export function FpPow<T>(Fp: IField<T>, num: T, power: bigint): T {
-  if (power < _0n) throw new Error('invalid exponent, negatives unsupported');
+  if (power < _0n) throw new Error("invalid exponent, negatives unsupported");
   if (power === _0n) return Fp.ONE;
   if (power === _1n) return num;
   let p = Fp.ONE;
@@ -317,7 +343,11 @@ export function FpPow<T>(Fp: IField<T>, num: T, power: bigint): T {
  * Exception-free. Will return `undefined` for 0 elements.
  * @param passZero map 0 to 0 (instead of undefined)
  */
-export function FpInvertBatch<T>(Fp: IField<T>, nums: T[], passZero = false): T[] {
+export function FpInvertBatch<T>(
+  Fp: IField<T>,
+  nums: T[],
+  passZero = false,
+): T[] {
   const inverted = new Array(nums.length).fill(passZero ? Fp.ZERO : undefined);
   // Walk from first to last, multiply them by each other MOD p
   const multipliedAcc = nums.reduce((acc, num, i) => {
@@ -338,7 +368,10 @@ export function FpInvertBatch<T>(Fp: IField<T>, nums: T[], passZero = false): T[
 
 // TODO: remove
 export function FpDiv<T>(Fp: IField<T>, lhs: T, rhs: T | bigint): T {
-  return Fp.mul(lhs, typeof rhs === 'bigint' ? invert(rhs, Fp.ORDER) : Fp.inv(rhs));
+  return Fp.mul(
+    lhs,
+    typeof rhs === "bigint" ? invert(rhs, Fp.ORDER) : Fp.inv(rhs),
+  );
 }
 
 /**
@@ -358,7 +391,7 @@ export function FpLegendre<T>(Fp: IField<T>, n: T): -1 | 0 | 1 {
   const yes = Fp.eql(powered, Fp.ONE);
   const zero = Fp.eql(powered, Fp.ZERO);
   const no = Fp.eql(powered, Fp.neg(Fp.ONE));
-  if (!yes && !zero && !no) throw new Error('invalid Legendre symbol result');
+  if (!yes && !zero && !no) throw new Error("invalid Legendre symbol result");
   return yes ? 1 : zero ? 0 : -1;
 }
 
@@ -373,12 +406,13 @@ export type NLength = { nByteLength: number; nBitLength: number };
 export function nLength(n: bigint, nBitLength?: number): NLength {
   // Bit size, byte size of CURVE.n
   if (nBitLength !== undefined) anumber(nBitLength);
-  const _nBitLength = nBitLength !== undefined ? nBitLength : n.toString(2).length;
+  const _nBitLength =
+    nBitLength !== undefined ? nBitLength : n.toString(2).length;
   const nByteLength = Math.ceil(_nBitLength / 8);
   return { nBitLength: _nBitLength, nByteLength };
 }
 
-type FpField = IField<bigint> & Required<Pick<IField<bigint>, 'isOdd'>>;
+type FpField = IField<bigint> & Required<Pick<IField<bigint>, "isOdd">>;
 type SqrtFn = (n: bigint) => bigint;
 type FieldOpts = Partial<{
   sqrt: SqrtFn;
@@ -410,27 +444,31 @@ export function Field(
   ORDER: bigint,
   bitLenOrOpts?: number | FieldOpts, // TODO: use opts only in v2?
   isLE = false,
-  opts: { sqrt?: SqrtFn } = {}
+  opts: { sqrt?: SqrtFn } = {},
 ): Readonly<FpField> {
-  if (ORDER <= _0n) throw new Error('invalid field: expected ORDER > 0, got ' + ORDER);
-  let _nbitLength: number | undefined = undefined;
-  let _sqrt: SqrtFn | undefined = undefined;
+  if (ORDER <= _0n)
+    throw new Error("invalid field: expected ORDER > 0, got " + ORDER);
+  let _nbitLength: number | undefined;
+  let _sqrt: SqrtFn | undefined;
   let modFromBytes: boolean = false;
-  let allowedLengths: undefined | readonly number[] = undefined;
-  if (typeof bitLenOrOpts === 'object' && bitLenOrOpts != null) {
-    if (opts.sqrt || isLE) throw new Error('cannot specify opts in two arguments');
+  let allowedLengths: undefined | readonly number[];
+  if (typeof bitLenOrOpts === "object" && bitLenOrOpts != null) {
+    if (opts.sqrt || isLE)
+      throw new Error("cannot specify opts in two arguments");
     const _opts = bitLenOrOpts;
     if (_opts.BITS) _nbitLength = _opts.BITS;
     if (_opts.sqrt) _sqrt = _opts.sqrt;
-    if (typeof _opts.isLE === 'boolean') isLE = _opts.isLE;
-    if (typeof _opts.modFromBytes === 'boolean') modFromBytes = _opts.modFromBytes;
+    if (typeof _opts.isLE === "boolean") isLE = _opts.isLE;
+    if (typeof _opts.modFromBytes === "boolean")
+      modFromBytes = _opts.modFromBytes;
     allowedLengths = _opts.allowedLengths;
   } else {
-    if (typeof bitLenOrOpts === 'number') _nbitLength = bitLenOrOpts;
+    if (typeof bitLenOrOpts === "number") _nbitLength = bitLenOrOpts;
     if (opts.sqrt) _sqrt = opts.sqrt;
   }
   const { nBitLength: BITS, nByteLength: BYTES } = nLength(ORDER, _nbitLength);
-  if (BYTES > 2048) throw new Error('invalid field: expected ORDER of <= 2048 bytes');
+  if (BYTES > 2048)
+    throw new Error("invalid field: expected ORDER of <= 2048 bytes");
   let sqrtP: ReturnType<typeof FpSqrt>; // cached sqrtP
   const f: Readonly<FpField> = Object.freeze({
     ORDER,
@@ -443,8 +481,10 @@ export function Field(
     allowedLengths: allowedLengths,
     create: (num) => mod(num, ORDER),
     isValid: (num) => {
-      if (typeof num !== 'bigint')
-        throw new Error('invalid field element: expected bigint, got ' + typeof num);
+      if (typeof num !== "bigint")
+        throw new Error(
+          "invalid field element: expected bigint, got " + typeof num,
+        );
       return _0n <= num && num < ORDER; // 0 is valid element, but it's not invertible
     },
     is0: (num) => num === _0n,
@@ -474,12 +514,16 @@ export function Field(
         if (!sqrtP) sqrtP = FpSqrt(ORDER);
         return sqrtP(f, n);
       }),
-    toBytes: (num) => (isLE ? numberToBytesLE(num, BYTES) : numberToBytesBE(num, BYTES)),
+    toBytes: (num) =>
+      isLE ? numberToBytesLE(num, BYTES) : numberToBytesBE(num, BYTES),
     fromBytes: (bytes, skipValidation = true) => {
       if (allowedLengths) {
         if (!allowedLengths.includes(bytes.length) || bytes.length > BYTES) {
           throw new Error(
-            'Field.fromBytes: expected ' + allowedLengths + ' bytes, got ' + bytes.length
+            "Field.fromBytes: expected " +
+              allowedLengths +
+              " bytes, got " +
+              bytes.length,
           );
         }
         const padded = new Uint8Array(BYTES);
@@ -488,11 +532,14 @@ export function Field(
         bytes = padded;
       }
       if (bytes.length !== BYTES)
-        throw new Error('Field.fromBytes: expected ' + BYTES + ' bytes, got ' + bytes.length);
+        throw new Error(
+          "Field.fromBytes: expected " + BYTES + " bytes, got " + bytes.length,
+        );
       let scalar = isLE ? bytesToNumberLE(bytes) : bytesToNumberBE(bytes);
       if (modFromBytes) scalar = mod(scalar, ORDER);
       if (!skipValidation)
-        if (!f.isValid(scalar)) throw new Error('invalid field element: outside of range 0..ORDER');
+        if (!f.isValid(scalar))
+          throw new Error("invalid field element: outside of range 0..ORDER");
       // NOTE: we don't validate scalar here, please use isValid. This done such way because some
       // protocol may allow non-reduced scalar that reduced later or changed some other way.
       return scalar;
@@ -541,14 +588,17 @@ export function FpSqrtEven<T>(Fp: IField<T>, elm: T): T {
 export function hashToPrivateScalar(
   hash: string | Uint8Array,
   groupOrder: bigint,
-  isLE = false
+  isLE = false,
 ): bigint {
-  hash = ensureBytes('privateHash', hash);
+  hash = ensureBytes("privateHash", hash);
   const hashLen = hash.length;
   const minLen = nLength(groupOrder).nByteLength + 8;
   if (minLen < 24 || hashLen < minLen || hashLen > 1024)
     throw new Error(
-      'hashToPrivateScalar: expected ' + minLen + '-1024 bytes of input, got ' + hashLen
+      "hashToPrivateScalar: expected " +
+        minLen +
+        "-1024 bytes of input, got " +
+        hashLen,
     );
   const num = isLE ? bytesToNumberLE(hash) : bytesToNumberBE(hash);
   return mod(num, groupOrder - _1n) + _1n;
@@ -561,7 +611,8 @@ export function hashToPrivateScalar(
  * @returns byte length of field
  */
 export function getFieldBytesLength(fieldOrder: bigint): number {
-  if (typeof fieldOrder !== 'bigint') throw new Error('field order must be bigint');
+  if (typeof fieldOrder !== "bigint")
+    throw new Error("field order must be bigint");
   const bitLength = fieldOrder.toString(2).length;
   return Math.ceil(bitLength / 8);
 }
@@ -591,15 +642,21 @@ export function getMinHashLength(fieldOrder: bigint): number {
  * @param isLE interpret hash bytes as LE num
  * @returns valid private scalar
  */
-export function mapHashToField(key: Uint8Array, fieldOrder: bigint, isLE = false): Uint8Array {
+export function mapHashToField(
+  key: Uint8Array,
+  fieldOrder: bigint,
+  isLE = false,
+): Uint8Array {
   const len = key.length;
   const fieldLen = getFieldBytesLength(fieldOrder);
   const minLen = getMinHashLength(fieldOrder);
   // No small numbers: need to understand bias story. No huge numbers: easier to detect JS timings.
   if (len < 16 || len < minLen || len > 1024)
-    throw new Error('expected ' + minLen + '-1024 bytes of input, got ' + len);
+    throw new Error("expected " + minLen + "-1024 bytes of input, got " + len);
   const num = isLE ? bytesToNumberLE(key) : bytesToNumberBE(key);
   // `mod(x, 11)` can sometimes produce 0. `mod(x, 10) + 1` is the same, but no 0
   const reduced = mod(num, fieldOrder - _1n) + _1n;
-  return isLE ? numberToBytesLE(reduced, fieldLen) : numberToBytesBE(reduced, fieldLen);
+  return isLE
+    ? numberToBytesLE(reduced, fieldLen)
+    : numberToBytesBE(reduced, fieldLen);
 }

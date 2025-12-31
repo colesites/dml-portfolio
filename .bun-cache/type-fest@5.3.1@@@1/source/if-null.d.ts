@@ -1,4 +1,4 @@
-import type {IsNull} from './is-null.d.ts';
+import type { IsNull } from "./is-null.d.ts";
 
 /**
 An if-else-like type that resolves depending on whether the given type is `null`.
@@ -21,8 +21,8 @@ type ShouldBeBar = IfNull<'not null', 'foo', 'bar'>;
 @category Type Guard
 @category Utilities
 */
-export type IfNull<T, TypeIfNull = true, TypeIfNotNull = false> = (
-	IsNull<T> extends true ? TypeIfNull : TypeIfNotNull
-);
-
-export {};
+export type IfNull<
+  T,
+  TypeIfNull = true,
+  TypeIfNotNull = false,
+> = IsNull<T> extends true ? TypeIfNull : TypeIfNotNull;

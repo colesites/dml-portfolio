@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var http_exception_exports = {};
 __export(http_exception_exports, {
-  HTTPException: () => HTTPException
+  HTTPException: () => HTTPException,
 });
 module.exports = __toCommonJS(http_exception_exports);
 class HTTPException extends Error {
@@ -43,16 +47,17 @@ class HTTPException extends Error {
     if (this.res) {
       const newResponse = new Response(this.res.body, {
         status: this.status,
-        headers: this.res.headers
+        headers: this.res.headers,
       });
       return newResponse;
     }
     return new Response(this.message, {
-      status: this.status
+      status: this.status,
     });
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  HTTPException
-});
+0 &&
+  (module.exports = {
+    HTTPException,
+  });

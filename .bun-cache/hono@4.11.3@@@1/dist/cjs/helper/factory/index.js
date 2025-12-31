@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var factory_exports = {};
 __export(factory_exports, {
   Factory: () => Factory,
   createFactory: () => createFactory,
-  createMiddleware: () => createMiddleware
+  createMiddleware: () => createMiddleware,
 });
 module.exports = __toCommonJS(factory_exports);
 var import_hono = require("../../hono");
@@ -33,7 +37,9 @@ class Factory {
   }
   createApp = (options) => {
     const app = new import_hono.Hono(
-      options && this.#defaultAppOptions ? { ...this.#defaultAppOptions, ...options } : options ?? this.#defaultAppOptions
+      options && this.#defaultAppOptions
+        ? { ...this.#defaultAppOptions, ...options }
+        : (options ?? this.#defaultAppOptions),
     );
     if (this.initApp) {
       this.initApp(app);
@@ -48,8 +54,9 @@ class Factory {
 const createFactory = (init) => new Factory(init);
 const createMiddleware = (middleware) => middleware;
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  Factory,
-  createFactory,
-  createMiddleware
-});
+0 &&
+  (module.exports = {
+    Factory,
+    createFactory,
+    createMiddleware,
+  });

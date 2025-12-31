@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 class Buffer {
@@ -18,14 +18,14 @@ class Buffer {
     this._fastIndentations = [];
     this._position = {
       line: 1,
-      column: 0
+      column: 0,
     };
     this._sourcePosition = {
       identifierName: undefined,
       identifierNamePos: undefined,
       line: undefined,
       column: undefined,
-      filename: undefined
+      filename: undefined,
     };
     this._map = map;
     this._indentChar = indentChar;
@@ -44,7 +44,7 @@ class Buffer {
         column: undefined,
         identifierName: undefined,
         identifierNamePos: undefined,
-        filename: ""
+        filename: "",
       });
     }
   }
@@ -84,7 +84,7 @@ class Buffer {
       set map(value) {
         Object.defineProperty(result, "map", {
           value,
-          writable: true
+          writable: true,
         });
       },
       get rawMappings() {
@@ -95,9 +95,9 @@ class Buffer {
       set rawMappings(value) {
         Object.defineProperty(result, "rawMappings", {
           value,
-          writable: true
+          writable: true,
         });
-      }
+      },
     };
     return result;
   }
@@ -120,7 +120,13 @@ class Buffer {
       }
     }
     const sourcePosition = this._sourcePosition;
-    this._pushQueue(char, 1, sourcePosition.line, sourcePosition.column, sourcePosition.filename);
+    this._pushQueue(
+      char,
+      1,
+      sourcePosition.line,
+      sourcePosition.column,
+      sourcePosition.filename,
+    );
   }
   queueIndentation(repeat) {
     if (repeat === 0) return;
@@ -142,13 +148,23 @@ class Buffer {
       if (fastIndentation !== undefined) {
         this._str += fastIndentation;
       } else {
-        this._str += repeat > 1 ? this._indentChar.repeat(repeat) : this._indentChar;
+        this._str +=
+          repeat > 1 ? this._indentChar.repeat(repeat) : this._indentChar;
       }
     } else {
-      this._str += repeat > 1 ? String.fromCharCode(char).repeat(repeat) : String.fromCharCode(char);
+      this._str +=
+        repeat > 1
+          ? String.fromCharCode(char).repeat(repeat)
+          : String.fromCharCode(char);
     }
     if (char !== 10) {
-      this._mark(sourcePos.line, sourcePos.column, sourcePos.identifierName, sourcePos.identifierNamePos, sourcePos.filename);
+      this._mark(
+        sourcePos.line,
+        sourcePos.column,
+        sourcePos.identifierName,
+        sourcePos.identifierNamePos,
+        sourcePos.filename,
+      );
       this._position.column += repeat;
     } else {
       this._position.line++;
@@ -175,14 +191,12 @@ class Buffer {
       position.column += len;
       return;
     }
-    const {
-      column,
-      identifierName,
-      identifierNamePos,
-      filename
-    } = sourcePos;
+    const { column, identifierName, identifierNamePos, filename } = sourcePos;
     let line = sourcePos.line;
-    if ((identifierName != null || identifierNamePos != null) && this._canMarkIdName) {
+    if (
+      (identifierName != null || identifierNamePos != null) &&
+      this._canMarkIdName
+    ) {
       sourcePos.identifierName = undefined;
       sourcePos.identifierNamePos = undefined;
     }
@@ -204,7 +218,15 @@ class Buffer {
   }
   _mark(line, column, identifierName, identifierNamePos, filename) {
     var _this$_map;
-    (_this$_map = this._map) == null || _this$_map.mark(this._position, line, column, identifierName, identifierNamePos, filename);
+    (_this$_map = this._map) == null ||
+      _this$_map.mark(
+        this._position,
+        line,
+        column,
+        identifierName,
+        identifierNamePos,
+        filename,
+      );
   }
   removeTrailingNewline() {
     const queueCursor = this._queueCursor;

@@ -1,11 +1,20 @@
-import { type ARXCipher, type CipherWithOutput, type XorStream } from './utils.ts';
+import {
+  type ARXCipher,
+  type CipherWithOutput,
+  type XorStream,
+} from "./utils.ts";
 /**
  * hchacha helper method, used primarily in xchacha, to hash
  * key and nonce into key' and nonce'.
  * Same as chachaCore, but there doesn't seem to be a way to move the block
  * out without 25% performance hit.
  */
-export declare function hchacha(s: Uint32Array, k: Uint32Array, i: Uint32Array, o32: Uint32Array): void;
+export declare function hchacha(
+  s: Uint32Array,
+  k: Uint32Array,
+  i: Uint32Array,
+  o32: Uint32Array,
+): void;
 /**
  * Original, non-RFC chacha20 from DJB. 8-byte nonce, 8-byte counter.
  */
@@ -38,7 +47,9 @@ export declare const chacha12: XorStream;
  * In salsa20, authKey changes position in salsa stream.
  * In chacha, authKey can't be computed inside computeTag, it modifies the counter.
  */
-export declare const _poly1305_aead: (xorStream: XorStream) => (key: Uint8Array, nonce: Uint8Array, AAD?: Uint8Array) => CipherWithOutput;
+export declare const _poly1305_aead: (
+  xorStream: XorStream,
+) => (key: Uint8Array, nonce: Uint8Array, AAD?: Uint8Array) => CipherWithOutput;
 /**
  * ChaCha20-Poly1305 from RFC 8439.
  *

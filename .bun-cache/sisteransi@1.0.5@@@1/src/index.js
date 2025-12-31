@@ -1,8 +1,6 @@
-'use strict';
-
-const ESC = '\x1B';
+const ESC = "\x1B";
 const CSI = `${ESC}[`;
-const beep = '\u0007';
+const beep = "\u0007";
 
 const cursor = {
   to(x, y) {
@@ -10,7 +8,7 @@ const cursor = {
     return `${CSI}${y + 1};${x + 1}H`;
   },
   move(x, y) {
-    let ret = '';
+    let ret = "";
 
     if (x < 0) ret += `${CSI}${-x}D`;
     else if (x > 0) ret += `${CSI}${x}C`;
@@ -30,13 +28,13 @@ const cursor = {
   hide: `${CSI}?25l`,
   show: `${CSI}?25h`,
   save: `${ESC}7`,
-  restore: `${ESC}8`
-}
+  restore: `${ESC}8`,
+};
 
 const scroll = {
   up: (count = 1) => `${CSI}S`.repeat(count),
-  down: (count = 1) => `${CSI}T`.repeat(count)
-}
+  down: (count = 1) => `${CSI}T`.repeat(count),
+};
 
 const erase = {
   screen: `${CSI}2J`,
@@ -46,13 +44,12 @@ const erase = {
   lineEnd: `${CSI}K`,
   lineStart: `${CSI}1K`,
   lines(count) {
-    let clear = '';
+    let clear = "";
     for (let i = 0; i < count; i++)
-      clear += this.line + (i < count - 1 ? cursor.up() : '');
-    if (count)
-      clear += cursor.left;
+      clear += this.line + (i < count - 1 ? cursor.up() : "");
+    if (count) clear += cursor.left;
     return clear;
-  }
-}
+  },
+};
 
 module.exports = { cursor, scroll, erase, beep };

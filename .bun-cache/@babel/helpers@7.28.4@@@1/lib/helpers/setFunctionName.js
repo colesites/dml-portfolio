@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = setFunctionName;
 function setFunctionName(fn, name, prefix) {
@@ -12,7 +12,7 @@ function setFunctionName(fn, name, prefix) {
   try {
     Object.defineProperty(fn, "name", {
       configurable: true,
-      value: prefix ? prefix + " " + name : name
+      value: prefix ? prefix + " " + name : name,
     });
   } catch (_) {}
   return fn;

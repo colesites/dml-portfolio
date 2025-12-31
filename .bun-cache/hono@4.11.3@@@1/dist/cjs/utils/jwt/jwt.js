@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var jwt_exports = {};
 __export(jwt_exports, {
   decode: () => decode,
@@ -23,7 +27,7 @@ __export(jwt_exports, {
   isTokenHeader: () => isTokenHeader,
   sign: () => sign,
   verify: () => verify,
-  verifyWithJwks: () => verifyWithJwks
+  verifyWithJwks: () => verifyWithJwks,
 });
 module.exports = __toCommonJS(jwt_exports);
 var import_encode = require("../../utils/encode");
@@ -31,13 +35,24 @@ var import_jwa = require("./jwa");
 var import_jws = require("./jws");
 var import_types = require("./types");
 var import_utf8 = require("./utf8");
-const encodeJwtPart = (part) => (0, import_encode.encodeBase64Url)(import_utf8.utf8Encoder.encode(JSON.stringify(part)).buffer).replace(/=/g, "");
-const encodeSignaturePart = (buf) => (0, import_encode.encodeBase64Url)(buf).replace(/=/g, "");
-const decodeJwtPart = (part) => JSON.parse(import_utf8.utf8Decoder.decode((0, import_encode.decodeBase64Url)(part)));
+const encodeJwtPart = (part) =>
+  (0, import_encode.encodeBase64Url)(
+    import_utf8.utf8Encoder.encode(JSON.stringify(part)).buffer,
+  ).replace(/=/g, "");
+const encodeSignaturePart = (buf) =>
+  (0, import_encode.encodeBase64Url)(buf).replace(/=/g, "");
+const decodeJwtPart = (part) =>
+  JSON.parse(
+    import_utf8.utf8Decoder.decode((0, import_encode.decodeBase64Url)(part)),
+  );
 function isTokenHeader(obj) {
   if (typeof obj === "object" && obj !== null) {
     const objWithAlg = obj;
-    return "alg" in objWithAlg && Object.values(import_jwa.AlgorithmTypes).includes(objWithAlg.alg) && (!("typ" in objWithAlg) || objWithAlg.typ === "JWT");
+    return (
+      "alg" in objWithAlg &&
+      Object.values(import_jwa.AlgorithmTypes).includes(objWithAlg.alg) &&
+      (!("typ" in objWithAlg) || objWithAlg.typ === "JWT")
+    );
   }
   return false;
 }
@@ -51,7 +66,11 @@ const sign = async (payload, privateKey, alg = "HS256") => {
     encodedHeader = encodeJwtPart({ alg, typ: "JWT" });
   }
   const partialToken = `${encodedHeader}.${encodedPayload}`;
-  const signaturePart = await (0, import_jws.signing)(privateKey, alg, import_utf8.utf8Encoder.encode(partialToken));
+  const signaturePart = await (0, import_jws.signing)(
+    privateKey,
+    alg,
+    import_utf8.utf8Encoder.encode(partialToken),
+  );
   const signature = encodeSignaturePart(signaturePart);
   return `${partialToken}.${signature}`;
 };
@@ -62,8 +81,10 @@ const verify = async (token, publicKey, algOrOptions) => {
     nbf = true,
     exp = true,
     iat = true,
-    aud
-  } = typeof algOrOptions === "string" ? { alg: algOrOptions } : algOrOptions || {};
+    aud,
+  } = typeof algOrOptions === "string"
+    ? { alg: algOrOptions }
+    : algOrOptions || {};
   const tokenParts = token.split(".");
   if (tokenParts.length !== 3) {
     throw new import_types.JwtTokenInvalid(token);
@@ -72,7 +93,7 @@ const verify = async (token, publicKey, algOrOptions) => {
   if (!isTokenHeader(header)) {
     throw new import_types.JwtHeaderInvalid(header);
   }
-  const now = Date.now() / 1e3 | 0;
+  const now = (Date.now() / 1e3) | 0;
   if (nbf && payload.nbf && payload.nbf > now) {
     throw new import_types.JwtTokenNotBefore(token);
   }
@@ -98,8 +119,12 @@ const verify = async (token, publicKey, algOrOptions) => {
       throw new import_types.JwtPayloadRequiresAud(payload);
     }
     const audiences = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-    const matched = audiences.some(
-      (payloadAud) => aud instanceof RegExp ? aud.test(payloadAud) : typeof aud === "string" ? payloadAud === aud : Array.isArray(aud) && aud.includes(payloadAud)
+    const matched = audiences.some((payloadAud) =>
+      aud instanceof RegExp
+        ? aud.test(payloadAud)
+        : typeof aud === "string"
+          ? payloadAud === aud
+          : Array.isArray(aud) && aud.includes(payloadAud),
     );
     if (!matched) {
       throw new import_types.JwtTokenAudience(aud, payload.aud);
@@ -110,7 +135,7 @@ const verify = async (token, publicKey, algOrOptions) => {
     publicKey,
     alg,
     (0, import_encode.decodeBase64Url)(tokenParts[2]),
-    import_utf8.utf8Encoder.encode(headerPayload)
+    import_utf8.utf8Encoder.encode(headerPayload),
   );
   if (!verified) {
     throw new import_types.JwtTokenSignatureMismatched(token);
@@ -144,7 +169,9 @@ const verifyWithJwks = async (token, options, init) => {
       options.keys = data.keys;
     }
   } else if (!options.keys) {
-    throw new Error('verifyWithJwks requires options for either "keys" or "jwks_uri" or both');
+    throw new Error(
+      'verifyWithJwks requires options for either "keys" or "jwks_uri" or both',
+    );
   }
   const matchingKey = options.keys.find((key) => key.kid === header.kid);
   if (!matchingKey) {
@@ -152,7 +179,7 @@ const verifyWithJwks = async (token, options, init) => {
   }
   return await verify(token, matchingKey, {
     alg: matchingKey.alg || header.alg,
-    ...verifyOpts
+    ...verifyOpts,
   });
 };
 const decode = (token) => {
@@ -162,7 +189,7 @@ const decode = (token) => {
     const payload = decodeJwtPart(p);
     return {
       header,
-      payload
+      payload,
     };
   } catch {
     throw new import_types.JwtTokenInvalid(token);
@@ -177,11 +204,12 @@ const decodeHeader = (token) => {
   }
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  decode,
-  decodeHeader,
-  isTokenHeader,
-  sign,
-  verify,
-  verifyWithJwks
-});
+0 &&
+  (module.exports = {
+    decode,
+    decodeHeader,
+    isTokenHeader,
+    sign,
+    verify,
+    verifyWithJwks,
+  });

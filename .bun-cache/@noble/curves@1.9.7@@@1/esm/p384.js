@@ -12,5 +12,6 @@ export const secp384r1 = p384n;
 /** @deprecated use `import { p384_hasher } from '@noble/curves/nist.js';` */
 export const hashToCurve = /* @__PURE__ */ (() => p384_hasher.hashToCurve)();
 /** @deprecated use `import { p384_hasher } from '@noble/curves/nist.js';` */
-export const encodeToCurve = /* @__PURE__ */ (() => p384_hasher.encodeToCurve)();
+export const encodeToCurve = /* @__PURE__ */ (() =>
+  p384_hasher.encodeToCurve)();
 //# sourceMappingURL=p384.js.map

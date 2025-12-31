@@ -1,23 +1,21 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.astFromValue = astFromValue;
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
-var _isIterableObject = require('../jsutils/isIterableObject.js');
+var _isIterableObject = require("../jsutils/isIterableObject.js");
 
-var _isObjectLike = require('../jsutils/isObjectLike.js');
+var _isObjectLike = require("../jsutils/isObjectLike.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _scalars = require('../type/scalars.js');
+var _scalars = require("../type/scalars.js");
 
 /**
  * Produces a GraphQL Value AST given a JavaScript object.
@@ -126,14 +124,14 @@ function astFromValue(value, type) {
       return null;
     } // Others serialize based on their corresponding JavaScript scalar types.
 
-    if (typeof serialized === 'boolean') {
+    if (typeof serialized === "boolean") {
       return {
         kind: _kinds.Kind.BOOLEAN,
         value: serialized,
       };
     } // JavaScript numbers can be Int or Float values.
 
-    if (typeof serialized === 'number' && Number.isFinite(serialized)) {
+    if (typeof serialized === "number" && Number.isFinite(serialized)) {
       const stringNum = String(serialized);
       return integerStringRegExp.test(stringNum)
         ? {
@@ -146,7 +144,7 @@ function astFromValue(value, type) {
           };
     }
 
-    if (typeof serialized === 'string') {
+    if (typeof serialized === "string") {
       // Enum types use Enum literals.
       if ((0, _definition.isEnumType)(type)) {
         return {
@@ -178,7 +176,7 @@ function astFromValue(value, type) {
   false ||
     (0, _invariant.invariant)(
       false,
-      'Unexpected input type: ' + (0, _inspect.inspect)(type),
+      "Unexpected input type: " + (0, _inspect.inspect)(type),
     );
 }
 /**

@@ -1,14 +1,11 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.TokenMap = void 0;
 var _t = require("@babel/types");
-const {
-  traverseFast,
-  VISITOR_KEYS
-} = _t;
+const { traverseFast, VISITOR_KEYS } = _t;
 class TokenMap {
   constructor(ast, tokens, source) {
     this._tokens = void 0;
@@ -18,7 +15,7 @@ class TokenMap {
     this._tokensCache = new Map();
     this._tokens = tokens;
     this._source = source;
-    traverseFast(ast, node => {
+    traverseFast(ast, (node) => {
       const indexes = this._getTokensIndexesOfNode(node);
       if (indexes.length > 0) this._nodesToTokenIndexes.set(node, indexes);
     });
@@ -72,7 +69,7 @@ class TokenMap {
               this._nodesOccurrencesCountCache.set(node, {
                 test,
                 count,
-                i
+                i,
               });
             }
             return tok;
@@ -104,13 +101,19 @@ class TokenMap {
   }
   _getTokensIndexesOfNode(node) {
     if (node.start == null || node.end == null) return [];
-    const {
-      first,
-      last
-    } = this._findTokensOfNode(node, 0, this._tokens.length - 1);
+    const { first, last } = this._findTokensOfNode(
+      node,
+      0,
+      this._tokens.length - 1,
+    );
     let low = first;
     const children = childrenIterator(node);
-    if ((node.type === "ExportNamedDeclaration" || node.type === "ExportDefaultDeclaration") && node.declaration && node.declaration.type === "ClassDeclaration") {
+    if (
+      (node.type === "ExportNamedDeclaration" ||
+        node.type === "ExportDefaultDeclaration") &&
+      node.declaration &&
+      node.declaration.type === "ClassDeclaration"
+    ) {
       children.next();
     }
     const indexes = [];
@@ -132,16 +135,16 @@ class TokenMap {
     const last = this._findLastTokenOfNode(node.end, first, high);
     this._tokensCache.set(node, {
       first,
-      last
+      last,
     });
     return {
       first,
-      last
+      last,
     };
   }
   _findFirstTokenOfNode(start, low, high) {
     while (low <= high) {
-      const mid = high + low >> 1;
+      const mid = (high + low) >> 1;
       if (start < this._tokens[mid].start) {
         high = mid - 1;
       } else if (start > this._tokens[mid].start) {
@@ -154,7 +157,7 @@ class TokenMap {
   }
   _findLastTokenOfNode(end, low, high) {
     while (low <= high) {
-      const mid = high + low >> 1;
+      const mid = (high + low) >> 1;
       if (end < this._tokens[mid].end) {
         high = mid - 1;
       } else if (end > this._tokens[mid].end) {

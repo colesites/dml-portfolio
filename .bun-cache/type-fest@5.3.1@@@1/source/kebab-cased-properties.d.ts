@@ -1,7 +1,7 @@
-import type {_DefaultDelimiterCaseOptions} from './delimiter-case.d.ts';
-import type {DelimiterCasedProperties} from './delimiter-cased-properties.d.ts';
-import type {ApplyDefaultOptions} from './internal/index.d.ts';
-import type {WordsOptions} from './words.d.ts';
+import type { _DefaultDelimiterCaseOptions } from "./delimiter-case.d.ts";
+import type { DelimiterCasedProperties } from "./delimiter-cased-properties.d.ts";
+import type { ApplyDefaultOptions } from "./internal/index.d.ts";
+import type { WordsOptions } from "./words.d.ts";
 
 /**
 Convert object properties to kebab case but not recursively.
@@ -35,8 +35,10 @@ const splitOnNumbers: KebabCasedProperties<{line1: string}, {splitOnNumbers: tru
 @category Object
 */
 export type KebabCasedProperties<
-	Value,
-	Options extends WordsOptions = {},
-> = DelimiterCasedProperties<Value, '-', ApplyDefaultOptions<WordsOptions, _DefaultDelimiterCaseOptions, Options>>;
-
-export {};
+  Value,
+  Options extends WordsOptions = {},
+> = DelimiterCasedProperties<
+  Value,
+  "-",
+  ApplyDefaultOptions<WordsOptions, _DefaultDelimiterCaseOptions, Options>
+>;

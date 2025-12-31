@@ -1,5 +1,5 @@
-import { type ZodErrorMap, ZodIssueCode } from "../ZodError.js";
 import { util, ZodParsedType } from "../helpers/util.js";
+import { type ZodErrorMap, ZodIssueCode } from "../ZodError.js";
 
 const errorMap: ZodErrorMap = (issue, _ctx) => {
   let message: string;
@@ -67,15 +67,27 @@ const errorMap: ZodErrorMap = (issue, _ctx) => {
         } ${issue.minimum} character(s)`;
       else if (issue.type === "number")
         message = `Number must be ${
-          issue.exact ? `exactly equal to ` : issue.inclusive ? `greater than or equal to ` : `greater than `
+          issue.exact
+            ? `exactly equal to `
+            : issue.inclusive
+              ? `greater than or equal to `
+              : `greater than `
         }${issue.minimum}`;
       else if (issue.type === "bigint")
         message = `Number must be ${
-          issue.exact ? `exactly equal to ` : issue.inclusive ? `greater than or equal to ` : `greater than `
+          issue.exact
+            ? `exactly equal to `
+            : issue.inclusive
+              ? `greater than or equal to `
+              : `greater than `
         }${issue.minimum}`;
       else if (issue.type === "date")
         message = `Date must be ${
-          issue.exact ? `exactly equal to ` : issue.inclusive ? `greater than or equal to ` : `greater than `
+          issue.exact
+            ? `exactly equal to `
+            : issue.inclusive
+              ? `greater than or equal to `
+              : `greater than `
         }${new Date(Number(issue.minimum))}`;
       else message = "Invalid input";
       break;
@@ -90,15 +102,27 @@ const errorMap: ZodErrorMap = (issue, _ctx) => {
         } ${issue.maximum} character(s)`;
       else if (issue.type === "number")
         message = `Number must be ${
-          issue.exact ? `exactly` : issue.inclusive ? `less than or equal to` : `less than`
+          issue.exact
+            ? `exactly`
+            : issue.inclusive
+              ? `less than or equal to`
+              : `less than`
         } ${issue.maximum}`;
       else if (issue.type === "bigint")
         message = `BigInt must be ${
-          issue.exact ? `exactly` : issue.inclusive ? `less than or equal to` : `less than`
+          issue.exact
+            ? `exactly`
+            : issue.inclusive
+              ? `less than or equal to`
+              : `less than`
         } ${issue.maximum}`;
       else if (issue.type === "date")
         message = `Date must be ${
-          issue.exact ? `exactly` : issue.inclusive ? `smaller than or equal to` : `smaller than`
+          issue.exact
+            ? `exactly`
+            : issue.inclusive
+              ? `smaller than or equal to`
+              : `smaller than`
         } ${new Date(Number(issue.maximum))}`;
       else message = "Invalid input";
       break;

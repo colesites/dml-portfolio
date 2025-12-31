@@ -1,10 +1,10 @@
+import { join } from "path";
 import {
+  type ConfigLoaderFailResult,
+  type ConfigLoaderSuccessResult,
   configLoader,
   loadConfig,
-  ConfigLoaderFailResult,
-  ConfigLoaderSuccessResult,
 } from "../config-loader";
-import { join } from "path";
 
 describe("config-loader", (): void => {
   it("should use explicitParams when set", () => {

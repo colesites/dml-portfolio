@@ -19,7 +19,7 @@ test("string with default fallback", () => {
   const stringWithDefault = z
     .pipe(
       z.transform((v) => (v === "none" ? undefined : v)),
-      z.string()
+      z.string(),
     )
     .catch("default");
 

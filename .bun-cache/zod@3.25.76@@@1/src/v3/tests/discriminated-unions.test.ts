@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -10,7 +10,7 @@ test("valid", () => {
         z.object({ type: z.literal("a"), a: z.string() }),
         z.object({ type: z.literal("b"), b: z.string() }),
       ])
-      .parse({ type: "a", a: "abc" })
+      .parse({ type: "a", a: "abc" }),
   ).toEqual({ type: "a", a: "abc" });
 });
 
@@ -161,7 +161,7 @@ test("async - valid", async () => {
           b: z.string(),
         }),
       ])
-      .parseAsync({ type: "a", a: "1" })
+      .parseAsync({ type: "a", a: "1" }),
   ).toEqual({ type: "a", a: 1 });
 });
 
@@ -283,7 +283,10 @@ test("optional and nullable", () => {
   ]);
 
   type schema = z.infer<typeof schema>;
-  z.util.assertEqual<schema, { key?: "a" | undefined; a: true } | { key: "b" | null; b: true }>(true);
+  z.util.assertEqual<
+    schema,
+    { key?: "a" | undefined; a: true } | { key: "b" | null; b: true }
+  >(true);
 
   schema.parse({ key: "a", a: true });
   schema.parse({ key: undefined, a: true });
@@ -311,5 +314,7 @@ test("readonly array of options", () => {
     z.object({ type: z.literal("y"), val: z.literal(2) }),
   ] as const;
 
-  expect(z.discriminatedUnion("type", options).parse({ type: "x", val: 1 })).toEqual({ type: "x", val: 1 });
+  expect(
+    z.discriminatedUnion("type", options).parse({ type: "x", val: 1 }),
+  ).toEqual({ type: "x", val: 1 });
 });

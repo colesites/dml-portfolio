@@ -1,5 +1,5 @@
 export function parseBooleanDef() {
-    return {
-        type: "boolean",
-    };
+  return {
+    type: "boolean",
+  };
 }

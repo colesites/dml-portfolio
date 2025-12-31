@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.getIntrospectionQuery = getIntrospectionQuery;
@@ -19,22 +17,22 @@ function getIntrospectionQuery(options) {
     oneOf: false,
     ...options,
   };
-  const descriptions = optionsWithDefault.descriptions ? 'description' : '';
+  const descriptions = optionsWithDefault.descriptions ? "description" : "";
   const specifiedByUrl = optionsWithDefault.specifiedByUrl
-    ? 'specifiedByURL'
-    : '';
+    ? "specifiedByURL"
+    : "";
   const directiveIsRepeatable = optionsWithDefault.directiveIsRepeatable
-    ? 'isRepeatable'
-    : '';
+    ? "isRepeatable"
+    : "";
   const schemaDescription = optionsWithDefault.schemaDescription
     ? descriptions
-    : '';
+    : "";
 
   function inputDeprecation(str) {
-    return optionsWithDefault.inputValueDeprecation ? str : '';
+    return optionsWithDefault.inputValueDeprecation ? str : "";
   }
 
-  const oneOf = optionsWithDefault.oneOf ? 'isOneOf' : '';
+  const oneOf = optionsWithDefault.oneOf ? "isOneOf" : "";
   return `
     query IntrospectionQuery {
       __schema {
@@ -50,7 +48,7 @@ function getIntrospectionQuery(options) {
           ${descriptions}
           ${directiveIsRepeatable}
           locations
-          args${inputDeprecation('(includeDeprecated: true)')} {
+          args${inputDeprecation("(includeDeprecated: true)")} {
             ...InputValue
           }
         }
@@ -66,7 +64,7 @@ function getIntrospectionQuery(options) {
       fields(includeDeprecated: true) {
         name
         ${descriptions}
-        args${inputDeprecation('(includeDeprecated: true)')} {
+        args${inputDeprecation("(includeDeprecated: true)")} {
           ...InputValue
         }
         type {
@@ -75,7 +73,7 @@ function getIntrospectionQuery(options) {
         isDeprecated
         deprecationReason
       }
-      inputFields${inputDeprecation('(includeDeprecated: true)')} {
+      inputFields${inputDeprecation("(includeDeprecated: true)")} {
         ...InputValue
       }
       interfaces {
@@ -97,8 +95,8 @@ function getIntrospectionQuery(options) {
       ${descriptions}
       type { ...TypeRef }
       defaultValue
-      ${inputDeprecation('isDeprecated')}
-      ${inputDeprecation('deprecationReason')}
+      ${inputDeprecation("isDeprecated")}
+      ${inputDeprecation("deprecationReason")}
     }
 
     fragment TypeRef on __Type {

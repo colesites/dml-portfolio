@@ -29,7 +29,7 @@ test("enum from native enum", () => {
     Banana = "banana",
     Orange = 3,
   }
-  // @ts-ignore
+  // @ts-expect-error
   const fruitEnum = z.nativeEnum(Fruits);
   type fruitEnum = z.infer<typeof fruitEnum>;
   fruitEnum.parse("apple");
@@ -48,7 +48,7 @@ test("enum from native enum with numeric keys", () => {
   const FruitValues = {
     Apple: 10,
     Banana: 20,
-    // @ts-ignore
+    // @ts-expect-error
   } as const;
   const fruitEnum = z.nativeEnum(FruitValues);
   type fruitEnum = z.infer<typeof fruitEnum>;
@@ -101,7 +101,9 @@ test("readonly enum", () => {
 
 test("error map", () => {
   const result = z
-    .enum(["test"], { error: (iss) => (iss.input === undefined ? "REQUIRED" : undefined) })
+    .enum(["test"], {
+      error: (iss) => (iss.input === undefined ? "REQUIRED" : undefined),
+    })
     .safeParse(undefined);
   expect(result.success).toEqual(false);
   if (!result.success) {
@@ -143,7 +145,9 @@ test("extract", () => {
   expect(ItalianEnum.safeParse("Pasta").success).toEqual(true);
   expect(ItalianEnum.safeParse("Tacos").success).toEqual(false);
 
-  expectTypeOf<z.infer<typeof ItalianEnum>>().toEqualTypeOf<"Pasta" | "Pizza">();
+  expectTypeOf<z.infer<typeof ItalianEnum>>().toEqualTypeOf<
+    "Pasta" | "Pizza"
+  >();
 });
 
 test("exclude", () => {
@@ -153,7 +157,9 @@ test("exclude", () => {
 
   expect(UnhealthyEnum.safeParse("Pasta").success).toEqual(true);
   expect(UnhealthyEnum.safeParse("Salad").success).toEqual(false);
-  expectTypeOf<z.infer<typeof UnhealthyEnum>>().toEqualTypeOf<"Pasta" | "Pizza" | "Tacos" | "Burgers">();
+  expectTypeOf<z.infer<typeof UnhealthyEnum>>().toEqualTypeOf<
+    "Pasta" | "Pizza" | "Tacos" | "Burgers"
+  >();
 
   const EmptyFoodEnum = FoodEnum.exclude(foods);
   expectTypeOf<typeof EmptyFoodEnum>().toEqualTypeOf<z.ZodEnum<{}>>();
@@ -168,14 +174,18 @@ test("error map inheritance", () => {
   const foodsError = FoodEnum.safeParse("Cucumbers");
   const italianError = ItalianEnum.safeParse("Tacos");
 
-  expect(foodsError.error!.issues[0].message).toEqual(italianError.error!.issues[0].message);
+  expect(foodsError.error!.issues[0].message).toEqual(
+    italianError.error!.issues[0].message,
+  );
 
   const UnhealthyEnum = FoodEnum.exclude(["Salad"], {
     error: () => ({ message: "This is not healthy food!" }),
   });
   const unhealthyError = UnhealthyEnum.safeParse("Salad");
   if (!unhealthyError.success) {
-    expect(unhealthyError.error.issues[0].message).toEqual("This is not healthy food!");
+    expect(unhealthyError.error.issues[0].message).toEqual(
+      "This is not healthy food!",
+    );
   }
 });
 
@@ -256,13 +266,17 @@ test("enum with message returns the custom error message", () => {
   const result1 = schema.safeParse("berries");
   expect(result1.success).toEqual(false);
   if (!result1.success) {
-    expect(result1.error.issues[0].message).toEqual("the value provided is invalid");
+    expect(result1.error.issues[0].message).toEqual(
+      "the value provided is invalid",
+    );
   }
 
   const result2 = schema.safeParse(undefined);
   expect(result2.success).toEqual(false);
   if (!result2.success) {
-    expect(result2.error.issues[0].message).toEqual("the value provided is invalid");
+    expect(result2.error.issues[0].message).toEqual(
+      "the value provided is invalid",
+    );
   }
 
   const result3 = schema.safeParse("banana");
@@ -271,7 +285,9 @@ test("enum with message returns the custom error message", () => {
   const result4 = schema.safeParse(null);
   expect(result4.success).toEqual(false);
   if (!result4.success) {
-    expect(result4.error.issues[0].message).toEqual("the value provided is invalid");
+    expect(result4.error.issues[0].message).toEqual(
+      "the value provided is invalid",
+    );
   }
 });
 

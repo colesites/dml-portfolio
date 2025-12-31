@@ -1,38 +1,32 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+Object.defineProperty(exports, "__esModule", { value: true });
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
-var _chunkT3TW4P64js = require('./chunk-T3TW4P64.js');
+var _chunkT3TW4P64js = require("./chunk-T3TW4P64.js");
 
+var _chunk7Q53NNPVjs = require("./chunk-7Q53NNPV.js");
 
+var _chunkDOWWQYXZjs = require("./chunk-DOWWQYXZ.js");
 
-
-
-var _chunk7Q53NNPVjs = require('./chunk-7Q53NNPV.js');
-
-
-
-
-
-
-var _chunkDOWWQYXZjs = require('./chunk-DOWWQYXZ.js');
-
-
-var _chunkSRMAQGPMjs = require('./chunk-SRMAQGPM.js');
+var _chunkSRMAQGPMjs = require("./chunk-SRMAQGPM.js");
 
 // src/interceptors/ClientRequest/index.ts
-var _http = require('http'); var _http2 = _interopRequireDefault(_http);
-var _https = require('https'); var _https2 = _interopRequireDefault(_https);
+var _http = require("http");
+var _http2 = _interopRequireDefault(_http);
+var _https = require("https");
+var _https2 = _interopRequireDefault(_https);
 
 // src/interceptors/ClientRequest/MockHttpSocket.ts
-var _net = require('net'); var _net2 = _interopRequireDefault(_net);
+var _net = require("net");
+var _net2 = _interopRequireDefault(_net);
 
+var __http_common = require("_http_common");
 
-var __http_common = require('_http_common');
-
-var _stream = require('stream');
-var _outvariant = require('outvariant');
+var _stream = require("stream");
+var _outvariant = require("outvariant");
 
 // src/interceptors/Socket/MockSocket.ts
-
 
 // src/interceptors/Socket/utils/normalizeSocketWriteArgs.ts
 function normalizeSocketWriteArgs(args) {
@@ -64,16 +58,12 @@ var MockSocket = class extends _net2.default.Socket {
     return this;
   }
   write(...args) {
-    const [chunk, encoding, callback] = normalizeSocketWriteArgs(
-      args
-    );
+    const [chunk, encoding, callback] = normalizeSocketWriteArgs(args);
     this.options.write(chunk, encoding, callback);
     return true;
   }
   end(...args) {
-    const [chunk, encoding, callback] = normalizeSocketWriteArgs(
-      args
-    );
+    const [chunk, encoding, callback] = normalizeSocketWriteArgs(args);
     this.options.write(chunk, encoding, callback);
     return super.end.apply(this, args);
   }
@@ -133,7 +123,7 @@ function defineRawHeadersSymbol(headers, rawHeaders) {
     // Mark the symbol as configurable so its value can be overridden.
     // Overrides happen when merging raw headers from multiple sources.
     // E.g. new Request(new Request(url, { headers }), { headers })
-    configurable: true
+    configurable: true,
   });
 }
 function recordRawFetchHeaders() {
@@ -143,7 +133,7 @@ function recordRawFetchHeaders() {
   const {
     Headers: OriginalHeaders,
     Request: OriginalRequest,
-    Response: OriginalResponse
+    Response: OriginalResponse,
   } = globalThis;
   const { set, append, delete: headersDeleteMethod } = Headers.prototype;
   Object.defineProperty(Headers, kRestorePatches, {
@@ -161,7 +151,7 @@ function recordRawFetchHeaders() {
      * @note Mark this property as configurable
      * so we can delete it using `Reflect.delete` during cleanup.
      */
-    configurable: true
+    configurable: true,
   });
   Object.defineProperty(globalThis, "Headers", {
     enumerable: true,
@@ -169,11 +159,14 @@ function recordRawFetchHeaders() {
     value: new Proxy(Headers, {
       construct(target, args, newTarget) {
         const headersInit = args[0] || [];
-        if (headersInit instanceof Headers && Reflect.has(headersInit, kRawHeaders)) {
+        if (
+          headersInit instanceof Headers &&
+          Reflect.has(headersInit, kRawHeaders)
+        ) {
           const headers2 = Reflect.construct(
             target,
             [Reflect.get(headersInit, kRawHeaders)],
-            newTarget
+            newTarget,
           );
           ensureRawHeadersSymbol(headers2, [
             /**
@@ -181,30 +174,32 @@ function recordRawFetchHeaders() {
              * This prevents multiple Headers instances from pointing
              * at the same internal "rawHeaders" array.
              */
-            ...Reflect.get(headersInit, kRawHeaders)
+            ...Reflect.get(headersInit, kRawHeaders),
           ]);
           return headers2;
         }
         const headers = Reflect.construct(target, args, newTarget);
         if (!Reflect.has(headers, kRawHeaders)) {
-          const rawHeadersInit = Array.isArray(headersInit) ? headersInit : Object.entries(headersInit);
+          const rawHeadersInit = Array.isArray(headersInit)
+            ? headersInit
+            : Object.entries(headersInit);
           ensureRawHeadersSymbol(headers, rawHeadersInit);
         }
         return headers;
-      }
-    })
+      },
+    }),
   });
   Headers.prototype.set = new Proxy(Headers.prototype.set, {
     apply(target, thisArg, args) {
       recordRawHeader(thisArg, args, "set");
       return Reflect.apply(target, thisArg, args);
-    }
+    },
   });
   Headers.prototype.append = new Proxy(Headers.prototype.append, {
     apply(target, thisArg, args) {
       recordRawHeader(thisArg, args, "append");
       return Reflect.apply(target, thisArg, args);
-    }
+    },
   });
   Headers.prototype.delete = new Proxy(Headers.prototype.delete, {
     apply(target, thisArg, args) {
@@ -217,7 +212,7 @@ function recordRawFetchHeaders() {
         }
       }
       return Reflect.apply(target, thisArg, args);
-    }
+    },
   });
   Object.defineProperty(globalThis, "Request", {
     enumerable: true,
@@ -236,8 +231,8 @@ function recordRawFetchHeaders() {
           ensureRawHeadersSymbol(request.headers, inferredRawHeaders);
         }
         return request;
-      }
-    })
+      },
+    }),
   });
   Object.defineProperty(globalThis, "Response", {
     enumerable: true,
@@ -248,12 +243,12 @@ function recordRawFetchHeaders() {
         if (typeof args[1] === "object" && args[1].headers != null) {
           ensureRawHeadersSymbol(
             response.headers,
-            inferRawHeaders(args[1].headers)
+            inferRawHeaders(args[1].headers),
           );
         }
         return response;
-      }
-    })
+      },
+    }),
   });
 }
 function restoreHeadersPrototype() {
@@ -288,20 +283,22 @@ var MockHttpSocket = class extends MockSocket {
         }
         if (chunk) {
           if (this.socketState === "passthrough") {
-            (_a = this.originalSocket) == null ? void 0 : _a.write(chunk, encoding, callback);
+            (_a = this.originalSocket) == null
+              ? void 0
+              : _a.write(chunk, encoding, callback);
           }
           this.requestParser.execute(
-            Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding)
+            Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding),
           );
         }
       },
       read: (chunk) => {
         if (chunk !== null) {
           this.responseParser.execute(
-            Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+            Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk),
           );
         }
-      }
+      },
     });
     this.requestRawHeadersBuffer = [];
     this.responseRawHeadersBuffer = [];
@@ -317,14 +314,27 @@ var MockHttpSocket = class extends MockSocket {
     this.onRequestHeaders = (rawHeaders) => {
       this.requestRawHeadersBuffer.push(...rawHeaders);
     };
-    this.onRequestStart = (versionMajor, versionMinor, rawHeaders, _, path, __, ___, ____, shouldKeepAlive) => {
+    this.onRequestStart = (
+      versionMajor,
+      versionMinor,
+      rawHeaders,
+      _,
+      path,
+      __,
+      ___,
+      ____,
+      shouldKeepAlive,
+    ) => {
       var _a;
       this.shouldKeepAlive = shouldKeepAlive;
       const url = new URL(path || "", this.baseUrl);
-      const method = ((_a = this.connectionOptions.method) == null ? void 0 : _a.toUpperCase()) || "GET";
+      const method =
+        ((_a = this.connectionOptions.method) == null
+          ? void 0
+          : _a.toUpperCase()) || "GET";
       const headers = _chunkDOWWQYXZjs.FetchResponse.parseRawHeaders([
         ...this.requestRawHeadersBuffer,
-        ...rawHeaders || []
+        ...(rawHeaders || []),
       ]);
       this.requestRawHeadersBuffer.length = 0;
       const canHaveBody = method !== "GET" && method !== "HEAD";
@@ -343,28 +353,40 @@ var MockHttpSocket = class extends MockSocket {
          */
         read: () => {
           this.flushWriteBuffer();
-        }
+        },
       });
-      const requestId = _chunkDOWWQYXZjs.createRequestId.call(void 0, );
+      const requestId = _chunkDOWWQYXZjs.createRequestId.call(void 0);
       this.request = new Request(url, {
         method,
         headers,
         credentials: "same-origin",
         // @ts-expect-error Undocumented Fetch property.
         duplex: canHaveBody ? "half" : void 0,
-        body: canHaveBody ? _stream.Readable.toWeb(this.requestStream) : null
+        body: canHaveBody ? _stream.Readable.toWeb(this.requestStream) : null,
       });
       Reflect.set(this.request, kRequestId, requestId);
-      _chunkSRMAQGPMjs.setRawRequest.call(void 0, this.request, Reflect.get(this, "_httpMessage"));
-      _chunkT3TW4P64js.setRawRequestBodyStream.call(void 0, this.request, this.requestStream);
-      if (this.request.headers.has(_chunkDOWWQYXZjs.INTERNAL_REQUEST_ID_HEADER_NAME)) {
+      _chunkSRMAQGPMjs.setRawRequest.call(
+        void 0,
+        this.request,
+        Reflect.get(this, "_httpMessage"),
+      );
+      _chunkT3TW4P64js.setRawRequestBodyStream.call(
+        void 0,
+        this.request,
+        this.requestStream,
+      );
+      if (
+        this.request.headers.has(
+          _chunkDOWWQYXZjs.INTERNAL_REQUEST_ID_HEADER_NAME,
+        )
+      ) {
         this.passthrough();
         return;
       }
       this.onRequest({
         requestId,
         request: this.request,
-        socket: this
+        socket: this,
       });
     };
     /**
@@ -377,10 +399,18 @@ var MockHttpSocket = class extends MockSocket {
     this.onResponseHeaders = (rawHeaders) => {
       this.responseRawHeadersBuffer.push(...rawHeaders);
     };
-    this.onResponseStart = (versionMajor, versionMinor, rawHeaders, method, url, status, statusText) => {
+    this.onResponseStart = (
+      versionMajor,
+      versionMinor,
+      rawHeaders,
+      method,
+      url,
+      status,
+      statusText,
+    ) => {
       const headers = _chunkDOWWQYXZjs.FetchResponse.parseRawHeaders([
         ...this.responseRawHeadersBuffer,
-        ...rawHeaders || []
+        ...(rawHeaders || []),
       ]);
       this.responseRawHeadersBuffer.length = 0;
       const response = new (0, _chunkDOWWQYXZjs.FetchResponse)(
@@ -391,23 +421,29 @@ var MockHttpSocket = class extends MockSocket {
          * in response listener while the Socket instance delays the emission
          * of "end" and other events until those response listeners are finished.
          */
-        _chunkDOWWQYXZjs.FetchResponse.isResponseWithBody(status) ? _stream.Readable.toWeb(
-          this.responseStream = new (0, _stream.Readable)({ read() {
-          } })
-        ) : null,
+        _chunkDOWWQYXZjs.FetchResponse.isResponseWithBody(status)
+          ? _stream.Readable.toWeb(
+              (this.responseStream = new (0, _stream.Readable)({ read() {} })),
+            )
+          : null,
         {
           url,
           status,
           statusText,
-          headers
-        }
+          headers,
+        },
       );
-      _outvariant.invariant.call(void 0, 
+      _outvariant.invariant.call(
+        void 0,
         this.request,
-        "Failed to handle a response: request does not exist"
+        "Failed to handle a response: request does not exist",
       );
       _chunkDOWWQYXZjs.FetchResponse.setUrl(this.request.url, response);
-      if (this.request.headers.has(_chunkDOWWQYXZjs.INTERNAL_REQUEST_ID_HEADER_NAME)) {
+      if (
+        this.request.headers.has(
+          _chunkDOWWQYXZjs.INTERNAL_REQUEST_ID_HEADER_NAME,
+        )
+      ) {
         return;
       }
       this.responseListenersPromise = this.onResponse({
@@ -415,7 +451,7 @@ var MockHttpSocket = class extends MockSocket {
         isMockedResponse: this.socketState === "mock",
         requestId: Reflect.get(this.request, kRequestId),
         request: this.request,
-        socket: this
+        socket: this,
       });
     };
     this.connectionOptions = options.connectionOptions;
@@ -425,16 +461,24 @@ var MockHttpSocket = class extends MockSocket {
     this.baseUrl = baseUrlFromConnectionOptions(this.connectionOptions);
     this.requestParser = new (0, __http_common.HTTPParser)();
     this.requestParser.initialize(__http_common.HTTPParser.REQUEST, {});
-    this.requestParser[__http_common.HTTPParser.kOnHeaders] = this.onRequestHeaders.bind(this);
-    this.requestParser[__http_common.HTTPParser.kOnHeadersComplete] = this.onRequestStart.bind(this);
-    this.requestParser[__http_common.HTTPParser.kOnBody] = this.onRequestBody.bind(this);
-    this.requestParser[__http_common.HTTPParser.kOnMessageComplete] = this.onRequestEnd.bind(this);
+    this.requestParser[__http_common.HTTPParser.kOnHeaders] =
+      this.onRequestHeaders.bind(this);
+    this.requestParser[__http_common.HTTPParser.kOnHeadersComplete] =
+      this.onRequestStart.bind(this);
+    this.requestParser[__http_common.HTTPParser.kOnBody] =
+      this.onRequestBody.bind(this);
+    this.requestParser[__http_common.HTTPParser.kOnMessageComplete] =
+      this.onRequestEnd.bind(this);
     this.responseParser = new (0, __http_common.HTTPParser)();
     this.responseParser.initialize(__http_common.HTTPParser.RESPONSE, {});
-    this.responseParser[__http_common.HTTPParser.kOnHeaders] = this.onResponseHeaders.bind(this);
-    this.responseParser[__http_common.HTTPParser.kOnHeadersComplete] = this.onResponseStart.bind(this);
-    this.responseParser[__http_common.HTTPParser.kOnBody] = this.onResponseBody.bind(this);
-    this.responseParser[__http_common.HTTPParser.kOnMessageComplete] = this.onResponseEnd.bind(this);
+    this.responseParser[__http_common.HTTPParser.kOnHeaders] =
+      this.onResponseHeaders.bind(this);
+    this.responseParser[__http_common.HTTPParser.kOnHeadersComplete] =
+      this.onResponseStart.bind(this);
+    this.responseParser[__http_common.HTTPParser.kOnBody] =
+      this.onResponseBody.bind(this);
+    this.responseParser[__http_common.HTTPParser.kOnMessageComplete] =
+      this.onResponseEnd.bind(this);
     this.once("finish", () => this.requestParser.free());
     if (this.baseUrl.protocol === "https:") {
       Reflect.set(this, "encrypted", true);
@@ -442,7 +486,11 @@ var MockHttpSocket = class extends MockSocket {
       Reflect.set(this, "getProtocol", () => "TLSv1.3");
       Reflect.set(this, "getSession", () => void 0);
       Reflect.set(this, "isSessionReused", () => false);
-      Reflect.set(this, "getCipher", () => ({ name: "AES256-SHA", standardName: "TLS_RSA_WITH_AES_256_CBC_SHA", version: "TLSv1.3" }));
+      Reflect.set(this, "getCipher", () => ({
+        name: "AES256-SHA",
+        standardName: "TLS_RSA_WITH_AES_256_CBC_SHA",
+        version: "TLSv1.3",
+      }));
     }
   }
   emit(event, ...args) {
@@ -475,7 +523,7 @@ var MockHttpSocket = class extends MockSocket {
       Object.defineProperty(this, "_handle", {
         value: socket._handle,
         enumerable: true,
-        writable: true
+        writable: true,
       });
     }
     this.once("error", (error) => {
@@ -484,22 +532,28 @@ var MockHttpSocket = class extends MockSocket {
     this.address = socket.address.bind(socket);
     let writeArgs;
     let headersWritten = false;
-    while (writeArgs = this.writeBuffer.shift()) {
+    while ((writeArgs = this.writeBuffer.shift())) {
       if (writeArgs !== void 0) {
         if (!headersWritten) {
           const [chunk, encoding, callback] = writeArgs;
           const chunkString = chunk.toString();
           const chunkBeforeRequestHeaders = chunkString.slice(
             0,
-            chunkString.indexOf("\r\n") + 2
+            chunkString.indexOf("\r\n") + 2,
           );
           const chunkAfterRequestHeaders = chunkString.slice(
-            chunk.indexOf("\r\n\r\n")
+            chunk.indexOf("\r\n\r\n"),
           );
           const rawRequestHeaders = getRawFetchHeaders(this.request.headers);
-          const requestHeadersString = rawRequestHeaders.filter(([name]) => {
-            return name.toLowerCase() !== _chunkDOWWQYXZjs.INTERNAL_REQUEST_ID_HEADER_NAME;
-          }).map(([name, value]) => `${name}: ${value}`).join("\r\n");
+          const requestHeadersString = rawRequestHeaders
+            .filter(([name]) => {
+              return (
+                name.toLowerCase() !==
+                _chunkDOWWQYXZjs.INTERNAL_REQUEST_ID_HEADER_NAME
+              );
+            })
+            .map(([name, value]) => `${name}: ${value}`)
+            .join("\r\n");
           const headersChunk = `${chunkBeforeRequestHeaders}${requestHeadersString}${chunkAfterRequestHeaders}`;
           socket.write(headersChunk, encoding, callback);
           headersWritten = true;
@@ -515,7 +569,7 @@ var MockHttpSocket = class extends MockSocket {
         "getProtocol",
         "getSession",
         "isSessionReused",
-        "getCipher"
+        "getCipher",
       ];
       tlsProperties.forEach((propertyName) => {
         Object.defineProperty(this, propertyName, {
@@ -523,19 +577,34 @@ var MockHttpSocket = class extends MockSocket {
           get: () => {
             const value = Reflect.get(socket, propertyName);
             return typeof value === "function" ? value.bind(socket) : value;
-          }
+          },
         });
       });
     }
-    socket.on("lookup", (...args) => this.emit("lookup", ...args)).on("connect", () => {
-      this.connecting = socket.connecting;
-      this.emit("connect");
-    }).on("secureConnect", () => this.emit("secureConnect")).on("secure", () => this.emit("secure")).on("session", (session) => this.emit("session", session)).on("ready", () => this.emit("ready")).on("drain", () => this.emit("drain")).on("data", (chunk) => {
-      this.push(chunk);
-    }).on("error", (error) => {
-      Reflect.set(this, "_hadError", Reflect.get(socket, "_hadError"));
-      this.emit("error", error);
-    }).on("resume", () => this.emit("resume")).on("timeout", () => this.emit("timeout")).on("prefinish", () => this.emit("prefinish")).on("finish", () => this.emit("finish")).on("close", (hadError) => this.emit("close", hadError)).on("end", () => this.emit("end"));
+    socket
+      .on("lookup", (...args) => this.emit("lookup", ...args))
+      .on("connect", () => {
+        this.connecting = socket.connecting;
+        this.emit("connect");
+      })
+      .on("secureConnect", () => this.emit("secureConnect"))
+      .on("secure", () => this.emit("secure"))
+      .on("session", (session) => this.emit("session", session))
+      .on("ready", () => this.emit("ready"))
+      .on("drain", () => this.emit("drain"))
+      .on("data", (chunk) => {
+        this.push(chunk);
+      })
+      .on("error", (error) => {
+        Reflect.set(this, "_hadError", Reflect.get(socket, "_hadError"));
+        this.emit("error", error);
+      })
+      .on("resume", () => this.emit("resume"))
+      .on("timeout", () => this.emit("timeout"))
+      .on("prefinish", () => this.emit("prefinish"))
+      .on("finish", () => this.emit("finish"))
+      .on("close", (hadError) => this.emit("close", hadError))
+      .on("end", () => this.emit("end"));
   }
   /**
    * Convert the given Fetch API `Response` instance to an
@@ -546,31 +615,36 @@ var MockHttpSocket = class extends MockSocket {
     if (this.destroyed) {
       return;
     }
-    _outvariant.invariant.call(void 0, 
+    _outvariant.invariant.call(
+      void 0,
       this.socketState !== "mock",
       '[MockHttpSocket] Failed to respond to the "%s %s" request with "%s %s": the request has already been handled',
       (_a = this.request) == null ? void 0 : _a.method,
       (_b = this.request) == null ? void 0 : _b.url,
       response.status,
-      response.statusText
+      response.statusText,
     );
-    if (_chunk7Q53NNPVjs.isPropertyAccessible.call(void 0, response, "type") && response.type === "error") {
+    if (
+      _chunk7Q53NNPVjs.isPropertyAccessible.call(void 0, response, "type") &&
+      response.type === "error"
+    ) {
       this.errorWith(new TypeError("Network error"));
       return;
     }
     this.mockConnect();
     this.socketState = "mock";
     this.flushWriteBuffer();
-    const serverResponse = new (0, _http.ServerResponse)(new (0, _http.IncomingMessage)(this));
+    const serverResponse = new (0, _http.ServerResponse)(
+      new (0, _http.IncomingMessage)(this),
+    );
     serverResponse.assignSocket(
       new MockSocket({
         write: (chunk, encoding, callback) => {
           this.push(chunk, encoding);
           callback == null ? void 0 : callback();
         },
-        read() {
-        }
-      })
+        read() {},
+      }),
     );
     serverResponse.removeHeader("connection");
     serverResponse.removeHeader("date");
@@ -578,7 +652,7 @@ var MockHttpSocket = class extends MockSocket {
     serverResponse.writeHead(
       response.status,
       response.statusText || _http.STATUS_CODES[response.status],
-      rawResponseHeaders
+      rawResponseHeaders,
     );
     this.once("error", () => {
       serverResponse.destroy();
@@ -620,11 +694,13 @@ var MockHttpSocket = class extends MockSocket {
   }
   mockConnect() {
     this.connecting = false;
-    const isIPv6 = _net2.default.isIPv6(this.connectionOptions.hostname) || this.connectionOptions.family === 6;
+    const isIPv6 =
+      _net2.default.isIPv6(this.connectionOptions.hostname) ||
+      this.connectionOptions.family === 6;
     const addressInfo = {
       address: isIPv6 ? "::1" : "127.0.0.1",
       family: isIPv6 ? "IPv6" : "IPv4",
-      port: this.connectionOptions.port
+      port: this.connectionOptions.port,
     };
     this.address = () => addressInfo;
     this.emit(
@@ -632,7 +708,7 @@ var MockHttpSocket = class extends MockSocket {
       null,
       addressInfo.address,
       addressInfo.family === "IPv6" ? 6 : 4,
-      this.connectionOptions.host
+      this.connectionOptions.host,
     );
     this.emit("connect");
     this.emit("ready");
@@ -641,7 +717,8 @@ var MockHttpSocket = class extends MockSocket {
       this.emit("secureConnect");
       this.emit(
         "session",
-        this.connectionOptions.session || Buffer.from("mock-session-renegotiate")
+        this.connectionOptions.session ||
+          Buffer.from("mock-session-renegotiate"),
       );
       this.emit("session", Buffer.from("mock-session-resume"));
     }
@@ -655,9 +732,10 @@ var MockHttpSocket = class extends MockSocket {
     }
   }
   onRequestBody(chunk) {
-    _outvariant.invariant.call(void 0, 
+    _outvariant.invariant.call(
+      void 0,
       this.requestStream,
-      "Failed to write to a request stream: stream does not exist"
+      "Failed to write to a request stream: stream does not exist",
     );
     this.requestStream.push(chunk);
   }
@@ -667,9 +745,10 @@ var MockHttpSocket = class extends MockSocket {
     }
   }
   onResponseBody(chunk) {
-    _outvariant.invariant.call(void 0, 
+    _outvariant.invariant.call(
+      void 0,
       this.responseStream,
-      "Failed to write to a response stream: stream does not exist"
+      "Failed to write to a response stream: stream does not exist",
     );
     this.responseStream.push(chunk);
   }
@@ -682,7 +761,6 @@ var MockHttpSocket = class extends MockSocket {
 
 // src/interceptors/ClientRequest/agents.ts
 
-
 var MockAgent = class extends _http2.default.Agent {
   constructor(options) {
     super();
@@ -691,20 +769,26 @@ var MockAgent = class extends _http2.default.Agent {
     this.onResponse = options.onResponse;
   }
   createConnection(options, callback) {
-    const createConnection = this.customAgent instanceof _http2.default.Agent ? this.customAgent.createConnection : super.createConnection;
-    const createConnectionOptions = this.customAgent instanceof _http2.default.Agent ? {
-      ...options,
-      ...this.customAgent.options
-    } : options;
+    const createConnection =
+      this.customAgent instanceof _http2.default.Agent
+        ? this.customAgent.createConnection
+        : super.createConnection;
+    const createConnectionOptions =
+      this.customAgent instanceof _http2.default.Agent
+        ? {
+            ...options,
+            ...this.customAgent.options,
+          }
+        : options;
     const socket = new MockHttpSocket({
       connectionOptions: options,
       createConnection: createConnection.bind(
         this.customAgent || this,
         createConnectionOptions,
-        callback
+        callback,
       ),
       onRequest: this.onRequest.bind(this),
-      onResponse: this.onResponse.bind(this)
+      onResponse: this.onResponse.bind(this),
     });
     return socket;
   }
@@ -717,41 +801,37 @@ var MockHttpsAgent = class extends _https2.default.Agent {
     this.onResponse = options.onResponse;
   }
   createConnection(options, callback) {
-    const createConnection = this.customAgent instanceof _http2.default.Agent ? this.customAgent.createConnection : super.createConnection;
-    const createConnectionOptions = this.customAgent instanceof _http2.default.Agent ? {
-      ...options,
-      ...this.customAgent.options
-    } : options;
+    const createConnection =
+      this.customAgent instanceof _http2.default.Agent
+        ? this.customAgent.createConnection
+        : super.createConnection;
+    const createConnectionOptions =
+      this.customAgent instanceof _http2.default.Agent
+        ? {
+            ...options,
+            ...this.customAgent.options,
+          }
+        : options;
     const socket = new MockHttpSocket({
       connectionOptions: options,
       createConnection: createConnection.bind(
         this.customAgent || this,
         createConnectionOptions,
-        callback
+        callback,
       ),
       onRequest: this.onRequest.bind(this),
-      onResponse: this.onResponse.bind(this)
+      onResponse: this.onResponse.bind(this),
     });
     return socket;
   }
 };
 
 // src/interceptors/ClientRequest/utils/normalizeClientRequestArgs.ts
-var _url = require('url');
+var _url = require("url");
 
-
-
-
-
-
-
-
-
-
-var _logger = require('@open-draft/logger');
+var _logger = require("@open-draft/logger");
 
 // src/utils/getUrlByRequestOptions.ts
-
 
 var logger = new (0, _logger.Logger)("utils getUrlByRequestOptions");
 var DEFAULT_PATH = "/";
@@ -773,7 +853,9 @@ function getProtocolByRequestOptions(options) {
   }
   const port = getPortByRequestOptions(options);
   const isSecureRequest = options.cert || port === SSL_PORT;
-  return isSecureRequest ? "https:" : ((_a = options.uri) == null ? void 0 : _a.protocol) || DEFAULT_PROTOCOL;
+  return isSecureRequest
+    ? "https:"
+    : ((_a = options.uri) == null ? void 0 : _a.protocol) || DEFAULT_PROTOCOL;
 }
 function getPortByRequestOptions(options) {
   if (options.port) {
@@ -812,7 +894,7 @@ function getUrlByRequestOptions(options) {
   if (options.uri) {
     logger.info(
       'constructing url from explicitly provided "options.uri": %s',
-      options.uri
+      options.uri,
     );
     return new URL(options.uri.href);
   }
@@ -827,7 +909,9 @@ function getUrlByRequestOptions(options) {
   logger.info("path", path);
   const credentials = getAuthByRequestOptions(options);
   logger.info("credentials", credentials);
-  const authString = credentials ? `${credentials.username}:${credentials.password}@` : "";
+  const authString = credentials
+    ? `${credentials.username}:${credentials.password}@`
+    : "";
   logger.info("auth string:", authString);
   const portString = typeof port !== "undefined" ? `:${port}` : "";
   const url = new URL(`${protocol}//${hostname}${portString}${path}`);
@@ -858,9 +942,11 @@ function cloneObject(obj) {
       acc[key] = isPlainObject(value) ? cloneObject(value) : value;
       return acc;
     },
-    {}
+    {},
   );
-  return isPlainObject(obj) ? enumerableProperties : Object.assign(Object.getPrototypeOf(obj), enumerableProperties);
+  return isPlainObject(obj)
+    ? enumerableProperties
+    : Object.assign(Object.getPrototypeOf(obj), enumerableProperties);
 }
 
 // src/interceptors/ClientRequest/utils/normalizeClientRequestArgs.ts
@@ -879,7 +965,7 @@ function resolveRequestOptions(args, url) {
     logger3.info("successfully cloned RequestOptions!", clonedRequestOptions);
     return {
       ...requestOptionsFromUrl,
-      ...clonedRequestOptions
+      ...clonedRequestOptions,
     };
   }
   logger3.info("using an empty object as request options");
@@ -922,7 +1008,10 @@ function normalizeClientRequestArgs(defaultProtocol, args) {
   } else if (args[0] instanceof _url.URL) {
     url = args[0];
     logger3.info("first argument is a URL:", url);
-    if (typeof args[1] !== "undefined" && _chunk7Q53NNPVjs.isObject.call(void 0, args[1])) {
+    if (
+      typeof args[1] !== "undefined" &&
+      _chunk7Q53NNPVjs.isObject.call(void 0, args[1])
+    ) {
       url = overrideUrlByRequestOptions(url, args[1]);
     }
     options = resolveRequestOptions(args, url);
@@ -933,21 +1022,27 @@ function normalizeClientRequestArgs(defaultProtocol, args) {
     logger3.info("first argument is a legacy URL:", legacyUrl);
     if (legacyUrl.hostname === null) {
       logger3.info("given legacy URL is relative (no hostname)");
-      return _chunk7Q53NNPVjs.isObject.call(void 0, args[1]) ? normalizeClientRequestArgs(defaultProtocol, [
-        { path: legacyUrl.path, ...args[1] },
-        args[2]
-      ]) : normalizeClientRequestArgs(defaultProtocol, [
-        { path: legacyUrl.path },
-        args[1]
-      ]);
+      return _chunk7Q53NNPVjs.isObject.call(void 0, args[1])
+        ? normalizeClientRequestArgs(defaultProtocol, [
+            { path: legacyUrl.path, ...args[1] },
+            args[2],
+          ])
+        : normalizeClientRequestArgs(defaultProtocol, [
+            { path: legacyUrl.path },
+            args[1],
+          ]);
     }
     logger3.info("given legacy url is absolute");
     const resolvedUrl = new (0, _url.URL)(legacyUrl.href);
-    return args[1] === void 0 ? normalizeClientRequestArgs(defaultProtocol, [resolvedUrl]) : typeof args[1] === "function" ? normalizeClientRequestArgs(defaultProtocol, [resolvedUrl, args[1]]) : normalizeClientRequestArgs(defaultProtocol, [
-      resolvedUrl,
-      args[1],
-      args[2]
-    ]);
+    return args[1] === void 0
+      ? normalizeClientRequestArgs(defaultProtocol, [resolvedUrl])
+      : typeof args[1] === "function"
+        ? normalizeClientRequestArgs(defaultProtocol, [resolvedUrl, args[1]])
+        : normalizeClientRequestArgs(defaultProtocol, [
+            resolvedUrl,
+            args[1],
+            args[2],
+          ]);
   } else if (_chunk7Q53NNPVjs.isObject.call(void 0, args[0])) {
     options = { ...args[0] };
     logger3.info("first argument is RequestOptions:", options);
@@ -958,7 +1053,7 @@ function normalizeClientRequestArgs(defaultProtocol, args) {
     callback = resolveCallback(args);
   } else {
     throw new Error(
-      `Failed to construct ClientRequest with these parameters: ${args}`
+      `Failed to construct ClientRequest with these parameters: ${args}`,
     );
   }
   options.protocol = options.protocol || url.protocol;
@@ -966,9 +1061,10 @@ function normalizeClientRequestArgs(defaultProtocol, args) {
   if (!options._defaultAgent) {
     logger3.info(
       'has no default agent, setting the default agent for "%s"',
-      options.protocol
+      options.protocol,
     );
-    options._defaultAgent = options.protocol === "https:" ? _https.globalAgent : _http.globalAgent;
+    options._defaultAgent =
+      options.protocol === "https:" ? _https.globalAgent : _http.globalAgent;
   }
   logger3.info("successfully resolved url:", url.href);
   logger3.info("successfully resolved options:", options);
@@ -983,10 +1079,7 @@ function normalizeClientRequestArgs(defaultProtocol, args) {
 var _ClientRequestInterceptor = class extends _chunkDOWWQYXZjs.Interceptor {
   constructor() {
     super(_ClientRequestInterceptor.symbol);
-    this.onRequest = async ({
-      request,
-      socket
-    }) => {
+    this.onRequest = async ({ request, socket }) => {
       const controller = new (0, _chunkDOWWQYXZjs.RequestController)(request, {
         passthrough() {
           socket.passthrough();
@@ -998,26 +1091,26 @@ var _ClientRequestInterceptor = class extends _chunkDOWWQYXZjs.Interceptor {
           if (reason instanceof Error) {
             socket.errorWith(reason);
           }
-        }
+        },
       });
       await _chunk7Q53NNPVjs.handleRequest.call(void 0, {
         request,
         requestId: Reflect.get(request, kRequestId),
         controller,
-        emitter: this.emitter
+        emitter: this.emitter,
       });
     };
     this.onResponse = async ({
       requestId,
       request,
       response,
-      isMockedResponse
+      isMockedResponse,
     }) => {
       return _chunk7Q53NNPVjs.emitAsync.call(void 0, this.emitter, "response", {
         requestId,
         request,
         response,
-        isMockedResponse
+        isMockedResponse,
       });
     };
   }
@@ -1025,86 +1118,88 @@ var _ClientRequestInterceptor = class extends _chunkDOWWQYXZjs.Interceptor {
     const {
       ClientRequest: OriginalClientRequest,
       get: originalGet,
-      request: originalRequest
+      request: originalRequest,
     } = _http2.default;
-    const { get: originalHttpsGet, request: originalHttpsRequest } = _https2.default;
+    const { get: originalHttpsGet, request: originalHttpsRequest } =
+      _https2.default;
     const onRequest = this.onRequest.bind(this);
     const onResponse = this.onResponse.bind(this);
     _http2.default.ClientRequest = new Proxy(_http2.default.ClientRequest, {
       construct: (target, args) => {
         const [url, options, callback] = normalizeClientRequestArgs(
           "http:",
-          args
+          args,
         );
-        const Agent2 = options.protocol === "https:" ? MockHttpsAgent : MockAgent;
+        const Agent2 =
+          options.protocol === "https:" ? MockHttpsAgent : MockAgent;
         const mockAgent = new Agent2({
           customAgent: options.agent,
           onRequest,
-          onResponse
+          onResponse,
         });
         options.agent = mockAgent;
         return Reflect.construct(target, [url, options, callback]);
-      }
+      },
     });
     _http2.default.request = new Proxy(_http2.default.request, {
       apply: (target, thisArg, args) => {
         const [url, options, callback] = normalizeClientRequestArgs(
           "http:",
-          args
+          args,
         );
         const mockAgent = new MockAgent({
           customAgent: options.agent,
           onRequest,
-          onResponse
+          onResponse,
         });
         options.agent = mockAgent;
         return Reflect.apply(target, thisArg, [url, options, callback]);
-      }
+      },
     });
     _http2.default.get = new Proxy(_http2.default.get, {
       apply: (target, thisArg, args) => {
         const [url, options, callback] = normalizeClientRequestArgs(
           "http:",
-          args
+          args,
         );
         const mockAgent = new MockAgent({
           customAgent: options.agent,
           onRequest,
-          onResponse
+          onResponse,
         });
         options.agent = mockAgent;
         return Reflect.apply(target, thisArg, [url, options, callback]);
-      }
+      },
     });
     _https2.default.request = new Proxy(_https2.default.request, {
       apply: (target, thisArg, args) => {
         const [url, options, callback] = normalizeClientRequestArgs(
           "https:",
-          args
+          args,
         );
         const mockAgent = new MockHttpsAgent({
           customAgent: options.agent,
           onRequest,
-          onResponse
+          onResponse,
         });
         options.agent = mockAgent;
         return Reflect.apply(target, thisArg, [url, options, callback]);
-      }
+      },
     });
     _https2.default.get = new Proxy(_https2.default.get, {
       apply: (target, thisArg, args) => {
         const [url, options, callback] = normalizeClientRequestArgs(
           "https:",
-          args
+          args,
         );
         const mockAgent = new MockHttpsAgent({
           customAgent: options.agent,
           onRequest,
-          onResponse
+          onResponse,
         });
         options.agent = mockAgent;
         return Reflect.apply(target, thisArg, [url, options, callback]);
-      }
+      },
     });
     recordRawFetchHeaders();
     this.subscriptions.push(() => {
@@ -1119,8 +1214,6 @@ var _ClientRequestInterceptor = class extends _chunkDOWWQYXZjs.Interceptor {
 };
 var ClientRequestInterceptor = _ClientRequestInterceptor;
 ClientRequestInterceptor.symbol = Symbol("client-request-interceptor");
-
-
 
 exports.ClientRequestInterceptor = ClientRequestInterceptor;
 //# sourceMappingURL=chunk-VYO5XDY2.js.map

@@ -1,100 +1,100 @@
 import type {
-  WebSocketData,
   WebSocketClientConnectionProtocol,
   WebSocketClientEventMap,
-} from '@mswjs/interceptors/WebSocket'
-import { WebSocketClientStore } from './WebSocketClientStore'
-import { WebSocketMemoryClientStore } from './WebSocketMemoryClientStore'
-import { WebSocketIndexedDBClientStore } from './WebSocketIndexedDBClientStore'
+  WebSocketData,
+} from "@mswjs/interceptors/WebSocket";
+import type { WebSocketClientStore } from "./WebSocketClientStore";
+import { WebSocketIndexedDBClientStore } from "./WebSocketIndexedDBClientStore";
+import { WebSocketMemoryClientStore } from "./WebSocketMemoryClientStore";
 
 export type WebSocketBroadcastChannelMessage =
   | {
-      type: 'extraneous:send'
+      type: "extraneous:send";
       payload: {
-        clientId: string
-        data: WebSocketData
-      }
+        clientId: string;
+        data: WebSocketData;
+      };
     }
   | {
-      type: 'extraneous:close'
+      type: "extraneous:close";
       payload: {
-        clientId: string
-        code?: number
-        reason?: string
-      }
-    }
+        clientId: string;
+        code?: number;
+        reason?: string;
+      };
+    };
 
 /**
  * A manager responsible for accumulating WebSocket client
  * connections across different browser runtimes.
  */
 export class WebSocketClientManager {
-  private store: WebSocketClientStore
-  private runtimeClients: Map<string, WebSocketClientConnectionProtocol>
-  private allClients: Set<WebSocketClientConnectionProtocol>
+  private store: WebSocketClientStore;
+  private runtimeClients: Map<string, WebSocketClientConnectionProtocol>;
+  private allClients: Set<WebSocketClientConnectionProtocol>;
 
   constructor(private channel: BroadcastChannel) {
     // Store the clients in the IndexedDB in the browser,
     // otherwise, store the clients in memory.
     this.store =
-      typeof indexedDB !== 'undefined'
+      typeof indexedDB !== "undefined"
         ? new WebSocketIndexedDBClientStore()
-        : new WebSocketMemoryClientStore()
+        : new WebSocketMemoryClientStore();
 
-    this.runtimeClients = new Map()
-    this.allClients = new Set()
+    this.runtimeClients = new Map();
+    this.allClients = new Set();
 
-    this.channel.addEventListener('message', (message) => {
-      if (message.data?.type === 'db:update') {
-        this.flushDatabaseToMemory()
+    this.channel.addEventListener("message", (message) => {
+      if (message.data?.type === "db:update") {
+        this.flushDatabaseToMemory();
       }
-    })
+    });
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('message', async (message) => {
-        if (message.data?.type === 'msw/worker:stop') {
-          await this.removeRuntimeClients()
+    if (typeof window !== "undefined") {
+      window.addEventListener("message", async (message) => {
+        if (message.data?.type === "msw/worker:stop") {
+          await this.removeRuntimeClients();
         }
-      })
+      });
     }
   }
 
   private async flushDatabaseToMemory() {
-    const storedClients = await this.store.getAll()
+    const storedClients = await this.store.getAll();
 
     this.allClients = new Set(
       storedClients.map((client) => {
-        const runtimeClient = this.runtimeClients.get(client.id)
+        const runtimeClient = this.runtimeClients.get(client.id);
 
         /**
          * @note For clients originating in this runtime, use their
          * direct references. No need to wrap them in a remote connection.
          */
         if (runtimeClient) {
-          return runtimeClient
+          return runtimeClient;
         }
 
         return new WebSocketRemoteClientConnection(
           client.id,
           new URL(client.url),
           this.channel,
-        )
+        );
       }),
-    )
+    );
   }
 
   private async removeRuntimeClients(): Promise<void> {
-    await this.store.deleteMany(Array.from(this.runtimeClients.keys()))
-    this.runtimeClients.clear()
-    await this.flushDatabaseToMemory()
-    this.notifyOthersAboutDatabaseUpdate()
+    await this.store.deleteMany(Array.from(this.runtimeClients.keys()));
+    this.runtimeClients.clear();
+    await this.flushDatabaseToMemory();
+    this.notifyOthersAboutDatabaseUpdate();
   }
 
   /**
    * All active WebSocket client connections.
    */
   get clients(): Set<WebSocketClientConnectionProtocol> {
-    return this.allClients
+    return this.allClients;
   }
 
   /**
@@ -102,17 +102,17 @@ export class WebSocketClientManager {
    * using the shared `BroadcastChannel` instance.
    */
   private notifyOthersAboutDatabaseUpdate(): void {
-    this.channel.postMessage({ type: 'db:update' })
+    this.channel.postMessage({ type: "db:update" });
   }
 
   private async addClient(
     client: WebSocketClientConnectionProtocol,
   ): Promise<void> {
-    await this.store.add(client)
+    await this.store.add(client);
     // Sync the in-memory clients in this runtime with the
     // updated database. This pulls in all the stored clients.
-    await this.flushDatabaseToMemory()
-    this.notifyOthersAboutDatabaseUpdate()
+    await this.flushDatabaseToMemory();
+    this.notifyOthersAboutDatabaseUpdate();
   }
 
   /**
@@ -127,10 +127,10 @@ export class WebSocketClientManager {
     // Store this client in the map of clients created in this runtime.
     // This way, the manager can distinguish between this runtime clients
     // and extraneous runtime clients when synchronizing clients storage.
-    this.runtimeClients.set(client.id, client)
+    this.runtimeClients.set(client.id, client);
 
     // Add the new client to the storage.
-    await this.addClient(client)
+    await this.addClient(client);
 
     // Handle the incoming BroadcastChannel messages from other runtimes
     // that attempt to control this runtime (via a remote connection wrapper).
@@ -138,41 +138,41 @@ export class WebSocketClientManager {
     const handleExtraneousMessage = (
       message: MessageEvent<WebSocketBroadcastChannelMessage>,
     ) => {
-      const { type, payload } = message.data
+      const { type, payload } = message.data;
 
       // Ignore broadcasted messages for other clients.
       if (
-        typeof payload === 'object' &&
-        'clientId' in payload &&
+        typeof payload === "object" &&
+        "clientId" in payload &&
         payload.clientId !== client.id
       ) {
-        return
+        return;
       }
 
       switch (type) {
-        case 'extraneous:send': {
-          client.send(payload.data)
-          break
+        case "extraneous:send": {
+          client.send(payload.data);
+          break;
         }
 
-        case 'extraneous:close': {
-          client.close(payload.code, payload.reason)
-          break
+        case "extraneous:close": {
+          client.close(payload.code, payload.reason);
+          break;
         }
       }
-    }
+    };
 
-    const abortController = new AbortController()
+    const abortController = new AbortController();
 
-    this.channel.addEventListener('message', handleExtraneousMessage, {
+    this.channel.addEventListener("message", handleExtraneousMessage, {
       signal: abortController.signal,
-    })
+    });
 
     // Once closed, this connection cannot be operated on.
     // This must include the extraneous runtimes as well.
-    client.addEventListener('close', () => abortController.abort(), {
+    client.addEventListener("close", () => abortController.abort(), {
       once: true,
-    })
+    });
   }
 }
 
@@ -194,23 +194,23 @@ export class WebSocketRemoteClientConnection
 
   send(data: WebSocketData): void {
     this.channel.postMessage({
-      type: 'extraneous:send',
+      type: "extraneous:send",
       payload: {
         clientId: this.id,
         data,
       },
-    } as WebSocketBroadcastChannelMessage)
+    } as WebSocketBroadcastChannelMessage);
   }
 
   close(code?: number | undefined, reason?: string | undefined): void {
     this.channel.postMessage({
-      type: 'extraneous:close',
+      type: "extraneous:close",
       payload: {
         clientId: this.id,
         code,
         reason,
       },
-    } as WebSocketBroadcastChannelMessage)
+    } as WebSocketBroadcastChannelMessage);
   }
 
   addEventListener<EventType extends keyof WebSocketClientEventMap>(
@@ -222,8 +222,8 @@ export class WebSocketRemoteClientConnection
     _options?: AddEventListenerOptions | boolean,
   ): void {
     throw new Error(
-      'WebSocketRemoteClientConnection.addEventListener is not supported',
-    )
+      "WebSocketRemoteClientConnection.addEventListener is not supported",
+    );
   }
 
   removeEventListener<EventType extends keyof WebSocketClientEventMap>(
@@ -235,7 +235,7 @@ export class WebSocketRemoteClientConnection
     _options?: EventListenerOptions | boolean,
   ): void {
     throw new Error(
-      'WebSocketRemoteClientConnection.removeEventListener is not supported',
-    )
+      "WebSocketRemoteClientConnection.removeEventListener is not supported",
+    );
   }
 }

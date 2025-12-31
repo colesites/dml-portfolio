@@ -5,7 +5,5 @@ function jsonParse(value) {
     return void 0;
   }
 }
-export {
-  jsonParse
-};
+export { jsonParse };
 //# sourceMappingURL=jsonParse.mjs.map

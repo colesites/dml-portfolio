@@ -1,16 +1,11 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 class Binding {
-  constructor({
-    identifier,
-    scope,
-    path,
-    kind
-  }) {
+  constructor({ identifier, scope, path, kind }) {
     this.identifier = void 0;
     this.scope = void 0;
     this.path = void 0;
@@ -65,16 +60,18 @@ class Binding {
 }
 exports.default = Binding;
 function isInitInLoop(path) {
-  const isFunctionDeclarationOrHasInit = !path.isVariableDeclarator() || path.node.init;
-  for (let {
-    parentPath,
-    key
-  } = path; parentPath; {
-    parentPath,
-    key
-  } = parentPath) {
+  const isFunctionDeclarationOrHasInit =
+    !path.isVariableDeclarator() || path.node.init;
+  for (
+    let { parentPath, key } = path;
+    parentPath;
+    { parentPath, key } = parentPath
+  ) {
     if (parentPath.isFunctionParent()) return false;
-    if (key === "left" && parentPath.isForXStatement() || isFunctionDeclarationOrHasInit && key === "body" && parentPath.isLoop()) {
+    if (
+      (key === "left" && parentPath.isForXStatement()) ||
+      (isFunctionDeclarationOrHasInit && key === "body" && parentPath.isLoop())
+    ) {
       return true;
     }
   }

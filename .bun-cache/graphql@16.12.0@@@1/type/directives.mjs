@@ -1,16 +1,16 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { inspect } from '../jsutils/inspect.mjs';
-import { instanceOf } from '../jsutils/instanceOf.mjs';
-import { isObjectLike } from '../jsutils/isObjectLike.mjs';
-import { toObjMap } from '../jsutils/toObjMap.mjs';
-import { DirectiveLocation } from '../language/directiveLocation.mjs';
-import { assertName } from './assertName.mjs';
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { instanceOf } from "../jsutils/instanceOf.mjs";
+import { isObjectLike } from "../jsutils/isObjectLike.mjs";
+import { toObjMap } from "../jsutils/toObjMap.mjs";
+import { DirectiveLocation } from "../language/directiveLocation.mjs";
+import { assertName } from "./assertName.mjs";
 import {
   argsToArgsConfig,
   defineArguments,
   GraphQLNonNull,
-} from './definition.mjs';
-import { GraphQLBoolean, GraphQLString } from './scalars.mjs';
+} from "./definition.mjs";
+import { GraphQLBoolean, GraphQLString } from "./scalars.mjs";
 /**
  * Test if the given value is a GraphQL directive.
  */
@@ -70,7 +70,7 @@ export class GraphQLDirective {
   }
 
   get [Symbol.toStringTag]() {
-    return 'GraphQLDirective';
+    return "GraphQLDirective";
   }
 
   toConfig() {
@@ -86,7 +86,7 @@ export class GraphQLDirective {
   }
 
   toString() {
-    return '@' + this.name;
+    return "@" + this.name;
   }
 
   toJSON() {
@@ -98,9 +98,9 @@ export class GraphQLDirective {
  * Used to conditionally include fields or fragments.
  */
 export const GraphQLIncludeDirective = new GraphQLDirective({
-  name: 'include',
+  name: "include",
   description:
-    'Directs the executor to include this field or fragment only when the `if` argument is true.',
+    "Directs the executor to include this field or fragment only when the `if` argument is true.",
   locations: [
     DirectiveLocation.FIELD,
     DirectiveLocation.FRAGMENT_SPREAD,
@@ -109,7 +109,7 @@ export const GraphQLIncludeDirective = new GraphQLDirective({
   args: {
     if: {
       type: new GraphQLNonNull(GraphQLBoolean),
-      description: 'Included when true.',
+      description: "Included when true.",
     },
   },
 });
@@ -118,9 +118,9 @@ export const GraphQLIncludeDirective = new GraphQLDirective({
  */
 
 export const GraphQLSkipDirective = new GraphQLDirective({
-  name: 'skip',
+  name: "skip",
   description:
-    'Directs the executor to skip this field or fragment when the `if` argument is true.',
+    "Directs the executor to skip this field or fragment when the `if` argument is true.",
   locations: [
     DirectiveLocation.FIELD,
     DirectiveLocation.FRAGMENT_SPREAD,
@@ -129,7 +129,7 @@ export const GraphQLSkipDirective = new GraphQLDirective({
   args: {
     if: {
       type: new GraphQLNonNull(GraphQLBoolean),
-      description: 'Skipped when true.',
+      description: "Skipped when true.",
     },
   },
 });
@@ -137,14 +137,14 @@ export const GraphQLSkipDirective = new GraphQLDirective({
  * Constant string used for default reason for a deprecation.
  */
 
-export const DEFAULT_DEPRECATION_REASON = 'No longer supported';
+export const DEFAULT_DEPRECATION_REASON = "No longer supported";
 /**
  * Used to declare element of a GraphQL schema as deprecated.
  */
 
 export const GraphQLDeprecatedDirective = new GraphQLDirective({
-  name: 'deprecated',
-  description: 'Marks an element of a GraphQL schema as no longer supported.',
+  name: "deprecated",
+  description: "Marks an element of a GraphQL schema as no longer supported.",
   locations: [
     DirectiveLocation.FIELD_DEFINITION,
     DirectiveLocation.ARGUMENT_DEFINITION,
@@ -155,7 +155,7 @@ export const GraphQLDeprecatedDirective = new GraphQLDirective({
     reason: {
       type: GraphQLString,
       description:
-        'Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).',
+        "Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).",
       defaultValue: DEFAULT_DEPRECATION_REASON,
     },
   },
@@ -165,13 +165,13 @@ export const GraphQLDeprecatedDirective = new GraphQLDirective({
  */
 
 export const GraphQLSpecifiedByDirective = new GraphQLDirective({
-  name: 'specifiedBy',
-  description: 'Exposes a URL that specifies the behavior of this scalar.',
+  name: "specifiedBy",
+  description: "Exposes a URL that specifies the behavior of this scalar.",
   locations: [DirectiveLocation.SCALAR],
   args: {
     url: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'The URL that specifies the behavior of this scalar.',
+      description: "The URL that specifies the behavior of this scalar.",
     },
   },
 });
@@ -180,9 +180,9 @@ export const GraphQLSpecifiedByDirective = new GraphQLDirective({
  */
 
 export const GraphQLOneOfDirective = new GraphQLDirective({
-  name: 'oneOf',
+  name: "oneOf",
   description:
-    'Indicates exactly one field must be supplied and this field must not be `null`.',
+    "Indicates exactly one field must be supplied and this field must not be `null`.",
   locations: [DirectiveLocation.INPUT_OBJECT],
   args: {},
 });

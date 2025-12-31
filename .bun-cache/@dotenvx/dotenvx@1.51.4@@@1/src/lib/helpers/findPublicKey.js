@@ -1,21 +1,21 @@
 // helpers
-const guessPublicKeyName = require('./guessPublicKeyName')
-const ProKeypair = require('./proKeypair')
+const guessPublicKeyName = require("./guessPublicKeyName");
+const ProKeypair = require("./proKeypair");
 
 // services
-const Keypair = require('./../services/keypair')
+const Keypair = require("./../services/keypair");
 
-function findPublicKey (envFilepath, opsOn = true) {
-  const publicKeyName = guessPublicKeyName(envFilepath)
+function findPublicKey(envFilepath, opsOn = true) {
+  const publicKeyName = guessPublicKeyName(envFilepath);
 
-  let proKeypairs = {}
+  let proKeypairs = {};
   if (opsOn) {
-    proKeypairs = new ProKeypair(envFilepath).run()
+    proKeypairs = new ProKeypair(envFilepath).run();
   }
 
-  const keypairs = new Keypair(envFilepath).run()
+  const keypairs = new Keypair(envFilepath).run();
 
-  return proKeypairs[publicKeyName] || keypairs[publicKeyName]
+  return proKeypairs[publicKeyName] || keypairs[publicKeyName];
 }
 
-module.exports = findPublicKey
+module.exports = findPublicKey;

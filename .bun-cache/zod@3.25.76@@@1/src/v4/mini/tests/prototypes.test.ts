@@ -9,9 +9,7 @@ declare module "zod/v4/core" {
 }
 
 test("prototype extension", () => {
-  z.core.$ZodType.prototype._core = function () {
-    return "_core";
-  };
+  z.core.$ZodType.prototype._core = () => "_core";
 
   // should pass
   const result = z.string()._core();
@@ -30,9 +28,7 @@ declare module "zod/v4/mini" {
 }
 
 test("prototype extension", () => {
-  z.ZodMiniType.prototype._mini = function () {
-    return "_mini";
-  };
+  z.ZodMiniType.prototype._mini = () => "_mini";
 
   // should pass
   const result = z.string()._mini();

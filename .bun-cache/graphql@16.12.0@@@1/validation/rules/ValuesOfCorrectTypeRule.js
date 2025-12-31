@@ -1,25 +1,23 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.ValuesOfCorrectTypeRule = ValuesOfCorrectTypeRule;
 
-var _didYouMean = require('../../jsutils/didYouMean.js');
+var _didYouMean = require("../../jsutils/didYouMean.js");
 
-var _inspect = require('../../jsutils/inspect.js');
+var _inspect = require("../../jsutils/inspect.js");
 
-var _keyMap = require('../../jsutils/keyMap.js');
+var _keyMap = require("../../jsutils/keyMap.js");
 
-var _suggestionList = require('../../jsutils/suggestionList.js');
+var _suggestionList = require("../../jsutils/suggestionList.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _printer = require('../../language/printer.js');
+var _printer = require("../../language/printer.js");
 
-var _definition = require('../../type/definition.js');
+var _definition = require("../../type/definition.js");
 
 /**
  * Value literals of correct type

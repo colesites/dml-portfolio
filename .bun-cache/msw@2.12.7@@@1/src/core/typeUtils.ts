@@ -1,6 +1,6 @@
-type Fn = (...arg: any[]) => any
+type Fn = (...arg: any[]) => any;
 
-export type MaybePromise<T> = T | Promise<T>
+export type MaybePromise<T> = T | Promise<T>;
 
 export type RequiredDeep<
   Type,
@@ -15,12 +15,12 @@ export type RequiredDeep<
     ? {
         [Key in keyof Type]-?: NonNullable<Type[Key]> extends NonNullable<U>
           ? NonNullable<Type[Key]>
-          : RequiredDeep<NonNullable<Type[Key]>, U>
+          : RequiredDeep<NonNullable<Type[Key]>, U>;
       }
-    : Type
+    : Type;
 
 /**
  * @fixme Remove this once TS 5.4 is the lowest supported version.
  * Because "NoInfer" is a built-in type utility there.
  */
-export type NoInfer<T> = [T][T extends any ? 0 : never]
+export type NoInfer<T> = [T][T extends any ? 0 : never];

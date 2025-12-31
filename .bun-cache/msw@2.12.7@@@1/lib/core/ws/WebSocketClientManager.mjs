@@ -1,9 +1,13 @@
-import { WebSocketMemoryClientStore } from './WebSocketMemoryClientStore.mjs';
-import { WebSocketIndexedDBClientStore } from './WebSocketIndexedDBClientStore.mjs';
+import { WebSocketIndexedDBClientStore } from "./WebSocketIndexedDBClientStore.mjs";
+import { WebSocketMemoryClientStore } from "./WebSocketMemoryClientStore.mjs";
+
 class WebSocketClientManager {
   constructor(channel) {
     this.channel = channel;
-    this.store = typeof indexedDB !== "undefined" ? new WebSocketIndexedDBClientStore() : new WebSocketMemoryClientStore();
+    this.store =
+      typeof indexedDB !== "undefined"
+        ? new WebSocketIndexedDBClientStore()
+        : new WebSocketMemoryClientStore();
     this.runtimeClients = /* @__PURE__ */ new Map();
     this.allClients = /* @__PURE__ */ new Set();
     this.channel.addEventListener("message", (message) => {
@@ -33,9 +37,9 @@ class WebSocketClientManager {
         return new WebSocketRemoteClientConnection(
           client.id,
           new URL(client.url),
-          this.channel
+          this.channel,
         );
-      })
+      }),
     );
   }
   async removeRuntimeClients() {
@@ -73,7 +77,11 @@ class WebSocketClientManager {
     await this.addClient(client);
     const handleExtraneousMessage = (message) => {
       const { type, payload } = message.data;
-      if (typeof payload === "object" && "clientId" in payload && payload.clientId !== client.id) {
+      if (
+        typeof payload === "object" &&
+        "clientId" in payload &&
+        payload.clientId !== client.id
+      ) {
         return;
       }
       switch (type) {
@@ -89,10 +97,10 @@ class WebSocketClientManager {
     };
     const abortController = new AbortController();
     this.channel.addEventListener("message", handleExtraneousMessage, {
-      signal: abortController.signal
+      signal: abortController.signal,
     });
     client.addEventListener("close", () => abortController.abort(), {
-      once: true
+      once: true,
     });
   }
 }
@@ -107,8 +115,8 @@ class WebSocketRemoteClientConnection {
       type: "extraneous:send",
       payload: {
         clientId: this.id,
-        data
-      }
+        data,
+      },
     });
   }
   close(code, reason) {
@@ -117,23 +125,20 @@ class WebSocketRemoteClientConnection {
       payload: {
         clientId: this.id,
         code,
-        reason
-      }
+        reason,
+      },
     });
   }
   addEventListener(_type, _listener, _options) {
     throw new Error(
-      "WebSocketRemoteClientConnection.addEventListener is not supported"
+      "WebSocketRemoteClientConnection.addEventListener is not supported",
     );
   }
   removeEventListener(_event, _listener, _options) {
     throw new Error(
-      "WebSocketRemoteClientConnection.removeEventListener is not supported"
+      "WebSocketRemoteClientConnection.removeEventListener is not supported",
     );
   }
 }
-export {
-  WebSocketClientManager,
-  WebSocketRemoteClientConnection
-};
+export { WebSocketClientManager, WebSocketRemoteClientConnection };
 //# sourceMappingURL=WebSocketClientManager.mjs.map

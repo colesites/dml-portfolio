@@ -6,6 +6,7 @@
 // However, we rely on users splitting command arguments as an array.
 // For example, this allows us to easily detect which arguments are passed.
 // So we do want users to pass array of arguments even with `shell: true`, but we also want to avoid any warning.
-export const concatenateShell = (file, commandArguments, options) => options.shell && commandArguments.length > 0
-	? [[file, ...commandArguments].join(' '), [], options]
-	: [file, commandArguments, options];
+export const concatenateShell = (file, commandArguments, options) =>
+  options.shell && commandArguments.length > 0
+    ? [[file, ...commandArguments].join(" "), [], options]
+    : [file, commandArguments, options];

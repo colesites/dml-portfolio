@@ -1,33 +1,32 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.traverseNode = traverseNode;
 var _context = require("./context.js");
 var _index = require("./path/index.js");
 var _t = require("@babel/types");
 var _context2 = require("./path/context.js");
-const {
-  VISITOR_KEYS
-} = _t;
+const { VISITOR_KEYS } = _t;
 function _visitPaths(ctx, paths) {
   ctx.queue = paths;
   ctx.priorityQueue = [];
   const visited = new Set();
   let stop = false;
   let visitIndex = 0;
-  for (; visitIndex < paths.length;) {
+  for (; visitIndex < paths.length; ) {
     const path = paths[visitIndex];
     visitIndex++;
     _context2.resync.call(path);
-    if (path.contexts.length === 0 || path.contexts[path.contexts.length - 1] !== ctx) {
+    if (
+      path.contexts.length === 0 ||
+      path.contexts[path.contexts.length - 1] !== ctx
+    ) {
       _context2.pushContext.call(path, ctx);
     }
     if (path.key === null) continue;
-    const {
-      node
-    } = path;
+    const { node } = path;
     if (visited.has(node)) continue;
     if (node) visited.add(node);
     if (_visit(ctx, path)) {
@@ -54,7 +53,8 @@ function _visit(ctx, path) {
     return false;
   }
   const opts = ctx.opts;
-  const denylist = (_opts$denylist = opts.denylist) != null ? _opts$denylist : opts.blacklist;
+  const denylist =
+    (_opts$denylist = opts.denylist) != null ? _opts$denylist : opts.blacklist;
   if (denylist != null && denylist.includes(node.type)) {
     return false;
   }
@@ -65,15 +65,35 @@ function _visit(ctx, path) {
   if (_context2._call.call(path, opts.enter)) return path.shouldStop;
   if (path.node) {
     var _opts$node$type;
-    if (_context2._call.call(path, (_opts$node$type = opts[node.type]) == null ? void 0 : _opts$node$type.enter)) return path.shouldStop;
+    if (
+      _context2._call.call(
+        path,
+        (_opts$node$type = opts[node.type]) == null
+          ? void 0
+          : _opts$node$type.enter,
+      )
+    )
+      return path.shouldStop;
   }
-  path.shouldStop = _traverse(path.node, opts, path.scope, ctx.state, path, path.skipKeys);
+  path.shouldStop = _traverse(
+    path.node,
+    opts,
+    path.scope,
+    ctx.state,
+    path,
+    path.skipKeys,
+  );
   if (path.node) {
     if (_context2._call.call(path, opts.exit)) return true;
   }
   if (path.node) {
     var _opts$node$type2;
-    _context2._call.call(path, (_opts$node$type2 = opts[node.type]) == null ? void 0 : _opts$node$type2.exit);
+    _context2._call.call(
+      path,
+      (_opts$node$type2 = opts[node.type]) == null
+        ? void 0
+        : _opts$node$type2.exit,
+    );
   }
   return path.shouldStop;
 }
@@ -98,19 +118,23 @@ function _traverse(node, opts, scope, state, path, skipKeys, visitSelf) {
           parent: node,
           container: prop,
           key: i,
-          listKey: key
+          listKey: key,
         });
         paths.push(childPath);
       }
       if (_visitPaths(ctx, paths)) return true;
     } else {
-      if (_visitPaths(ctx, [_index.default.get({
-        parentPath: path,
-        parent: node,
-        container: node,
-        key,
-        listKey: null
-      })])) {
+      if (
+        _visitPaths(ctx, [
+          _index.default.get({
+            parentPath: path,
+            parent: node,
+            container: node,
+            key,
+            listKey: null,
+          }),
+        ])
+      ) {
         return true;
       }
     }
@@ -118,7 +142,6 @@ function _traverse(node, opts, scope, state, path, skipKeys, visitSelf) {
   return false;
 }
 function traverseNode(node, opts, scope, state, path, skipKeys, visitSelf) {
-  ;
   const keys = VISITOR_KEYS[node.type];
   if (!keys) return false;
   const context = new _context.default(scope, opts, state, path);

@@ -1,8 +1,11 @@
 // src/middleware/logger/index.ts
 import { getColorEnabledAsync } from "../../utils/color.js";
+
 var humanize = (times) => {
   const [delimiter, separator] = [",", "."];
-  const orderTimes = times.map((v) => v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter));
+  const orderTimes = times.map((v) =>
+    v.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter),
+  );
   return orderTimes.join(separator);
 };
 var time = (start) => {
@@ -12,7 +15,7 @@ var time = (start) => {
 var colorStatus = async (status) => {
   const colorEnabled = await getColorEnabledAsync();
   if (colorEnabled) {
-    switch (status / 100 | 0) {
+    switch ((status / 100) | 0) {
       case 5:
         return `\x1B[31m${status}\x1B[0m`;
       case 4:
@@ -26,7 +29,10 @@ var colorStatus = async (status) => {
   return `${status}`;
 };
 async function log(fn, prefix, method, path, status = 0, elapsed) {
-  const out = prefix === "<--" /* Incoming */ ? `${prefix} ${method} ${path}` : `${prefix} ${method} ${path} ${await colorStatus(status)} ${elapsed}`;
+  const out =
+    prefix === "<--" /* Incoming */
+      ? `${prefix} ${method} ${path}`
+      : `${prefix} ${method} ${path} ${await colorStatus(status)} ${elapsed}`;
   fn(out);
 }
 var logger = (fn = console.log) => {
@@ -36,9 +42,14 @@ var logger = (fn = console.log) => {
     await log(fn, "<--" /* Incoming */, method, path);
     const start = Date.now();
     await next();
-    await log(fn, "-->" /* Outgoing */, method, path, c.res.status, time(start));
+    await log(
+      fn,
+      "-->" /* Outgoing */,
+      method,
+      path,
+      c.res.status,
+      time(start),
+    );
   };
 };
-export {
-  logger
-};
+export { logger };

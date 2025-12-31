@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var prepared_router_exports = {};
 __export(prepared_router_exports, {
   PreparedRegExpRouter: () => PreparedRegExpRouter,
   buildInitParams: () => buildInitParams,
-  serializeInitParams: () => serializeInitParams
+  serializeInitParams: () => serializeInitParams,
 });
 module.exports = __toCommonJS(prepared_router_exports);
 var import_router = require("../../router");
@@ -48,7 +52,6 @@ class PreparedRegExpRouter {
         if (typeof index === "number") {
           matcher[1][index].push([handler, map]);
         } else {
-          ;
           matcher[2][index || path][0].push([handler, map]);
         }
       });
@@ -63,8 +66,8 @@ class PreparedRegExpRouter {
       }
       this.#matchers[method] = [
         all[0],
-        all[1].map((list) => Array.isArray(list) ? list.slice() : 0),
-        staticMap
+        all[1].map((list) => (Array.isArray(list) ? list.slice() : 0)),
+        staticMap,
       ];
     }
     if (path === "/*" || path === "*") {
@@ -120,7 +123,7 @@ const buildInitParams = ({ paths }) => {
           if (relocateMap[path]) {
             relocateMap[path][0][1] = {
               ...relocateMap[path][0][1],
-              ...map
+              ...map,
             };
           } else {
             relocateMap[path] = [[[], map]];
@@ -152,16 +155,16 @@ const buildInitParams = ({ paths }) => {
   return [matchers, relocateMap];
 };
 const serializeInitParams = ([matchers, relocateMap]) => {
-  const matchersStr = JSON.stringify(
-    matchers,
-    (_, value) => value instanceof RegExp ? `##${value.toString()}##` : value
+  const matchersStr = JSON.stringify(matchers, (_, value) =>
+    value instanceof RegExp ? `##${value.toString()}##` : value,
   ).replace(/"##(.+?)##"/g, (_, str) => str.replace(/\\\\/g, "\\"));
   const relocateMapStr = JSON.stringify(relocateMap);
   return `[${matchersStr},${relocateMapStr}]`;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  PreparedRegExpRouter,
-  buildInitParams,
-  serializeInitParams
-});
+0 &&
+  (module.exports = {
+    PreparedRegExpRouter,
+    buildInitParams,
+    serializeInitParams,
+  });

@@ -9,9 +9,7 @@ declare module "zod/v4" {
 }
 
 test("prototype extension", () => {
-  z.ZodType.prototype._classic = function () {
-    return "_classic";
-  };
+  z.ZodType.prototype._classic = () => "_classic";
 
   // should pass
   const result = z.string()._classic();

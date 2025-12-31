@@ -1,14 +1,12 @@
-'use strict'
-
-const base = require('neostandard')({})
+const base = require("neostandard")({});
 
 module.exports = [
   ...base,
   {
-    name: 'old-standard',
+    name: "old-standard",
     rules: {
-      'no-var': 'off',
-      'object-shorthand': 'off',
-    }
-  }
-]
+      "no-var": "off",
+      "object-shorthand": "off",
+    },
+  },
+];

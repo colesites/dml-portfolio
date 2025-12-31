@@ -1,12 +1,12 @@
 declare namespace ansiRegex {
-	interface Options {
-		/**
+  interface Options {
+    /**
 		Match only the first ANSI escape.
 
 		@default false
 		*/
-		onlyFirst: boolean;
-	}
+    onlyFirst: boolean;
+  }
 }
 
 /**

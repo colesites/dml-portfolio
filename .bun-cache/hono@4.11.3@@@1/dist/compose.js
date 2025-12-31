@@ -15,7 +15,7 @@ var compose = (middleware, onError, onNotFound) => {
         handler = middleware[i][0][0];
         context.req.routeIndex = i;
       } else {
-        handler = i === middleware.length && next || void 0;
+        handler = (i === middleware.length && next) || void 0;
       }
       if (handler) {
         try {
@@ -41,6 +41,4 @@ var compose = (middleware, onError, onNotFound) => {
     }
   };
 };
-export {
-  compose
-};
+export { compose };

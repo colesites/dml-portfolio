@@ -1,5 +1,5 @@
-import { Kind } from '../language/kinds.mjs';
-import { visit } from '../language/visitor.mjs';
+import { Kind } from "../language/kinds.mjs";
+import { visit } from "../language/visitor.mjs";
 /**
  * separateOperations accepts a single AST document which may contain many
  * operations and fragments and returns a collection of AST documents each of
@@ -37,7 +37,7 @@ export function separateOperations(documentAST) {
       collectTransitiveDependencies(dependencies, depGraph, fragmentName);
     } // Provides the empty string for anonymous operations.
 
-    const operationName = operation.name ? operation.name.value : ''; // The list of definition nodes to be included for this operation, sorted
+    const operationName = operation.name ? operation.name.value : ""; // The list of definition nodes to be included for this operation, sorted
     // to retain the same order as the original document.
 
     separatedDocumentASTs[operationName] = {

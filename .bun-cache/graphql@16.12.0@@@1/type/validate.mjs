@@ -1,7 +1,7 @@
-import { inspect } from '../jsutils/inspect.mjs';
-import { GraphQLError } from '../error/GraphQLError.mjs';
-import { OperationTypeNode } from '../language/ast.mjs';
-import { isEqualType, isTypeSubTypeOf } from '../utilities/typeComparators.mjs';
+import { GraphQLError } from "../error/GraphQLError.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { OperationTypeNode } from "../language/ast.mjs";
+import { isEqualType, isTypeSubTypeOf } from "../utilities/typeComparators.mjs";
 import {
   isEnumType,
   isInputObjectType,
@@ -14,10 +14,10 @@ import {
   isRequiredArgument,
   isRequiredInputField,
   isUnionType,
-} from './definition.mjs';
-import { GraphQLDeprecatedDirective, isDirective } from './directives.mjs';
-import { isIntrospectionType } from './introspection.mjs';
-import { assertSchema } from './schema.mjs';
+} from "./definition.mjs";
+import { GraphQLDeprecatedDirective, isDirective } from "./directives.mjs";
+import { isIntrospectionType } from "./introspection.mjs";
+import { assertSchema } from "./schema.mjs";
 /**
  * Implements the "Type Validation" sub-sections of the specification's
  * "Type System" section.
@@ -53,7 +53,7 @@ export function assertValidSchema(schema) {
   const errors = validateSchema(schema);
 
   if (errors.length !== 0) {
-    throw new Error(errors.map((error) => error.message).join('\n\n'));
+    throw new Error(errors.map((error) => error.message).join("\n\n"));
   }
 }
 
@@ -83,7 +83,7 @@ function validateRootTypes(context) {
   const queryType = schema.getQueryType();
 
   if (!queryType) {
-    context.reportError('Query root type must be provided.', schema.astNode);
+    context.reportError("Query root type must be provided.", schema.astNode);
   } else if (!isObjectType(queryType)) {
     var _getOperationTypeNode;
 
@@ -106,7 +106,7 @@ function validateRootTypes(context) {
     var _getOperationTypeNode2;
 
     context.reportError(
-      'Mutation root type must be Object type if provided, it cannot be ' +
+      "Mutation root type must be Object type if provided, it cannot be " +
         `${inspect(mutationType)}.`,
       (_getOperationTypeNode2 = getOperationTypeNode(
         schema,
@@ -123,7 +123,7 @@ function validateRootTypes(context) {
     var _getOperationTypeNode3;
 
     context.reportError(
-      'Subscription root type must be Object type if provided, it cannot be ' +
+      "Subscription root type must be Object type if provided, it cannot be " +
         `${inspect(subscriptionType)}.`,
       (_getOperationTypeNode3 = getOperationTypeNode(
         schema,
@@ -213,7 +213,7 @@ function validateDirectives(context) {
 
 function validateName(context, node) {
   // Ensure names are valid, however introspection types opt out.
-  if (node.name.startsWith('__')) {
+  if (node.name.startsWith("__")) {
     context.reportError(
       `Name "${node.name}" must not begin with "__", which is reserved by GraphQL introspection.`,
       node.astNode,
@@ -612,7 +612,7 @@ function createInputObjectCircularRefsValidator(context) {
           detectCycleRecursive(fieldType);
         } else {
           const cyclePath = fieldPath.slice(cycleIndex);
-          const pathStr = cyclePath.map((fieldObj) => fieldObj.name).join('.');
+          const pathStr = cyclePath.map((fieldObj) => fieldObj.name).join(".");
           context.reportError(
             `Cannot reference Input Object "${fieldType.name}" within itself through a series of non-null fields: "${pathStr}".`,
             cyclePath.map((fieldObj) => fieldObj.astNode),
@@ -673,9 +673,9 @@ function getDeprecatedDirectiveNode(definitionNode) {
   return definitionNode === null || definitionNode === void 0
     ? void 0
     : (_definitionNode$direc = definitionNode.directives) === null ||
-      _definitionNode$direc === void 0
-    ? void 0
-    : _definitionNode$direc.find(
-        (node) => node.name.value === GraphQLDeprecatedDirective.name,
-      );
+        _definitionNode$direc === void 0
+      ? void 0
+      : _definitionNode$direc.find(
+          (node) => node.name.value === GraphQLDeprecatedDirective.name,
+        );
 }

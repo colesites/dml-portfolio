@@ -1,22 +1,29 @@
-import process from 'node:process';
-import { C as CLI_TEMP_DIR, w as writeFileSafe, r as runCli, q as limitText, u as prompts, e as parseNr } from './shared/ni.b-W1u-ew.mjs';
-import { Fzf, byLengthAsc } from 'fzf';
-import { g as getPackageJSON } from './shared/ni.C4mrCGPc.mjs';
-import { existsSync, promises } from 'node:fs';
-import { resolve } from 'node:path';
-import 'readline';
-import 'events';
-import 'ansis';
-import 'package-manager-detector';
-import 'tinyexec';
-import 'package-manager-detector/constants';
-import 'os';
-import 'tty';
-import 'node:os';
-import 'fs';
-import 'fs/promises';
-import 'path';
-import 'package-manager-detector/commands';
+import { existsSync, promises } from "node:fs";
+import { resolve } from "node:path";
+import process from "node:process";
+import { byLengthAsc, Fzf } from "fzf";
+import {
+  C as CLI_TEMP_DIR,
+  q as limitText,
+  e as parseNr,
+  u as prompts,
+  r as runCli,
+  w as writeFileSafe,
+} from "./shared/ni.b-W1u-ew.mjs";
+import { g as getPackageJSON } from "./shared/ni.C4mrCGPc.mjs";
+import "readline";
+import "events";
+import "ansis";
+import "package-manager-detector";
+import "tinyexec";
+import "package-manager-detector/constants";
+import "os";
+import "tty";
+import "node:os";
+import "fs";
+import "fs/promises";
+import "path";
+import "package-manager-detector/commands";
 
 const rawCompletionScript = `
 ###-begin-nr-completion-###
@@ -40,24 +47,28 @@ let storage;
 const storagePath = resolve(CLI_TEMP_DIR, "_storage.json");
 async function load(fn) {
   if (!storage) {
-    storage = existsSync(storagePath) ? JSON.parse(await promises.readFile(storagePath, "utf-8") || "{}") || {} : {};
+    storage = existsSync(storagePath)
+      ? JSON.parse((await promises.readFile(storagePath, "utf-8")) || "{}") ||
+        {}
+      : {};
   }
   return storage;
 }
 async function dump() {
-  if (storage)
-    await writeFileSafe(storagePath, JSON.stringify(storage));
+  if (storage) await writeFileSafe(storagePath, JSON.stringify(storage));
 }
 
 function readPackageScripts(ctx) {
   const pkg = getPackageJSON(ctx);
   const rawScripts = pkg.scripts || {};
   const scriptsInfo = pkg["scripts-info"] || {};
-  const scripts = Object.entries(rawScripts).filter((i) => !i[0].startsWith("?")).map(([key, cmd]) => ({
-    key,
-    cmd,
-    description: scriptsInfo[key] || rawScripts[`?${key}`] || cmd
-  }));
+  const scripts = Object.entries(rawScripts)
+    .filter((i) => !i[0].startsWith("?"))
+    .map(([key, cmd]) => ({
+      key,
+      cmd,
+      description: scriptsInfo[key] || rawScripts[`?${key}`] || cmd,
+    }));
   if (scripts.length === 0 && !ctx?.programmatic) {
     console.warn("No scripts found in package.json");
   }
@@ -76,7 +87,7 @@ runCli(async (agent, args, ctx) => {
         const fzf = new Fzf(raw, {
           selector: (item) => item.key,
           casing: "case-insensitive",
-          tiebreakers: [byLengthAsc]
+          tiebreakers: [byLengthAsc],
         });
         const results = fzf.find(compWords[1] || "");
         console.log(results.map((r) => r.item.key).join("\n"));
@@ -102,17 +113,16 @@ runCli(async (agent, args, ctx) => {
     const choices = raw.map(({ key, description }) => ({
       title: key,
       value: key,
-      description: limitText(description, terminalColumns - 15)
+      description: limitText(description, terminalColumns - 15),
     }));
     const fzf = new Fzf(raw, {
       selector: (item) => `${item.key} ${item.description}`,
       casing: "case-insensitive",
-      tiebreakers: [byLengthAsc]
+      tiebreakers: [byLengthAsc],
     });
     if (storage.lastRunCommand) {
       const last = choices.find((i) => i.value === storage.lastRunCommand);
-      if (last)
-        choices.unshift(last);
+      if (last) choices.unshift(last);
     }
     try {
       const { fn } = await prompts({
@@ -121,14 +131,14 @@ runCli(async (agent, args, ctx) => {
         type: "autocomplete",
         choices,
         async suggest(input, choices2) {
-          if (!input)
-            return choices2;
+          if (!input) return choices2;
           const results = fzf.find(input);
-          return results.map((r) => choices2.find((c) => c.value === r.item.key));
-        }
+          return results.map((r) =>
+            choices2.find((c) => c.value === r.item.key),
+          );
+        },
       });
-      if (!fn)
-        return;
+      if (!fn) return;
       args.push(fn);
     } catch {
       process.exit(1);

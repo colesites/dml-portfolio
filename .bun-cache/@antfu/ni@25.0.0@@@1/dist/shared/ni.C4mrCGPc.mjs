@@ -1,6 +1,6 @@
-import fs from 'node:fs';
-import { resolve } from 'node:path';
-import process from 'node:process';
+import fs from "node:fs";
+import { resolve } from "node:path";
+import process from "node:process";
 
 function getPackageJSON(ctx) {
   const cwd = ctx?.cwd ?? process.cwd();

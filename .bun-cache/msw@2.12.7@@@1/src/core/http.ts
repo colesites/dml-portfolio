@@ -1,15 +1,15 @@
 import {
+  HttpHandler,
+  HttpMethods,
+  type HttpRequestPredicate,
+  type HttpRequestResolverExtras,
+} from "./handlers/HttpHandler";
+import type {
   DefaultBodyType,
   RequestHandlerOptions,
   ResponseResolver,
-} from './handlers/RequestHandler'
-import {
-  HttpMethods,
-  HttpHandler,
-  HttpRequestResolverExtras,
-  HttpRequestPredicate,
-} from './handlers/HttpHandler'
-import type { PathParams } from './utils/matching/matchRequestUrl'
+} from "./handlers/RequestHandler";
+import type { PathParams } from "./utils/matching/matchRequestUrl";
 
 export type HttpRequestHandler = <
   Params extends PathParams<keyof Params> = PathParams,
@@ -23,7 +23,7 @@ export type HttpRequestHandler = <
   predicate: HttpRequestPredicate<Params>,
   resolver: HttpResponseResolver<Params, RequestBodyType, ResponseBodyType>,
   options?: RequestHandlerOptions,
-) => HttpHandler
+) => HttpHandler;
 
 export type HttpResponseResolver<
   Params extends PathParams<keyof Params> = PathParams,
@@ -33,14 +33,14 @@ export type HttpResponseResolver<
   HttpRequestResolverExtras<Params>,
   RequestBodyType,
   ResponseBodyType
->
+>;
 
 function createHttpHandler<Method extends HttpMethods | RegExp>(
   method: Method,
 ): HttpRequestHandler {
   return (predicate, resolver, options = {}) => {
-    return new HttpHandler(method, predicate, resolver, options)
-  }
+    return new HttpHandler(method, predicate, resolver, options);
+  };
 }
 
 /**
@@ -61,4 +61,4 @@ export const http = {
   delete: createHttpHandler(HttpMethods.DELETE),
   patch: createHttpHandler(HttpMethods.PATCH),
   options: createHttpHandler(HttpMethods.OPTIONS),
-}
+};

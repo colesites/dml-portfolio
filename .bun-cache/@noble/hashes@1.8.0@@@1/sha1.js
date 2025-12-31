@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sha1 = exports.SHA1 = void 0;
 /**

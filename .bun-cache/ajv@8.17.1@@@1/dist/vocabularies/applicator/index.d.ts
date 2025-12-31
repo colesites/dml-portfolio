@@ -10,4 +10,15 @@ import { AnyOfError } from "./anyOf";
 import { OneOfError } from "./oneOf";
 import { IfKeywordError } from "./if";
 export default function getApplicator(draft2020?: boolean): Vocabulary;
-export type ApplicatorKeywordError = ErrorNoParams<"false schema"> | AdditionalItemsError | ItemsError | ContainsError | AdditionalPropertiesError | DependenciesError | IfKeywordError | AnyOfError | OneOfError | NotKeywordError | PropertyNamesError;
+export type ApplicatorKeywordError =
+  | ErrorNoParams<"false schema">
+  | AdditionalItemsError
+  | ItemsError
+  | ContainsError
+  | AdditionalPropertiesError
+  | DependenciesError
+  | IfKeywordError
+  | AnyOfError
+  | OneOfError
+  | NotKeywordError
+  | PropertyNamesError;

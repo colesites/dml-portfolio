@@ -1,11 +1,11 @@
 import { invariant } from "outvariant";
 import { Emitter } from "strict-event-emitter";
-import { devUtils } from './utils/internal/devUtils.mjs';
-import { pipeEvents } from './utils/internal/pipeEvents.mjs';
-import { toReadonlyArray } from './utils/internal/toReadonlyArray.mjs';
-import { Disposable } from './utils/internal/Disposable.mjs';
-class HandlersController {
-}
+import { Disposable } from "./utils/internal/Disposable.mjs";
+import { devUtils } from "./utils/internal/devUtils.mjs";
+import { pipeEvents } from "./utils/internal/pipeEvents.mjs";
+import { toReadonlyArray } from "./utils/internal/toReadonlyArray.mjs";
+
+class HandlersController {}
 class InMemoryHandlersController {
   constructor(initialHandlers) {
     this.initialHandlers = initialHandlers;
@@ -16,7 +16,8 @@ class InMemoryHandlersController {
     this.handlers.unshift(...runtimeHandles);
   }
   reset(nextHandlers) {
-    this.handlers = nextHandlers.length > 0 ? [...nextHandlers] : [...this.initialHandlers];
+    this.handlers =
+      nextHandlers.length > 0 ? [...nextHandlers] : [...this.initialHandlers];
   }
   currentHandlers() {
     return this.handlers;
@@ -32,8 +33,8 @@ class SetupApi extends Disposable {
     invariant(
       this.validateHandlers(initialHandlers),
       devUtils.formatMessage(
-        `Failed to apply given request handlers: invalid input. Did you forget to spread the request handlers Array?`
-      )
+        `Failed to apply given request handlers: invalid input. Did you forget to spread the request handlers Array?`,
+      ),
     );
     this.handlersController = new InMemoryHandlersController(initialHandlers);
     this.emitter = new Emitter();
@@ -52,8 +53,8 @@ class SetupApi extends Disposable {
     invariant(
       this.validateHandlers(runtimeHandlers),
       devUtils.formatMessage(
-        `Failed to call "use()" with the given request handlers: invalid input. Did you forget to spread the array of request handlers?`
-      )
+        `Failed to call "use()" with the given request handlers: invalid input. Did you forget to spread the array of request handlers?`,
+      ),
     );
     this.handlersController.prepend(runtimeHandlers);
   }
@@ -80,13 +81,9 @@ class SetupApi extends Disposable {
       },
       removeAllListeners: (...args) => {
         return this.publicEmitter.removeAllListeners(...args);
-      }
+      },
     };
   }
 }
-export {
-  HandlersController,
-  InMemoryHandlersController,
-  SetupApi
-};
+export { HandlersController, InMemoryHandlersController, SetupApi };
 //# sourceMappingURL=SetupApi.mjs.map

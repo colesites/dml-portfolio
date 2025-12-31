@@ -1,5 +1,5 @@
-import { invariant } from '../../jsutils/invariant.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { invariant } from "../../jsutils/invariant.mjs";
 
 /**
  * Unique input field names

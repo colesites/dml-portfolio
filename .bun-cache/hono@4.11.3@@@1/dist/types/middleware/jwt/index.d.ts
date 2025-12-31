@@ -1,7 +1,6 @@
-import type { JwtVariables } from './jwt';
+import type { JwtVariables } from "./jwt";
 export type { JwtVariables };
-export { jwt, verifyWithJwks, verify, decode, sign } from './jwt';
-declare module '../..' {
-    interface ContextVariableMap extends JwtVariables {
-    }
+export { jwt, verifyWithJwks, verify, decode, sign } from "./jwt";
+declare module "../.." {
+  interface ContextVariableMap extends JwtVariables {}
 }

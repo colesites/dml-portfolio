@@ -1,6 +1,6 @@
-import type { HandlerKind } from '../../handlers/common'
-import type { RequestHandler } from '../../handlers/RequestHandler'
-import type { WebSocketHandler } from '../../handlers/WebSocketHandler'
+import type { HandlerKind } from "../../handlers/common";
+import type { RequestHandler } from "../../handlers/RequestHandler";
+import type { WebSocketHandler } from "../../handlers/WebSocketHandler";
 
 /**
  * A filter function that ensures that the provided argument
@@ -10,12 +10,12 @@ import type { WebSocketHandler } from '../../handlers/WebSocketHandler'
 export function isHandlerKind<K extends HandlerKind>(kind: K) {
   return (
     input: unknown,
-  ): input is K extends 'EventHandler' ? WebSocketHandler : RequestHandler => {
+  ): input is K extends "EventHandler" ? WebSocketHandler : RequestHandler => {
     return (
       input != null &&
-      typeof input === 'object' &&
-      '__kind' in input &&
+      typeof input === "object" &&
+      "__kind" in input &&
       input.__kind === kind
-    )
-  }
+    );
+  };
 }

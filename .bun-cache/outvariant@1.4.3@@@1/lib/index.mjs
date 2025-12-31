@@ -36,7 +36,7 @@ function format(message, ...positionals) {
         return value;
       }
       return match;
-    }
+    },
   );
   if (positionalIndex < positionals.length) {
     formattedMessage += ` ${positionals.slice(positionalIndex).join(" ")}`;
@@ -71,21 +71,16 @@ var invariant = (predicate, message, ...positionals) => {
 };
 invariant.as = (ErrorConstructor, predicate, message, ...positionals) => {
   if (!predicate) {
-    const formatMessage = positionals.length === 0 ? message : format(message, ...positionals);
+    const formatMessage =
+      positionals.length === 0 ? message : format(message, ...positionals);
     let error;
     try {
-      error = Reflect.construct(ErrorConstructor, [
-        formatMessage
-      ]);
+      error = Reflect.construct(ErrorConstructor, [formatMessage]);
     } catch (err) {
       error = ErrorConstructor(formatMessage);
     }
     throw error;
   }
 };
-export {
-  InvariantError,
-  format,
-  invariant
-};
+export { InvariantError, format, invariant };
 //# sourceMappingURL=index.mjs.map

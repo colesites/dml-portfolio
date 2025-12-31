@@ -1,10 +1,8 @@
 import { invariant } from "outvariant";
-import {
-  WebSocketHandler,
-  kEmitter
-} from './handlers/WebSocketHandler.mjs';
-import { isPath } from './utils/matching/matchRequestUrl.mjs';
-import { WebSocketClientManager } from './ws/WebSocketClientManager.mjs';
+import { kEmitter, WebSocketHandler } from "./handlers/WebSocketHandler.mjs";
+import { isPath } from "./utils/matching/matchRequestUrl.mjs";
+import { WebSocketClientManager } from "./ws/WebSocketClientManager.mjs";
+
 function isBroadcastChannelWithUnref(channel) {
   return typeof Reflect.get(channel, "unref") !== "undefined";
 }
@@ -17,7 +15,7 @@ function createWebSocketLinkHandler(url) {
   invariant(
     isPath(url),
     "Expected a WebSocket server URL to be a valid path but got %s",
-    typeof url
+    typeof url,
   );
   const clientManager = new WebSocketClientManager(webSocketChannel);
   return {
@@ -36,19 +34,19 @@ function createWebSocketLinkHandler(url) {
       this.broadcastExcept([], data);
     },
     broadcastExcept(clients, data) {
-      const ignoreClients = Array.prototype.concat(clients).map((client) => client.id);
+      const ignoreClients = Array.prototype
+        .concat(clients)
+        .map((client) => client.id);
       clientManager.clients.forEach((otherClient) => {
         if (!ignoreClients.includes(otherClient.id)) {
           otherClient.send(data);
         }
       });
-    }
+    },
   };
 }
 const ws = {
-  link: createWebSocketLinkHandler
+  link: createWebSocketLinkHandler,
 };
-export {
-  ws
-};
+export { ws };
 //# sourceMappingURL=ws.mjs.map

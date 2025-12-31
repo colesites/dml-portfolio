@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _initializerDefineProperty;
 function _initializerDefineProperty(target, property, descriptor, context) {
@@ -10,7 +10,9 @@ function _initializerDefineProperty(target, property, descriptor, context) {
     enumerable: descriptor.enumerable,
     configurable: descriptor.configurable,
     writable: descriptor.writable,
-    value: descriptor.initializer ? descriptor.initializer.call(context) : void 0
+    value: descriptor.initializer
+      ? descriptor.initializer.call(context)
+      : void 0,
   });
 }
 

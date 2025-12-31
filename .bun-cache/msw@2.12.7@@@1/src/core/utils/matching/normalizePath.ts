@@ -1,6 +1,6 @@
-import type { Path } from './matchRequestUrl'
-import { cleanUrl } from '../url/cleanUrl'
-import { getAbsoluteUrl } from '../url/getAbsoluteUrl'
+import { cleanUrl } from "../url/cleanUrl";
+import { getAbsoluteUrl } from "../url/getAbsoluteUrl";
+import type { Path } from "./matchRequestUrl";
 
 /**
  * Normalizes a given request handler path:
@@ -13,10 +13,10 @@ import { getAbsoluteUrl } from '../url/getAbsoluteUrl'
 export function normalizePath(path: Path, baseUrl?: string): Path {
   // RegExp paths do not need normalization.
   if (path instanceof RegExp) {
-    return path
+    return path;
   }
 
-  const maybeAbsoluteUrl = getAbsoluteUrl(path, baseUrl)
+  const maybeAbsoluteUrl = getAbsoluteUrl(path, baseUrl);
 
-  return cleanUrl(maybeAbsoluteUrl)
+  return cleanUrl(maybeAbsoluteUrl);
 }

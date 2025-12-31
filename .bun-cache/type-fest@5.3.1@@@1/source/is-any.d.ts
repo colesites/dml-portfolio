@@ -27,5 +27,3 @@ const anyA = get(anyObject, 'a');
 @category Utilities
 */
 export type IsAny<T> = 0 extends 1 & NoInfer<T> ? true : false;
-
-export {};

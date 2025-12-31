@@ -1,24 +1,24 @@
-const treeify = require('object-treeify')
+const treeify = require("object-treeify");
 
-const { logger } = require('./../../shared/logger')
+const { logger } = require("./../../shared/logger");
 
-const main = require('./../../lib/main')
-const ArrayToTree = require('./../../lib/helpers/arrayToTree')
+const main = require("./../../lib/main");
+const ArrayToTree = require("./../../lib/helpers/arrayToTree");
 
-function ls (directory) {
+function ls(directory) {
   // debug args
-  logger.debug(`directory: ${directory}`)
+  logger.debug(`directory: ${directory}`);
 
-  const options = this.opts()
-  logger.debug(`options: ${JSON.stringify(options)}`)
+  const options = this.opts();
+  logger.debug(`options: ${JSON.stringify(options)}`);
 
-  const filepaths = main.ls(directory, options.envFile, options.excludeEnvFile)
-  logger.debug(`filepaths: ${JSON.stringify(filepaths)}`)
+  const filepaths = main.ls(directory, options.envFile, options.excludeEnvFile);
+  logger.debug(`filepaths: ${JSON.stringify(filepaths)}`);
 
-  const tree = new ArrayToTree(filepaths).run()
-  logger.debug(`tree: ${JSON.stringify(tree)}`)
+  const tree = new ArrayToTree(filepaths).run();
+  logger.debug(`tree: ${JSON.stringify(tree)}`);
 
-  logger.info(treeify(tree))
+  logger.info(treeify(tree));
 }
 
-module.exports = ls
+module.exports = ls;

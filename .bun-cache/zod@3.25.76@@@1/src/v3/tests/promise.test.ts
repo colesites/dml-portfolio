@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -8,12 +8,14 @@ const promSchema = z.promise(
   z.object({
     name: z.string(),
     age: z.number(),
-  })
+  }),
 );
 
 test("promise inference", () => {
   type promSchemaType = z.infer<typeof promSchema>;
-  util.assertEqual<promSchemaType, Promise<{ name: string; age: number }>>(true);
+  util.assertEqual<promSchemaType, Promise<{ name: string; age: number }>>(
+    true,
+  );
 });
 
 test("promise parsing success", async () => {
@@ -45,7 +47,9 @@ test("promise parsing fail", async () => {
 });
 
 test("promise parsing fail 2", async () => {
-  const failPromise = promSchema.parse(Promise.resolve({ name: "Bobby", age: "10" }));
+  const failPromise = promSchema.parse(
+    Promise.resolve({ name: "Bobby", age: "10" }),
+  );
   await expect(failPromise).rejects.toBeInstanceOf(z.ZodError);
   // done();/z
 });

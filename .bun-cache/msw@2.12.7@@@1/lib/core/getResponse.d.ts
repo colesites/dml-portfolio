@@ -1,9 +1,12 @@
-import { R as RequestHandler, m as ResponseResolutionContext } from './HttpResponse-CVs3ngx3.js';
-import '@mswjs/interceptors';
-import './utils/internal/isIterable.js';
-import './typeUtils.js';
-import 'graphql';
-import './utils/matching/matchRequestUrl.js';
+import {
+  R as RequestHandler,
+  m as ResponseResolutionContext,
+} from "./HttpResponse-CVs3ngx3.js";
+import "@mswjs/interceptors";
+import "./utils/internal/isIterable.js";
+import "./typeUtils.js";
+import "graphql";
+import "./utils/matching/matchRequestUrl.js";
 
 /**
  * Finds a response for the given request instance
@@ -13,6 +16,10 @@ import './utils/matching/matchRequestUrl.js';
  * @param resolutionContext Request resolution options.
  * @returns {Response} A mocked response, if any.
  */
-declare const getResponse: (handlers: Array<RequestHandler>, request: Request, resolutionContext?: ResponseResolutionContext) => Promise<Response | undefined>;
+declare const getResponse: (
+  handlers: Array<RequestHandler>,
+  request: Request,
+  resolutionContext?: ResponseResolutionContext,
+) => Promise<Response | undefined>;
 
 export { getResponse };

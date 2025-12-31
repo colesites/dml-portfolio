@@ -1,7 +1,7 @@
-import { inspect } from '../jsutils/inspect.mjs';
-import { invariant } from '../jsutils/invariant.mjs';
-import { keyMap } from '../jsutils/keyMap.mjs';
-import { print } from '../language/printer.mjs';
+import { inspect } from "../jsutils/inspect.mjs";
+import { invariant } from "../jsutils/invariant.mjs";
+import { keyMap } from "../jsutils/keyMap.mjs";
+import { print } from "../language/printer.mjs";
 import {
   isEnumType,
   isInputObjectType,
@@ -14,48 +14,49 @@ import {
   isRequiredInputField,
   isScalarType,
   isUnionType,
-} from '../type/definition.mjs';
-import { isSpecifiedScalarType } from '../type/scalars.mjs';
-import { astFromValue } from './astFromValue.mjs';
-import { sortValueNode } from './sortValueNode.mjs';
+} from "../type/definition.mjs";
+import { isSpecifiedScalarType } from "../type/scalars.mjs";
+import { astFromValue } from "./astFromValue.mjs";
+import { sortValueNode } from "./sortValueNode.mjs";
+
 var BreakingChangeType;
 
-(function (BreakingChangeType) {
-  BreakingChangeType['TYPE_REMOVED'] = 'TYPE_REMOVED';
-  BreakingChangeType['TYPE_CHANGED_KIND'] = 'TYPE_CHANGED_KIND';
-  BreakingChangeType['TYPE_REMOVED_FROM_UNION'] = 'TYPE_REMOVED_FROM_UNION';
-  BreakingChangeType['VALUE_REMOVED_FROM_ENUM'] = 'VALUE_REMOVED_FROM_ENUM';
-  BreakingChangeType['REQUIRED_INPUT_FIELD_ADDED'] =
-    'REQUIRED_INPUT_FIELD_ADDED';
-  BreakingChangeType['IMPLEMENTED_INTERFACE_REMOVED'] =
-    'IMPLEMENTED_INTERFACE_REMOVED';
-  BreakingChangeType['FIELD_REMOVED'] = 'FIELD_REMOVED';
-  BreakingChangeType['FIELD_CHANGED_KIND'] = 'FIELD_CHANGED_KIND';
-  BreakingChangeType['REQUIRED_ARG_ADDED'] = 'REQUIRED_ARG_ADDED';
-  BreakingChangeType['ARG_REMOVED'] = 'ARG_REMOVED';
-  BreakingChangeType['ARG_CHANGED_KIND'] = 'ARG_CHANGED_KIND';
-  BreakingChangeType['DIRECTIVE_REMOVED'] = 'DIRECTIVE_REMOVED';
-  BreakingChangeType['DIRECTIVE_ARG_REMOVED'] = 'DIRECTIVE_ARG_REMOVED';
-  BreakingChangeType['REQUIRED_DIRECTIVE_ARG_ADDED'] =
-    'REQUIRED_DIRECTIVE_ARG_ADDED';
-  BreakingChangeType['DIRECTIVE_REPEATABLE_REMOVED'] =
-    'DIRECTIVE_REPEATABLE_REMOVED';
-  BreakingChangeType['DIRECTIVE_LOCATION_REMOVED'] =
-    'DIRECTIVE_LOCATION_REMOVED';
+((BreakingChangeType) => {
+  BreakingChangeType["TYPE_REMOVED"] = "TYPE_REMOVED";
+  BreakingChangeType["TYPE_CHANGED_KIND"] = "TYPE_CHANGED_KIND";
+  BreakingChangeType["TYPE_REMOVED_FROM_UNION"] = "TYPE_REMOVED_FROM_UNION";
+  BreakingChangeType["VALUE_REMOVED_FROM_ENUM"] = "VALUE_REMOVED_FROM_ENUM";
+  BreakingChangeType["REQUIRED_INPUT_FIELD_ADDED"] =
+    "REQUIRED_INPUT_FIELD_ADDED";
+  BreakingChangeType["IMPLEMENTED_INTERFACE_REMOVED"] =
+    "IMPLEMENTED_INTERFACE_REMOVED";
+  BreakingChangeType["FIELD_REMOVED"] = "FIELD_REMOVED";
+  BreakingChangeType["FIELD_CHANGED_KIND"] = "FIELD_CHANGED_KIND";
+  BreakingChangeType["REQUIRED_ARG_ADDED"] = "REQUIRED_ARG_ADDED";
+  BreakingChangeType["ARG_REMOVED"] = "ARG_REMOVED";
+  BreakingChangeType["ARG_CHANGED_KIND"] = "ARG_CHANGED_KIND";
+  BreakingChangeType["DIRECTIVE_REMOVED"] = "DIRECTIVE_REMOVED";
+  BreakingChangeType["DIRECTIVE_ARG_REMOVED"] = "DIRECTIVE_ARG_REMOVED";
+  BreakingChangeType["REQUIRED_DIRECTIVE_ARG_ADDED"] =
+    "REQUIRED_DIRECTIVE_ARG_ADDED";
+  BreakingChangeType["DIRECTIVE_REPEATABLE_REMOVED"] =
+    "DIRECTIVE_REPEATABLE_REMOVED";
+  BreakingChangeType["DIRECTIVE_LOCATION_REMOVED"] =
+    "DIRECTIVE_LOCATION_REMOVED";
 })(BreakingChangeType || (BreakingChangeType = {}));
 
 export { BreakingChangeType };
 var DangerousChangeType;
 
-(function (DangerousChangeType) {
-  DangerousChangeType['VALUE_ADDED_TO_ENUM'] = 'VALUE_ADDED_TO_ENUM';
-  DangerousChangeType['TYPE_ADDED_TO_UNION'] = 'TYPE_ADDED_TO_UNION';
-  DangerousChangeType['OPTIONAL_INPUT_FIELD_ADDED'] =
-    'OPTIONAL_INPUT_FIELD_ADDED';
-  DangerousChangeType['OPTIONAL_ARG_ADDED'] = 'OPTIONAL_ARG_ADDED';
-  DangerousChangeType['IMPLEMENTED_INTERFACE_ADDED'] =
-    'IMPLEMENTED_INTERFACE_ADDED';
-  DangerousChangeType['ARG_DEFAULT_VALUE_CHANGE'] = 'ARG_DEFAULT_VALUE_CHANGE';
+((DangerousChangeType) => {
+  DangerousChangeType["VALUE_ADDED_TO_ENUM"] = "VALUE_ADDED_TO_ENUM";
+  DangerousChangeType["TYPE_ADDED_TO_UNION"] = "TYPE_ADDED_TO_UNION";
+  DangerousChangeType["OPTIONAL_INPUT_FIELD_ADDED"] =
+    "OPTIONAL_INPUT_FIELD_ADDED";
+  DangerousChangeType["OPTIONAL_ARG_ADDED"] = "OPTIONAL_ARG_ADDED";
+  DangerousChangeType["IMPLEMENTED_INTERFACE_ADDED"] =
+    "IMPLEMENTED_INTERFACE_ADDED";
+  DangerousChangeType["ARG_DEFAULT_VALUE_CHANGE"] = "ARG_DEFAULT_VALUE_CHANGE";
 })(DangerousChangeType || (DangerousChangeType = {}));
 
 export { DangerousChangeType };
@@ -454,32 +455,32 @@ function isChangeSafeForInputObjectFieldOrFieldArg(oldType, newType) {
 
 function typeKindName(type) {
   if (isScalarType(type)) {
-    return 'a Scalar type';
+    return "a Scalar type";
   }
 
   if (isObjectType(type)) {
-    return 'an Object type';
+    return "an Object type";
   }
 
   if (isInterfaceType(type)) {
-    return 'an Interface type';
+    return "an Interface type";
   }
 
   if (isUnionType(type)) {
-    return 'a Union type';
+    return "a Union type";
   }
 
   if (isEnumType(type)) {
-    return 'an Enum type';
+    return "an Enum type";
   }
 
   if (isInputObjectType(type)) {
-    return 'an Input type';
+    return "an Input type";
   }
   /* c8 ignore next 3 */
   // Not reachable, all possible types have been considered.
 
-  false || invariant(false, 'Unexpected type: ' + inspect(type));
+  false || invariant(false, "Unexpected type: " + inspect(type));
 }
 
 function stringifyValue(value, type) {

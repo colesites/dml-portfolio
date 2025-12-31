@@ -1,15 +1,18 @@
-import type {IfNotAnyOrNever, IsExactOptionalPropertyTypesEnabled} from './internal/type.d.ts';
-import type {ApplyDefaultOptions} from './internal/object.d.ts';
-import type {IsOptionalKeyOf} from './is-optional-key-of.d.ts';
-import type {IsArrayReadonly} from './internal/array.d.ts';
-import type {UnknownArray} from './unknown-array.d.ts';
-import type {If} from './if.d.ts';
+import type {
+  IfNotAnyOrNever,
+  IsExactOptionalPropertyTypesEnabled,
+} from "./internal/type.d.ts";
+import type { ApplyDefaultOptions } from "./internal/object.d.ts";
+import type { IsOptionalKeyOf } from "./is-optional-key-of.d.ts";
+import type { IsArrayReadonly } from "./internal/array.d.ts";
+import type { UnknownArray } from "./unknown-array.d.ts";
+import type { If } from "./if.d.ts";
 
 /**
 {@link SplitOnRestElement} options.
 */
 type SplitOnRestElementOptions = {
-	/**
+  /**
 	Whether to preserve the optional modifier (`?`).
 
 	- When set to `true`, the optional modifiers are preserved as-is. For example:
@@ -21,11 +24,11 @@ type SplitOnRestElementOptions = {
 
 	@default true
 	*/
-	preserveOptionalModifier?: boolean;
+  preserveOptionalModifier?: boolean;
 };
 
 type DefaultSplitOnRestElementOptions = {
-	preserveOptionalModifier: true;
+  preserveOptionalModifier: true;
 };
 
 /**
@@ -61,46 +64,56 @@ type T5 = SplitOnRestElement<readonly [string?, ...number[]], {preserveOptionalM
 @category Array
 */
 export type SplitOnRestElement<
-	Array_ extends UnknownArray,
-	Options extends SplitOnRestElementOptions = {},
-> =
-	Array_ extends unknown // For distributing `Array_`
-		? IfNotAnyOrNever<Array_, _SplitOnRestElement<
-			Array_,
-			ApplyDefaultOptions<SplitOnRestElementOptions, DefaultSplitOnRestElementOptions, Options>
-		>> extends infer Result extends UnknownArray
-			? If<IsArrayReadonly<Array_>, Readonly<Result>, Result>
-			: never // Should never happen
-		: never; // Should never happen
+  Array_ extends UnknownArray,
+  Options extends SplitOnRestElementOptions = {},
+> = Array_ extends unknown // For distributing `Array_`
+  ? IfNotAnyOrNever<
+      Array_,
+      _SplitOnRestElement<
+        Array_,
+        ApplyDefaultOptions<
+          SplitOnRestElementOptions,
+          DefaultSplitOnRestElementOptions,
+          Options
+        >
+      >
+    > extends infer Result extends UnknownArray
+    ? If<IsArrayReadonly<Array_>, Readonly<Result>, Result>
+    : never // Should never happen
+  : never; // Should never happen
 
 /**
 Deconstructs an array on its rest element and returns the split portions.
 */
 export type _SplitOnRestElement<
-	Array_ extends UnknownArray,
-	Options extends Required<SplitOnRestElementOptions>,
-	HeadAcc extends UnknownArray = [],
-	TailAcc extends UnknownArray = [],
-> =
-	keyof Array_ & `${number}` extends never
-		// Enters this branch, if `Array_` is empty (e.g., []),
-		// or `Array_` contains no non-rest elements preceding the rest element (e.g., `[...string[]]` or `[...string[], string]`).
-		? Array_ extends readonly [...infer Rest, infer Last]
-			? _SplitOnRestElement<Rest, Options, HeadAcc, [Last, ...TailAcc]> // Accumulate elements that are present after the rest element.
-			: [HeadAcc, Array_ extends readonly [] ? [] : Array_, TailAcc] // Add the rest element between the accumulated elements.
-		: Array_ extends readonly [(infer First)?, ...infer Rest]
-			? _SplitOnRestElement<
-				Rest, Options,
-				[
-					...HeadAcc,
-					...IsOptionalKeyOf<Array_, '0'> extends true
-						? Options['preserveOptionalModifier'] extends false
-							? [If<IsExactOptionalPropertyTypesEnabled, First, First | undefined>] // Add `| undefined` for optional elements, if `exactOptionalPropertyTypes` is disabled.
-							: [First?]
-						: [First],
-				],
-				TailAcc
-			> // Accumulate elements that are present before the rest element.
-			: never; // Should never happen, since `[(infer First)?, ...infer Rest]` is a top-type for arrays.
-
-export {};
+  Array_ extends UnknownArray,
+  Options extends Required<SplitOnRestElementOptions>,
+  HeadAcc extends UnknownArray = [],
+  TailAcc extends UnknownArray = [],
+> = keyof Array_ & `${number}` extends never
+  ? // Enters this branch, if `Array_` is empty (e.g., []),
+    // or `Array_` contains no non-rest elements preceding the rest element (e.g., `[...string[]]` or `[...string[], string]`).
+    Array_ extends readonly [...infer Rest, infer Last]
+    ? _SplitOnRestElement<Rest, Options, HeadAcc, [Last, ...TailAcc]> // Accumulate elements that are present after the rest element.
+    : [HeadAcc, Array_ extends readonly [] ? [] : Array_, TailAcc] // Add the rest element between the accumulated elements.
+  : Array_ extends readonly [(infer First)?, ...infer Rest]
+    ? _SplitOnRestElement<
+        Rest,
+        Options,
+        [
+          ...HeadAcc,
+          ...(IsOptionalKeyOf<Array_, "0"> extends true
+            ? Options["preserveOptionalModifier"] extends false
+              ? [
+                  If<
+                    IsExactOptionalPropertyTypesEnabled,
+                    First,
+                    First | undefined
+                  >,
+                ] // Add `| undefined` for optional elements, if `exactOptionalPropertyTypes` is disabled.
+              : [First?]
+            : [First]),
+        ],
+        TailAcc
+      > // Accumulate elements that are present before the rest element.
+    : never; // Should never happen, since `[(infer First)?, ...infer Rest]` is a top-type for arrays.

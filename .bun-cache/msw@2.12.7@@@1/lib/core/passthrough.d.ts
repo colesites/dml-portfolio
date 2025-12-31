@@ -1,9 +1,9 @@
-import { q as HttpResponse } from './HttpResponse-CVs3ngx3.js';
-import '@mswjs/interceptors';
-import './utils/internal/isIterable.js';
-import './typeUtils.js';
-import 'graphql';
-import './utils/matching/matchRequestUrl.js';
+import { q as HttpResponse } from "./HttpResponse-CVs3ngx3.js";
+import "@mswjs/interceptors";
+import "./utils/internal/isIterable.js";
+import "./typeUtils.js";
+import "graphql";
+import "./utils/matching/matchRequestUrl.js";
 
 /**
  * Performs the intercepted request as-is.

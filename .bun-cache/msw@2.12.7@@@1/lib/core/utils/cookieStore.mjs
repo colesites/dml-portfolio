@@ -1,11 +1,8 @@
 import { isNodeProcess } from "is-node-process";
 import { invariant } from "outvariant";
-import {
-  Cookie,
-  CookieJar,
-  MemoryCookieStore
-} from "tough-cookie";
-import { jsonParse } from './internal/jsonParse.mjs';
+import { Cookie, CookieJar, MemoryCookieStore } from "tough-cookie";
+import { jsonParse } from "./internal/jsonParse.mjs";
+
 class CookieStore {
   #storageKey = "__msw-cookie-store__";
   #jar;
@@ -14,7 +11,7 @@ class CookieStore {
     if (!isNodeProcess()) {
       invariant(
         typeof localStorage !== "undefined",
-        "Failed to create a CookieStore: `localStorage` is not available in this environment. This is likely an issue with your environment, which has been detected as browser (or browser-like) environment and must implement global browser APIs correctly."
+        "Failed to create a CookieStore: `localStorage` is not available in this environment. This is likely an issue with your environment, which has been detected as browser (or browser-like) environment and must implement global browser APIs correctly.",
       );
     }
     this.#memoryStore = new MemoryCookieStore();
@@ -29,7 +26,10 @@ class CookieStore {
     this.persist();
   }
   getCookieStoreIndex() {
-    if (typeof localStorage === "undefined" || typeof localStorage.getItem !== "function") {
+    if (
+      typeof localStorage === "undefined" ||
+      typeof localStorage.getItem !== "function"
+    ) {
       return {};
     }
     const cookiesString = localStorage.getItem(this.#storageKey);
@@ -52,7 +52,10 @@ class CookieStore {
     return cookies;
   }
   persist() {
-    if (typeof localStorage === "undefined" || typeof localStorage.setItem !== "function") {
+    if (
+      typeof localStorage === "undefined" ||
+      typeof localStorage.setItem !== "function"
+    ) {
       return;
     }
     const data = [];
@@ -68,7 +71,5 @@ class CookieStore {
   }
 }
 const cookieStore = new CookieStore();
-export {
-  cookieStore
-};
+export { cookieStore };
 //# sourceMappingURL=cookieStore.mjs.map

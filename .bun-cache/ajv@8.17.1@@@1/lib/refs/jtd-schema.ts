@@ -1,31 +1,31 @@
-import {SchemaObject} from "../types"
+import type { SchemaObject } from "../types";
 
-type MetaSchema = (root: boolean) => SchemaObject
+type MetaSchema = (root: boolean) => SchemaObject;
 
 const shared: MetaSchema = (root) => {
   const sch: SchemaObject = {
-    nullable: {type: "boolean"},
+    nullable: { type: "boolean" },
     metadata: {
       optionalProperties: {
-        union: {elements: {ref: "schema"}},
+        union: { elements: { ref: "schema" } },
       },
       additionalProperties: true,
     },
-  }
-  if (root) sch.definitions = {values: {ref: "schema"}}
-  return sch
-}
+  };
+  if (root) sch.definitions = { values: { ref: "schema" } };
+  return sch;
+};
 
 const emptyForm: MetaSchema = (root) => ({
   optionalProperties: shared(root),
-})
+});
 
 const refForm: MetaSchema = (root) => ({
   properties: {
-    ref: {type: "string"},
+    ref: { type: "string" },
   },
   optionalProperties: shared(root),
-})
+});
 
 const typeForm: MetaSchema = (root) => ({
   properties: {
@@ -46,46 +46,46 @@ const typeForm: MetaSchema = (root) => ({
     },
   },
   optionalProperties: shared(root),
-})
+});
 
 const enumForm: MetaSchema = (root) => ({
   properties: {
-    enum: {elements: {type: "string"}},
+    enum: { elements: { type: "string" } },
   },
   optionalProperties: shared(root),
-})
+});
 
 const elementsForm: MetaSchema = (root) => ({
   properties: {
-    elements: {ref: "schema"},
+    elements: { ref: "schema" },
   },
   optionalProperties: shared(root),
-})
+});
 
 const propertiesForm: MetaSchema = (root) => ({
   properties: {
-    properties: {values: {ref: "schema"}},
+    properties: { values: { ref: "schema" } },
   },
   optionalProperties: {
-    optionalProperties: {values: {ref: "schema"}},
-    additionalProperties: {type: "boolean"},
+    optionalProperties: { values: { ref: "schema" } },
+    additionalProperties: { type: "boolean" },
     ...shared(root),
   },
-})
+});
 
 const optionalPropertiesForm: MetaSchema = (root) => ({
   properties: {
-    optionalProperties: {values: {ref: "schema"}},
+    optionalProperties: { values: { ref: "schema" } },
   },
   optionalProperties: {
-    additionalProperties: {type: "boolean"},
+    additionalProperties: { type: "boolean" },
     ...shared(root),
   },
-})
+});
 
 const discriminatorForm: MetaSchema = (root) => ({
   properties: {
-    discriminator: {type: "string"},
+    discriminator: { type: "string" },
     mapping: {
       values: {
         metadata: {
@@ -95,14 +95,14 @@ const discriminatorForm: MetaSchema = (root) => ({
     },
   },
   optionalProperties: shared(root),
-})
+});
 
 const valuesForm: MetaSchema = (root) => ({
   properties: {
-    values: {ref: "schema"},
+    values: { ref: "schema" },
   },
   optionalProperties: shared(root),
-})
+});
 
 const schema: MetaSchema = (root) => ({
   metadata: {
@@ -118,13 +118,13 @@ const schema: MetaSchema = (root) => ({
       valuesForm,
     ].map((s) => s(root)),
   },
-})
+});
 
 const jtdMetaSchema: SchemaObject = {
   definitions: {
     schema: schema(false),
   },
   ...schema(true),
-}
+};
 
-export default jtdMetaSchema
+export default jtdMetaSchema;

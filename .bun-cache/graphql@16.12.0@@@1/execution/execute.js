@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.assertValidExecutionArguments = assertValidExecutionArguments;
@@ -11,43 +9,43 @@ exports.execute = execute;
 exports.executeSync = executeSync;
 exports.getFieldDef = getFieldDef;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
-var _isIterableObject = require('../jsutils/isIterableObject.js');
+var _isIterableObject = require("../jsutils/isIterableObject.js");
 
-var _isObjectLike = require('../jsutils/isObjectLike.js');
+var _isObjectLike = require("../jsutils/isObjectLike.js");
 
-var _isPromise = require('../jsutils/isPromise.js');
+var _isPromise = require("../jsutils/isPromise.js");
 
-var _memoize = require('../jsutils/memoize3.js');
+var _memoize = require("../jsutils/memoize3.js");
 
-var _Path = require('../jsutils/Path.js');
+var _Path = require("../jsutils/Path.js");
 
-var _promiseForObject = require('../jsutils/promiseForObject.js');
+var _promiseForObject = require("../jsutils/promiseForObject.js");
 
-var _promiseReduce = require('../jsutils/promiseReduce.js');
+var _promiseReduce = require("../jsutils/promiseReduce.js");
 
-var _GraphQLError = require('../error/GraphQLError.js');
+var _GraphQLError = require("../error/GraphQLError.js");
 
-var _locatedError = require('../error/locatedError.js');
+var _locatedError = require("../error/locatedError.js");
 
-var _ast = require('../language/ast.js');
+var _ast = require("../language/ast.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _introspection = require('../type/introspection.js');
+var _introspection = require("../type/introspection.js");
 
-var _validate = require('../type/validate.js');
+var _validate = require("../type/validate.js");
 
-var _collectFields = require('./collectFields.js');
+var _collectFields = require("./collectFields.js");
 
-var _values = require('./values.js');
+var _values = require("./values.js");
 
 /**
  * A memoized collection of relevant subfields with regard to the return
@@ -106,7 +104,7 @@ function execute(args) {
   arguments.length < 2 ||
     (0, _devAssert.devAssert)(
       false,
-      'graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.',
+      "graphql@16 dropped long-deprecated support for positional arguments, please pass an object instead.",
     );
   const { schema, document, variableValues, rootValue } = args; // If arguments are missing or incorrect, throw an error.
 
@@ -115,7 +113,7 @@ function execute(args) {
 
   const exeContext = buildExecutionContext(args); // Return early errors if execution context failed.
 
-  if (!('schema' in exeContext)) {
+  if (!("schema" in exeContext)) {
     return {
       errors: exeContext,
     };
@@ -161,7 +159,7 @@ function executeSync(args) {
   const result = execute(args); // Assert that the execution was synchronous.
 
   if ((0, _isPromise.isPromise)(result)) {
-    throw new Error('GraphQL execution failed to complete synchronously.');
+    throw new Error("GraphQL execution failed to complete synchronously.");
   }
 
   return result;
@@ -189,7 +187,7 @@ function buildResponse(data, errors) {
  */
 
 function assertValidExecutionArguments(schema, document, rawVariableValues) {
-  document || (0, _devAssert.devAssert)(false, 'Must provide document.'); // If the schema used for execution is invalid, throw an error.
+  document || (0, _devAssert.devAssert)(false, "Must provide document."); // If the schema used for execution is invalid, throw an error.
 
   (0, _validate.assertValidSchema)(schema); // Variables, if provided, must be an object.
 
@@ -197,7 +195,7 @@ function assertValidExecutionArguments(schema, document, rawVariableValues) {
     (0, _isObjectLike.isObjectLike)(rawVariableValues) ||
     (0, _devAssert.devAssert)(
       false,
-      'Variables must be provided as an Object where each property is a variable value. Perhaps look to see if an unparsed JSON string was provided.',
+      "Variables must be provided as an Object where each property is a variable value. Perhaps look to see if an unparsed JSON string was provided.",
     );
 }
 /**
@@ -234,7 +232,7 @@ function buildExecutionContext(args) {
           if (operation !== undefined) {
             return [
               new _GraphQLError.GraphQLError(
-                'Must provide operation name if query contains multiple operations.',
+                "Must provide operation name if query contains multiple operations.",
               ),
             ];
           }
@@ -268,7 +266,7 @@ function buildExecutionContext(args) {
       ];
     }
 
-    return [new _GraphQLError.GraphQLError('Must provide an operation.')];
+    return [new _GraphQLError.GraphQLError("Must provide an operation.")];
   } // FIXME: https://github.com/graphql/graphql-js/issues/2203
 
   /* c8 ignore next */
@@ -666,7 +664,7 @@ function completeValue(exeContext, returnType, fieldNodes, info, path, result) {
   false ||
     (0, _invariant.invariant)(
       false,
-      'Cannot complete value of unexpected output type: ' +
+      "Cannot complete value of unexpected output type: " +
         (0, _inspect.inspect)(returnType),
     );
 }
@@ -846,11 +844,11 @@ function ensureValidRuntimeType(
 
   if ((0, _definition.isObjectType)(runtimeTypeName)) {
     throw new _GraphQLError.GraphQLError(
-      'Support for returning GraphQLObjectType from resolveType was removed in graphql-js@16.0.0 please return type name instead.',
+      "Support for returning GraphQLObjectType from resolveType was removed in graphql-js@16.0.0 please return type name instead.",
     );
   }
 
-  if (typeof runtimeTypeName !== 'string') {
+  if (typeof runtimeTypeName !== "string") {
     throw new _GraphQLError.GraphQLError(
       `Abstract type "${returnType.name}" must resolve to an Object type at runtime for field "${info.parentType.name}.${info.fieldName}" with ` +
         `value ${(0, _inspect.inspect)(result)}, received "${(0,
@@ -953,11 +951,11 @@ function invalidReturnTypeError(returnType, result, fieldNodes) {
  * isTypeOf for the object being coerced, returning the first type that matches.
  */
 
-const defaultTypeResolver = function (value, contextValue, info, abstractType) {
+const defaultTypeResolver = (value, contextValue, info, abstractType) => {
   // First, look for `__typename`.
   if (
     (0, _isObjectLike.isObjectLike)(value) &&
-    typeof value.__typename === 'string'
+    typeof value.__typename === "string"
   ) {
     return value.__typename;
   } // Otherwise, test each possible type.
@@ -1007,12 +1005,12 @@ const defaultTypeResolver = function (value, contextValue, info, abstractType) {
 
 exports.defaultTypeResolver = defaultTypeResolver;
 
-const defaultFieldResolver = function (source, args, contextValue, info) {
+const defaultFieldResolver = (source, args, contextValue, info) => {
   // ensure source is a value for which property access is acceptable.
-  if ((0, _isObjectLike.isObjectLike)(source) || typeof source === 'function') {
+  if ((0, _isObjectLike.isObjectLike)(source) || typeof source === "function") {
     const property = source[info.fieldName];
 
-    if (typeof property === 'function') {
+    if (typeof property === "function") {
       return source[info.fieldName](args, contextValue, info);
     }
 

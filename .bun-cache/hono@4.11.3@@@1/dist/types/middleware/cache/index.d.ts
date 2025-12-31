@@ -2,9 +2,9 @@
  * @module
  * Cache Middleware for Hono.
  */
-import type { Context } from '../../context';
-import type { MiddlewareHandler } from '../../types';
-import type { StatusCode } from '../../utils/http-status';
+import type { Context } from "../../context";
+import type { MiddlewareHandler } from "../../types";
+import type { StatusCode } from "../../utils/http-status";
 /**
  * Cache Middleware for Hono.
  *
@@ -32,10 +32,10 @@ import type { StatusCode } from '../../utils/http-status';
  * ```
  */
 export declare const cache: (options: {
-    cacheName: string | ((c: Context) => Promise<string> | string);
-    wait?: boolean;
-    cacheControl?: string;
-    vary?: string | string[];
-    keyGenerator?: (c: Context) => Promise<string> | string;
-    cacheableStatusCodes?: StatusCode[];
+  cacheName: string | ((c: Context) => Promise<string> | string);
+  wait?: boolean;
+  cacheControl?: string;
+  vary?: string | string[];
+  keyGenerator?: (c: Context) => Promise<string> | string;
+  cacheableStatusCodes?: StatusCode[];
 }) => MiddlewareHandler;

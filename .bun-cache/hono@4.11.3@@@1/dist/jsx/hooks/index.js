@@ -1,13 +1,18 @@
 // src/jsx/hooks/index.ts
 import { DOM_STASH } from "../constants.js";
 import { buildDataStack, update } from "../dom/render.js";
+
 var STASH_SATE = 0;
 var STASH_EFFECT = 1;
 var STASH_CALLBACK = 2;
 var STASH_MEMO = 3;
 var STASH_REF = 4;
 var resolvedPromiseValueMap = /* @__PURE__ */ new WeakMap();
-var isDepsChanged = (prevDeps, deps) => !prevDeps || !deps || prevDeps.length !== deps.length || deps.some((dep, i) => dep !== prevDeps[i]);
+var isDepsChanged = (prevDeps, deps) =>
+  !prevDeps ||
+  !deps ||
+  prevDeps.length !== deps.length ||
+  deps.some((dep, i) => dep !== prevDeps[i]);
 var viewTransitionState = void 0;
 var documentStartViewTransition = (cb) => {
   if (document?.startViewTransition) {
@@ -48,8 +53,7 @@ var startViewTransition = (callback) => {
 var useViewTransition = () => {
   const buildData = buildDataStack.at(-1);
   if (!buildData) {
-    return [false, () => {
-    }];
+    return [false, () => {}];
   }
   if (viewTransitionState) {
     viewTransitionState[1] = true;
@@ -59,7 +63,7 @@ var useViewTransition = () => {
 var pendingStack = [];
 var runCallback = (type, callback) => {
   let resolve;
-  const promise = new Promise((r) => resolve = r);
+  const promise = new Promise((r) => (resolve = r));
   pendingStack.push([type, promise]);
   try {
     const res = callback();
@@ -81,8 +85,7 @@ var startTransitionHook = (callback) => {
 var useTransition = () => {
   const buildData = buildDataStack.at(-1);
   if (!buildData) {
-    return [false, () => {
-    }];
+    return [false, () => {}];
   }
   const [error, setError] = useState();
   const [state, updateState] = useState();
@@ -102,14 +105,14 @@ var useTransition = () => {
         return res;
       });
     },
-    [state]
+    [state],
   );
   const [context] = buildData;
   return [context[0] === 2, startTransitionLocalHook];
 };
 var useDeferredValue = (value, ...rest) => {
   const [values, setValues] = useState(
-    rest.length ? [rest[0], rest[0]] : [value, value]
+    rest.length ? [rest[0], rest[0]] : [value, value],
   );
   if (Object.is(values[1], value)) {
     return values[1];
@@ -125,16 +128,16 @@ var useDeferredValue = (value, ...rest) => {
   return values[0];
 };
 var useState = (initialState) => {
-  const resolveInitialState = () => typeof initialState === "function" ? initialState() : initialState;
+  const resolveInitialState = () =>
+    typeof initialState === "function" ? initialState() : initialState;
   const buildData = buildDataStack.at(-1);
   if (!buildData) {
-    return [resolveInitialState(), () => {
-    }];
+    return [resolveInitialState(), () => {}];
   }
   const [, node] = buildData;
-  const stateArray = node[DOM_STASH][1][STASH_SATE] ||= [];
+  const stateArray = (node[DOM_STASH][1][STASH_SATE] ||= []);
   const hookIndex = node[DOM_STASH][0]++;
-  return stateArray[hookIndex] ||= [
+  return (stateArray[hookIndex] ||= [
     resolveInitialState(),
     (newState) => {
       const localUpdateHook = updateHook;
@@ -147,8 +150,10 @@ var useState = (initialState) => {
         if (pendingStack.length) {
           const [pendingType, pendingPromise] = pendingStack.at(-1);
           Promise.all([
-            pendingType === 3 ? node : update([pendingType, false, localUpdateHook], node),
-            pendingPromise
+            pendingType === 3
+              ? node
+              : update([pendingType, false, localUpdateHook], node),
+            pendingPromise,
           ]).then(([node2]) => {
             if (!node2 || !(pendingType === 2 || pendingType === 3)) {
               return;
@@ -159,7 +164,10 @@ var useState = (initialState) => {
                 if (lastVC !== node2.vC) {
                   return;
                 }
-                update([pendingType === 3 ? 1 : 0, false, localUpdateHook], node2);
+                update(
+                  [pendingType === 3 ? 1 : 0, false, localUpdateHook],
+                  node2,
+                );
               });
             };
             requestAnimationFrame(addUpdateTask);
@@ -168,17 +176,19 @@ var useState = (initialState) => {
           update([0, false, localUpdateHook], node);
         }
       }
-    }
-  ];
+    },
+  ]);
 };
 var useReducer = (reducer, initialArg, init) => {
   const handler = useCallback(
     (action) => {
       setState((state2) => reducer(state2, action));
     },
-    [reducer]
+    [reducer],
   );
-  const [state, setState] = useState(() => init ? init(initialArg) : initialArg);
+  const [state, setState] = useState(() =>
+    init ? init(initialArg) : initialArg,
+  );
   return [state, handler];
 };
 var useEffectCommon = (index, effect, deps) => {
@@ -187,9 +197,9 @@ var useEffectCommon = (index, effect, deps) => {
     return;
   }
   const [, node] = buildData;
-  const effectDepsArray = node[DOM_STASH][1][STASH_EFFECT] ||= [];
+  const effectDepsArray = (node[DOM_STASH][1][STASH_EFFECT] ||= []);
   const hookIndex = node[DOM_STASH][0]++;
-  const [prevDeps, , prevCleanup] = effectDepsArray[hookIndex] ||= [];
+  const [prevDeps, , prevCleanup] = (effectDepsArray[hookIndex] ||= []);
   if (isDepsChanged(prevDeps, deps)) {
     if (prevCleanup) {
       prevCleanup();
@@ -212,7 +222,7 @@ var useCallback = (callback, deps) => {
     return callback;
   }
   const [, node] = buildData;
-  const callbackArray = node[DOM_STASH][1][STASH_CALLBACK] ||= [];
+  const callbackArray = (node[DOM_STASH][1][STASH_CALLBACK] ||= []);
   const hookIndex = node[DOM_STASH][0]++;
   const prevDeps = callbackArray[hookIndex];
   if (isDepsChanged(prevDeps?.[1], deps)) {
@@ -228,9 +238,9 @@ var useRef = (initialValue) => {
     return { current: initialValue };
   }
   const [, node] = buildData;
-  const refArray = node[DOM_STASH][1][STASH_REF] ||= [];
+  const refArray = (node[DOM_STASH][1][STASH_REF] ||= []);
   const hookIndex = node[DOM_STASH][0]++;
-  return refArray[hookIndex] ||= { current: initialValue };
+  return (refArray[hookIndex] ||= { current: initialValue });
 };
 var use = (promise) => {
   const cachedRes = resolvedPromiseValueMap.get(promise);
@@ -242,7 +252,7 @@ var use = (promise) => {
   }
   promise.then(
     (res) => resolvedPromiseValueMap.set(promise, [res]),
-    (e) => resolvedPromiseValueMap.set(promise, [void 0, e])
+    (e) => resolvedPromiseValueMap.set(promise, [void 0, e]),
   );
   throw promise;
 };
@@ -252,7 +262,7 @@ var useMemo = (factory, deps) => {
     return factory();
   }
   const [, node] = buildData;
-  const memoArray = node[DOM_STASH][1][STASH_MEMO] ||= [];
+  const memoArray = (node[DOM_STASH][1][STASH_MEMO] ||= []);
   const hookIndex = node[DOM_STASH][0]++;
   const prevDeps = memoArray[hookIndex];
   if (isDepsChanged(prevDeps?.[1], deps)) {
@@ -262,8 +272,7 @@ var useMemo = (factory, deps) => {
 };
 var idCounter = 0;
 var useId = () => useMemo(() => `:r${(idCounter++).toString(32)}:`, []);
-var useDebugValue = (_value, _formatter) => {
-};
+var useDebugValue = (_value, _formatter) => {};
 var createRef = () => {
   return { current: null };
 };
@@ -285,13 +294,17 @@ var useSyncExternalStore = (subscribe, getSnapshot, getServerSnapshot) => {
   const buildData = buildDataStack.at(-1);
   if (!buildData) {
     if (!getServerSnapshot) {
-      throw new Error("getServerSnapshot is required for server side rendering");
+      throw new Error(
+        "getServerSnapshot is required for server side rendering",
+      );
     }
     return getServerSnapshot();
   }
-  const [serverSnapshotIsUsed] = useState(!!(buildData[0][4] && getServerSnapshot));
-  const [state, setState] = useState(
-    () => serverSnapshotIsUsed ? getServerSnapshot() : getSnapshot()
+  const [serverSnapshotIsUsed] = useState(
+    !!(buildData[0][4] && getServerSnapshot),
+  );
+  const [state, setState] = useState(() =>
+    serverSnapshotIsUsed ? getServerSnapshot() : getSnapshot(),
   );
   useEffect(() => {
     if (serverSnapshotIsUsed) {
@@ -324,5 +337,5 @@ export {
   useState,
   useSyncExternalStore,
   useTransition,
-  useViewTransition
+  useViewTransition,
 };

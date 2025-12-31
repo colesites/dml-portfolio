@@ -1,32 +1,32 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import colors from 'picocolors'
-import confirm from '@inquirer/confirm'
-import { invariant } from './invariant.js'
-import { SERVICE_WORKER_BUILD_PATH } from '../config/constants.js'
+import fs from "node:fs";
+import path from "node:path";
+import confirm from "@inquirer/confirm";
+import colors from "picocolors";
+import { SERVICE_WORKER_BUILD_PATH } from "../config/constants.js";
+import { invariant } from "./invariant.js";
 
 export async function init(args) {
-  const CWD = args.cwd || process.cwd()
-  const publicDir = args._[1] ? normalizePath(args._[1]) : undefined
+  const CWD = args.cwd || process.cwd();
+  const publicDir = args._[1] ? normalizePath(args._[1]) : undefined;
 
-  const packageJsonPath = path.resolve(CWD, 'package.json')
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+  const packageJsonPath = path.resolve(CWD, "package.json");
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
   const savedWorkerDirectories = Array.prototype
     .concat((packageJson.msw && packageJson.msw.workerDirectory) || [])
-    .map(normalizePath)
+    .map(normalizePath);
 
   if (publicDir) {
     // If the public directory was provided, copy the worker script
     // to that directory only. Even if there are paths stored in "msw.workerDirectory",
     // those will not be touched.
-    await copyWorkerScript(publicDir, CWD)
-    const relativePublicDir = path.relative(CWD, publicDir)
-    printSuccessMessage([publicDir])
+    await copyWorkerScript(publicDir, CWD);
+    const relativePublicDir = path.relative(CWD, publicDir);
+    printSuccessMessage([publicDir]);
 
     if (args.save) {
       // Only save the public path if it's not already saved in "package.json".
       if (!savedWorkerDirectories.includes(relativePublicDir)) {
-        saveWorkerDirectory(packageJsonPath, relativePublicDir)
+        saveWorkerDirectory(packageJsonPath, relativePublicDir);
       }
     }
     // Explicitly check if "save" was not provided (was null).
@@ -36,9 +36,9 @@ export async function init(args) {
       // eslint-disable-next-line no-console
       console.log(`\
       ${colors.cyan(
-        'INFO',
+        "INFO",
       )} In order to ease the future updates to the worker script,
-      we recommend saving the path to the worker directory in your package.json.`)
+      we recommend saving the path to the worker directory in your package.json.`);
 
       // If the "--save" flag was not provided, prompt to save
       // the public path.
@@ -46,17 +46,17 @@ export async function init(args) {
         `Do you wish to save "${relativePublicDir}" as the worker directory?`,
         packageJsonPath,
         relativePublicDir,
-      )
+      );
     }
 
-    return
+    return;
   }
 
   // Calling "init" without a public directory but with the "--save" flag is a no-op.
   invariant(
     args.save == null,
     'Failed to copy the worker script: cannot call the "init" command without a public directory but with the "--save" flag. Either drop the "--save" flag to copy the worker script to all paths listed in "msw.workerDirectory", or add an explicit public directory to the command, like "npx msw init ./public".',
-  )
+  );
 
   // If the public directory was not provided, check any existing
   // paths in "msw.workerDirectory". When called without the public
@@ -68,25 +68,25 @@ export async function init(args) {
         return copyWorkerScript(destination, CWD).catch((error) => {
           // Inject the absolute destination path onto the copy function rejections
           // so it's available in the failed paths array below.
-          throw [toAbsolutePath(destination, CWD), error]
-        })
+          throw [toAbsolutePath(destination, CWD), error];
+        });
       }),
-    )
+    );
     const successfulPaths = copyResults
-      .filter((result) => result.status === 'fulfilled')
-      .map((result) => result.value)
+      .filter((result) => result.status === "fulfilled")
+      .map((result) => result.value);
     const failedPathsWithErrors = copyResults
-      .filter((result) => result.status === 'rejected')
-      .map((result) => result.reason)
+      .filter((result) => result.status === "rejected")
+      .map((result) => result.reason);
 
     // Notify about failed copies, if any.
     if (failedPathsWithErrors.length > 0) {
-      printFailureMessage(failedPathsWithErrors)
+      printFailureMessage(failedPathsWithErrors);
     }
 
     // Notify about successful copies, if any.
     if (successfulPaths.length > 0) {
-      printSuccessMessage(successfulPaths)
+      printSuccessMessage(successfulPaths);
     }
   }
 }
@@ -99,7 +99,7 @@ export async function init(args) {
 function toAbsolutePath(maybeAbsolutePath, cwd) {
   return path.isAbsolute(maybeAbsolutePath)
     ? maybeAbsolutePath
-    : path.resolve(cwd, maybeAbsolutePath)
+    : path.resolve(cwd, maybeAbsolutePath);
 }
 
 /**
@@ -110,7 +110,7 @@ function toAbsolutePath(maybeAbsolutePath, cwd) {
 async function copyWorkerScript(destination, cwd) {
   // When running as a part of "postinstall" script, "cwd" equals the library's directory.
   // The "postinstall" script resolves the right absolute public directory path.
-  const absolutePublicDir = toAbsolutePath(destination, cwd)
+  const absolutePublicDir = toAbsolutePath(destination, cwd);
 
   if (!fs.existsSync(absolutePublicDir)) {
     await fs.promises
@@ -123,19 +123,19 @@ async function copyWorkerScript(destination, cwd) {
             absolutePublicDir,
             error,
           ),
-        )
-      })
+        );
+      });
   }
 
   // eslint-disable-next-line no-console
-  console.log('Copying the worker script at "%s"...', absolutePublicDir)
+  console.log('Copying the worker script at "%s"...', absolutePublicDir);
 
-  const workerFilename = path.basename(SERVICE_WORKER_BUILD_PATH)
-  const workerDestinationPath = path.resolve(absolutePublicDir, workerFilename)
+  const workerFilename = path.basename(SERVICE_WORKER_BUILD_PATH);
+  const workerDestinationPath = path.resolve(absolutePublicDir, workerFilename);
 
-  fs.copyFileSync(SERVICE_WORKER_BUILD_PATH, workerDestinationPath)
+  fs.copyFileSync(SERVICE_WORKER_BUILD_PATH, workerDestinationPath);
 
-  return workerDestinationPath
+  return workerDestinationPath;
 }
 
 /**
@@ -144,23 +144,23 @@ async function copyWorkerScript(destination, cwd) {
 function printSuccessMessage(paths) {
   // eslint-disable-next-line no-console
   console.log(`
-${colors.green('Worker script successfully copied!')}
+${colors.green("Worker script successfully copied!")}
 ${paths.map((path) => colors.gray(`  - ${path}\n`))}
 Continue by describing the network in your application:
 
 
-${colors.red(colors.bold('https://mswjs.io/docs/quick-start'))}
-`)
+${colors.red(colors.bold("https://mswjs.io/docs/quick-start"))}
+`);
 }
 
 function printFailureMessage(pathsWithErrors) {
   // eslint-disable-next-line no-console
   console.error(`\
-${colors.red('Copying the worker script failed at following paths:')}
+${colors.red("Copying the worker script failed at following paths:")}
 ${pathsWithErrors
-  .map(([path, error]) => colors.gray(`  - ${path}`) + '\n' + `  ${error}`)
-  .join('\n\n')}
-  `)
+  .map(([path, error]) => colors.gray(`  - ${path}`) + "\n" + `  ${error}`)
+  .join("\n\n")}
+  `);
 }
 
 /**
@@ -168,32 +168,32 @@ ${pathsWithErrors
  * @param {string} publicDir
  */
 function saveWorkerDirectory(packageJsonPath, publicDir) {
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
 
   // eslint-disable-next-line no-console
   console.log(
     colors.gray('Updating "msw.workerDirectory" at "%s"...'),
     packageJsonPath,
-  )
+  );
 
   const prevWorkerDirectory = Array.prototype.concat(
     (packageJson.msw && packageJson.msw.workerDirectory) || [],
-  )
+  );
   const nextWorkerDirectory = Array.from(
     new Set(prevWorkerDirectory).add(publicDir),
-  )
+  );
 
   const nextPackageJson = Object.assign({}, packageJson, {
     msw: {
       workerDirectory: nextWorkerDirectory,
     },
-  })
+  });
 
   fs.writeFileSync(
     packageJsonPath,
     JSON.stringify(nextPackageJson, null, 2),
-    'utf8',
-  )
+    "utf8",
+  );
 }
 
 /**
@@ -205,14 +205,14 @@ function saveWorkerDirectory(packageJsonPath, publicDir) {
 function promptWorkerDirectoryUpdate(message, packageJsonPath, publicDir) {
   return confirm({
     theme: {
-      prefix: colors.yellowBright('?'),
+      prefix: colors.yellowBright("?"),
     },
     message,
   }).then((answer) => {
     if (answer) {
-      saveWorkerDirectory(packageJsonPath, publicDir)
+      saveWorkerDirectory(packageJsonPath, publicDir);
     }
-  })
+  });
 }
 
 /**
@@ -222,5 +222,5 @@ function promptWorkerDirectoryUpdate(message, packageJsonPath, publicDir) {
  * @returns {string}
  */
 function normalizePath(input) {
-  return input.replace(/[\\|\/]+/g, path.sep)
+  return input.replace(/[\\|/]+/g, path.sep);
 }

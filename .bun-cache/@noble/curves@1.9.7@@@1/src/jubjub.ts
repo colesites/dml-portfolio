@@ -2,7 +2,11 @@
  * @deprecated
  * @module
  */
-import { jubjub_findGroupHash, jubjub_groupHash, jubjub as jubjubn } from './misc.ts';
+import {
+  jubjub_findGroupHash,
+  jubjub_groupHash,
+  jubjub as jubjubn,
+} from "./misc.ts";
 
 /** @deprecated use `import { jubjub } from '@noble/curves/misc.js';` */
 export const jubjub: typeof jubjubn = jubjubn;

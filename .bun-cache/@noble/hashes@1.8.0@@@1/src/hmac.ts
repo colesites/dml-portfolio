@@ -2,7 +2,16 @@
  * HMAC: RFC2104 message authentication code.
  * @module
  */
-import { abytes, aexists, ahash, clean, Hash, toBytes, type CHash, type Input } from './utils.ts';
+import {
+  abytes,
+  aexists,
+  ahash,
+  type CHash,
+  clean,
+  Hash,
+  type Input,
+  toBytes,
+} from "./utils.ts";
 
 export class HMAC<T extends Hash<T>> extends Hash<HMAC<T>> {
   oHash: T;
@@ -17,8 +26,8 @@ export class HMAC<T extends Hash<T>> extends Hash<HMAC<T>> {
     ahash(hash);
     const key = toBytes(_key);
     this.iHash = hash.create() as T;
-    if (typeof this.iHash.update !== 'function')
-      throw new Error('Expected instance of class which extends utils.Hash');
+    if (typeof this.iHash.update !== "function")
+      throw new Error("Expected instance of class which extends utils.Hash");
     this.blockLen = this.iHash.blockLen;
     this.outputLen = this.iHash.outputLen;
     const blockLen = this.blockLen;

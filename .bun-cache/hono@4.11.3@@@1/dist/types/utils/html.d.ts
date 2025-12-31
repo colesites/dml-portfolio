@@ -3,19 +3,21 @@
  * HTML utility.
  */
 export declare const HtmlEscapedCallbackPhase: {
-    readonly Stringify: 1;
-    readonly BeforeStream: 2;
-    readonly Stream: 3;
+  readonly Stringify: 1;
+  readonly BeforeStream: 2;
+  readonly Stream: 3;
 };
 type HtmlEscapedCallbackOpts = {
-    buffer?: [string];
-    phase: (typeof HtmlEscapedCallbackPhase)[keyof typeof HtmlEscapedCallbackPhase];
-    context: Readonly<object>;
+  buffer?: [string];
+  phase: (typeof HtmlEscapedCallbackPhase)[keyof typeof HtmlEscapedCallbackPhase];
+  context: Readonly<object>;
 };
-export type HtmlEscapedCallback = (opts: HtmlEscapedCallbackOpts) => Promise<string> | undefined;
+export type HtmlEscapedCallback = (
+  opts: HtmlEscapedCallbackOpts,
+) => Promise<string> | undefined;
 export type HtmlEscaped = {
-    isEscaped: true;
-    callbacks?: HtmlEscapedCallback[];
+  isEscaped: true;
+  callbacks?: HtmlEscapedCallback[];
 };
 export type HtmlEscapedString = string & HtmlEscaped;
 /**
@@ -34,11 +36,27 @@ export type HtmlEscapedString = string & HtmlEscaped;
  */
 export type StringBuffer = (string | Promise<string>)[];
 export type StringBufferWithCallbacks = StringBuffer & {
-    callbacks: HtmlEscapedCallback[];
+  callbacks: HtmlEscapedCallback[];
 };
-export declare const raw: (value: unknown, callbacks?: HtmlEscapedCallback[]) => HtmlEscapedString;
-export declare const stringBufferToString: (buffer: StringBuffer, callbacks: HtmlEscapedCallback[] | undefined) => Promise<HtmlEscapedString>;
-export declare const escapeToBuffer: (str: string, buffer: StringBuffer) => void;
-export declare const resolveCallbackSync: (str: string | HtmlEscapedString) => string;
-export declare const resolveCallback: (str: string | HtmlEscapedString | Promise<string>, phase: (typeof HtmlEscapedCallbackPhase)[keyof typeof HtmlEscapedCallbackPhase], preserveCallbacks: boolean, context: object, buffer?: [string]) => Promise<string>;
-export {};
+export declare const raw: (
+  value: unknown,
+  callbacks?: HtmlEscapedCallback[],
+) => HtmlEscapedString;
+export declare const stringBufferToString: (
+  buffer: StringBuffer,
+  callbacks: HtmlEscapedCallback[] | undefined,
+) => Promise<HtmlEscapedString>;
+export declare const escapeToBuffer: (
+  str: string,
+  buffer: StringBuffer,
+) => void;
+export declare const resolveCallbackSync: (
+  str: string | HtmlEscapedString,
+) => string;
+export declare const resolveCallback: (
+  str: string | HtmlEscapedString | Promise<string>,
+  phase: (typeof HtmlEscapedCallbackPhase)[keyof typeof HtmlEscapedCallbackPhase],
+  preserveCallbacks: boolean,
+  context: object,
+  buffer?: [string],
+) => Promise<string>;

@@ -1,10 +1,10 @@
 type Path = string | RegExp;
 type PathParams<KeyType extends keyof any = string> = {
-    [ParamName in KeyType]?: string | ReadonlyArray<string>;
+  [ParamName in KeyType]?: string | ReadonlyArray<string>;
 };
 interface Match {
-    matches: boolean;
-    params?: PathParams;
+  matches: boolean;
+  params?: PathParams;
 }
 /**
  * Coerce a path supported by MSW into a path
@@ -17,4 +17,11 @@ declare function coercePath(path: string): string;
 declare function matchRequestUrl(url: URL, path: Path, baseUrl?: string): Match;
 declare function isPath(value: unknown): value is Path;
 
-export { type Match, type Path, type PathParams, coercePath, isPath, matchRequestUrl };
+export {
+  type Match,
+  type Path,
+  type PathParams,
+  coercePath,
+  isPath,
+  matchRequestUrl,
+};

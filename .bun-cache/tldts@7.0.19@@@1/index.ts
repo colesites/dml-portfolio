@@ -1,13 +1,13 @@
 import {
   FLAG,
   getEmptyResult,
-  IOptions,
-  IResult,
+  type IOptions,
+  type IResult,
   parseImpl,
   resetResult,
-} from 'tldts-core';
+} from "tldts-core";
 
-import suffixLookup from './src/suffix-trie';
+import suffixLookup from "./src/suffix-trie";
 
 // For all methods but 'parse', it does not make sense to allocate an object
 // every single time to only return the value of a specific attribute. To avoid

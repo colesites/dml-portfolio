@@ -58,32 +58,49 @@ test("z.uuid", () => {
 
   const b = z.uuidv4();
   z.parse(b, "550e8400-e29b-41d4-a716-446655440000");
-  expect(z.safeParse(b, "550e8400-e29b-61d4-a716-446655440000")).toMatchObject(FAIL);
+  expect(z.safeParse(b, "550e8400-e29b-61d4-a716-446655440000")).toMatchObject(
+    FAIL,
+  );
 
   const c = z.uuidv6();
   z.parse(c, "550e8400-e29b-61d4-a716-446655440000");
-  expect(z.safeParse(c, "550e8400-e29b-41d4-a716-446655440000")).toMatchObject(FAIL);
+  expect(z.safeParse(c, "550e8400-e29b-41d4-a716-446655440000")).toMatchObject(
+    FAIL,
+  );
 
   const d = z.uuidv7();
   z.parse(d, "550e8400-e29b-71d4-a716-446655440000");
-  expect(z.safeParse(d, "550e8400-e29b-41d4-a716-446655440000")).toMatchObject(FAIL);
-  expect(z.safeParse(d, "550e8400-e29b-61d4-a716-446655440000")).toMatchObject(FAIL);
+  expect(z.safeParse(d, "550e8400-e29b-41d4-a716-446655440000")).toMatchObject(
+    FAIL,
+  );
+  expect(z.safeParse(d, "550e8400-e29b-61d4-a716-446655440000")).toMatchObject(
+    FAIL,
+  );
 });
 
 test("z.email", () => {
   const a = z.email();
   expect(z.parse(a, "test@test.com")).toEqual("test@test.com");
   expect(() => z.parse(a, "test")).toThrow();
-  expect(z.safeParse(a, "bad email", { error: () => "bad email" }).error!.issues[0].message).toEqual("bad email");
+  expect(
+    z.safeParse(a, "bad email", { error: () => "bad email" }).error!.issues[0]
+      .message,
+  ).toEqual("bad email");
 
   const b = z.email("bad email");
-  expect(z.safeParse(b, "bad email").error!.issues[0].message).toEqual("bad email");
+  expect(z.safeParse(b, "bad email").error!.issues[0].message).toEqual(
+    "bad email",
+  );
 
   const c = z.email({ error: "bad email" });
-  expect(z.safeParse(c, "bad email").error!.issues[0].message).toEqual("bad email");
+  expect(z.safeParse(c, "bad email").error!.issues[0].message).toEqual(
+    "bad email",
+  );
 
   const d = z.email({ error: () => "bad email" });
-  expect(z.safeParse(d, "bad email").error!.issues[0].message).toEqual("bad email");
+  expect(z.safeParse(d, "bad email").error!.issues[0].message).toEqual(
+    "bad email",
+  );
 });
 
 test("z.url", () => {
@@ -93,7 +110,9 @@ test("z.url", () => {
   expect(a.parse("https://example.com")).toEqual("https://example.com");
   expect(a.parse("ftp://example.com")).toEqual("ftp://example.com");
   expect(a.parse("http://sub.example.com")).toEqual("http://sub.example.com");
-  expect(a.parse("https://example.com/path?query=123#fragment")).toEqual("https://example.com/path?query=123#fragment");
+  expect(a.parse("https://example.com/path?query=123#fragment")).toEqual(
+    "https://example.com/path?query=123#fragment",
+  );
   expect(a.parse("http://localhost")).toEqual("http://localhost");
   expect(a.parse("https://localhost")).toEqual("https://localhost");
   expect(a.parse("http://localhost:3000")).toEqual("http://localhost:3000");
@@ -130,10 +149,14 @@ test("z.url with optional hostname regex", () => {
 test("z.url - file urls", () => {
   // file URLs
   const a = z.url({ hostname: /.*/ }); // allow any hostname
-  expect(a.parse("file:///path/to/file.txt")).toEqual("file:///path/to/file.txt");
-  expect(a.parse("file:///C:/path/to/file.txt")).toEqual("file:///C:/path/to/file.txt");
+  expect(a.parse("file:///path/to/file.txt")).toEqual(
+    "file:///path/to/file.txt",
+  );
+  expect(a.parse("file:///C:/path/to/file.txt")).toEqual(
+    "file:///C:/path/to/file.txt",
+  );
   expect(a.parse("file:///C:/path/to/file.txt?query=123#fragment")).toEqual(
-    "file:///C:/path/to/file.txt?query=123#fragment"
+    "file:///C:/path/to/file.txt?query=123#fragment",
   );
 });
 test("z.url with optional protocol regex", () => {
@@ -179,19 +202,25 @@ test("z.nanoid", () => {
 
 test("z.cuid", () => {
   const a = z.cuid();
-  expect(z.parse(a, "cixs7y0c0000f7x3b1z6m3w6r")).toEqual("cixs7y0c0000f7x3b1z6m3w6r");
+  expect(z.parse(a, "cixs7y0c0000f7x3b1z6m3w6r")).toEqual(
+    "cixs7y0c0000f7x3b1z6m3w6r",
+  );
   expect(() => z.parse(a, "abc")).toThrow();
 });
 
 test("z.cuid2", () => {
   const a = z.cuid2();
-  expect(z.parse(a, "cixs7y0c0000f7x3b1z6m3w6r")).toEqual("cixs7y0c0000f7x3b1z6m3w6r");
+  expect(z.parse(a, "cixs7y0c0000f7x3b1z6m3w6r")).toEqual(
+    "cixs7y0c0000f7x3b1z6m3w6r",
+  );
   expect(() => z.parse(a, 123)).toThrow();
 });
 
 test("z.ulid", () => {
   const a = z.ulid();
-  expect(z.parse(a, "01ETGRM9QYVX6S9V2F3B6JXG4N")).toEqual("01ETGRM9QYVX6S9V2F3B6JXG4N");
+  expect(z.parse(a, "01ETGRM9QYVX6S9V2F3B6JXG4N")).toEqual(
+    "01ETGRM9QYVX6S9V2F3B6JXG4N",
+  );
   expect(() => z.parse(a, "abc")).toThrow();
 });
 
@@ -203,7 +232,9 @@ test("z.xid", () => {
 
 test("z.ksuid", () => {
   const a = z.ksuid();
-  expect(z.parse(a, "2naeRjTrrHJAkfd3tOuEjw90WCA")).toEqual("2naeRjTrrHJAkfd3tOuEjw90WCA");
+  expect(z.parse(a, "2naeRjTrrHJAkfd3tOuEjw90WCA")).toEqual(
+    "2naeRjTrrHJAkfd3tOuEjw90WCA",
+  );
   expect(() => z.parse(a, "abc")).toThrow();
 });
 
@@ -231,7 +262,9 @@ test("z.ipv4", () => {
 test("z.ipv6", () => {
   const a = z.ipv6();
   // valid ipv6
-  expect(z.parse(a, "2001:0db8:85a3:0000:0000:8a2e:0370:7334")).toEqual("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
+  expect(z.parse(a, "2001:0db8:85a3:0000:0000:8a2e:0370:7334")).toEqual(
+    "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+  );
   expect(z.parse(a, "::1")).toEqual("::1");
   // invalid ipv6
   expect(() => z.parse(a, "2001:db8::85a3::8a2e:370:7334")).toThrow();
@@ -245,7 +278,9 @@ test("z.base64", () => {
   const a = z.base64();
   // valid base64
   expect(z.parse(a, "SGVsbG8gd29ybGQ=")).toEqual("SGVsbG8gd29ybGQ=");
-  expect(z.parse(a, "U29tZSBvdGhlciBzdHJpbmc=")).toEqual("U29tZSBvdGhlciBzdHJpbmc=");
+  expect(z.parse(a, "U29tZSBvdGhlciBzdHJpbmc=")).toEqual(
+    "U29tZSBvdGhlciBzdHJpbmc=",
+  );
   // invalid base64
   expect(() => z.parse(a, "SGVsbG8gd29ybGQ")).toThrow();
   expect(() => z.parse(a, "U29tZSBvdGhlciBzdHJpbmc")).toThrow();
@@ -286,10 +321,10 @@ test("z.jwt", () => {
   expect(
     z.parse(
       a,
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-    )
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+    ),
   ).toEqual(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
   );
   // invalid jwt
   expect(() => z.parse(a, "invalid.jwt.token")).toThrow();

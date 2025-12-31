@@ -1,2 +1,6 @@
-import { IPublicSuffix, ISuffixLookupOptions } from './interface';
-export default function (hostname: string, options: ISuffixLookupOptions, out: IPublicSuffix): boolean;
+import { IPublicSuffix, ISuffixLookupOptions } from "./interface";
+export default function (
+  hostname: string,
+  options: ISuffixLookupOptions,
+  out: IPublicSuffix,
+): boolean;

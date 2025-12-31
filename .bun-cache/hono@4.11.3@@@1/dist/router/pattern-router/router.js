@@ -1,5 +1,6 @@
 // src/router/pattern-router/router.ts
 import { METHOD_NAME_ALL, UnsupportedPathError } from "../../router.js";
+
 var emptyParams = /* @__PURE__ */ Object.create(null);
 var PatternRouter = class {
   name = "PatternRouter";
@@ -13,17 +14,21 @@ var PatternRouter = class {
       path = path.slice(0, -1);
       this.add(method, path.replace(/\/[^/]+$/, ""), handler);
     }
-    const parts = (path.match(/\/?(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/?[^\/\?]+/g) || []).map(
-      (part) => {
-        const match = part.match(/^\/:([^{]+)(?:{(.*)})?/);
-        return match ? `/(?<${match[1]}>${match[2] || "[^/]+"})` : part === "/*" ? "/[^/]+" : part.replace(/[.\\+*[^\]$()]/g, "\\$&");
-      }
-    );
+    const parts = (
+      path.match(/\/?(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/?[^/?]+/g) || []
+    ).map((part) => {
+      const match = part.match(/^\/:([^{]+)(?:{(.*)})?/);
+      return match
+        ? `/(?<${match[1]}>${match[2] || "[^/]+"})`
+        : part === "/*"
+          ? "/[^/]+"
+          : part.replace(/[.\\+*[^\]$()]/g, "\\$&");
+    });
     try {
       this.#routes.push([
         new RegExp(`^${parts.join("")}${endsWithWildcard ? "" : "/?$"}`),
         method,
-        handler
+        handler,
       ]);
     } catch {
       throw new UnsupportedPathError();
@@ -43,6 +48,4 @@ var PatternRouter = class {
     return [handlers];
   }
 };
-export {
-  PatternRouter
-};
+export { PatternRouter };

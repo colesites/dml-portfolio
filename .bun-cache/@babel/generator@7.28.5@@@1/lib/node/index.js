@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.TokenContext = void 0;
 exports.isLastChild = isLastChild;
@@ -20,9 +20,9 @@ const {
   isExpressionStatement,
   isMemberExpression,
   isNewExpression,
-  isParenthesizedExpression
+  isParenthesizedExpression,
 } = _t;
-const TokenContext = exports.TokenContext = {
+const TokenContext = (exports.TokenContext = {
   normal: 0,
   expressionStatement: 1,
   arrowBody: 2,
@@ -32,16 +32,23 @@ const TokenContext = exports.TokenContext = {
   forInHead: 32,
   forOfHead: 64,
   forInOrInitHeadAccumulate: 128,
-  forInOrInitHeadAccumulatePassThroughMask: 128
-};
+  forInOrInitHeadAccumulatePassThroughMask: 128,
+});
 function expandAliases(obj) {
   const map = new Map();
   function add(type, func) {
     const fn = map.get(type);
-    map.set(type, fn ? function (node, parent, stack, getRawIdentifier) {
-      var _fn;
-      return (_fn = fn(node, parent, stack, getRawIdentifier)) != null ? _fn : func(node, parent, stack, getRawIdentifier);
-    } : func);
+    map.set(
+      type,
+      fn
+        ? (node, parent, stack, getRawIdentifier) => {
+            var _fn;
+            return (_fn = fn(node, parent, stack, getRawIdentifier)) != null
+              ? _fn
+              : func(node, parent, stack, getRawIdentifier);
+          }
+        : func,
+    );
   }
   for (const type of Object.keys(obj)) {
     const aliases = FLIPPED_ALIAS_KEYS[type];
@@ -69,7 +76,10 @@ function needsWhitespace(node, parent, type) {
   if (isExpressionStatement(node)) {
     node = node.expression;
   }
-  const flag = (_expandedWhitespaceNo = expandedWhitespaceNodes.get(node.type)) == null ? void 0 : _expandedWhitespaceNo(node, parent);
+  const flag =
+    (_expandedWhitespaceNo = expandedWhitespaceNodes.get(node.type)) == null
+      ? void 0
+      : _expandedWhitespaceNo(node, parent);
   if (typeof flag === "number") {
     return (flag & type) !== 0;
   }
@@ -88,16 +98,29 @@ function needsParens(node, parent, tokenContext, getRawIdentifier) {
     if (isOrHasCallExpression(node)) return true;
   }
   if (isDecorator(parent)) {
-    return !isDecoratorMemberExpression(node) && !(isCallExpression(node) && isDecoratorMemberExpression(node.callee)) && !isParenthesizedExpression(node);
+    return (
+      !isDecoratorMemberExpression(node) &&
+      !(isCallExpression(node) && isDecoratorMemberExpression(node.callee)) &&
+      !isParenthesizedExpression(node)
+    );
   }
-  return ((_expandedParens$get = expandedParens.get(node.type)) == null ? void 0 : _expandedParens$get(node, parent, tokenContext, getRawIdentifier)) || false;
+  return (
+    ((_expandedParens$get = expandedParens.get(node.type)) == null
+      ? void 0
+      : _expandedParens$get(node, parent, tokenContext, getRawIdentifier)) ||
+    false
+  );
 }
 function isDecoratorMemberExpression(node) {
   switch (node.type) {
     case "Identifier":
       return true;
     case "MemberExpression":
-      return !node.computed && node.property.type === "Identifier" && isDecoratorMemberExpression(node.object);
+      return (
+        !node.computed &&
+        node.property.type === "Identifier" &&
+        isDecoratorMemberExpression(node.object)
+      );
     default:
       return false;
   }

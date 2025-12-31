@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _wrapNativeSuper;
 var _getPrototypeOf = require("./getPrototypeOf.js");
@@ -20,15 +20,19 @@ function _wrapNativeSuper(Class) {
       _cache.set(Class, Wrapper);
     }
     function Wrapper() {
-      return (0, _construct.default)(Class, arguments, (0, _getPrototypeOf.default)(this).constructor);
+      return (0, _construct.default)(
+        Class,
+        arguments,
+        (0, _getPrototypeOf.default)(this).constructor,
+      );
     }
     Wrapper.prototype = Object.create(Class.prototype, {
       constructor: {
         value: Wrapper,
         enumerable: false,
         writable: true,
-        configurable: true
-      }
+        configurable: true,
+      },
     });
     return (0, _setPrototypeOf.default)(Wrapper, Class);
   };

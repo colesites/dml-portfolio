@@ -1,99 +1,91 @@
-import { checkGlobals } from './utils/internal/checkGlobals'
+import { checkGlobals } from "./utils/internal/checkGlobals";
 
-export { SetupApi } from './SetupApi'
-
+export { getResponse } from "./getResponse";
+export { graphql } from "./graphql";
+export { GraphQLHandler } from "./handlers/GraphQLHandler";
+export { HttpHandler, HttpMethods } from "./handlers/HttpHandler";
 /* HTTP handlers */
-export { RequestHandler } from './handlers/RequestHandler'
-export { http } from './http'
-export { HttpHandler, HttpMethods } from './handlers/HttpHandler'
-export { graphql } from './graphql'
-export { GraphQLHandler } from './handlers/GraphQLHandler'
-
-/* WebSocket handler */
-export { ws, type WebSocketLink } from './ws'
+export { RequestHandler } from "./handlers/RequestHandler";
 export {
   WebSocketHandler,
-  type WebSocketHandlerEventMap,
   type WebSocketHandlerConnection,
-} from './handlers/WebSocketHandler'
+  type WebSocketHandlerEventMap,
+} from "./handlers/WebSocketHandler";
+export { http } from "./http";
+export { SetupApi } from "./SetupApi";
 
 /* Server-Sent Events */
 export {
-  sse,
+  type ServerSentEventMessage,
   type ServerSentEventRequestHandler,
   type ServerSentEventResolver,
   type ServerSentEventResolverExtras,
-  type ServerSentEventMessage,
-} from './sse'
-
+  sse,
+} from "./sse";
+export * from "./utils/handleRequest";
 /* Utils */
-export { matchRequestUrl } from './utils/matching/matchRequestUrl'
-export * from './utils/handleRequest'
+export { matchRequestUrl } from "./utils/matching/matchRequestUrl";
 export {
   onUnhandledRequest,
-  type UnhandledRequestStrategy,
   type UnhandledRequestCallback,
-} from './utils/request/onUnhandledRequest'
-export { getResponse } from './getResponse'
-export { cleanUrl } from './utils/url/cleanUrl'
+  type UnhandledRequestStrategy,
+} from "./utils/request/onUnhandledRequest";
+export { cleanUrl } from "./utils/url/cleanUrl";
+/* WebSocket handler */
+export { type WebSocketLink, ws } from "./ws";
 
 /**
  * Type definitions.
  */
 
-export type { SharedOptions, LifeCycleEventsMap } from './sharedOptions'
+export { bypass } from "./bypass";
+export * from "./delay";
+export type {
+  GraphQLLinkHandlers,
+  GraphQLOperationHandler,
+  GraphQLRequestHandler,
+  GraphQLResponseResolver,
+} from "./graphql";
+export * from "./HttpResponse";
 
 export type {
-  ResponseResolver,
-  ResponseResolverReturnType,
+  GraphQLCustomPredicate,
+  GraphQLJsonRequestBody,
+  GraphQLOperationType,
+  GraphQLQuery,
+  GraphQLRequestBody,
+  GraphQLResponseBody,
+  GraphQLVariables,
+} from "./handlers/GraphQLHandler";
+export type {
+  HttpCustomPredicate,
+  HttpHandlerInfo,
+  HttpHandlerMethod,
+  HttpRequestParsedResult,
+  HttpRequestResolverExtras,
+  RequestQuery,
+} from "./handlers/HttpHandler";
+export type {
   AsyncResponseResolverReturnType,
-  RequestHandlerOptions,
   DefaultBodyType,
   DefaultRequestMultipartBody,
   JsonBodyType,
+  RequestHandlerOptions,
+  ResponseResolver,
   ResponseResolverInfo,
-} from './handlers/RequestHandler'
-
-export type {
-  RequestQuery,
-  HttpRequestParsedResult,
-  HttpHandlerInfo,
-  HttpRequestResolverExtras,
-  HttpHandlerMethod,
-  HttpCustomPredicate,
-} from './handlers/HttpHandler'
-export type { HttpRequestHandler, HttpResponseResolver } from './http'
-
-export type {
-  GraphQLQuery,
-  GraphQLVariables,
-  GraphQLRequestBody,
-  GraphQLResponseBody,
-  GraphQLJsonRequestBody,
-  GraphQLOperationType,
-  GraphQLCustomPredicate,
-} from './handlers/GraphQLHandler'
-export type {
-  GraphQLRequestHandler,
-  GraphQLOperationHandler,
-  GraphQLResponseResolver,
-  GraphQLLinkHandlers,
-} from './graphql'
-
-export type { WebSocketData, WebSocketEventListener } from './ws'
-
-export type { Path, PathParams, Match } from './utils/matching/matchRequestUrl'
-export type { ParsedGraphQLRequest } from './utils/internal/parseGraphQLRequest'
-export type { ResponseResolutionContext } from './utils/executeHandlers'
-
-export * from './HttpResponse'
-export * from './delay'
-export { bypass } from './bypass'
-export { passthrough } from './passthrough'
-export { isCommonAssetRequest } from './isCommonAssetRequest'
+  ResponseResolverReturnType,
+} from "./handlers/RequestHandler";
+export type { HttpRequestHandler, HttpResponseResolver } from "./http";
+export { isCommonAssetRequest } from "./isCommonAssetRequest";
+export { passthrough } from "./passthrough";
+export type { LifeCycleEventsMap, SharedOptions } from "./sharedOptions";
+export type { ResponseResolutionContext } from "./utils/executeHandlers";
+export type { ParsedGraphQLRequest } from "./utils/internal/parseGraphQLRequest";
+export type { Match, Path, PathParams } from "./utils/matching/matchRequestUrl";
+export type { WebSocketData, WebSocketEventListener } from "./ws";
 
 // Validate environmental globals before executing any code.
 // This ensures that the library gives user-friendly errors
 // when ran in the environments that require additional polyfills
 // from the end user.
-checkGlobals()
+checkGlobals();

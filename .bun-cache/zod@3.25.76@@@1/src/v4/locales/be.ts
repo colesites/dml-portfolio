@@ -2,7 +2,12 @@ import type { $ZodStringFormats } from "../core/checks.js";
 import type * as errors from "../core/errors.js";
 import * as util from "../core/util.js";
 
-function getBelarusianPlural(count: number, one: string, few: string, many: string): string {
+function getBelarusianPlural(
+  count: number,
+  one: string,
+  few: string,
+  many: string,
+): string {
   const absCount = Math.abs(count);
   const lastDigit = absCount % 10;
   const lastTwoDigits = absCount % 100;
@@ -85,7 +90,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -131,14 +139,20 @@ const error: () => errors.$ZodErrorMap = () => {
       case "invalid_type":
         return `Няправільны ўвод: чакаўся ${issue.expected}, атрымана ${parsedType(issue.input)}`;
       case "invalid_value":
-        if (issue.values.length === 1) return `Няправільны ўвод: чакалася ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `Няправільны ўвод: чакалася ${util.stringifyPrimitive(issue.values[0])}`;
         return `Няправільны варыянт: чакаўся адзін з ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
         const sizing = getSizing(issue.origin);
         if (sizing) {
           const maxValue = Number(issue.maximum);
-          const unit = getBelarusianPlural(maxValue, sizing.unit.one, sizing.unit.few, sizing.unit.many);
+          const unit = getBelarusianPlural(
+            maxValue,
+            sizing.unit.one,
+            sizing.unit.few,
+            sizing.unit.many,
+          );
           return `Занадта вялікі: чакалася, што ${issue.origin ?? "значэнне"} павінна ${sizing.verb} ${adj}${issue.maximum.toString()} ${unit}`;
         }
         return `Занадта вялікі: чакалася, што ${issue.origin ?? "значэнне"} павінна быць ${adj}${issue.maximum.toString()}`;
@@ -148,17 +162,26 @@ const error: () => errors.$ZodErrorMap = () => {
         const sizing = getSizing(issue.origin);
         if (sizing) {
           const minValue = Number(issue.minimum);
-          const unit = getBelarusianPlural(minValue, sizing.unit.one, sizing.unit.few, sizing.unit.many);
+          const unit = getBelarusianPlural(
+            minValue,
+            sizing.unit.one,
+            sizing.unit.few,
+            sizing.unit.many,
+          );
           return `Занадта малы: чакалася, што ${issue.origin} павінна ${sizing.verb} ${adj}${issue.minimum.toString()} ${unit}`;
         }
         return `Занадта малы: чакалася, што ${issue.origin} павінна быць ${adj}${issue.minimum.toString()}`;
       }
       case "invalid_format": {
         const _issue = issue as errors.$ZodStringFormatIssues;
-        if (_issue.format === "starts_with") return `Няправільны радок: павінен пачынацца з "${_issue.prefix}"`;
-        if (_issue.format === "ends_with") return `Няправільны радок: павінен заканчвацца на "${_issue.suffix}"`;
-        if (_issue.format === "includes") return `Няправільны радок: павінен змяшчаць "${_issue.includes}"`;
-        if (_issue.format === "regex") return `Няправільны радок: павінен адпавядаць шаблону ${_issue.pattern}`;
+        if (_issue.format === "starts_with")
+          return `Няправільны радок: павінен пачынацца з "${_issue.prefix}"`;
+        if (_issue.format === "ends_with")
+          return `Няправільны радок: павінен заканчвацца на "${_issue.suffix}"`;
+        if (_issue.format === "includes")
+          return `Няправільны радок: павінен змяшчаць "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `Няправільны радок: павінен адпавядаць шаблону ${_issue.pattern}`;
         return `Няправільны ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

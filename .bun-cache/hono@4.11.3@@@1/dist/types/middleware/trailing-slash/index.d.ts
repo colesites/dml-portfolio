@@ -2,7 +2,7 @@
  * @module
  * Trailing Slash Middleware for Hono.
  */
-import type { MiddlewareHandler } from '../../types';
+import type { MiddlewareHandler } from "../../types";
 /**
  * Trailing Slash Middleware for Hono.
  *

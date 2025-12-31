@@ -1,9 +1,14 @@
 // src/hono-base.ts
 import { compose } from "./compose.js";
 import { Context } from "./context.js";
-import { METHODS, METHOD_NAME_ALL, METHOD_NAME_ALL_LOWERCASE } from "./router.js";
+import {
+  METHOD_NAME_ALL,
+  METHOD_NAME_ALL_LOWERCASE,
+  METHODS,
+} from "./router.js";
 import { COMPOSED_HANDLER } from "./utils/constants.js";
 import { getPath, getPathNoStrict, mergePath } from "./utils/url.js";
+
 var notFoundHandler = (c) => {
   return c.text("404 Not Found", 404);
 };
@@ -75,12 +80,13 @@ var Hono = class _Hono {
     };
     const { strict, ...optionsWithoutStrict } = options;
     Object.assign(this, optionsWithoutStrict);
-    this.getPath = strict ?? true ? options.getPath ?? getPath : getPathNoStrict;
+    this.getPath =
+      (strict ?? true) ? (options.getPath ?? getPath) : getPathNoStrict;
   }
   #clone() {
     const clone = new _Hono({
       router: this.router,
-      getPath: this.getPath
+      getPath: this.getPath,
     });
     clone.errorHandler = this.errorHandler;
     clone.#notFoundHandler = this.#notFoundHandler;
@@ -115,7 +121,9 @@ var Hono = class _Hono {
       if (app.errorHandler === errorHandler) {
         handler = r.handler;
       } else {
-        handler = async (c, next) => (await compose([], app.errorHandler)(c, () => r.handler(c, next))).res;
+        handler = async (c, next) =>
+          (await compose([], app.errorHandler)(c, () => r.handler(c, next)))
+            .res;
         handler[COMPOSED_HANDLER] = r.handler;
       }
       subApp.#addRoute(r.method, r.path, handler);
@@ -226,17 +234,18 @@ var Hono = class _Hono {
         }
       }
     }
-    const getOptions = optionHandler ? (c) => {
-      const options2 = optionHandler(c);
-      return Array.isArray(options2) ? options2 : [options2];
-    } : (c) => {
-      let executionContext = void 0;
-      try {
-        executionContext = c.executionCtx;
-      } catch {
-      }
-      return [c.env, executionContext];
-    };
+    const getOptions = optionHandler
+      ? (c) => {
+          const options2 = optionHandler(c);
+          return Array.isArray(options2) ? options2 : [options2];
+        }
+      : (c) => {
+          let executionContext = void 0;
+          try {
+            executionContext = c.executionCtx;
+          } catch {}
+          return [c.env, executionContext];
+        };
     replaceRequest ||= (() => {
       const mergedPath = mergePath(this._basePath, path);
       const pathPrefixLength = mergedPath === "/" ? 0 : mergedPath.length;
@@ -247,7 +256,10 @@ var Hono = class _Hono {
       };
     })();
     const handler = async (c, next) => {
-      const res = await applicationHandler(replaceRequest(c.req.raw), ...getOptions(c));
+      const res = await applicationHandler(
+        replaceRequest(c.req.raw),
+        ...getOptions(c),
+      );
       if (res) {
         return res;
       }
@@ -271,7 +283,11 @@ var Hono = class _Hono {
   }
   #dispatch(request, executionCtx, env, method) {
     if (method === "HEAD") {
-      return (async () => new Response(null, await this.#dispatch(request, executionCtx, env, "GET")))();
+      return (async () =>
+        new Response(
+          null,
+          await this.#dispatch(request, executionCtx, env, "GET"),
+        ))();
     }
     const path = this.getPath(request, { env });
     const matchResult = this.router.match(method, path);
@@ -280,7 +296,7 @@ var Hono = class _Hono {
       matchResult,
       env,
       executionCtx,
-      notFoundHandler: this.#notFoundHandler
+      notFoundHandler: this.#notFoundHandler,
     });
     if (matchResult[0].length === 1) {
       let res;
@@ -291,17 +307,26 @@ var Hono = class _Hono {
       } catch (err) {
         return this.#handleError(err, c);
       }
-      return res instanceof Promise ? res.then(
-        (resolved) => resolved || (c.finalized ? c.res : this.#notFoundHandler(c))
-      ).catch((err) => this.#handleError(err, c)) : res ?? this.#notFoundHandler(c);
+      return res instanceof Promise
+        ? res
+            .then(
+              (resolved) =>
+                resolved || (c.finalized ? c.res : this.#notFoundHandler(c)),
+            )
+            .catch((err) => this.#handleError(err, c))
+        : (res ?? this.#notFoundHandler(c));
     }
-    const composed = compose(matchResult[0], this.errorHandler, this.#notFoundHandler);
+    const composed = compose(
+      matchResult[0],
+      this.errorHandler,
+      this.#notFoundHandler,
+    );
     return (async () => {
       try {
         const context = await composed(c);
         if (!context.finalized) {
           throw new Error(
-            "Context is not finalized. Did you forget to return a Response object or `await next()`?"
+            "Context is not finalized. Did you forget to return a Response object or `await next()`?",
           );
         }
         return context.res;
@@ -338,16 +363,22 @@ var Hono = class _Hono {
    */
   request = (input, requestInit, Env, executionCtx) => {
     if (input instanceof Request) {
-      return this.fetch(requestInit ? new Request(input, requestInit) : input, Env, executionCtx);
+      return this.fetch(
+        requestInit ? new Request(input, requestInit) : input,
+        Env,
+        executionCtx,
+      );
     }
     input = input.toString();
     return this.fetch(
       new Request(
-        /^https?:\/\//.test(input) ? input : `http://localhost${mergePath("/", input)}`,
-        requestInit
+        /^https?:\/\//.test(input)
+          ? input
+          : `http://localhost${mergePath("/", input)}`,
+        requestInit,
       ),
       Env,
-      executionCtx
+      executionCtx,
     );
   };
   /**
@@ -369,10 +400,10 @@ var Hono = class _Hono {
    */
   fire = () => {
     addEventListener("fetch", (event) => {
-      event.respondWith(this.#dispatch(event.request, event, void 0, event.request.method));
+      event.respondWith(
+        this.#dispatch(event.request, event, void 0, event.request.method),
+      );
     });
   };
 };
-export {
-  Hono as HonoBase
-};
+export { Hono as HonoBase };

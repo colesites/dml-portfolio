@@ -6,17 +6,17 @@
  * @module
  */
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
-import { sha256 } from '@noble/hashes/sha2.js';
-import { randomBytes } from '@noble/hashes/utils.js';
-import { createCurve, type CurveFnWithCreate } from './_shortw_utils.ts';
-import type { CurveLengths } from './abstract/curve.ts';
+import { sha256 } from "@noble/hashes/sha2.js";
+import { randomBytes } from "@noble/hashes/utils.js";
+import { type CurveFnWithCreate, createCurve } from "./_shortw_utils.ts";
+import type { CurveLengths } from "./abstract/curve.ts";
 import {
   createHasher,
   type H2CHasher,
   type H2CMethod,
   isogenyMap,
-} from './abstract/hash-to-curve.ts';
-import { Field, mapHashToField, mod, pow2 } from './abstract/modular.ts';
+} from "./abstract/hash-to-curve.ts";
+import { Field, mapHashToField, mod, pow2 } from "./abstract/modular.ts";
 import {
   _normFnElement,
   type EndomorphismOpts,
@@ -24,8 +24,8 @@ import {
   type WeierstrassPoint as PointType,
   type WeierstrassOpts,
   type WeierstrassPointCons,
-} from './abstract/weierstrass.ts';
-import type { Hex, PrivKey } from './utils.ts';
+} from "./abstract/weierstrass.ts";
+import type { Hex, PrivKey } from "./utils.ts";
 import {
   bytesToNumberBE,
   concatBytes,
@@ -33,26 +33,42 @@ import {
   inRange,
   numberToBytesBE,
   utf8ToBytes,
-} from './utils.ts';
+} from "./utils.ts";
 
 // Seems like generator was produced from some seed:
 // `Point.BASE.multiply(Point.Fn.inv(2n, N)).toAffine().x`
 // // gives short x 0x3b78ce563f89a0ed9414f5aa28ad0d96d6795f9c63n
 const secp256k1_CURVE: WeierstrassOpts<bigint> = {
-  p: BigInt('0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f'),
-  n: BigInt('0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'),
+  p: BigInt(
+    "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f",
+  ),
+  n: BigInt(
+    "0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141",
+  ),
   h: BigInt(1),
   a: BigInt(0),
   b: BigInt(7),
-  Gx: BigInt('0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798'),
-  Gy: BigInt('0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8'),
+  Gx: BigInt(
+    "0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+  ),
+  Gy: BigInt(
+    "0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8",
+  ),
 };
 
 const secp256k1_ENDO: EndomorphismOpts = {
-  beta: BigInt('0x7ae96a2b657c07106e64479eac3434e99cf0497512f58995c1396c28719501ee'),
+  beta: BigInt(
+    "0x7ae96a2b657c07106e64479eac3434e99cf0497512f58995c1396c28719501ee",
+  ),
   basises: [
-    [BigInt('0x3086d221a7d46bcde86c90e49284eb15'), -BigInt('0xe4437ed6010e88286f547fa90abfe4c3')],
-    [BigInt('0x114ca50f7a8e2f3f657c1108d9d44cfd8'), BigInt('0x3086d221a7d46bcde86c90e49284eb15')],
+    [
+      BigInt("0x3086d221a7d46bcde86c90e49284eb15"),
+      -BigInt("0xe4437ed6010e88286f547fa90abfe4c3"),
+    ],
+    [
+      BigInt("0x114ca50f7a8e2f3f657c1108d9d44cfd8"),
+      BigInt("0x3086d221a7d46bcde86c90e49284eb15"),
+    ],
   ],
 };
 
@@ -67,9 +83,14 @@ const _2n = /* @__PURE__ */ BigInt(2);
 function sqrtMod(y: bigint): bigint {
   const P = secp256k1_CURVE.p;
   // prettier-ignore
-  const _3n = BigInt(3), _6n = BigInt(6), _11n = BigInt(11), _22n = BigInt(22);
+  const _3n = BigInt(3),
+    _6n = BigInt(6),
+    _11n = BigInt(11),
+    _22n = BigInt(22);
   // prettier-ignore
-  const _23n = BigInt(23), _44n = BigInt(44), _88n = BigInt(88);
+  const _23n = BigInt(23),
+    _44n = BigInt(44),
+    _88n = BigInt(88);
   const b2 = (y * y * y) % P; // x^3, 11
   const b3 = (b2 * b2 * y) % P; // x^7
   const b6 = (pow2(b3, _3n, P) * b3) % P;
@@ -84,7 +105,7 @@ function sqrtMod(y: bigint): bigint {
   const t1 = (pow2(b223, _23n, P) * b22) % P;
   const t2 = (pow2(t1, _6n, P) * b2) % P;
   const root = pow2(t2, _2n, P);
-  if (!Fpk1.eql(Fpk1.sqr(root), y)) throw new Error('Cannot find square root');
+  if (!Fpk1.eql(Fpk1.sqr(root), y)) throw new Error("Cannot find square root");
   return root;
 }
 
@@ -106,7 +127,7 @@ const Fpk1 = Field(secp256k1_CURVE.p, { sqrt: sqrtMod });
  */
 export const secp256k1: CurveFnWithCreate = createCurve(
   { ...secp256k1_CURVE, Fp: Fpk1, lowS: true, endo: secp256k1_ENDO },
-  sha256
+  sha256,
 );
 
 // Schnorr signatures are superior to ECDSA from above. Below is Schnorr-specific BIP0340 code.
@@ -142,7 +163,7 @@ function schnorrGetExtPubKey(priv: PrivKey) {
  */
 function lift_x(x: bigint): PointType<bigint> {
   const Fp = Fpk1;
-  if (!Fp.isValidNot0(x)) throw new Error('invalid x: Fail if x ≥ p');
+  if (!Fp.isValidNot0(x)) throw new Error("invalid x: Fail if x ≥ p");
   const xx = Fp.create(x * x);
   const c = Fp.create(xx * x + BigInt(7)); // Let c = x³ + 7 mod p.
   let y = Fp.sqrt(c); // Let y = c^(p+1)/4 mod p. Same as sqrt().
@@ -158,7 +179,7 @@ const num = bytesToNumberBE;
  * Create tagged hash, convert it to bigint, reduce modulo-n.
  */
 function challenge(...args: Uint8Array[]): bigint {
-  return Pointk1.Fn.create(num(taggedHash('BIP0340/challenge', ...args)));
+  return Pointk1.Fn.create(num(taggedHash("BIP0340/challenge", ...args)));
 }
 
 /**
@@ -172,13 +193,17 @@ function schnorrGetPublicKey(secretKey: Hex): Uint8Array {
  * Creates Schnorr signature as per BIP340. Verifies itself before returning anything.
  * auxRand is optional and is not the sole source of k generation: bad CSPRNG won't be dangerous.
  */
-function schnorrSign(message: Hex, secretKey: PrivKey, auxRand: Hex = randomBytes(32)): Uint8Array {
+function schnorrSign(
+  message: Hex,
+  secretKey: PrivKey,
+  auxRand: Hex = randomBytes(32),
+): Uint8Array {
   const { Fn } = Pointk1;
-  const m = ensureBytes('message', message);
+  const m = ensureBytes("message", message);
   const { bytes: px, scalar: d } = schnorrGetExtPubKey(secretKey); // checks for isWithinCurveOrder
-  const a = ensureBytes('auxRand', auxRand, 32); // Auxiliary random data a: a 32-byte array
-  const t = Fn.toBytes(d ^ num(taggedHash('BIP0340/aux', a))); // Let t be the byte-wise xor of bytes(d) and hash/aux(a)
-  const rand = taggedHash('BIP0340/nonce', t, px, m); // Let rand = hash/nonce(t || bytes(P) || m)
+  const a = ensureBytes("auxRand", auxRand, 32); // Auxiliary random data a: a 32-byte array
+  const t = Fn.toBytes(d ^ num(taggedHash("BIP0340/aux", a))); // Let t be the byte-wise xor of bytes(d) and hash/aux(a)
+  const rand = taggedHash("BIP0340/nonce", t, px, m); // Let rand = hash/nonce(t || bytes(P) || m)
   // Let k' = int(rand) mod n. Fail if k' = 0. Let R = k'⋅G
   const { bytes: rx, scalar: k } = schnorrGetExtPubKey(rand);
   const e = challenge(rx, px, m); // Let e = int(hash/challenge(bytes(R) || bytes(P) || m)) mod n.
@@ -186,7 +211,8 @@ function schnorrSign(message: Hex, secretKey: PrivKey, auxRand: Hex = randomByte
   sig.set(rx, 0);
   sig.set(Fn.toBytes(Fn.create(k + e * d)), 32);
   // If Verify(bytes(P), m, sig) (see below) returns failure, abort
-  if (!schnorrVerify(sig, m, px)) throw new Error('sign: Invalid signature produced');
+  if (!schnorrVerify(sig, m, px))
+    throw new Error("sign: Invalid signature produced");
   return sig;
 }
 
@@ -196,9 +222,9 @@ function schnorrSign(message: Hex, secretKey: PrivKey, auxRand: Hex = randomByte
  */
 function schnorrVerify(signature: Hex, message: Hex, publicKey: Hex): boolean {
   const { Fn, BASE } = Pointk1;
-  const sig = ensureBytes('signature', signature, 64);
-  const m = ensureBytes('message', message);
-  const pub = ensureBytes('publicKey', publicKey, 32);
+  const sig = ensureBytes("signature", signature, 64);
+  const m = ensureBytes("message", message);
+  const pub = ensureBytes("publicKey", publicKey, 32);
   try {
     const P = lift_x(num(pub)); // P = lift_x(int(pk)); fail if that fails
     const r = num(sig.subarray(0, 32)); // Let r = int(sig[0:32]); fail if r ≥ p.
@@ -219,7 +245,10 @@ function schnorrVerify(signature: Hex, message: Hex, publicKey: Hex): boolean {
 }
 
 export type SecpSchnorr = {
-  keygen: (seed?: Uint8Array) => { secretKey: Uint8Array; publicKey: Uint8Array };
+  keygen: (seed?: Uint8Array) => {
+    secretKey: Uint8Array;
+    publicKey: Uint8Array;
+  };
   getPublicKey: typeof schnorrGetPublicKey;
   sign: typeof schnorrSign;
   verify: typeof schnorrVerify;
@@ -300,38 +329,45 @@ const isoMap = /* @__PURE__ */ (() =>
     [
       // xNum
       [
-        '0x8e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38daaaaa8c7',
-        '0x7d3d4c80bc321d5b9f315cea7fd44c5d595d2fc0bf63b92dfff1044f17c6581',
-        '0x534c328d23f234e6e2a413deca25caece4506144037c40314ecbd0b53d9dd262',
-        '0x8e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38daaaaa88c',
+        "0x8e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38daaaaa8c7",
+        "0x7d3d4c80bc321d5b9f315cea7fd44c5d595d2fc0bf63b92dfff1044f17c6581",
+        "0x534c328d23f234e6e2a413deca25caece4506144037c40314ecbd0b53d9dd262",
+        "0x8e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38daaaaa88c",
       ],
       // xDen
       [
-        '0xd35771193d94918a9ca34ccbb7b640dd86cd409542f8487d9fe6b745781eb49b',
-        '0xedadc6f64383dc1df7c4b2d51b54225406d36b641f5e41bbc52a56612a8c6d14',
-        '0x0000000000000000000000000000000000000000000000000000000000000001', // LAST 1
+        "0xd35771193d94918a9ca34ccbb7b640dd86cd409542f8487d9fe6b745781eb49b",
+        "0xedadc6f64383dc1df7c4b2d51b54225406d36b641f5e41bbc52a56612a8c6d14",
+        "0x0000000000000000000000000000000000000000000000000000000000000001", // LAST 1
       ],
       // yNum
       [
-        '0x4bda12f684bda12f684bda12f684bda12f684bda12f684bda12f684b8e38e23c',
-        '0xc75e0c32d5cb7c0fa9d0a54b12a0a6d5647ab046d686da6fdffc90fc201d71a3',
-        '0x29a6194691f91a73715209ef6512e576722830a201be2018a765e85a9ecee931',
-        '0x2f684bda12f684bda12f684bda12f684bda12f684bda12f684bda12f38e38d84',
+        "0x4bda12f684bda12f684bda12f684bda12f684bda12f684bda12f684b8e38e23c",
+        "0xc75e0c32d5cb7c0fa9d0a54b12a0a6d5647ab046d686da6fdffc90fc201d71a3",
+        "0x29a6194691f91a73715209ef6512e576722830a201be2018a765e85a9ecee931",
+        "0x2f684bda12f684bda12f684bda12f684bda12f684bda12f684bda12f38e38d84",
       ],
       // yDen
       [
-        '0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffff93b',
-        '0x7a06534bb8bdb49fd5e9e6632722c2989467c1bfc8e8d978dfb425d2685c2573',
-        '0x6484aa716545ca2cf3a70c3fa8fe337e0a3d21162f0d6299a7bf8192bfd2a76f',
-        '0x0000000000000000000000000000000000000000000000000000000000000001', // LAST 1
+        "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffff93b",
+        "0x7a06534bb8bdb49fd5e9e6632722c2989467c1bfc8e8d978dfb425d2685c2573",
+        "0x6484aa716545ca2cf3a70c3fa8fe337e0a3d21162f0d6299a7bf8192bfd2a76f",
+        "0x0000000000000000000000000000000000000000000000000000000000000001", // LAST 1
       ],
-    ].map((i) => i.map((j) => BigInt(j))) as [bigint[], bigint[], bigint[], bigint[]]
+    ].map((i) => i.map((j) => BigInt(j))) as [
+      bigint[],
+      bigint[],
+      bigint[],
+      bigint[],
+    ],
   ))();
 const mapSWU = /* @__PURE__ */ (() =>
   mapToCurveSimpleSWU(Fpk1, {
-    A: BigInt('0x3f8731abdd661adca08a5558f0f5d272e953d363cb6f0e5d405447c01a444533'),
-    B: BigInt('1771'),
-    Z: Fpk1.create(BigInt('-11')),
+    A: BigInt(
+      "0x3f8731abdd661adca08a5558f0f5d272e953d363cb6f0e5d405447c01a444533",
+    ),
+    B: BigInt("1771"),
+    Z: Fpk1.create(BigInt("-11")),
   }))();
 
 /** Hashing / encoding to secp256k1 points / field. RFC 9380 methods. */
@@ -343,14 +379,14 @@ export const secp256k1_hasher: H2CHasher<bigint> = /* @__PURE__ */ (() =>
       return isoMap(x, y);
     },
     {
-      DST: 'secp256k1_XMD:SHA-256_SSWU_RO_',
-      encodeDST: 'secp256k1_XMD:SHA-256_SSWU_NU_',
+      DST: "secp256k1_XMD:SHA-256_SSWU_RO_",
+      encodeDST: "secp256k1_XMD:SHA-256_SSWU_NU_",
       p: Fpk1.ORDER,
       m: 1,
       k: 128,
-      expand: 'xmd',
+      expand: "xmd",
       hash: sha256,
-    }
+    },
   ))();
 
 /** @deprecated use `import { secp256k1_hasher } from '@noble/curves/secp256k1.js';` */

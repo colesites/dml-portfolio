@@ -1,8 +1,8 @@
-import { didYouMean } from '../../jsutils/didYouMean.mjs';
-import { suggestionList } from '../../jsutils/suggestionList.mjs';
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
-import { specifiedDirectives } from '../../type/directives.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { didYouMean } from "../../jsutils/didYouMean.mjs";
+import { suggestionList } from "../../jsutils/suggestionList.mjs";
+import { Kind } from "../../language/kinds.mjs";
+import { specifiedDirectives } from "../../type/directives.mjs";
 
 /**
  * Known argument names

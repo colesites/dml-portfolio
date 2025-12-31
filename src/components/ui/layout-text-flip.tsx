@@ -16,7 +16,7 @@ export const LayoutTextFlip = ({
 }) => {
   const safeWords = useMemo(
     () => (words && words.length > 0 ? words : ["Full-Stack SaaS Apps"]),
-    [words]
+    [words],
   );
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -69,7 +69,7 @@ export const LayoutTextFlip = ({
             exit={{ y: 50, filter: "blur(10px)", opacity: 0 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
             className={cn(
-              "inline-block whitespace-nowrap font-semibold text-primary"
+              "inline-block whitespace-nowrap font-semibold text-primary",
             )}
           >
             {firstWord}

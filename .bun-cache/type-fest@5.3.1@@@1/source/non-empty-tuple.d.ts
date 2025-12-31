@@ -20,5 +20,3 @@ sum();
 @category Array
 */
 export type NonEmptyTuple<T = unknown> = readonly [T, ...T[]];
-
-export {};

@@ -1,4 +1,4 @@
-import tty from 'node:tty';
+import tty from "node:tty";
 
 // eslint-disable-next-line no-warning-comments
 // TODO: Use a better method when it's added to Node.js (https://github.com/nodejs/node/pull/40240)
@@ -6,45 +6,45 @@ import tty from 'node:tty';
 const hasColors = tty?.WriteStream?.prototype?.hasColors?.() ?? false;
 
 const format = (open, close) => {
-	if (!hasColors) {
-		return input => input;
-	}
+  if (!hasColors) {
+    return (input) => input;
+  }
 
-	const openCode = `\u001B[${open}m`;
-	const closeCode = `\u001B[${close}m`;
+  const openCode = `\u001B[${open}m`;
+  const closeCode = `\u001B[${close}m`;
 
-	return input => {
-		const string = input + ''; // eslint-disable-line no-implicit-coercion -- This is faster.
-		let index = string.indexOf(closeCode);
+  return (input) => {
+    const string = input + ""; // eslint-disable-line no-implicit-coercion -- This is faster.
+    let index = string.indexOf(closeCode);
 
-		if (index === -1) {
-			// Note: Intentionally not using string interpolation for performance reasons.
-			return openCode + string + closeCode;
-		}
+    if (index === -1) {
+      // Note: Intentionally not using string interpolation for performance reasons.
+      return openCode + string + closeCode;
+    }
 
-		// Handle nested colors.
+    // Handle nested colors.
 
-		// We could have done this, but it's too slow (as of Node.js 22).
-		// return openCode + string.replaceAll(closeCode, (close === 22 ? closeCode : '') + openCode) + closeCode;
+    // We could have done this, but it's too slow (as of Node.js 22).
+    // return openCode + string.replaceAll(closeCode, (close === 22 ? closeCode : '') + openCode) + closeCode;
 
-		let result = openCode;
-		let lastIndex = 0;
+    let result = openCode;
+    let lastIndex = 0;
 
-		// SGR 22 resets both bold (1) and dim (2). When we encounter a nested
-		// close for styles that use 22, we need to re-open the outer style.
-		const reopenOnNestedClose = close === 22;
-		const replaceCode = (reopenOnNestedClose ? closeCode : '') + openCode;
+    // SGR 22 resets both bold (1) and dim (2). When we encounter a nested
+    // close for styles that use 22, we need to re-open the outer style.
+    const reopenOnNestedClose = close === 22;
+    const replaceCode = (reopenOnNestedClose ? closeCode : "") + openCode;
 
-		while (index !== -1) {
-			result += string.slice(lastIndex, index) + replaceCode;
-			lastIndex = index + closeCode.length;
-			index = string.indexOf(closeCode, lastIndex);
-		}
+    while (index !== -1) {
+      result += string.slice(lastIndex, index) + replaceCode;
+      lastIndex = index + closeCode.length;
+      index = string.indexOf(closeCode, lastIndex);
+    }
 
-		result += string.slice(lastIndex) + closeCode;
+    result += string.slice(lastIndex) + closeCode;
 
-		return result;
-	};
+    return result;
+  };
 };
 
 export const reset = format(0, 0);

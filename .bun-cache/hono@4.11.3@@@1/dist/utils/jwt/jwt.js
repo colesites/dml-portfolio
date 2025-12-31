@@ -12,16 +12,26 @@ import {
   JwtTokenIssuedAt,
   JwtTokenIssuer,
   JwtTokenNotBefore,
-  JwtTokenSignatureMismatched
+  JwtTokenSignatureMismatched,
 } from "./types.js";
 import { utf8Decoder, utf8Encoder } from "./utf8.js";
-var encodeJwtPart = (part) => encodeBase64Url(utf8Encoder.encode(JSON.stringify(part)).buffer).replace(/=/g, "");
+
+var encodeJwtPart = (part) =>
+  encodeBase64Url(utf8Encoder.encode(JSON.stringify(part)).buffer).replace(
+    /=/g,
+    "",
+  );
 var encodeSignaturePart = (buf) => encodeBase64Url(buf).replace(/=/g, "");
-var decodeJwtPart = (part) => JSON.parse(utf8Decoder.decode(decodeBase64Url(part)));
+var decodeJwtPart = (part) =>
+  JSON.parse(utf8Decoder.decode(decodeBase64Url(part)));
 function isTokenHeader(obj) {
   if (typeof obj === "object" && obj !== null) {
     const objWithAlg = obj;
-    return "alg" in objWithAlg && Object.values(AlgorithmTypes).includes(objWithAlg.alg) && (!("typ" in objWithAlg) || objWithAlg.typ === "JWT");
+    return (
+      "alg" in objWithAlg &&
+      Object.values(AlgorithmTypes).includes(objWithAlg.alg) &&
+      (!("typ" in objWithAlg) || objWithAlg.typ === "JWT")
+    );
   }
   return false;
 }
@@ -35,7 +45,11 @@ var sign = async (payload, privateKey, alg = "HS256") => {
     encodedHeader = encodeJwtPart({ alg, typ: "JWT" });
   }
   const partialToken = `${encodedHeader}.${encodedPayload}`;
-  const signaturePart = await signing(privateKey, alg, utf8Encoder.encode(partialToken));
+  const signaturePart = await signing(
+    privateKey,
+    alg,
+    utf8Encoder.encode(partialToken),
+  );
   const signature = encodeSignaturePart(signaturePart);
   return `${partialToken}.${signature}`;
 };
@@ -46,8 +60,10 @@ var verify = async (token, publicKey, algOrOptions) => {
     nbf = true,
     exp = true,
     iat = true,
-    aud
-  } = typeof algOrOptions === "string" ? { alg: algOrOptions } : algOrOptions || {};
+    aud,
+  } = typeof algOrOptions === "string"
+    ? { alg: algOrOptions }
+    : algOrOptions || {};
   const tokenParts = token.split(".");
   if (tokenParts.length !== 3) {
     throw new JwtTokenInvalid(token);
@@ -56,7 +72,7 @@ var verify = async (token, publicKey, algOrOptions) => {
   if (!isTokenHeader(header)) {
     throw new JwtHeaderInvalid(header);
   }
-  const now = Date.now() / 1e3 | 0;
+  const now = (Date.now() / 1e3) | 0;
   if (nbf && payload.nbf && payload.nbf > now) {
     throw new JwtTokenNotBefore(token);
   }
@@ -82,8 +98,12 @@ var verify = async (token, publicKey, algOrOptions) => {
       throw new JwtPayloadRequiresAud(payload);
     }
     const audiences = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-    const matched = audiences.some(
-      (payloadAud) => aud instanceof RegExp ? aud.test(payloadAud) : typeof aud === "string" ? payloadAud === aud : Array.isArray(aud) && aud.includes(payloadAud)
+    const matched = audiences.some((payloadAud) =>
+      aud instanceof RegExp
+        ? aud.test(payloadAud)
+        : typeof aud === "string"
+          ? payloadAud === aud
+          : Array.isArray(aud) && aud.includes(payloadAud),
     );
     if (!matched) {
       throw new JwtTokenAudience(aud, payload.aud);
@@ -94,7 +114,7 @@ var verify = async (token, publicKey, algOrOptions) => {
     publicKey,
     alg,
     decodeBase64Url(tokenParts[2]),
-    utf8Encoder.encode(headerPayload)
+    utf8Encoder.encode(headerPayload),
   );
   if (!verified) {
     throw new JwtTokenSignatureMismatched(token);
@@ -128,7 +148,9 @@ var verifyWithJwks = async (token, options, init) => {
       options.keys = data.keys;
     }
   } else if (!options.keys) {
-    throw new Error('verifyWithJwks requires options for either "keys" or "jwks_uri" or both');
+    throw new Error(
+      'verifyWithJwks requires options for either "keys" or "jwks_uri" or both',
+    );
   }
   const matchingKey = options.keys.find((key) => key.kid === header.kid);
   if (!matchingKey) {
@@ -136,7 +158,7 @@ var verifyWithJwks = async (token, options, init) => {
   }
   return await verify(token, matchingKey, {
     alg: matchingKey.alg || header.alg,
-    ...verifyOpts
+    ...verifyOpts,
   });
 };
 var decode = (token) => {
@@ -146,7 +168,7 @@ var decode = (token) => {
     const payload = decodeJwtPart(p);
     return {
       header,
-      payload
+      payload,
     };
   } catch {
     throw new JwtTokenInvalid(token);
@@ -160,11 +182,4 @@ var decodeHeader = (token) => {
     throw new JwtTokenInvalid(token);
   }
 };
-export {
-  decode,
-  decodeHeader,
-  isTokenHeader,
-  sign,
-  verify,
-  verifyWithJwks
-};
+export { decode, decodeHeader, isTokenHeader, sign, verify, verifyWithJwks };

@@ -1,7 +1,5 @@
 function isStringEqual(actual, expected) {
   return actual.toLowerCase() === expected.toLowerCase();
 }
-export {
-  isStringEqual
-};
+export { isStringEqual };
 //# sourceMappingURL=isStringEqual.mjs.map

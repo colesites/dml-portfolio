@@ -1,9 +1,10 @@
 // src/jsx/jsx-runtime.ts
-import { jsxDEV, Fragment } from "./jsx-dev-runtime.js";
-import { jsxDEV as jsxDEV2 } from "./jsx-dev-runtime.js";
+
 import { html, raw } from "../helper/html/index.js";
 import { escapeToBuffer, stringBufferToString } from "../utils/html.js";
+import { Fragment, jsxDEV, jsxDEV as jsxDEV2 } from "./jsx-dev-runtime.js";
 import { styleObjectForEach } from "./utils.js";
+
 var jsxAttr = (key, v) => {
   const buffer = [`${key}="`];
   if (key === "style" && typeof v === "object") {
@@ -28,7 +29,9 @@ var jsxAttr = (key, v) => {
     escapeToBuffer(v.toString(), buffer);
     buffer[0] += '"';
   }
-  return buffer.length === 1 ? raw(buffer[0]) : stringBufferToString(buffer, void 0);
+  return buffer.length === 1
+    ? raw(buffer[0])
+    : stringBufferToString(buffer, void 0);
 };
 var jsxEscape = (value) => value;
 export {
@@ -37,5 +40,5 @@ export {
   jsxAttr,
   jsxEscape,
   html as jsxTemplate,
-  jsxDEV2 as jsxs
+  jsxDEV2 as jsxs,
 };

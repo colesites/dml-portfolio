@@ -1,7 +1,7 @@
-import type {And} from './and.d.ts';
-import type {ApplyDefaultOptions, Not} from './internal/index.d.ts';
-import type {IsStringLiteral} from './is-literal.d.ts';
-import type {Or} from './or.d.ts';
+import type { And } from "./and.d.ts";
+import type { ApplyDefaultOptions, Not } from "./internal/index.d.ts";
+import type { IsStringLiteral } from "./is-literal.d.ts";
+import type { Or } from "./or.d.ts";
 
 /**
 Split options.
@@ -9,7 +9,7 @@ Split options.
 @see {@link Split}
 */
 export type SplitOptions = {
-	/**
+  /**
 	When enabled, instantiations with non-literal string types (e.g., `string`, `Uppercase<string>`, `on${string}`) simply return back `string[]` without performing any splitting, as the exact structure cannot be statically determined.
 
 	@default true
@@ -31,11 +31,11 @@ export type SplitOptions = {
 	//=> string[]
 	```
 	*/
-	strictLiteralChecks?: boolean;
+  strictLiteralChecks?: boolean;
 };
 
 type DefaultSplitOptions = {
-	strictLiteralChecks: true;
+  strictLiteralChecks: true;
 };
 
 /**
@@ -60,31 +60,35 @@ const array: Item[] = split(items, ',');
 @category Template literal
 */
 export type Split<
-	S extends string,
-	Delimiter extends string,
-	Options extends SplitOptions = {},
-> =
-	SplitHelper<S, Delimiter, ApplyDefaultOptions<SplitOptions, DefaultSplitOptions, Options>>;
+  S extends string,
+  Delimiter extends string,
+  Options extends SplitOptions = {},
+> = SplitHelper<
+  S,
+  Delimiter,
+  ApplyDefaultOptions<SplitOptions, DefaultSplitOptions, Options>
+>;
 
 type SplitHelper<
-	S extends string,
-	Delimiter extends string,
-	Options extends Required<SplitOptions>,
-	Accumulator extends string[] = [],
+  S extends string,
+  Delimiter extends string,
+  Options extends Required<SplitOptions>,
+  Accumulator extends string[] = [],
 > = S extends string // For distributing `S`
-	? Delimiter extends string // For distributing `Delimiter`
-		// If `strictLiteralChecks` is `false` OR `S` and `Delimiter` both are string literals, then perform the split
-		? Or<Not<Options['strictLiteralChecks']>, And<IsStringLiteral<S>, IsStringLiteral<Delimiter>>> extends true
-			? S extends `${infer Head}${Delimiter}${infer Tail}`
-				? SplitHelper<Tail, Delimiter, Options, [...Accumulator, Head]>
-				: Delimiter extends ''
-					? S extends ''
-						? Accumulator
-						: [...Accumulator, S]
-					: [...Accumulator, S]
-			// Otherwise, return `string[]`
-			: string[]
-		: never // Should never happen
-	: never; // Should never happen
-
-export {};
+  ? Delimiter extends string // For distributing `Delimiter`
+    ? // If `strictLiteralChecks` is `false` OR `S` and `Delimiter` both are string literals, then perform the split
+      Or<
+        Not<Options["strictLiteralChecks"]>,
+        And<IsStringLiteral<S>, IsStringLiteral<Delimiter>>
+      > extends true
+      ? S extends `${infer Head}${Delimiter}${infer Tail}`
+        ? SplitHelper<Tail, Delimiter, Options, [...Accumulator, Head]>
+        : Delimiter extends ""
+          ? S extends ""
+            ? Accumulator
+            : [...Accumulator, S]
+          : [...Accumulator, S]
+      : // Otherwise, return `string[]`
+        string[]
+    : never // Should never happen
+  : never; // Should never happen

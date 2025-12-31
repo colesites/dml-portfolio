@@ -1,11 +1,11 @@
-import { Kind } from '../language/kinds.mjs';
-import { isAbstractType } from '../type/definition.mjs';
+import { Kind } from "../language/kinds.mjs";
+import { isAbstractType } from "../type/definition.mjs";
 import {
   GraphQLIncludeDirective,
   GraphQLSkipDirective,
-} from '../type/directives.mjs';
-import { typeFromAST } from '../utilities/typeFromAST.mjs';
-import { getDirectiveValues } from './values.mjs';
+} from "../type/directives.mjs";
+import { typeFromAST } from "../utilities/typeFromAST.mjs";
+import { getDirectiveValues } from "./values.mjs";
 /**
  * Given a selectionSet, collects all of the fields and returns them.
  *

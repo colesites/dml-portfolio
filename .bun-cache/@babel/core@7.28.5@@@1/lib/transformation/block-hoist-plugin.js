@@ -1,14 +1,12 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = loadBlockHoistPlugin;
 function _traverse() {
   const data = require("@babel/traverse");
-  _traverse = function () {
-    return data;
-  };
+  _traverse = () => data;
   return data;
 }
 var _plugin = require("../config/plugin.js");
@@ -17,23 +15,19 @@ const blockHoistPlugin = {
   name: "internal.blockHoist",
   visitor: {
     Block: {
-      exit({
-        node
-      }) {
+      exit({ node }) {
         node.body = performHoisting(node.body);
-      }
+      },
     },
     SwitchCase: {
-      exit({
-        node
-      }) {
+      exit({ node }) {
         node.consequent = performHoisting(node.consequent);
-      }
-    }
-  }
+      },
+    },
+  },
 };
 function performHoisting(body) {
-  let max = Math.pow(2, 30) - 1;
+  let max = 2 ** 30 - 1;
   let hasChange = false;
   for (let i = 0; i < body.length; i++) {
     const n = body[i];
@@ -49,9 +43,12 @@ function performHoisting(body) {
 }
 function loadBlockHoistPlugin() {
   if (!LOADED_PLUGIN) {
-    LOADED_PLUGIN = new _plugin.default(Object.assign({}, blockHoistPlugin, {
-      visitor: _traverse().default.explode(blockHoistPlugin.visitor)
-    }), {});
+    LOADED_PLUGIN = new _plugin.default(
+      Object.assign({}, blockHoistPlugin, {
+        visitor: _traverse().default.explode(blockHoistPlugin.visitor),
+      }),
+      {},
+    );
   }
   return LOADED_PLUGIN;
 }
@@ -69,7 +66,9 @@ function stableSort(body) {
     const bucket = buckets[p] || (buckets[p] = []);
     bucket.push(n);
   }
-  const keys = Object.keys(buckets).map(k => +k).sort((a, b) => b - a);
+  const keys = Object.keys(buckets)
+    .map((k) => +k)
+    .sort((a, b) => b - a);
   let index = 0;
   for (const key of keys) {
     const bucket = buckets[key];

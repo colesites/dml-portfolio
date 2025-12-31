@@ -19,4 +19,6 @@ getOwnEnumerableKeys(object);
 //=> ['foo', Symbol('x')]
 ```
 */
-export default function getOwnEnumerableKeys(object: object): Array<string | symbol>; // eslint-disable-line @typescript-eslint/ban-types
+export default function getOwnEnumerableKeys(
+  object: object,
+): Array<string | symbol>; // eslint-disable-line @typescript-eslint/ban-types

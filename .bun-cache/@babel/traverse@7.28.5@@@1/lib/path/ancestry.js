@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.find = find;
 exports.findParent = findParent;
@@ -14,12 +14,10 @@ exports.inType = inType;
 exports.isAncestor = isAncestor;
 exports.isDescendant = isDescendant;
 var _t = require("@babel/types");
-const {
-  VISITOR_KEYS
-} = _t;
+const { VISITOR_KEYS } = _t;
 function findParent(callback) {
   let path = this;
-  while (path = path.parentPath) {
+  while ((path = path.parentPath)) {
     if (callback(path)) return path;
   }
   return null;
@@ -28,28 +26,33 @@ function find(callback) {
   let path = this;
   do {
     if (callback(path)) return path;
-  } while (path = path.parentPath);
+  } while ((path = path.parentPath));
   return null;
 }
 function getFunctionParent() {
-  return this.findParent(p => p.isFunction());
+  return this.findParent((p) => p.isFunction());
 }
 function getStatementParent() {
   let path = this;
   do {
-    if (!path.parentPath || Array.isArray(path.container) && path.isStatement()) {
+    if (
+      !path.parentPath ||
+      (Array.isArray(path.container) && path.isStatement())
+    ) {
       break;
     } else {
       path = path.parentPath;
     }
   } while (path);
   if (path && (path.isProgram() || path.isFile())) {
-    throw new Error("File/Program node, we can't possibly find a statement parent to this");
+    throw new Error(
+      "File/Program node, we can't possibly find a statement parent to this",
+    );
   }
   return path;
 }
 function getEarliestCommonAncestorFrom(paths) {
-  return this.getDeepestCommonAncestorFrom(paths, function (deepest, i, ancestries) {
+  return this.getDeepestCommonAncestorFrom(paths, (deepest, i, ancestries) => {
     let earliest;
     const keys = VISITOR_KEYS[deepest.type];
     for (const ancestry of ancestries) {
@@ -82,7 +85,7 @@ function getDeepestCommonAncestorFrom(paths, filter) {
   }
   let minDepth = Infinity;
   let lastCommonIndex, lastCommon;
-  const ancestries = paths.map(path => {
+  const ancestries = paths.map((path) => {
     const ancestry = [];
     do {
       ancestry.unshift(path);
@@ -118,14 +121,14 @@ function getAncestry() {
   const paths = [];
   do {
     paths.push(path);
-  } while (path = path.parentPath);
+  } while ((path = path.parentPath));
   return paths;
 }
 function isAncestor(maybeDescendant) {
   return maybeDescendant.isDescendant(this);
 }
 function isDescendant(maybeAncestor) {
-  return !!this.findParent(parent => parent === maybeAncestor);
+  return !!this.findParent((parent) => parent === maybeAncestor);
 }
 function inType(...candidateTypes) {
   let path = this;

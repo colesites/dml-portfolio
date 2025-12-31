@@ -1,13 +1,14 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { inspect } from '../jsutils/inspect.mjs';
-import { invariant } from '../jsutils/invariant.mjs';
-import { keyMap } from '../jsutils/keyMap.mjs';
-import { mapValue } from '../jsutils/mapValue.mjs';
-import { Kind } from '../language/kinds.mjs';
+import { getDirectiveValues } from "../execution/values.mjs";
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { invariant } from "../jsutils/invariant.mjs";
+import { keyMap } from "../jsutils/keyMap.mjs";
+import { mapValue } from "../jsutils/mapValue.mjs";
+import { Kind } from "../language/kinds.mjs";
 import {
   isTypeDefinitionNode,
   isTypeExtensionNode,
-} from '../language/predicates.mjs';
+} from "../language/predicates.mjs";
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -25,25 +26,24 @@ import {
   isObjectType,
   isScalarType,
   isUnionType,
-} from '../type/definition.mjs';
+} from "../type/definition.mjs";
 import {
   GraphQLDeprecatedDirective,
   GraphQLDirective,
   GraphQLOneOfDirective,
   GraphQLSpecifiedByDirective,
-} from '../type/directives.mjs';
+} from "../type/directives.mjs";
 import {
   introspectionTypes,
   isIntrospectionType,
-} from '../type/introspection.mjs';
+} from "../type/introspection.mjs";
 import {
   isSpecifiedScalarType,
   specifiedScalarTypes,
-} from '../type/scalars.mjs';
-import { assertSchema, GraphQLSchema } from '../type/schema.mjs';
-import { assertValidSDLExtension } from '../validation/validate.mjs';
-import { getDirectiveValues } from '../execution/values.mjs';
-import { valueFromAST } from './valueFromAST.mjs';
+} from "../type/scalars.mjs";
+import { assertSchema, GraphQLSchema } from "../type/schema.mjs";
+import { assertValidSDLExtension } from "../validation/validate.mjs";
+import { valueFromAST } from "./valueFromAST.mjs";
 
 /**
  * Produces a new schema given an existing schema and a document which may
@@ -60,7 +60,7 @@ import { valueFromAST } from './valueFromAST.mjs';
 export function extendSchema(schema, documentAST, options) {
   assertSchema(schema);
   (documentAST != null && documentAST.kind === Kind.DOCUMENT) ||
-    devAssert(false, 'Must provide valid Document AST.');
+    devAssert(false, "Must provide valid Document AST.");
 
   if (
     (options === null || options === void 0 ? void 0 : options.assumeValid) !==
@@ -157,9 +157,9 @@ export function extendSchemaImpl(schemaConfig, documentAST, options) {
       (_schemaDef = schemaDef) === null || _schemaDef === void 0
         ? void 0
         : (_schemaDef$descriptio = _schemaDef.description) === null ||
-          _schemaDef$descriptio === void 0
-        ? void 0
-        : _schemaDef$descriptio.value,
+            _schemaDef$descriptio === void 0
+          ? void 0
+          : _schemaDef$descriptio.value,
     ...operationTypes,
     types: Object.values(typeMap),
     directives: [
@@ -243,7 +243,7 @@ export function extendSchemaImpl(schemaConfig, documentAST, options) {
     /* c8 ignore next 3 */
     // Not reachable, all possible type definition nodes have been considered.
 
-    false || invariant(false, 'Unexpected type: ' + inspect(type));
+    false || invariant(false, "Unexpected type: " + inspect(type));
   }
 
   function extendInputObjectType(type) {

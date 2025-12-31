@@ -1,4 +1,4 @@
-import { Kind } from '../language/kinds.mjs';
+import { Kind } from "../language/kinds.mjs";
 /**
  * Provided a collection of ASTs, presumably each from different files,
  * concatenate the ASTs together into batched AST, useful for validating many

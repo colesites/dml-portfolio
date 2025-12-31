@@ -3,11 +3,9 @@ function passthrough() {
     status: 302,
     statusText: "Passthrough",
     headers: {
-      "x-msw-intention": "passthrough"
-    }
+      "x-msw-intention": "passthrough",
+    },
   });
 }
-export {
-  passthrough
-};
+export { passthrough };
 //# sourceMappingURL=passthrough.mjs.map

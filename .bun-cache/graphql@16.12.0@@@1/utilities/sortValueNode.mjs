@@ -1,5 +1,5 @@
-import { naturalCompare } from '../jsutils/naturalCompare.mjs';
-import { Kind } from '../language/kinds.mjs';
+import { naturalCompare } from "../jsutils/naturalCompare.mjs";
+import { Kind } from "../language/kinds.mjs";
 /**
  * Sort ValueNode.
  *

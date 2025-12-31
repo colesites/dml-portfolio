@@ -8,28 +8,31 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var client_exports = {};
 __export(client_exports, {
   createRoot: () => createRoot,
   default: () => client_default,
-  hydrateRoot: () => hydrateRoot
+  hydrateRoot: () => hydrateRoot,
 });
 module.exports = __toCommonJS(client_exports);
 var import_hooks = require("../hooks");
 var import_render = require("./render");
 const createRoot = (element, options = {}) => {
-  let setJsxNode = (
+  let setJsxNode =
     // unmounted
-    void 0
-  );
+    void 0;
   if (Object.keys(options).length > 0) {
     console.warn("createRoot options are not supported yet");
   }
@@ -44,21 +47,23 @@ const createRoot = (element, options = {}) => {
         (0, import_render.renderNode)(
           (0, import_render.buildNode)({
             tag: () => {
-              const [_jsxNode, _setJsxNode] = (0, import_hooks.useState)(jsxNode);
+              const [_jsxNode, _setJsxNode] = (0, import_hooks.useState)(
+                jsxNode,
+              );
               setJsxNode = _setJsxNode;
               return _jsxNode;
             },
-            props: {}
+            props: {},
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           }),
-          element
+          element,
         );
       }
     },
     unmount() {
       setJsxNode?.(null);
       setJsxNode = null;
-    }
+    },
   };
 };
 const hydrateRoot = (element, reactNode, options = {}) => {
@@ -68,10 +73,11 @@ const hydrateRoot = (element, reactNode, options = {}) => {
 };
 var client_default = {
   createRoot,
-  hydrateRoot
+  hydrateRoot,
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  createRoot,
-  hydrateRoot
-});
+0 &&
+  (module.exports = {
+    createRoot,
+    hydrateRoot,
+  });

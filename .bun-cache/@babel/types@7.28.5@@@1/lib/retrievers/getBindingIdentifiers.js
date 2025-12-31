@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = getBindingIdentifiers;
 var _index = require("../validators/generated/index.js");
@@ -11,19 +11,27 @@ function getBindingIdentifiers(node, duplicates, outerOnly, newBindingsOnly) {
   while (search.length) {
     const id = search.shift();
     if (!id) continue;
-    if (newBindingsOnly && ((0, _index.isAssignmentExpression)(id) || (0, _index.isUnaryExpression)(id) || (0, _index.isUpdateExpression)(id))) {
+    if (
+      newBindingsOnly &&
+      ((0, _index.isAssignmentExpression)(id) ||
+        (0, _index.isUnaryExpression)(id) ||
+        (0, _index.isUpdateExpression)(id))
+    ) {
       continue;
     }
     if ((0, _index.isIdentifier)(id)) {
       if (duplicates) {
-        const _ids = ids[id.name] = ids[id.name] || [];
+        const _ids = (ids[id.name] = ids[id.name] || []);
         _ids.push(id);
       } else {
         ids[id.name] = id;
       }
       continue;
     }
-    if ((0, _index.isExportDeclaration)(id) && !(0, _index.isExportAllDeclaration)(id)) {
+    if (
+      (0, _index.isExportDeclaration)(id) &&
+      !(0, _index.isExportAllDeclaration)(id)
+    ) {
       if ((0, _index.isDeclaration)(id.declaration)) {
         search.push(id.declaration);
       }
@@ -95,7 +103,7 @@ const keys = {
   ArrayPattern: ["elements"],
   ObjectPattern: ["properties"],
   VariableDeclaration: ["declarations"],
-  VariableDeclarator: ["id"]
+  VariableDeclarator: ["id"],
 };
 getBindingIdentifiers.keys = keys;
 

@@ -1,14 +1,12 @@
-'use strict';
+var isGlob = require("is-glob");
+var pathPosixDirname = require("path").posix.dirname;
+var isWin32 = require("os").platform() === "win32";
 
-var isGlob = require('is-glob');
-var pathPosixDirname = require('path').posix.dirname;
-var isWin32 = require('os').platform() === 'win32';
-
-var slash = '/';
+var slash = "/";
 var backslash = /\\/g;
-var enclosure = /[\{\[].*[\}\]]$/;
-var globby = /(^|[^\\])([\{\[]|\([^\)]+$)/;
-var escaped = /\\([\!\*\?\|\[\]\(\)\{\}])/g;
+var enclosure = /[{[].*[}\]]$/;
+var globby = /(^|[^\\])([{[]|\([^)]+$)/;
+var escaped = /\\([!*?|[\](){}])/g;
 
 /**
  * @param {string} str
@@ -30,7 +28,7 @@ module.exports = function globParent(str, opts) {
   }
 
   // preserves full path in case of trailing path separator
-  str += 'a';
+  str += "a";
 
   // remove path parts that are globby
   do {
@@ -38,5 +36,5 @@ module.exports = function globParent(str, opts) {
   } while (isGlob(str) || globby.test(str));
 
   // remove escape chars and return result
-  return str.replace(escaped, '$1');
+  return str.replace(escaped, "$1");
 };

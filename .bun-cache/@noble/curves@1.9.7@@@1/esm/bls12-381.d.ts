@@ -1,5 +1,5 @@
-import { type CurveFn } from './abstract/bls.ts';
-import { type IField } from './abstract/modular.ts';
+import { type CurveFn } from "./abstract/bls.ts";
+import { type IField } from "./abstract/modular.ts";
 export declare const bls12_381_Fr: IField<bigint>;
 /**
  * bls12-381 pairing-friendly curve.

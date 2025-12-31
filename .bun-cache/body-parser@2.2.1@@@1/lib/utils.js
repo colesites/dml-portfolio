@@ -1,12 +1,10 @@
-'use strict'
-
 /**
  * Module dependencies.
  */
 
-var bytes = require('bytes')
-var contentType = require('content-type')
-var typeis = require('type-is')
+var bytes = require("bytes");
+var contentType = require("content-type");
+var typeis = require("type-is");
 
 /**
  * Module exports.
@@ -14,8 +12,8 @@ var typeis = require('type-is')
 module.exports = {
   getCharset,
   normalizeOptions,
-  passthrough
-}
+  passthrough,
+};
 
 /**
  * Get the charset of a request.
@@ -24,11 +22,11 @@ module.exports = {
  * @api private
  */
 
-function getCharset (req) {
+function getCharset(req) {
   try {
-    return (contentType.parse(req).parameters.charset || '').toLowerCase()
+    return (contentType.parse(req).parameters.charset || "").toLowerCase();
   } catch {
-    return undefined
+    return undefined;
   }
 }
 
@@ -39,10 +37,10 @@ function getCharset (req) {
  * @return {function}
  */
 
-function typeChecker (type) {
-  return function checkType (req) {
-    return Boolean(typeis(req, type))
-  }
+function typeChecker(type) {
+  return function checkType(req) {
+    return Boolean(typeis(req, type));
+  };
 }
 
 /**
@@ -52,36 +50,35 @@ function typeChecker (type) {
  * @param {string | string[] | function} defaultType default content type(s) or a function to determine it
  * @returns {object}
  */
-function normalizeOptions (options, defaultType) {
+function normalizeOptions(options, defaultType) {
   if (!defaultType) {
     // Parsers must define a default content type
-    throw new TypeError('defaultType must be provided')
+    throw new TypeError("defaultType must be provided");
   }
 
-  var inflate = options?.inflate !== false
-  var limit = typeof options?.limit !== 'number'
-    ? bytes.parse(options?.limit || '100kb')
-    : options?.limit
-  var type = options?.type || defaultType
-  var verify = options?.verify || false
-  var defaultCharset = options?.defaultCharset || 'utf-8'
+  var inflate = options?.inflate !== false;
+  var limit =
+    typeof options?.limit !== "number"
+      ? bytes.parse(options?.limit || "100kb")
+      : options?.limit;
+  var type = options?.type || defaultType;
+  var verify = options?.verify || false;
+  var defaultCharset = options?.defaultCharset || "utf-8";
 
-  if (verify !== false && typeof verify !== 'function') {
-    throw new TypeError('option verify must be function')
+  if (verify !== false && typeof verify !== "function") {
+    throw new TypeError("option verify must be function");
   }
 
   // create the appropriate type checking function
-  var shouldParse = typeof type !== 'function'
-    ? typeChecker(type)
-    : type
+  var shouldParse = typeof type !== "function" ? typeChecker(type) : type;
 
   return {
     inflate,
     limit,
     verify,
     defaultCharset,
-    shouldParse
-  }
+    shouldParse,
+  };
 }
 
 /**
@@ -91,6 +88,6 @@ function normalizeOptions (options, defaultType) {
  * @param {*} value
  * @return {*}
  */
-function passthrough (value) {
-  return value
+function passthrough(value) {
+  return value;
 }

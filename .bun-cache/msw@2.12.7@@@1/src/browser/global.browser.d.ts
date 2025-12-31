@@ -1,1 +1,1 @@
-declare const SERVICE_WORKER_CHECKSUM: string
+declare const SERVICE_WORKER_CHECKSUM: string;

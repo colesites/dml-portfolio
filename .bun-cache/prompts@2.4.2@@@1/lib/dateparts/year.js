@@ -1,9 +1,7 @@
-'use strict';
-
-const DatePart = require('./datepart');
+const DatePart = require("./datepart");
 
 class Year extends DatePart {
-  constructor(opts={}) {
+  constructor(opts = {}) {
     super(opts);
   }
 
@@ -20,7 +18,7 @@ class Year extends DatePart {
   }
 
   toString() {
-    let year = String(this.date.getFullYear()).padStart(4, '0');
+    const year = String(this.date.getFullYear()).padStart(4, "0");
     return this.token.length === 2 ? year.substr(-2) : year;
   }
 }

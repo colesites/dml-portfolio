@@ -1,6 +1,5 @@
-import {
-  GraphQLHandler
-} from './handlers/GraphQLHandler.mjs';
+import { GraphQLHandler } from "./handlers/GraphQLHandler.mjs";
+
 function createScopedGraphQLHandler(operationType, url) {
   return (predicate, resolver, options = {}) => {
     return new GraphQLHandler(operationType, predicate, url, resolver, options);
@@ -8,7 +7,7 @@ function createScopedGraphQLHandler(operationType, url) {
 }
 function createGraphQLOperationHandler(url) {
   return (resolver, options) => {
-    return new GraphQLHandler("all", new RegExp(".*"), url, resolver, options);
+    return new GraphQLHandler("all", /.*/, url, resolver, options);
   };
 }
 const graphql = {
@@ -59,14 +58,9 @@ const graphql = {
     return {
       operation: createGraphQLOperationHandler(url),
       query: createScopedGraphQLHandler("query", url),
-      mutation: createScopedGraphQLHandler(
-        "mutation",
-        url
-      )
+      mutation: createScopedGraphQLHandler("mutation", url),
     };
-  }
+  },
 };
-export {
-  graphql
-};
+export { graphql };
 //# sourceMappingURL=graphql.mjs.map

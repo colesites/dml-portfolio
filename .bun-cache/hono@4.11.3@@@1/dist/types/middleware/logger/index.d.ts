@@ -2,7 +2,7 @@
  * @module
  * Logger Middleware for Hono.
  */
-import type { MiddlewareHandler } from '../../types';
+import type { MiddlewareHandler } from "../../types";
 type PrintFunc = (str: string, ...rest: string[]) => void;
 /**
  * Logger Middleware for Hono.
@@ -21,4 +21,3 @@ type PrintFunc = (str: string, ...rest: string[]) => void;
  * ```
  */
 export declare const logger: (fn?: PrintFunc) => MiddlewareHandler;
-export {};

@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rotl = rotl;
 exports.createCipher = createCipher;
@@ -44,17 +43,18 @@ xchacha [^2] uses the subkey and remaining 8 byte nonce with ChaCha20 as normal
 const utils_ts_1 = require("./utils.js");
 // We can't make top-level var depend on utils.utf8ToBytes
 // because it's not present in all envs. Creating a similar fn here
-const _utf8ToBytes = (str) => Uint8Array.from(str.split('').map((c) => c.charCodeAt(0)));
-const sigma16 = _utf8ToBytes('expand 16-byte k');
-const sigma32 = _utf8ToBytes('expand 32-byte k');
+const _utf8ToBytes = (str) =>
+  Uint8Array.from(str.split("").map((c) => c.charCodeAt(0)));
+const sigma16 = _utf8ToBytes("expand 16-byte k");
+const sigma32 = _utf8ToBytes("expand 32-byte k");
 const sigma16_32 = (0, utils_ts_1.u32)(sigma16);
 const sigma32_32 = (0, utils_ts_1.u32)(sigma32);
 function rotl(a, b) {
-    return (a << b) | (a >>> (32 - b));
+  return (a << b) | (a >>> (32 - b));
 }
 // Is byte array aligned to 4 byte offset (u32)?
 function isAligned32(b) {
-    return b.byteOffset % 4 === 0;
+  return b.byteOffset % 4 === 0;
 }
 // Salsa and Chacha block length is always 512-bit
 const BLOCK_LEN = 64;
@@ -64,112 +64,122 @@ const BLOCK_LEN32 = 16;
 const MAX_COUNTER = 2 ** 32 - 1;
 const U32_EMPTY = new Uint32Array();
 function runCipher(core, sigma, key, nonce, data, output, counter, rounds) {
-    const len = data.length;
-    const block = new Uint8Array(BLOCK_LEN);
-    const b32 = (0, utils_ts_1.u32)(block);
-    // Make sure that buffers aligned to 4 bytes
-    const isAligned = isAligned32(data) && isAligned32(output);
-    const d32 = isAligned ? (0, utils_ts_1.u32)(data) : U32_EMPTY;
-    const o32 = isAligned ? (0, utils_ts_1.u32)(output) : U32_EMPTY;
-    for (let pos = 0; pos < len; counter++) {
-        core(sigma, key, nonce, b32, counter, rounds);
-        if (counter >= MAX_COUNTER)
-            throw new Error('arx: counter overflow');
-        const take = Math.min(BLOCK_LEN, len - pos);
-        // aligned to 4 bytes
-        if (isAligned && take === BLOCK_LEN) {
-            const pos32 = pos / 4;
-            if (pos % 4 !== 0)
-                throw new Error('arx: invalid block position');
-            for (let j = 0, posj; j < BLOCK_LEN32; j++) {
-                posj = pos32 + j;
-                o32[posj] = d32[posj] ^ b32[j];
-            }
-            pos += BLOCK_LEN;
-            continue;
-        }
-        for (let j = 0, posj; j < take; j++) {
-            posj = pos + j;
-            output[posj] = data[posj] ^ block[j];
-        }
-        pos += take;
+  const len = data.length;
+  const block = new Uint8Array(BLOCK_LEN);
+  const b32 = (0, utils_ts_1.u32)(block);
+  // Make sure that buffers aligned to 4 bytes
+  const isAligned = isAligned32(data) && isAligned32(output);
+  const d32 = isAligned ? (0, utils_ts_1.u32)(data) : U32_EMPTY;
+  const o32 = isAligned ? (0, utils_ts_1.u32)(output) : U32_EMPTY;
+  for (let pos = 0; pos < len; counter++) {
+    core(sigma, key, nonce, b32, counter, rounds);
+    if (counter >= MAX_COUNTER) throw new Error("arx: counter overflow");
+    const take = Math.min(BLOCK_LEN, len - pos);
+    // aligned to 4 bytes
+    if (isAligned && take === BLOCK_LEN) {
+      const pos32 = pos / 4;
+      if (pos % 4 !== 0) throw new Error("arx: invalid block position");
+      for (let j = 0, posj; j < BLOCK_LEN32; j++) {
+        posj = pos32 + j;
+        o32[posj] = d32[posj] ^ b32[j];
+      }
+      pos += BLOCK_LEN;
+      continue;
     }
+    for (let j = 0, posj; j < take; j++) {
+      posj = pos + j;
+      output[posj] = data[posj] ^ block[j];
+    }
+    pos += take;
+  }
 }
 /** Creates ARX-like (ChaCha, Salsa) cipher stream from core function. */
 function createCipher(core, opts) {
-    const { allowShortKeys, extendNonceFn, counterLength, counterRight, rounds } = (0, utils_ts_1.checkOpts)({ allowShortKeys: false, counterLength: 8, counterRight: false, rounds: 20 }, opts);
-    if (typeof core !== 'function')
-        throw new Error('core must be a function');
-    (0, utils_ts_1.anumber)(counterLength);
-    (0, utils_ts_1.anumber)(rounds);
-    (0, utils_ts_1.abool)(counterRight);
-    (0, utils_ts_1.abool)(allowShortKeys);
-    return (key, nonce, data, output, counter = 0) => {
-        (0, utils_ts_1.abytes)(key);
-        (0, utils_ts_1.abytes)(nonce);
-        (0, utils_ts_1.abytes)(data);
-        const len = data.length;
-        if (output === undefined)
-            output = new Uint8Array(len);
-        (0, utils_ts_1.abytes)(output);
-        (0, utils_ts_1.anumber)(counter);
-        if (counter < 0 || counter >= MAX_COUNTER)
-            throw new Error('arx: counter overflow');
-        if (output.length < len)
-            throw new Error(`arx: output (${output.length}) is shorter than data (${len})`);
-        const toClean = [];
-        // Key & sigma
-        // key=16 -> sigma16, k=key|key
-        // key=32 -> sigma32, k=key
-        let l = key.length;
-        let k;
-        let sigma;
-        if (l === 32) {
-            toClean.push((k = (0, utils_ts_1.copyBytes)(key)));
-            sigma = sigma32_32;
-        }
-        else if (l === 16 && allowShortKeys) {
-            k = new Uint8Array(32);
-            k.set(key);
-            k.set(key, 16);
-            sigma = sigma16_32;
-            toClean.push(k);
-        }
-        else {
-            throw new Error(`arx: invalid 32-byte key, got length=${l}`);
-        }
-        // Nonce
-        // salsa20:      8   (8-byte counter)
-        // chacha20orig: 8   (8-byte counter)
-        // chacha20:     12  (4-byte counter)
-        // xsalsa20:     24  (16 -> hsalsa,  8 -> old nonce)
-        // xchacha20:    24  (16 -> hchacha, 8 -> old nonce)
-        // Align nonce to 4 bytes
-        if (!isAligned32(nonce))
-            toClean.push((nonce = (0, utils_ts_1.copyBytes)(nonce)));
-        const k32 = (0, utils_ts_1.u32)(k);
-        // hsalsa & hchacha: handle extended nonce
-        if (extendNonceFn) {
-            if (nonce.length !== 24)
-                throw new Error(`arx: extended nonce must be 24 bytes`);
-            extendNonceFn(sigma, k32, (0, utils_ts_1.u32)(nonce.subarray(0, 16)), k32);
-            nonce = nonce.subarray(16);
-        }
-        // Handle nonce counter
-        const nonceNcLen = 16 - counterLength;
-        if (nonceNcLen !== nonce.length)
-            throw new Error(`arx: nonce must be ${nonceNcLen} or 16 bytes`);
-        // Pad counter when nonce is 64 bit
-        if (nonceNcLen !== 12) {
-            const nc = new Uint8Array(12);
-            nc.set(nonce, counterRight ? 0 : 12 - nonce.length);
-            nonce = nc;
-            toClean.push(nonce);
-        }
-        const n32 = (0, utils_ts_1.u32)(nonce);
-        runCipher(core, sigma, k32, n32, data, output, counter, rounds);
-        (0, utils_ts_1.clean)(...toClean);
-        return output;
-    };
+  const { allowShortKeys, extendNonceFn, counterLength, counterRight, rounds } =
+    (0, utils_ts_1.checkOpts)(
+      {
+        allowShortKeys: false,
+        counterLength: 8,
+        counterRight: false,
+        rounds: 20,
+      },
+      opts,
+    );
+  if (typeof core !== "function") throw new Error("core must be a function");
+  (0, utils_ts_1.anumber)(counterLength);
+  (0, utils_ts_1.anumber)(rounds);
+  (0, utils_ts_1.abool)(counterRight);
+  (0, utils_ts_1.abool)(allowShortKeys);
+  return (key, nonce, data, output, counter = 0) => {
+    (0, utils_ts_1.abytes)(key);
+    (0, utils_ts_1.abytes)(nonce);
+    (0, utils_ts_1.abytes)(data);
+    const len = data.length;
+    if (output === undefined) output = new Uint8Array(len);
+    (0, utils_ts_1.abytes)(output);
+    (0, utils_ts_1.anumber)(counter);
+    if (counter < 0 || counter >= MAX_COUNTER)
+      throw new Error("arx: counter overflow");
+    if (output.length < len)
+      throw new Error(
+        `arx: output (${output.length}) is shorter than data (${len})`,
+      );
+    const toClean = [];
+    // Key & sigma
+    // key=16 -> sigma16, k=key|key
+    // key=32 -> sigma32, k=key
+    const l = key.length;
+    let k;
+    let sigma;
+    if (l === 32) {
+      toClean.push((k = (0, utils_ts_1.copyBytes)(key)));
+      sigma = sigma32_32;
+    } else if (l === 16 && allowShortKeys) {
+      k = new Uint8Array(32);
+      k.set(key);
+      k.set(key, 16);
+      sigma = sigma16_32;
+      toClean.push(k);
+    } else {
+      throw new Error(`arx: invalid 32-byte key, got length=${l}`);
+    }
+    // Nonce
+    // salsa20:      8   (8-byte counter)
+    // chacha20orig: 8   (8-byte counter)
+    // chacha20:     12  (4-byte counter)
+    // xsalsa20:     24  (16 -> hsalsa,  8 -> old nonce)
+    // xchacha20:    24  (16 -> hchacha, 8 -> old nonce)
+    // Align nonce to 4 bytes
+    if (!isAligned32(nonce))
+      toClean.push((nonce = (0, utils_ts_1.copyBytes)(nonce)));
+    const k32 = (0, utils_ts_1.u32)(k);
+    // hsalsa & hchacha: handle extended nonce
+    if (extendNonceFn) {
+      if (nonce.length !== 24)
+        throw new Error(`arx: extended nonce must be 24 bytes`);
+      extendNonceFn(
+        sigma,
+        k32,
+        (0, utils_ts_1.u32)(nonce.subarray(0, 16)),
+        k32,
+      );
+      nonce = nonce.subarray(16);
+    }
+    // Handle nonce counter
+    const nonceNcLen = 16 - counterLength;
+    if (nonceNcLen !== nonce.length)
+      throw new Error(`arx: nonce must be ${nonceNcLen} or 16 bytes`);
+    // Pad counter when nonce is 64 bit
+    if (nonceNcLen !== 12) {
+      const nc = new Uint8Array(12);
+      nc.set(nonce, counterRight ? 0 : 12 - nonce.length);
+      nonce = nc;
+      toClean.push(nonce);
+    }
+    const n32 = (0, utils_ts_1.u32)(nonce);
+    runCipher(core, sigma, k32, n32, data, output, counter, rounds);
+    (0, utils_ts_1.clean)(...toClean);
+    return output;
+  };
 }
 //# sourceMappingURL=_arx.js.map

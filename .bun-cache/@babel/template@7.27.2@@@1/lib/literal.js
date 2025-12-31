@@ -1,32 +1,36 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = literalTemplate;
 var _options = require("./options.js");
 var _parse = require("./parse.js");
 var _populate = require("./populate.js");
 function literalTemplate(formatter, tpl, opts) {
-  const {
-    metadata,
-    names
-  } = buildLiteralData(formatter, tpl, opts);
-  return arg => {
+  const { metadata, names } = buildLiteralData(formatter, tpl, opts);
+  return (arg) => {
     const defaultReplacements = {};
     arg.forEach((replacement, i) => {
       defaultReplacements[names[i]] = replacement;
     });
-    return arg => {
+    return (arg) => {
       const replacements = (0, _options.normalizeReplacements)(arg);
       if (replacements) {
-        Object.keys(replacements).forEach(key => {
+        Object.keys(replacements).forEach((key) => {
           if (hasOwnProperty.call(defaultReplacements, key)) {
             throw new Error("Unexpected replacement overlap.");
           }
         });
       }
-      return formatter.unwrap((0, _populate.default)(metadata, replacements ? Object.assign(replacements, defaultReplacements) : defaultReplacements));
+      return formatter.unwrap(
+        (0, _populate.default)(
+          metadata,
+          replacements
+            ? Object.assign(replacements, defaultReplacements)
+            : defaultReplacements,
+        ),
+      );
     };
   };
 }
@@ -36,20 +40,21 @@ function buildLiteralData(formatter, tpl, opts) {
   do {
     prefix = "$$" + prefix;
   } while (raw.includes(prefix));
-  const {
-    names,
-    code
-  } = buildTemplateCode(tpl, prefix);
+  const { names, code } = buildTemplateCode(tpl, prefix);
   const metadata = (0, _parse.default)(formatter, formatter.code(code), {
     parser: opts.parser,
-    placeholderWhitelist: new Set(names.concat(opts.placeholderWhitelist ? Array.from(opts.placeholderWhitelist) : [])),
+    placeholderWhitelist: new Set(
+      names.concat(
+        opts.placeholderWhitelist ? Array.from(opts.placeholderWhitelist) : [],
+      ),
+    ),
     placeholderPattern: opts.placeholderPattern,
     preserveComments: opts.preserveComments,
-    syntacticPlaceholders: opts.syntacticPlaceholders
+    syntacticPlaceholders: opts.syntacticPlaceholders,
   });
   return {
     metadata,
-    names
+    names,
   };
 }
 function buildTemplateCode(tpl, prefix) {
@@ -62,7 +67,7 @@ function buildTemplateCode(tpl, prefix) {
   }
   return {
     names,
-    code
+    code,
   };
 }
 

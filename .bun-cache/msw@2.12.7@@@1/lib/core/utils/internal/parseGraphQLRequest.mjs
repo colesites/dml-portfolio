@@ -1,19 +1,22 @@
-import { toPublicUrl } from '../request/toPublicUrl.mjs';
-import { devUtils } from './devUtils.mjs';
-import { jsonParse } from './jsonParse.mjs';
-import { parseMultipartData } from './parseMultipartData.mjs';
+import { toPublicUrl } from "../request/toPublicUrl.mjs";
+import { devUtils } from "./devUtils.mjs";
+import { jsonParse } from "./jsonParse.mjs";
+import { parseMultipartData } from "./parseMultipartData.mjs";
+
 function parseDocumentNode(node) {
   const operationDef = node.definitions.find((definition) => {
     return definition.kind === "OperationDefinition";
   });
   return {
     operationType: operationDef?.operation,
-    operationName: operationDef?.name?.value
+    operationName: operationDef?.name?.value,
   };
 }
 async function parseQuery(query) {
   const { parse } = await import("graphql").catch((error) => {
-    console.error('[MSW] Failed to parse a GraphQL query: cannot import the "graphql" module. Please make sure you install it if you wish to intercept GraphQL requests. See the original import error below.');
+    console.error(
+      '[MSW] Failed to parse a GraphQL query: cannot import the "graphql" module. Please make sure you install it if you wish to intercept GraphQL requests. See the original import error below.',
+    );
     throw error;
   });
   try {
@@ -52,35 +55,37 @@ async function getGraphQLInput(request) {
       const variables = url.searchParams.get("variables") || "";
       return {
         query,
-        variables: jsonParse(variables)
+        variables: jsonParse(variables),
       };
     }
     case "POST": {
       const requestClone = request.clone();
-      if (request.headers.get("content-type")?.includes("multipart/form-data")) {
+      if (
+        request.headers.get("content-type")?.includes("multipart/form-data")
+      ) {
         const responseJson = parseMultipartData(
           await requestClone.text(),
-          request.headers
+          request.headers,
         );
         if (!responseJson) {
           return null;
         }
         const { operations, map, ...files } = responseJson;
-        const parsedOperations = jsonParse(
-          operations
-        ) || {};
+        const parsedOperations = jsonParse(operations) || {};
         if (!parsedOperations.query) {
           return null;
         }
         const parsedMap = jsonParse(map || "") || {};
-        const variables = parsedOperations.variables ? extractMultipartVariables(
-          parsedOperations.variables,
-          parsedMap,
-          files
-        ) : {};
+        const variables = parsedOperations.variables
+          ? extractMultipartVariables(
+              parsedOperations.variables,
+              parsedMap,
+              files,
+            )
+          : {};
         return {
           query: parsedOperations.query,
-          variables
+          variables,
         };
       }
       const requestJson = await requestClone.json().catch(() => null);
@@ -88,7 +93,7 @@ async function getGraphQLInput(request) {
         const { query, variables } = requestJson;
         return {
           query,
-          variables
+          variables,
         };
       }
       return null;
@@ -111,19 +116,16 @@ async function parseGraphQLRequest(request) {
         'Failed to intercept a GraphQL request to "%s %s": cannot parse query. See the error message from the parser below.\n\n%s',
         request.method,
         requestPublicUrl,
-        parsedResult.message
-      )
+        parsedResult.message,
+      ),
     );
   }
   return {
     query: input.query,
     operationType: parsedResult.operationType,
     operationName: parsedResult.operationName,
-    variables
+    variables,
   };
 }
-export {
-  parseDocumentNode,
-  parseGraphQLRequest
-};
+export { parseDocumentNode, parseGraphQLRequest };
 //# sourceMappingURL=parseGraphQLRequest.mjs.map

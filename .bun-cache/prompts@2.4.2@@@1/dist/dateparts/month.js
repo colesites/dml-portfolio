@@ -1,6 +1,4 @@
-'use strict';
-
-const DatePart = require('./datepart');
+const DatePart = require("./datepart");
 
 class Month extends DatePart {
   constructor(opts = {}) {
@@ -21,11 +19,16 @@ class Month extends DatePart {
   }
 
   toString() {
-    let month = this.date.getMonth();
-    let tl = this.token.length;
-    return tl === 2 ? String(month + 1).padStart(2, '0') : tl === 3 ? this.locales.monthsShort[month] : tl === 4 ? this.locales.months[month] : String(month + 1);
+    const month = this.date.getMonth();
+    const tl = this.token.length;
+    return tl === 2
+      ? String(month + 1).padStart(2, "0")
+      : tl === 3
+        ? this.locales.monthsShort[month]
+        : tl === 4
+          ? this.locales.months[month]
+          : String(month + 1);
   }
-
 }
 
 module.exports = Month;

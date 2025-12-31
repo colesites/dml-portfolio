@@ -1,6 +1,6 @@
-import type {Not} from './internal/type.d.ts';
-import type {And} from './and.d.ts';
-import type {Or} from './or.d.ts';
+import type { Not } from "./internal/type.d.ts";
+import type { And } from "./and.d.ts";
+import type { Or } from "./or.d.ts";
 
 /**
 Returns a boolean for whether only one of two given types is true.
@@ -78,6 +78,7 @@ type G = Xor<never, never>;
 @see {@link And}
 @see {@link Or}
 */
-export type Xor<A extends boolean, B extends boolean> = And<Or<A, B>, Not<And<A, B>>>;
-
-export {};
+export type Xor<A extends boolean, B extends boolean> = And<
+  Or<A, B>,
+  Not<And<A, B>>
+>;

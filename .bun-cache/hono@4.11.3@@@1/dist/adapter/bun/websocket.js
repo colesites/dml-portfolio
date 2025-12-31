@@ -1,6 +1,11 @@
 // src/adapter/bun/websocket.ts
-import { createWSMessageEvent, defineWebSocketHelper, WSContext } from "../../helper/websocket/index.js";
+import {
+  createWSMessageEvent,
+  defineWebSocketHelper,
+  WSContext,
+} from "../../helper/websocket/index.js";
 import { getBunServer } from "./server.js";
+
 var createWSContext = (ws) => {
   return new WSContext({
     send: (source, options) => {
@@ -12,7 +17,7 @@ var createWSContext = (ws) => {
     protocol: ws.data.protocol,
     close(code, reason) {
       ws.close(code, reason);
-    }
+    },
   });
 };
 var upgradeWebSocket = defineWebSocketHelper((c, events) => {
@@ -24,8 +29,8 @@ var upgradeWebSocket = defineWebSocketHelper((c, events) => {
     data: {
       events,
       url: new URL(c.req.url),
-      protocol: c.req.url
-    }
+      protocol: c.req.url,
+    },
   });
   if (upgradeResult) {
     return new Response(null);
@@ -45,27 +50,26 @@ var websocket = {
       websocketListeners.onClose(
         new CloseEvent("close", {
           code,
-          reason
+          reason,
         }),
-        createWSContext(ws)
+        createWSContext(ws),
       );
     }
   },
   message(ws, message) {
     const websocketListeners = ws.data.events;
     if (websocketListeners.onMessage) {
-      const normalizedReceiveData = typeof message === "string" ? message : message.buffer;
-      websocketListeners.onMessage(createWSMessageEvent(normalizedReceiveData), createWSContext(ws));
+      const normalizedReceiveData =
+        typeof message === "string" ? message : message.buffer;
+      websocketListeners.onMessage(
+        createWSMessageEvent(normalizedReceiveData),
+        createWSContext(ws),
+      );
     }
-  }
+  },
 };
 var createBunWebSocket = () => ({
   upgradeWebSocket,
-  websocket
+  websocket,
 });
-export {
-  createBunWebSocket,
-  createWSContext,
-  upgradeWebSocket,
-  websocket
-};
+export { createBunWebSocket, createWSContext, upgradeWebSocket, websocket };

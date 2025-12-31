@@ -3,8 +3,8 @@
  * @module
  */
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
-import { type H2CMethod } from './abstract/hash-to-curve.ts';
-import { p256 as p256n } from './nist.ts';
+import { type H2CMethod } from "./abstract/hash-to-curve.ts";
+import { p256 as p256n } from "./nist.ts";
 /** @deprecated use `import { p256 } from '@noble/curves/nist.js';` */
 export declare const p256: typeof p256n;
 /** @deprecated use `import { p256 } from '@noble/curves/nist.js';` */

@@ -75,11 +75,15 @@ test("args method", () => {
 
   const t2 = t1.input(t2args);
   type t2 = (typeof t2)["_input"];
-  expectTypeOf<t2>().toEqualTypeOf<(arg: string, ...args_1: unknown[]) => unknown>();
+  expectTypeOf<t2>().toEqualTypeOf<
+    (arg: string, ...args_1: unknown[]) => unknown
+  >();
 
   const t3 = t2.output(z.boolean());
   type t3 = (typeof t3)["_input"];
-  expectTypeOf<t3>().toEqualTypeOf<(arg: string, ...args_1: unknown[]) => boolean>();
+  expectTypeOf<t3>().toEqualTypeOf<
+    (arg: string, ...args_1: unknown[]) => boolean
+  >();
 });
 
 // test("custom args", () => {
@@ -263,6 +267,12 @@ test("extra parameters with rest", () => {
       return str.length <= 5;
     });
 
-  const filteredList = ["apple", "orange", "pear", "banana", "strawberry"].filter(maxLength5);
+  const filteredList = [
+    "apple",
+    "orange",
+    "pear",
+    "banana",
+    "strawberry",
+  ].filter(maxLength5);
   expect(filteredList.length).toEqual(2);
 });

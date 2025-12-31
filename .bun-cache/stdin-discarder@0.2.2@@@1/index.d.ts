@@ -1,13 +1,13 @@
 declare const stdinDiscarder: {
-	/**
+  /**
 	Start discarding stdin.
 	*/
-	start(): void;
+  start(): void;
 
-	/**
+  /**
 	Stop discarding stdin.
 	*/
-	stop(): void;
+  stop(): void;
 };
 
 export default stdinDiscarder;

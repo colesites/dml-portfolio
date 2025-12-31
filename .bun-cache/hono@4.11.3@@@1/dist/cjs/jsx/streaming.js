@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var streaming_exports = {};
 __export(streaming_exports, {
   StreamingContext: () => StreamingContext,
   Suspense: () => Suspense,
-  renderToReadableStream: () => renderToReadableStream
+  renderToReadableStream: () => renderToReadableStream,
 });
 module.exports = __toCommonJS(streaming_exports);
 var import_html = require("../helper/html");
@@ -33,10 +37,7 @@ var import_components2 = require("./dom/components");
 var import_render = require("./dom/render");
 const StreamingContext = (0, import_context.createContext)(null);
 let suspenseCounter = 0;
-const Suspense = async ({
-  children,
-  fallback
-}) => {
+const Suspense = async ({ children, fallback }) => {
   if (!Array.isArray(children)) {
     children = [children];
   }
@@ -50,8 +51,8 @@ const Suspense = async ({
   try {
     stackNode[import_constants.DOM_STASH][0] = 0;
     import_render.buildDataStack.push([[], stackNode]);
-    resArray = children.map(
-      (c) => c == null || typeof c === "boolean" ? "" : c.toString()
+    resArray = children.map((c) =>
+      c == null || typeof c === "boolean" ? "" : c.toString(),
     );
   } catch (e) {
     if (e instanceof Promise) {
@@ -59,8 +60,10 @@ const Suspense = async ({
         e.then(() => {
           stackNode[import_constants.DOM_STASH][0] = 0;
           import_render.buildDataStack.push([[], stackNode]);
-          return (0, import_components.childrenToString)(children).then(popNodeStack);
-        })
+          return (0, import_components.childrenToString)(children).then(
+            popNodeStack,
+          );
+        }),
       ];
     } else {
       throw e;
@@ -71,22 +74,28 @@ const Suspense = async ({
   if (resArray.some((res) => res instanceof Promise)) {
     const index = suspenseCounter++;
     const fallbackStr = await fallback.toString();
-    return (0, import_html.raw)(`<template id="H:${index}"></template>${fallbackStr}<!--/$-->`, [
-      ...fallbackStr.callbacks || [],
-      ({ phase, buffer, context }) => {
-        if (phase === import_html2.HtmlEscapedCallbackPhase.BeforeStream) {
-          return;
-        }
-        return Promise.all(resArray).then(async (htmlArray) => {
-          htmlArray = htmlArray.flat();
-          const content = htmlArray.join("");
-          if (buffer) {
-            buffer[0] = buffer[0].replace(
-              new RegExp(`<template id="H:${index}"></template>.*?<!--/\\$-->`),
-              content
-            );
+    return (0, import_html.raw)(
+      `<template id="H:${index}"></template>${fallbackStr}<!--/$-->`,
+      [
+        ...(fallbackStr.callbacks || []),
+        ({ phase, buffer, context }) => {
+          if (phase === import_html2.HtmlEscapedCallbackPhase.BeforeStream) {
+            return;
           }
-          let html = buffer ? "" : `<template data-hono-target="H:${index}">${content}</template><script${nonce ? ` nonce="${nonce}"` : ""}>
+          return Promise.all(resArray).then(async (htmlArray) => {
+            htmlArray = htmlArray.flat();
+            const content = htmlArray.join("");
+            if (buffer) {
+              buffer[0] = buffer[0].replace(
+                new RegExp(
+                  `<template id="H:${index}"></template>.*?<!--/\\$-->`,
+                ),
+                content,
+              );
+            }
+            let html = buffer
+              ? ""
+              : `<template data-hono-target="H:${index}">${content}</template><script${nonce ? ` nonce="${nonce}"` : ""}>
 ((d,c,n) => {
 c=d.currentScript.previousSibling
 d=d.getElementById('H:${index}')
@@ -95,17 +104,25 @@ do{n=d.nextSibling;n.remove()}while(n.nodeType!=8||n.nodeValue!='/$')
 d.replaceWith(c.content)
 })(document)
 </script>`;
-          const callbacks = htmlArray.map((html2) => html2.callbacks || []).flat();
-          if (!callbacks.length) {
-            return html;
-          }
-          if (phase === import_html2.HtmlEscapedCallbackPhase.Stream) {
-            html = await (0, import_html2.resolveCallback)(html, import_html2.HtmlEscapedCallbackPhase.BeforeStream, true, context);
-          }
-          return (0, import_html.raw)(html, callbacks);
-        });
-      }
-    ]);
+            const callbacks = htmlArray.flatMap(
+              (html2) => html2.callbacks || [],
+            );
+            if (!callbacks.length) {
+              return html;
+            }
+            if (phase === import_html2.HtmlEscapedCallbackPhase.Stream) {
+              html = await (0, import_html2.resolveCallback)(
+                html,
+                import_html2.HtmlEscapedCallbackPhase.BeforeStream,
+                true,
+                context,
+              );
+            }
+            return (0, import_html.raw)(html, callbacks);
+          });
+        },
+      ],
+    );
   } else {
     return (0, import_html.raw)(resArray.join(""));
   }
@@ -124,31 +141,46 @@ const renderToReadableStream = (content, onError = console.trace) => {
           content,
           import_html2.HtmlEscapedCallbackPhase.BeforeStream,
           true,
-          context
+          context,
         );
         controller.enqueue(textEncoder.encode(resolved));
         let resolvedCount = 0;
         const callbacks = [];
         const then = (promise) => {
           callbacks.push(
-            promise.catch((err) => {
-              console.log(err);
-              onError(err);
-              return "";
-            }).then(async (res) => {
-              res = await (0, import_html2.resolveCallback)(
-                res,
-                import_html2.HtmlEscapedCallbackPhase.BeforeStream,
-                true,
-                context
-              );
-              res.callbacks?.map((c) => c({ phase: import_html2.HtmlEscapedCallbackPhase.Stream, context })).filter(Boolean).forEach(then);
-              resolvedCount++;
-              controller.enqueue(textEncoder.encode(res));
-            })
+            promise
+              .catch((err) => {
+                console.log(err);
+                onError(err);
+                return "";
+              })
+              .then(async (res) => {
+                res = await (0, import_html2.resolveCallback)(
+                  res,
+                  import_html2.HtmlEscapedCallbackPhase.BeforeStream,
+                  true,
+                  context,
+                );
+                res.callbacks
+                  ?.map((c) =>
+                    c({
+                      phase: import_html2.HtmlEscapedCallbackPhase.Stream,
+                      context,
+                    }),
+                  )
+                  .filter(Boolean)
+                  .forEach(then);
+                resolvedCount++;
+                controller.enqueue(textEncoder.encode(res));
+              }),
           );
         };
-        resolved.callbacks?.map((c) => c({ phase: import_html2.HtmlEscapedCallbackPhase.Stream, context })).filter(Boolean).forEach(then);
+        resolved.callbacks
+          ?.map((c) =>
+            c({ phase: import_html2.HtmlEscapedCallbackPhase.Stream, context }),
+          )
+          .filter(Boolean)
+          .forEach(then);
         while (resolvedCount !== callbacks.length) {
           await Promise.all(callbacks);
         }
@@ -156,13 +188,14 @@ const renderToReadableStream = (content, onError = console.trace) => {
         onError(e);
       }
       controller.close();
-    }
+    },
   });
   return reader;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  StreamingContext,
-  Suspense,
-  renderToReadableStream
-});
+0 &&
+  (module.exports = {
+    StreamingContext,
+    Suspense,
+    renderToReadableStream,
+  });

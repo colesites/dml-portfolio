@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.dedentBlockStringLines = dedentBlockStringLines;
 exports.isPrintableAsBlockString = isPrintableAsBlockString;
 exports.printBlockString = printBlockString;
 
-var _characterClasses = require('./characterClasses.js');
+var _characterClasses = require("./characterClasses.js");
 
 /**
  * Produces the value of a block string from its parsed raw value, similar to
@@ -74,7 +72,7 @@ function leadingWhitespace(str) {
  */
 
 function isPrintableAsBlockString(value) {
-  if (value === '') {
+  if (value === "") {
     return true; // empty string is printable
   }
 
@@ -167,7 +165,7 @@ function printBlockString(value, options) {
   const hasTrailingTripleQuotes = escapedValue.endsWith('\\"""'); // Trailing quote (single or double) or slash forces trailing new line
 
   const hasTrailingQuote = value.endsWith('"') && !hasTrailingTripleQuotes;
-  const hasTrailingSlash = value.endsWith('\\');
+  const hasTrailingSlash = value.endsWith("\\");
   const forceTrailingNewline = hasTrailingQuote || hasTrailingSlash;
   const printAsMultipleLines =
     !(options !== null && options !== void 0 && options.minimize) && // add leading and trailing new lines only if it improves readability
@@ -176,19 +174,19 @@ function printBlockString(value, options) {
       forceTrailingNewline ||
       forceLeadingNewLine ||
       hasTrailingTripleQuotes);
-  let result = ''; // Format a multi-line block quote to account for leading space.
+  let result = ""; // Format a multi-line block quote to account for leading space.
 
   const skipLeadingNewLine =
     isSingleLine && (0, _characterClasses.isWhiteSpace)(value.charCodeAt(0));
 
   if ((printAsMultipleLines && !skipLeadingNewLine) || forceLeadingNewLine) {
-    result += '\n';
+    result += "\n";
   }
 
   result += escapedValue;
 
   if (printAsMultipleLines || forceTrailingNewline) {
-    result += '\n';
+    result += "\n";
   }
 
   return '"""' + result + '"""';

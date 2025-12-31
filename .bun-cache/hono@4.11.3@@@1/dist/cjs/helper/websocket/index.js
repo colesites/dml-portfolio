@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var websocket_exports = {};
 __export(websocket_exports, {
   WSContext: () => WSContext,
   createWSMessageEvent: () => createWSMessageEvent,
-  defineWebSocketHelper: () => defineWebSocketHelper
+  defineWebSocketHelper: () => defineWebSocketHelper,
 });
 module.exports = __toCommonJS(websocket_exports);
 class WSContext {
@@ -47,11 +51,11 @@ class WSContext {
 }
 const createWSMessageEvent = (source) => {
   return new MessageEvent("message", {
-    data: source
+    data: source,
   });
 };
 const defineWebSocketHelper = (handler) => {
-  return ((...args) => {
+  return (...args) => {
     if (typeof args[0] === "function") {
       const [createEvents, options] = args;
       return async function upgradeWebSocket(c, next) {
@@ -72,11 +76,12 @@ const defineWebSocketHelper = (handler) => {
         return upgraded;
       })();
     }
-  });
+  };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  WSContext,
-  createWSMessageEvent,
-  defineWebSocketHelper
-});
+0 &&
+  (module.exports = {
+    WSContext,
+    createWSMessageEvent,
+    defineWebSocketHelper,
+  });

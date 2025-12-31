@@ -10,17 +10,20 @@
  * If the {@link MinimatchOptions.magicalBraces} option is used,
  * then braces (`{` and `}`) will be escaped.
  */
-export const escape = (s, { windowsPathsNoEscape = false, magicalBraces = false, } = {}) => {
-    // don't need to escape +@! because we escape the parens
-    // that make those magic, and escaping ! as [!] isn't valid,
-    // because [!]] is a valid glob class meaning not ']'.
-    if (magicalBraces) {
-        return windowsPathsNoEscape
-            ? s.replace(/[?*()[\]{}]/g, '[$&]')
-            : s.replace(/[?*()[\]\\{}]/g, '\\$&');
-    }
+export const escape = (
+  s,
+  { windowsPathsNoEscape = false, magicalBraces = false } = {},
+) => {
+  // don't need to escape +@! because we escape the parens
+  // that make those magic, and escaping ! as [!] isn't valid,
+  // because [!]] is a valid glob class meaning not ']'.
+  if (magicalBraces) {
     return windowsPathsNoEscape
-        ? s.replace(/[?*()[\]]/g, '[$&]')
-        : s.replace(/[?*()[\]\\]/g, '\\$&');
+      ? s.replace(/[?*()[\]{}]/g, "[$&]")
+      : s.replace(/[?*()[\]\\{}]/g, "\\$&");
+  }
+  return windowsPathsNoEscape
+    ? s.replace(/[?*()[\]]/g, "[$&]")
+    : s.replace(/[?*()[\]\\]/g, "\\$&");
 };
 //# sourceMappingURL=escape.js.map

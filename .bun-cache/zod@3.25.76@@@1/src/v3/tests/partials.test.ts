@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
 import * as z from "zod/v3";
@@ -56,8 +56,13 @@ test("deep partial parse", () => {
   expect(deep.shape.name instanceof z.ZodOptional).toBe(true);
   expect(deep.shape.outer instanceof z.ZodOptional).toBe(true);
   expect(deep.shape.outer._def.innerType instanceof z.ZodObject).toBe(true);
-  expect(deep.shape.outer._def.innerType.shape.inner instanceof z.ZodOptional).toBe(true);
-  expect(deep.shape.outer._def.innerType.shape.inner._def.innerType instanceof z.ZodString).toBe(true);
+  expect(
+    deep.shape.outer._def.innerType.shape.inner instanceof z.ZodOptional,
+  ).toBe(true);
+  expect(
+    deep.shape.outer._def.innerType.shape.inner._def.innerType instanceof
+      z.ZodString,
+  ).toBe(true);
 });
 
 test("deep partial runtime tests", () => {
@@ -99,7 +104,9 @@ test("deep partial tuple", () => {
     })
     .deepPartial();
 
-  expect(schema.shape.tuple.unwrap().items[0].shape.name).toBeInstanceOf(ZodOptional);
+  expect(schema.shape.tuple.unwrap().items[0].shape.name).toBeInstanceOf(
+    ZodOptional,
+  );
 });
 
 test("deep partial inference", () => {
@@ -201,7 +208,9 @@ test("partial with mask", async () => {
     country: z.string(),
   });
 
-  const masked = object.partial({ age: true, field: true, name: true }).strict();
+  const masked = object
+    .partial({ age: true, field: true, name: true })
+    .strict();
 
   expect(masked.shape.name).toBeInstanceOf(z.ZodOptional);
   expect(masked.shape.age).toBeInstanceOf(z.ZodOptional);

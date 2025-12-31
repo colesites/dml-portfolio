@@ -1,18 +1,20 @@
 /**
  * Provide hooks used only in jsx/dom
  */
-import type { Context } from '../../context';
-type FormStatus = {
-    pending: false;
-    data: null;
-    method: null;
-    action: null;
-} | {
-    pending: true;
-    data: FormData;
-    method: 'get' | 'post';
-    action: string | ((formData: FormData) => void | Promise<void>);
-};
+import type { Context } from "../../context";
+type FormStatus =
+  | {
+      pending: false;
+      data: null;
+      method: null;
+      action: null;
+    }
+  | {
+      pending: true;
+      data: FormData;
+      method: "get" | "post";
+      action: string | ((formData: FormData) => void | Promise<void>);
+    };
 export declare const FormContext: Context<FormStatus>;
 export declare const registerAction: (action: Promise<unknown>) => void;
 /**
@@ -27,7 +29,10 @@ export declare const useFormStatus: () => FormStatus;
  * @param updateState
  * @returns [T, (action: N) => void]
  */
-export declare const useOptimistic: <T, N>(state: T, updateState: (currentState: T, action: N) => T) => [T, (action: N) => void];
+export declare const useOptimistic: <T, N>(
+  state: T,
+  updateState: (currentState: T, action: N) => T,
+) => [T, (action: N) => void];
 /**
  * This hook returns the current state and a function to update the state by form action
  * @param fn
@@ -35,5 +40,8 @@ export declare const useOptimistic: <T, N>(state: T, updateState: (currentState:
  * @param permalink
  * @returns [T, (data: FormData) => void]
  */
-export declare const useActionState: <T>(fn: Function, initialState: T, permalink?: string) => [T, Function];
-export {};
+export declare const useActionState: <T>(
+  fn: Function,
+  initialState: T,
+  permalink?: string,
+) => [T, Function];

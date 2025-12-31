@@ -1,18 +1,18 @@
-import type { Maybe } from '../jsutils/Maybe';
-import type { ObjMap } from '../jsutils/ObjMap';
-import type { GraphQLError } from '../error/GraphQLError';
+import type { Maybe } from "../jsutils/Maybe";
+import type { ObjMap } from "../jsutils/ObjMap";
+import type { GraphQLError } from "../error/GraphQLError";
 import type {
   SchemaDefinitionNode,
   SchemaExtensionNode,
-} from '../language/ast';
-import { OperationTypeNode } from '../language/ast';
+} from "../language/ast";
+import { OperationTypeNode } from "../language/ast";
 import type {
   GraphQLAbstractType,
   GraphQLInterfaceType,
   GraphQLNamedType,
   GraphQLObjectType,
-} from './definition';
-import type { GraphQLDirective } from './directives';
+} from "./definition";
+import type { GraphQLDirective } from "./directives";
 /**
  * Test if the given value is a GraphQL schema.
  */
@@ -167,4 +167,3 @@ export interface GraphQLSchemaNormalizedConfig extends GraphQLSchemaConfig {
   extensionASTNodes: ReadonlyArray<SchemaExtensionNode>;
   assumeValid: boolean;
 }
-export {};

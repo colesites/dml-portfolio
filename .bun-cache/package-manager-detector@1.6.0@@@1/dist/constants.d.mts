@@ -1,4 +1,7 @@
-import { A as Agent, a as AgentName } from './shared/package-manager-detector.DksAilYA.mjs';
+import {
+  A as Agent,
+  a as AgentName,
+} from "./shared/package-manager-detector.DksAilYA.mjs";
 
 declare const AGENTS: Agent[];
 declare const LOCKS: Record<string, AgentName>;

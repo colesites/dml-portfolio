@@ -1,57 +1,60 @@
-import type {TypedArray} from './typed-array.d.ts';
-import type {FindGlobalInstanceType} from './find-global-type.d.ts';
+import type { TypedArray } from "./typed-array.d.ts";
+import type { FindGlobalInstanceType } from "./find-global-type.d.ts";
 
 type StructuredCloneablePrimitive =
-	| string
-	| number
-	| bigint
-	| boolean
-	| null
-	| undefined
-	| Boolean
-	| Number
-	| String;
+  | string
+  | number
+  | bigint
+  | boolean
+  | null
+  | undefined
+  | boolean
+  | number
+  | string;
 
 type StructuredCloneableData =
-	| ArrayBuffer
-	| DataView
-	| Date
-	| Error
-	| RegExp
-	| TypedArray
-	| FindGlobalInstanceType<
-	// DOM or Node types
-		| 'Blob'
-		| 'File'
-	// DOM exclusive types
-		| 'AudioData'
-		| 'CropTarget'
-		| 'CryptoKey'
-		| 'DOMException'
-		| 'DOMMatrix'
-		| 'DOMMatrixReadOnly'
-		| 'DOMPoint'
-		| 'DOMPointReadOnly'
-		| 'DOMQuad'
-		| 'DOMRect'
-		| 'DOMRectReadOnly'
-		| 'FileList'
-		| 'FileSystemDirectoryHandle'
-		| 'FileSystemFileHandle'
-		| 'FileSystemHandle'
-		| 'GPUCompilationInfo'
-		| 'GPUCompilationMessage'
-		| 'ImageBitmap'
-		| 'ImageData'
-		| 'RTCCertificate'
-		| 'VideoFrame'
-	>;
+  | ArrayBuffer
+  | DataView
+  | Date
+  | Error
+  | RegExp
+  | TypedArray
+  | FindGlobalInstanceType<
+      // DOM or Node types
+      | "Blob"
+      | "File"
+      // DOM exclusive types
+      | "AudioData"
+      | "CropTarget"
+      | "CryptoKey"
+      | "DOMException"
+      | "DOMMatrix"
+      | "DOMMatrixReadOnly"
+      | "DOMPoint"
+      | "DOMPointReadOnly"
+      | "DOMQuad"
+      | "DOMRect"
+      | "DOMRectReadOnly"
+      | "FileList"
+      | "FileSystemDirectoryHandle"
+      | "FileSystemFileHandle"
+      | "FileSystemHandle"
+      | "GPUCompilationInfo"
+      | "GPUCompilationMessage"
+      | "ImageBitmap"
+      | "ImageData"
+      | "RTCCertificate"
+      | "VideoFrame"
+    >;
 
 type StructuredCloneableCollection =
-	| readonly StructuredCloneable[]
-	| {readonly [key: string]: StructuredCloneable; readonly [key: number]: StructuredCloneable}
-	| ReadonlyMap<StructuredCloneable, StructuredCloneable>
-	| ReadonlySet<StructuredCloneable>;
+  | readonly StructuredCloneable[]
+  | {
+      readonly [key: string]: StructuredCloneable;
+      readonly [key: number]: StructuredCloneable;
+    }
+  | ReadonlyMap<StructuredCloneable, StructuredCloneable>
+  | ReadonlySet<StructuredCloneable>;
 
 /**
 Matches a value that can be losslessly cloned using `structuredClone`.
@@ -84,6 +87,7 @@ const clonedGood = structuredClone(good);
 
 @category Structured clone
 */
-export type StructuredCloneable = StructuredCloneablePrimitive | StructuredCloneableData | StructuredCloneableCollection;
-
-export {};
+export type StructuredCloneable =
+  | StructuredCloneablePrimitive
+  | StructuredCloneableData
+  | StructuredCloneableCollection;

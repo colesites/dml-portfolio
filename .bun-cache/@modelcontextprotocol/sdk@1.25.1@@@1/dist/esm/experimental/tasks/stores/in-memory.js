@@ -4,8 +4,9 @@
  *
  * @experimental
  */
-import { isTerminal } from '../interfaces.js';
-import { randomBytes } from 'node:crypto';
+
+import { randomBytes } from "node:crypto";
+import { isTerminal } from "../interfaces.js";
 /**
  * A simple in-memory implementation of TaskStore for demonstration purposes.
  *
@@ -18,155 +19,163 @@ import { randomBytes } from 'node:crypto';
  * @experimental
  */
 export class InMemoryTaskStore {
-    constructor() {
-        this.tasks = new Map();
-        this.cleanupTimers = new Map();
+  constructor() {
+    this.tasks = new Map();
+    this.cleanupTimers = new Map();
+  }
+  /**
+   * Generates a unique task ID.
+   * Uses 16 bytes of random data encoded as hex (32 characters).
+   */
+  generateTaskId() {
+    return randomBytes(16).toString("hex");
+  }
+  async createTask(taskParams, requestId, request, _sessionId) {
+    // Generate a unique task ID
+    const taskId = this.generateTaskId();
+    // Ensure uniqueness
+    if (this.tasks.has(taskId)) {
+      throw new Error(`Task with ID ${taskId} already exists`);
     }
-    /**
-     * Generates a unique task ID.
-     * Uses 16 bytes of random data encoded as hex (32 characters).
-     */
-    generateTaskId() {
-        return randomBytes(16).toString('hex');
+    const actualTtl = taskParams.ttl ?? null;
+    // Create task with generated ID and timestamps
+    const createdAt = new Date().toISOString();
+    const task = {
+      taskId,
+      status: "working",
+      ttl: actualTtl,
+      createdAt,
+      lastUpdatedAt: createdAt,
+      pollInterval: taskParams.pollInterval ?? 1000,
+    };
+    this.tasks.set(taskId, {
+      task,
+      request,
+      requestId,
+    });
+    // Schedule cleanup if ttl is specified
+    // Cleanup occurs regardless of task status
+    if (actualTtl) {
+      const timer = setTimeout(() => {
+        this.tasks.delete(taskId);
+        this.cleanupTimers.delete(taskId);
+      }, actualTtl);
+      this.cleanupTimers.set(taskId, timer);
     }
-    async createTask(taskParams, requestId, request, _sessionId) {
-        // Generate a unique task ID
-        const taskId = this.generateTaskId();
-        // Ensure uniqueness
-        if (this.tasks.has(taskId)) {
-            throw new Error(`Task with ID ${taskId} already exists`);
-        }
-        const actualTtl = taskParams.ttl ?? null;
-        // Create task with generated ID and timestamps
-        const createdAt = new Date().toISOString();
-        const task = {
-            taskId,
-            status: 'working',
-            ttl: actualTtl,
-            createdAt,
-            lastUpdatedAt: createdAt,
-            pollInterval: taskParams.pollInterval ?? 1000
-        };
-        this.tasks.set(taskId, {
-            task,
-            request,
-            requestId
-        });
-        // Schedule cleanup if ttl is specified
-        // Cleanup occurs regardless of task status
-        if (actualTtl) {
-            const timer = setTimeout(() => {
-                this.tasks.delete(taskId);
-                this.cleanupTimers.delete(taskId);
-            }, actualTtl);
-            this.cleanupTimers.set(taskId, timer);
-        }
-        return task;
+    return task;
+  }
+  async getTask(taskId, _sessionId) {
+    const stored = this.tasks.get(taskId);
+    return stored ? { ...stored.task } : null;
+  }
+  async storeTaskResult(taskId, status, result, _sessionId) {
+    const stored = this.tasks.get(taskId);
+    if (!stored) {
+      throw new Error(`Task with ID ${taskId} not found`);
     }
-    async getTask(taskId, _sessionId) {
-        const stored = this.tasks.get(taskId);
-        return stored ? { ...stored.task } : null;
+    // Don't allow storing results for tasks already in terminal state
+    if (isTerminal(stored.task.status)) {
+      throw new Error(
+        `Cannot store result for task ${taskId} in terminal status '${stored.task.status}'. Task results can only be stored once.`,
+      );
     }
-    async storeTaskResult(taskId, status, result, _sessionId) {
-        const stored = this.tasks.get(taskId);
-        if (!stored) {
-            throw new Error(`Task with ID ${taskId} not found`);
-        }
-        // Don't allow storing results for tasks already in terminal state
-        if (isTerminal(stored.task.status)) {
-            throw new Error(`Cannot store result for task ${taskId} in terminal status '${stored.task.status}'. Task results can only be stored once.`);
-        }
-        stored.result = result;
-        stored.task.status = status;
-        stored.task.lastUpdatedAt = new Date().toISOString();
-        // Reset cleanup timer to start from now (if ttl is set)
-        if (stored.task.ttl) {
-            const existingTimer = this.cleanupTimers.get(taskId);
-            if (existingTimer) {
-                clearTimeout(existingTimer);
-            }
-            const timer = setTimeout(() => {
-                this.tasks.delete(taskId);
-                this.cleanupTimers.delete(taskId);
-            }, stored.task.ttl);
-            this.cleanupTimers.set(taskId, timer);
-        }
+    stored.result = result;
+    stored.task.status = status;
+    stored.task.lastUpdatedAt = new Date().toISOString();
+    // Reset cleanup timer to start from now (if ttl is set)
+    if (stored.task.ttl) {
+      const existingTimer = this.cleanupTimers.get(taskId);
+      if (existingTimer) {
+        clearTimeout(existingTimer);
+      }
+      const timer = setTimeout(() => {
+        this.tasks.delete(taskId);
+        this.cleanupTimers.delete(taskId);
+      }, stored.task.ttl);
+      this.cleanupTimers.set(taskId, timer);
     }
-    async getTaskResult(taskId, _sessionId) {
-        const stored = this.tasks.get(taskId);
-        if (!stored) {
-            throw new Error(`Task with ID ${taskId} not found`);
-        }
-        if (!stored.result) {
-            throw new Error(`Task ${taskId} has no result stored`);
-        }
-        return stored.result;
+  }
+  async getTaskResult(taskId, _sessionId) {
+    const stored = this.tasks.get(taskId);
+    if (!stored) {
+      throw new Error(`Task with ID ${taskId} not found`);
     }
-    async updateTaskStatus(taskId, status, statusMessage, _sessionId) {
-        const stored = this.tasks.get(taskId);
-        if (!stored) {
-            throw new Error(`Task with ID ${taskId} not found`);
-        }
-        // Don't allow transitions from terminal states
-        if (isTerminal(stored.task.status)) {
-            throw new Error(`Cannot update task ${taskId} from terminal status '${stored.task.status}' to '${status}'. Terminal states (completed, failed, cancelled) cannot transition to other states.`);
-        }
-        stored.task.status = status;
-        if (statusMessage) {
-            stored.task.statusMessage = statusMessage;
-        }
-        stored.task.lastUpdatedAt = new Date().toISOString();
-        // If task is in a terminal state and has ttl, start cleanup timer
-        if (isTerminal(status) && stored.task.ttl) {
-            const existingTimer = this.cleanupTimers.get(taskId);
-            if (existingTimer) {
-                clearTimeout(existingTimer);
-            }
-            const timer = setTimeout(() => {
-                this.tasks.delete(taskId);
-                this.cleanupTimers.delete(taskId);
-            }, stored.task.ttl);
-            this.cleanupTimers.set(taskId, timer);
-        }
+    if (!stored.result) {
+      throw new Error(`Task ${taskId} has no result stored`);
     }
-    async listTasks(cursor, _sessionId) {
-        const PAGE_SIZE = 10;
-        const allTaskIds = Array.from(this.tasks.keys());
-        let startIndex = 0;
-        if (cursor) {
-            const cursorIndex = allTaskIds.indexOf(cursor);
-            if (cursorIndex >= 0) {
-                startIndex = cursorIndex + 1;
-            }
-            else {
-                // Invalid cursor - throw error
-                throw new Error(`Invalid cursor: ${cursor}`);
-            }
-        }
-        const pageTaskIds = allTaskIds.slice(startIndex, startIndex + PAGE_SIZE);
-        const tasks = pageTaskIds.map(taskId => {
-            const stored = this.tasks.get(taskId);
-            return { ...stored.task };
-        });
-        const nextCursor = startIndex + PAGE_SIZE < allTaskIds.length ? pageTaskIds[pageTaskIds.length - 1] : undefined;
-        return { tasks, nextCursor };
+    return stored.result;
+  }
+  async updateTaskStatus(taskId, status, statusMessage, _sessionId) {
+    const stored = this.tasks.get(taskId);
+    if (!stored) {
+      throw new Error(`Task with ID ${taskId} not found`);
     }
-    /**
-     * Cleanup all timers (useful for testing or graceful shutdown)
-     */
-    cleanup() {
-        for (const timer of this.cleanupTimers.values()) {
-            clearTimeout(timer);
-        }
-        this.cleanupTimers.clear();
-        this.tasks.clear();
+    // Don't allow transitions from terminal states
+    if (isTerminal(stored.task.status)) {
+      throw new Error(
+        `Cannot update task ${taskId} from terminal status '${stored.task.status}' to '${status}'. Terminal states (completed, failed, cancelled) cannot transition to other states.`,
+      );
     }
-    /**
-     * Get all tasks (useful for debugging)
-     */
-    getAllTasks() {
-        return Array.from(this.tasks.values()).map(stored => ({ ...stored.task }));
+    stored.task.status = status;
+    if (statusMessage) {
+      stored.task.statusMessage = statusMessage;
     }
+    stored.task.lastUpdatedAt = new Date().toISOString();
+    // If task is in a terminal state and has ttl, start cleanup timer
+    if (isTerminal(status) && stored.task.ttl) {
+      const existingTimer = this.cleanupTimers.get(taskId);
+      if (existingTimer) {
+        clearTimeout(existingTimer);
+      }
+      const timer = setTimeout(() => {
+        this.tasks.delete(taskId);
+        this.cleanupTimers.delete(taskId);
+      }, stored.task.ttl);
+      this.cleanupTimers.set(taskId, timer);
+    }
+  }
+  async listTasks(cursor, _sessionId) {
+    const PAGE_SIZE = 10;
+    const allTaskIds = Array.from(this.tasks.keys());
+    let startIndex = 0;
+    if (cursor) {
+      const cursorIndex = allTaskIds.indexOf(cursor);
+      if (cursorIndex >= 0) {
+        startIndex = cursorIndex + 1;
+      } else {
+        // Invalid cursor - throw error
+        throw new Error(`Invalid cursor: ${cursor}`);
+      }
+    }
+    const pageTaskIds = allTaskIds.slice(startIndex, startIndex + PAGE_SIZE);
+    const tasks = pageTaskIds.map((taskId) => {
+      const stored = this.tasks.get(taskId);
+      return { ...stored.task };
+    });
+    const nextCursor =
+      startIndex + PAGE_SIZE < allTaskIds.length
+        ? pageTaskIds[pageTaskIds.length - 1]
+        : undefined;
+    return { tasks, nextCursor };
+  }
+  /**
+   * Cleanup all timers (useful for testing or graceful shutdown)
+   */
+  cleanup() {
+    for (const timer of this.cleanupTimers.values()) {
+      clearTimeout(timer);
+    }
+    this.cleanupTimers.clear();
+    this.tasks.clear();
+  }
+  /**
+   * Get all tasks (useful for debugging)
+   */
+  getAllTasks() {
+    return Array.from(this.tasks.values()).map((stored) => ({
+      ...stored.task,
+    }));
+  }
 }
 /**
  * A simple in-memory implementation of TaskMessageQueue for demonstration purposes.
@@ -180,67 +189,69 @@ export class InMemoryTaskStore {
  * @experimental
  */
 export class InMemoryTaskMessageQueue {
-    constructor() {
-        this.queues = new Map();
+  constructor() {
+    this.queues = new Map();
+  }
+  /**
+   * Generates a queue key from taskId.
+   * SessionId is intentionally ignored because taskIds are globally unique
+   * and tasks need to be accessible across HTTP requests/sessions.
+   */
+  getQueueKey(taskId, _sessionId) {
+    return taskId;
+  }
+  /**
+   * Gets or creates a queue for the given task and session.
+   */
+  getQueue(taskId, sessionId) {
+    const key = this.getQueueKey(taskId, sessionId);
+    let queue = this.queues.get(key);
+    if (!queue) {
+      queue = [];
+      this.queues.set(key, queue);
     }
-    /**
-     * Generates a queue key from taskId.
-     * SessionId is intentionally ignored because taskIds are globally unique
-     * and tasks need to be accessible across HTTP requests/sessions.
-     */
-    getQueueKey(taskId, _sessionId) {
-        return taskId;
+    return queue;
+  }
+  /**
+   * Adds a message to the end of the queue for a specific task.
+   * Atomically checks queue size and throws if maxSize would be exceeded.
+   * @param taskId The task identifier
+   * @param message The message to enqueue
+   * @param sessionId Optional session ID for binding the operation to a specific session
+   * @param maxSize Optional maximum queue size - if specified and queue is full, throws an error
+   * @throws Error if maxSize is specified and would be exceeded
+   */
+  async enqueue(taskId, message, sessionId, maxSize) {
+    const queue = this.getQueue(taskId, sessionId);
+    // Atomically check size and enqueue
+    if (maxSize !== undefined && queue.length >= maxSize) {
+      throw new Error(
+        `Task message queue overflow: queue size (${queue.length}) exceeds maximum (${maxSize})`,
+      );
     }
-    /**
-     * Gets or creates a queue for the given task and session.
-     */
-    getQueue(taskId, sessionId) {
-        const key = this.getQueueKey(taskId, sessionId);
-        let queue = this.queues.get(key);
-        if (!queue) {
-            queue = [];
-            this.queues.set(key, queue);
-        }
-        return queue;
-    }
-    /**
-     * Adds a message to the end of the queue for a specific task.
-     * Atomically checks queue size and throws if maxSize would be exceeded.
-     * @param taskId The task identifier
-     * @param message The message to enqueue
-     * @param sessionId Optional session ID for binding the operation to a specific session
-     * @param maxSize Optional maximum queue size - if specified and queue is full, throws an error
-     * @throws Error if maxSize is specified and would be exceeded
-     */
-    async enqueue(taskId, message, sessionId, maxSize) {
-        const queue = this.getQueue(taskId, sessionId);
-        // Atomically check size and enqueue
-        if (maxSize !== undefined && queue.length >= maxSize) {
-            throw new Error(`Task message queue overflow: queue size (${queue.length}) exceeds maximum (${maxSize})`);
-        }
-        queue.push(message);
-    }
-    /**
-     * Removes and returns the first message from the queue for a specific task.
-     * @param taskId The task identifier
-     * @param sessionId Optional session ID for binding the query to a specific session
-     * @returns The first message, or undefined if the queue is empty
-     */
-    async dequeue(taskId, sessionId) {
-        const queue = this.getQueue(taskId, sessionId);
-        return queue.shift();
-    }
-    /**
-     * Removes and returns all messages from the queue for a specific task.
-     * @param taskId The task identifier
-     * @param sessionId Optional session ID for binding the query to a specific session
-     * @returns Array of all messages that were in the queue
-     */
-    async dequeueAll(taskId, sessionId) {
-        const key = this.getQueueKey(taskId, sessionId);
-        const queue = this.queues.get(key) ?? [];
-        this.queues.delete(key);
-        return queue;
-    }
+    queue.push(message);
+  }
+  /**
+   * Removes and returns the first message from the queue for a specific task.
+   * @param taskId The task identifier
+   * @param sessionId Optional session ID for binding the query to a specific session
+   * @returns The first message, or undefined if the queue is empty
+   */
+  async dequeue(taskId, sessionId) {
+    const queue = this.getQueue(taskId, sessionId);
+    return queue.shift();
+  }
+  /**
+   * Removes and returns all messages from the queue for a specific task.
+   * @param taskId The task identifier
+   * @param sessionId Optional session ID for binding the query to a specific session
+   * @returns Array of all messages that were in the queue
+   */
+  async dequeueAll(taskId, sessionId) {
+    const key = this.getQueueKey(taskId, sessionId);
+    const queue = this.queues.get(key) ?? [];
+    this.queues.delete(key);
+    return queue;
+  }
 }
 //# sourceMappingURL=in-memory.js.map

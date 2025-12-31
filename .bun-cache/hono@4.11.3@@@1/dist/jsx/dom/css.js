@@ -1,17 +1,18 @@
 // src/jsx/dom/css.ts
 import {
   CLASS_NAME,
+  cssCommon,
+  cxCommon,
   DEFAULT_STYLE_ID,
+  keyframesCommon,
   PSEUDO_GLOBAL_SELECTOR,
+  rawCssString,
   SELECTOR,
   SELECTORS,
   STYLE_STRING,
-  cssCommon,
-  cxCommon,
-  keyframesCommon,
-  viewTransitionCommon
+  viewTransitionCommon,
 } from "../../helper/css/common.js";
-import { rawCssString } from "../../helper/css/common.js";
+
 var splitRule = (rule) => {
   const result = [];
   let startPos = 0;
@@ -42,7 +43,6 @@ var splitRule = (rule) => {
         result.push(rule.slice(startPos, i + 1));
         startPos = i + 1;
       }
-      continue;
     }
   }
   return result;
@@ -53,7 +53,6 @@ var createCssJsxDomObjects = ({ id }) => {
     if (!styleSheet) {
       styleSheet = document.querySelector(`style#${id}`)?.sheet;
       if (styleSheet) {
-        ;
         styleSheet.addedStyles = /* @__PURE__ */ new Set();
       }
     }
@@ -72,7 +71,10 @@ var createCssJsxDomObjects = ({ id }) => {
     }
     if (!addedStyles.has(className)) {
       addedStyles.add(className);
-      (className.startsWith(PSEUDO_GLOBAL_SELECTOR) ? splitRule(styleString) : [`${className[0] === "@" ? "" : "."}${className}{${styleString}}`]).forEach((rule) => {
+      (className.startsWith(PSEUDO_GLOBAL_SELECTOR)
+        ? splitRule(styleString)
+        : [`${className[0] === "@" ? "" : "."}${className}{${styleString}}`]
+      ).forEach((rule) => {
         sheet.insertRule(rule, sheet.cssRules.length);
       });
     }
@@ -81,21 +83,25 @@ var createCssJsxDomObjects = ({ id }) => {
     toString() {
       const selector = this[SELECTOR];
       insertRule(selector, this[STYLE_STRING]);
-      this[SELECTORS].forEach(({ [CLASS_NAME]: className, [STYLE_STRING]: styleString }) => {
-        insertRule(className, styleString);
-      });
+      this[SELECTORS].forEach(
+        ({ [CLASS_NAME]: className, [STYLE_STRING]: styleString }) => {
+          insertRule(className, styleString);
+        },
+      );
       return this[CLASS_NAME];
-    }
+    },
   };
   const Style2 = ({ children, nonce }) => ({
     tag: "style",
     props: {
       id,
       nonce,
-      children: children && (Array.isArray(children) ? children : [children]).map(
-        (c) => c[STYLE_STRING]
-      )
-    }
+      children:
+        children &&
+        (Array.isArray(children) ? children : [children]).map(
+          (c) => c[STYLE_STRING],
+        ),
+    },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   });
   return [cssObject, Style2];
@@ -114,15 +120,15 @@ var createCssContext = ({ id }) => {
     return css2(Array(args.length).fill(""), ...args);
   };
   const keyframes2 = keyframesCommon;
-  const viewTransition2 = ((strings, ...values) => {
+  const viewTransition2 = (strings, ...values) => {
     return newCssClassNameObject(viewTransitionCommon(strings, values));
-  });
+  };
   return {
     css: css2,
     cx: cx2,
     keyframes: keyframes2,
     viewTransition: viewTransition2,
-    Style: Style2
+    Style: Style2,
   };
 };
 var defaultContext = createCssContext({ id: DEFAULT_STYLE_ID });
@@ -139,5 +145,5 @@ export {
   cx,
   keyframes,
   rawCssString,
-  viewTransition
+  viewTransition,
 };

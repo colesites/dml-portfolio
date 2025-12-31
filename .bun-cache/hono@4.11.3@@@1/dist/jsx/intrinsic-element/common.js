@@ -4,12 +4,8 @@ var deDupeKeyMap = {
   script: ["src"],
   style: ["data-href"],
   link: ["href"],
-  meta: ["name", "httpEquiv", "charset", "itemProp"]
+  meta: ["name", "httpEquiv", "charset", "itemProp"],
 };
 var domRenderers = {};
 var dataPrecedenceAttr = "data-precedence";
-export {
-  dataPrecedenceAttr,
-  deDupeKeyMap,
-  domRenderers
-};
+export { dataPrecedenceAttr, deDupeKeyMap, domRenderers };

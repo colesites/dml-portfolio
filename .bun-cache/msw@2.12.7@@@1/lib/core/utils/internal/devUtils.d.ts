@@ -11,9 +11,9 @@ declare function warn(message: string, ...positionals: any[]): void;
  */
 declare function error(message: string, ...positionals: any[]): void;
 declare const devUtils: {
-    formatMessage: typeof formatMessage;
-    warn: typeof warn;
-    error: typeof error;
+  formatMessage: typeof formatMessage;
+  warn: typeof warn;
+  error: typeof error;
 };
 /**
  * Internal error instance.
@@ -22,7 +22,7 @@ declare const devUtils: {
  * wish for the error to be coerced to a 500 fallback response.
  */
 declare class InternalError extends Error {
-    constructor(message: string);
+  constructor(message: string);
 }
 
 export { InternalError, devUtils };

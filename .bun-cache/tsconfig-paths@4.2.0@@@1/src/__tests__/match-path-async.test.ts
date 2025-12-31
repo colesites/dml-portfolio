@@ -8,7 +8,7 @@ describe("match-path-async", () => {
         t.absoluteBaseUrl,
         t.paths,
         t.mainFields,
-        t.addMatchAll
+        t.addMatchAll,
       );
       matchPath(
         t.requestedModule,
@@ -19,8 +19,8 @@ describe("match-path-async", () => {
         (_err, result) => {
           expect(result).toBe(t.expectedPath);
           done();
-        }
+        },
       );
-    })
+    }),
   );
 });

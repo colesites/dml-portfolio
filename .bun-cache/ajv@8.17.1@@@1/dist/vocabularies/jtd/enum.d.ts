@@ -1,6 +1,10 @@
 import type { CodeKeywordDefinition, ErrorObject } from "../../types";
-export type JTDEnumError = ErrorObject<"enum", {
+export type JTDEnumError = ErrorObject<
+  "enum",
+  {
     allowedValues: string[];
-}, string[]>;
+  },
+  string[]
+>;
 declare const def: CodeKeywordDefinition;
 export default def;

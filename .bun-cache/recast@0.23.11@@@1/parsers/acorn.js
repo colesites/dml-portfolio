@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = void 0;
 // This module is suitable for passing as options.parser when calling
@@ -10,24 +9,24 @@ exports.parse = void 0;
 //
 var util_1 = require("../lib/util");
 function parse(source, options) {
-    var comments = [];
-    var tokens = [];
-    var ast = require("acorn").parse(source, {
-        allowHashBang: true,
-        allowImportExportEverywhere: true,
-        allowReturnOutsideFunction: true,
-        ecmaVersion: (0, util_1.getOption)(options, "ecmaVersion", 8),
-        sourceType: (0, util_1.getOption)(options, "sourceType", "module"),
-        locations: true,
-        onComment: comments,
-        onToken: tokens,
-    });
-    if (!ast.comments) {
-        ast.comments = comments;
-    }
-    if (!ast.tokens) {
-        ast.tokens = tokens;
-    }
-    return ast;
+  var comments = [];
+  var tokens = [];
+  var ast = require("acorn").parse(source, {
+    allowHashBang: true,
+    allowImportExportEverywhere: true,
+    allowReturnOutsideFunction: true,
+    ecmaVersion: (0, util_1.getOption)(options, "ecmaVersion", 8),
+    sourceType: (0, util_1.getOption)(options, "sourceType", "module"),
+    locations: true,
+    onComment: comments,
+    onToken: tokens,
+  });
+  if (!ast.comments) {
+    ast.comments = comments;
+  }
+  if (!ast.tokens) {
+    ast.tokens = tokens;
+  }
+  return ast;
 }
 exports.parse = parse;

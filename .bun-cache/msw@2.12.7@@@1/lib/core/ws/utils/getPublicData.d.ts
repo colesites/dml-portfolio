@@ -1,4 +1,4 @@
-import { WebSocketData } from '@mswjs/interceptors/WebSocket';
+import { WebSocketData } from "@mswjs/interceptors/WebSocket";
 
 declare function getPublicData(data: WebSocketData): Promise<string>;
 

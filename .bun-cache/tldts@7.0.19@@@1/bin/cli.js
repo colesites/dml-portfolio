@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-'use strict';
-
-const { parse } = require('..');
-const readline = require('readline');
+const { parse } = require("..");
+const readline = require("readline");
 
 if (process.argv.length > 2) {
   // URL(s) was specified in the command arguments
@@ -15,7 +13,7 @@ if (process.argv.length > 2) {
   const rlInterface = readline.createInterface({
     input: process.stdin,
   });
-  rlInterface.on('line', function (line) {
+  rlInterface.on("line", (line) => {
     console.log(JSON.stringify(parse(line), null, 2));
   });
 }

@@ -1,4 +1,4 @@
-import { MinimatchOptions } from './index.js';
+import { MinimatchOptions } from "./index.js";
 /**
  * Escape all magic characters in a glob pattern.
  *
@@ -11,5 +11,11 @@ import { MinimatchOptions } from './index.js';
  * If the {@link MinimatchOptions.magicalBraces} option is used,
  * then braces (`{` and `}`) will be escaped.
  */
-export declare const escape: (s: string, { windowsPathsNoEscape, magicalBraces, }?: Pick<MinimatchOptions, "windowsPathsNoEscape" | "magicalBraces">) => string;
+export declare const escape: (
+  s: string,
+  {
+    windowsPathsNoEscape,
+    magicalBraces,
+  }?: Pick<MinimatchOptions, "windowsPathsNoEscape" | "magicalBraces">,
+) => string;
 //# sourceMappingURL=escape.d.ts.map

@@ -1,7 +1,5 @@
-'use strict';
-
-const pico = require('./lib/picomatch');
-const utils = require('./lib/utils');
+const pico = require("./lib/picomatch");
+const utils = require("./lib/utils");
 
 function picomatch(glob, options, returnState = false) {
   // default to os.platform()

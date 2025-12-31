@@ -1,5 +1,5 @@
-import { getPathsToTry } from "../try-path";
 import { join } from "path";
+import { getPathsToTry } from "../try-path";
 
 describe("mapping-entry", () => {
   const abosolutePathMappings = [
@@ -24,7 +24,7 @@ describe("mapping-entry", () => {
     const result = getPathsToTry(
       [".ts", "tsx"],
       abosolutePathMappings,
-      "./requested-module"
+      "./requested-module",
     );
     expect(result).toBeUndefined();
   });
@@ -42,7 +42,7 @@ describe("mapping-entry", () => {
           paths: [join("/absolute", "base", "url", "foo3")],
         },
       ],
-      "requested-module"
+      "requested-module",
     );
     expect(result).toBeUndefined();
   });
@@ -51,7 +51,7 @@ describe("mapping-entry", () => {
     const result = getPathsToTry(
       [".ts", ".tsx"],
       abosolutePathMappings,
-      "longest/pre/fix/requested-module"
+      "longest/pre/fix/requested-module",
     );
     expect(result).toEqual([
       // "longest/pre/fix/*"
@@ -99,7 +99,7 @@ describe("mapping-entry", () => {
     const result = getPathsToTry(
       [".ts"],
       abosolutePathMappingsStarstWithSlash,
-      "/opt/utils"
+      "/opt/utils",
     );
     expect(result).toEqual([
       // "opt/*"

@@ -4,7 +4,7 @@
 export function printPathArray(path) {
   return path
     .map((key) =>
-      typeof key === 'number' ? '[' + key.toString() + ']' : '.' + key,
+      typeof key === "number" ? "[" + key.toString() + "]" : "." + key,
     )
-    .join('');
+    .join("");
 }

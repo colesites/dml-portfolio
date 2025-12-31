@@ -1,7 +1,6 @@
-import { getCallFrame } from '../utils/internal/getCallFrame.mjs';
-import {
-  isIterable
-} from '../utils/internal/isIterable.mjs';
+import { getCallFrame } from "../utils/internal/getCallFrame.mjs";
+import { isIterable } from "../utils/internal/isIterable.mjs";
+
 class RequestHandler {
   static cache = /* @__PURE__ */ new WeakMap();
   __kind;
@@ -21,7 +20,7 @@ class RequestHandler {
     const callFrame = getCallFrame(new Error());
     this.info = {
       ...args.info,
-      callFrame
+      callFrame,
     };
     this.isUsed = false;
     this.__kind = "RequestHandler";
@@ -43,12 +42,12 @@ class RequestHandler {
   async test(args) {
     const parsedResult = await this.parse({
       request: args.request,
-      resolutionContext: args.resolutionContext
+      resolutionContext: args.resolutionContext,
     });
     return this.predicate({
       request: args.request,
       parsedResult,
-      resolutionContext: args.resolutionContext
+      resolutionContext: args.resolutionContext,
     });
   }
   extendResolverArgs(_args) {
@@ -77,12 +76,12 @@ class RequestHandler {
     const requestClone = this.cloneRequestOrGetFromCache(args.request);
     const parsedResult = await this.parse({
       request: args.request,
-      resolutionContext: args.resolutionContext
+      resolutionContext: args.resolutionContext,
     });
     const shouldInterceptRequest = await this.predicate({
       request: args.request,
       parsedResult,
-      resolutionContext: args.resolutionContext
+      resolutionContext: args.resolutionContext,
     });
     if (!shouldInterceptRequest) {
       return null;
@@ -94,12 +93,12 @@ class RequestHandler {
     const executeResolver = this.wrapResolver(this.resolver);
     const resolverExtras = this.extendResolverArgs({
       request: args.request,
-      parsedResult
+      parsedResult,
     });
     const mockedResponsePromise = executeResolver({
       ...resolverExtras,
       requestId: args.requestId,
-      request: args.request
+      request: args.request,
     }).catch((errorOrResponse) => {
       if (errorOrResponse instanceof Response) {
         return errorOrResponse;
@@ -113,7 +112,7 @@ class RequestHandler {
       request: requestClone,
       requestId: args.requestId,
       response: mockedResponse,
-      parsedResult
+      parsedResult,
     });
     return executionResult;
   }
@@ -124,7 +123,10 @@ class RequestHandler {
         if (!isIterable(result)) {
           return result;
         }
-        this.resolverIterator = Symbol.iterator in result ? result[Symbol.iterator]() : result[Symbol.asyncIterator]();
+        this.resolverIterator =
+          Symbol.iterator in result
+            ? result[Symbol.iterator]()
+            : result[Symbol.asyncIterator]();
       }
       this.isUsed = false;
       const { done, value } = await this.resolverIterator.next();
@@ -145,11 +147,9 @@ class RequestHandler {
       request: args.request,
       requestId: args.requestId,
       response: args.response,
-      parsedResult: args.parsedResult
+      parsedResult: args.parsedResult,
     };
   }
 }
-export {
-  RequestHandler
-};
+export { RequestHandler };
 //# sourceMappingURL=RequestHandler.mjs.map

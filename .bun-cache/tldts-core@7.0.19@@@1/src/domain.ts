@@ -1,4 +1,4 @@
-import { IOptions } from './options';
+import type { IOptions } from "./options";
 
 /**
  * Check if `vhost` is a valid suffix of `hostname` (top-domain)
@@ -15,7 +15,7 @@ function shareSameDomainSuffix(hostname: string, vhost: string): boolean {
   if (hostname.endsWith(vhost)) {
     return (
       hostname.length === vhost.length ||
-      hostname[hostname.length - vhost.length - 1] === '.'
+      hostname[hostname.length - vhost.length - 1] === "."
     );
   }
 
@@ -44,7 +44,7 @@ function extractDomainWithSuffix(
   //     |
   //     | (-1) no dot found before the public suffix
   const publicSuffixIndex = hostname.length - publicSuffix.length - 2;
-  const lastDotBeforeSuffixIndex = hostname.lastIndexOf('.', publicSuffixIndex);
+  const lastDotBeforeSuffixIndex = hostname.lastIndexOf(".", publicSuffixIndex);
 
   // No '.' found, then `hostname` is the general domain (no sub-domain)
   if (lastDotBeforeSuffixIndex === -1) {
@@ -74,10 +74,10 @@ export default function getDomain(
   }
 
   let numberOfLeadingDots = 0;
-  if (hostname.startsWith('.')) {
+  if (hostname.startsWith(".")) {
     while (
       numberOfLeadingDots < hostname.length &&
-      hostname[numberOfLeadingDots] === '.'
+      hostname[numberOfLeadingDots] === "."
     ) {
       numberOfLeadingDots += 1;
     }

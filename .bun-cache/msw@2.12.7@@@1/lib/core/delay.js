@@ -8,21 +8,25 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var delay_exports = {};
 __export(delay_exports, {
   MAX_SERVER_RESPONSE_TIME: () => MAX_SERVER_RESPONSE_TIME,
   MIN_SERVER_RESPONSE_TIME: () => MIN_SERVER_RESPONSE_TIME,
   NODE_SERVER_RESPONSE_TIME: () => NODE_SERVER_RESPONSE_TIME,
   SET_TIMEOUT_MAX_ALLOWED_INT: () => SET_TIMEOUT_MAX_ALLOWED_INT,
-  delay: () => delay
+  delay: () => delay,
 });
 module.exports = __toCommonJS(delay_exports);
 var import_is_node_process = require("is-node-process");
@@ -35,7 +39,8 @@ function getRealisticResponseTime() {
     return NODE_SERVER_RESPONSE_TIME;
   }
   return Math.floor(
-    Math.random() * (MAX_SERVER_RESPONSE_TIME - MIN_SERVER_RESPONSE_TIME) + MIN_SERVER_RESPONSE_TIME
+    Math.random() * (MAX_SERVER_RESPONSE_TIME - MIN_SERVER_RESPONSE_TIME) +
+      MIN_SERVER_RESPONSE_TIME,
   );
 }
 async function delay(durationOrMode) {
@@ -52,7 +57,7 @@ async function delay(durationOrMode) {
       }
       default: {
         throw new Error(
-          `Failed to delay a response: unknown delay mode "${durationOrMode}". Please make sure you provide one of the supported modes ("real", "infinite") or a number.`
+          `Failed to delay a response: unknown delay mode "${durationOrMode}". Please make sure you provide one of the supported modes ("real", "infinite") or a number.`,
         );
       }
     }
@@ -61,7 +66,7 @@ async function delay(durationOrMode) {
   } else {
     if (durationOrMode > SET_TIMEOUT_MAX_ALLOWED_INT) {
       throw new Error(
-        `Failed to delay a response: provided delay duration (${durationOrMode}) exceeds the maximum allowed duration for "setTimeout" (${SET_TIMEOUT_MAX_ALLOWED_INT}). This will cause the response to be returned immediately. Please use a number within the allowed range to delay the response by exact duration, or consider the "infinite" delay mode to delay the response indefinitely.`
+        `Failed to delay a response: provided delay duration (${durationOrMode}) exceeds the maximum allowed duration for "setTimeout" (${SET_TIMEOUT_MAX_ALLOWED_INT}). This will cause the response to be returned immediately. Please use a number within the allowed range to delay the response by exact duration, or consider the "infinite" delay mode to delay the response indefinitely.`,
       );
     }
     delayTime = durationOrMode;

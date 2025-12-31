@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import * as z from "zod/v4";
+
 // import * as zCore from "zod/v4/core";
 
 describe("toJSONSchema", () => {
@@ -28,7 +29,9 @@ describe("toJSONSchema", () => {
         "type": "null",
       }
     `);
-    expect(z.toJSONSchema(z.undefined(), { unrepresentable: "any" })).toMatchInlineSnapshot(`
+    expect(
+      z.toJSONSchema(z.undefined(), { unrepresentable: "any" }),
+    ).toMatchInlineSnapshot(`
       {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
       }
@@ -227,19 +230,39 @@ describe("toJSONSchema", () => {
   });
 
   test("unsupported schema types", () => {
-    expect(() => z.toJSONSchema(z.bigint())).toThrow("BigInt cannot be represented in JSON Schema");
-    expect(() => z.toJSONSchema(z.int64())).toThrow("BigInt cannot be represented in JSON Schema");
-    expect(() => z.toJSONSchema(z.symbol())).toThrow("Symbols cannot be represented in JSON Schema");
-    expect(() => z.toJSONSchema(z.void())).toThrow("Void cannot be represented in JSON Schema");
-    expect(() => z.toJSONSchema(z.undefined())).toThrow("Undefined cannot be represented in JSON Schema");
-    expect(() => z.toJSONSchema(z.date())).toThrow("Date cannot be represented in JSON Schema");
-    expect(() => z.toJSONSchema(z.map(z.string(), z.number()))).toThrow("Map cannot be represented in JSON Schema");
-    expect(() => z.toJSONSchema(z.set(z.string()))).toThrow("Set cannot be represented in JSON Schema");
-    expect(() => z.toJSONSchema(z.custom(() => true))).toThrow("Custom types cannot be represented in JSON Schema");
+    expect(() => z.toJSONSchema(z.bigint())).toThrow(
+      "BigInt cannot be represented in JSON Schema",
+    );
+    expect(() => z.toJSONSchema(z.int64())).toThrow(
+      "BigInt cannot be represented in JSON Schema",
+    );
+    expect(() => z.toJSONSchema(z.symbol())).toThrow(
+      "Symbols cannot be represented in JSON Schema",
+    );
+    expect(() => z.toJSONSchema(z.void())).toThrow(
+      "Void cannot be represented in JSON Schema",
+    );
+    expect(() => z.toJSONSchema(z.undefined())).toThrow(
+      "Undefined cannot be represented in JSON Schema",
+    );
+    expect(() => z.toJSONSchema(z.date())).toThrow(
+      "Date cannot be represented in JSON Schema",
+    );
+    expect(() => z.toJSONSchema(z.map(z.string(), z.number()))).toThrow(
+      "Map cannot be represented in JSON Schema",
+    );
+    expect(() => z.toJSONSchema(z.set(z.string()))).toThrow(
+      "Set cannot be represented in JSON Schema",
+    );
+    expect(() => z.toJSONSchema(z.custom(() => true))).toThrow(
+      "Custom types cannot be represented in JSON Schema",
+    );
 
     // Transform
     const transformSchema = z.string().transform((val) => Number.parseInt(val));
-    expect(() => z.toJSONSchema(transformSchema)).toThrow("Transforms cannot be represented in JSON Schema");
+    expect(() => z.toJSONSchema(transformSchema)).toThrow(
+      "Transforms cannot be represented in JSON Schema",
+    );
 
     // Static catch values
     const staticCatchSchema = z.string().catch(() => "sup");
@@ -252,8 +275,12 @@ describe("toJSONSchema", () => {
     `);
 
     // Dynamic catch values
-    const dynamicCatchSchema = z.string().catch((ctx) => `${ctx.issues.length}`);
-    expect(() => z.toJSONSchema(dynamicCatchSchema)).toThrow("Dynamic catch values are not supported in JSON Schema");
+    const dynamicCatchSchema = z
+      .string()
+      .catch((ctx) => `${ctx.issues.length}`);
+    expect(() => z.toJSONSchema(dynamicCatchSchema)).toThrow(
+      "Dynamic catch values are not supported in JSON Schema",
+    );
   });
 
   test("string formats", () => {
@@ -372,8 +399,8 @@ describe("toJSONSchema", () => {
           .includes("cruel")
           .includes("dark", { position: 10 })
           .endsWith("world")
-          .regex(/stuff/)
-      )
+          .regex(/stuff/),
+      ),
     ).toMatchInlineSnapshot(`
       {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -409,8 +436,8 @@ describe("toJSONSchema", () => {
           .regex(/stuff/),
         {
           target: "draft-7",
-        }
-      )
+        },
+      ),
     ).toMatchInlineSnapshot(`
       {
         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -450,7 +477,7 @@ describe("toJSONSchema", () => {
         "minimum": 5,
         "type": "number",
       }
-    `
+    `,
     );
 
     expect(z.toJSONSchema(z.number().gt(5).gt(10))).toMatchInlineSnapshot(`
@@ -477,7 +504,9 @@ describe("toJSONSchema", () => {
       }
     `);
 
-    expect(z.toJSONSchema(z.number().lt(5).lt(3).lte(2))).toMatchInlineSnapshot(`
+    expect(
+      z.toJSONSchema(z.number().lt(5).lt(3).lte(2)),
+    ).toMatchInlineSnapshot(`
       {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "maximum": 2,
@@ -569,7 +598,10 @@ describe("toJSONSchema", () => {
   });
 
   test("intersections", () => {
-    const schema = z.intersection(z.object({ name: z.string() }), z.object({ age: z.number() }));
+    const schema = z.intersection(
+      z.object({ name: z.string() }),
+      z.object({ age: z.number() }),
+    );
 
     expect(z.toJSONSchema(schema)).toMatchInlineSnapshot(`
       {
@@ -784,7 +816,7 @@ describe("toJSONSchema", () => {
         ],
         "type": "object",
       }
-    `
+    `,
     );
   });
 
@@ -827,10 +859,12 @@ describe("toJSONSchema", () => {
         override(ctx) {
           const def = ctx.zodSchema._zod.def;
           if (def.type === "object" && !def.catchall) {
-            (ctx.jsonSchema as z.core.JSONSchema.ObjectSchema).additionalProperties = false;
+            (
+              ctx.jsonSchema as z.core.JSONSchema.ObjectSchema
+            ).additionalProperties = false;
           }
         },
-      })
+      }),
     ).toMatchInlineSnapshot(`
       {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1116,7 +1150,7 @@ describe("toJSONSchema", () => {
         ],
         "additionalProperties": false
       }"
-    `
+    `,
     );
   });
 
@@ -1173,7 +1207,7 @@ describe("toJSONSchema", () => {
         ],
         "additionalProperties": false
       }"
-    `
+    `,
     );
   });
 });
@@ -1198,7 +1232,11 @@ test("override", () => {
 test("override: do not run on references", () => {
   let overrideCount = 0;
   const schema = z
-    .union([z.string().date(), z.string().datetime(), z.string().datetime({ local: true })])
+    .union([
+      z.string().date(),
+      z.string().datetime(),
+      z.string().datetime({ local: true }),
+    ])
     .meta({ a: true })
     .transform((str) => new Date(str))
     .meta({ b: true })
@@ -1390,7 +1428,7 @@ test("extract schemas with id", () => {
       last_name: name.nullable(),
       middle_name: name.optional(),
       age: z.number().meta({ id: "age" }),
-    })
+    }),
   );
   expect(result).toMatchInlineSnapshot(`
     {
@@ -1438,7 +1476,10 @@ test("extract schemas with id", () => {
 });
 
 test("unrepresentable literal values are ignored", () => {
-  const a = z.z.toJSONSchema(z.literal(["hello", null, 5, BigInt(1324), undefined]), { unrepresentable: "any" });
+  const a = z.z.toJSONSchema(
+    z.literal(["hello", null, 5, BigInt(1324), undefined]),
+    { unrepresentable: "any" },
+  );
   expect(a).toMatchInlineSnapshot(`
     {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1451,7 +1492,9 @@ test("unrepresentable literal values are ignored", () => {
     }
   `);
 
-  const b = z.z.toJSONSchema(z.literal([undefined, null, 5, BigInt(1324)]), { unrepresentable: "any" });
+  const b = z.z.toJSONSchema(z.literal([undefined, null, 5, BigInt(1324)]), {
+    unrepresentable: "any",
+  });
   expect(b).toMatchInlineSnapshot(`
     {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1463,7 +1506,9 @@ test("unrepresentable literal values are ignored", () => {
     }
   `);
 
-  const c = z.z.toJSONSchema(z.literal([undefined]), { unrepresentable: "any" });
+  const c = z.z.toJSONSchema(z.literal([undefined]), {
+    unrepresentable: "any",
+  });
   expect(c).toMatchInlineSnapshot(`
     {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1478,7 +1523,7 @@ test("describe with id", () => {
     z.object({
       current: jobId.describe("Current job"),
       previous: jobId.describe("Previous job"),
-    })
+    }),
   );
   expect(a).toMatchInlineSnapshot(`
     {
@@ -1516,7 +1561,7 @@ test("overwrite id", () => {
     z.object({
       current: jobId,
       previous: jobId.meta({ id: "bbb" }),
-    })
+    }),
   );
   expect(a).toMatchInlineSnapshot(`
     {
@@ -1555,7 +1600,7 @@ test("overwrite id", () => {
     }),
     {
       reused: "ref",
-    }
+    },
   );
   expect(b).toMatchInlineSnapshot(`
     {
@@ -1595,7 +1640,7 @@ test("overwrite descriptions", () => {
     z.object({
       d: field.describe("d"),
       e: field.describe("e"),
-    })
+    }),
   );
   expect(a).toMatchInlineSnapshot(`
     {
@@ -1626,7 +1671,7 @@ test("overwrite descriptions", () => {
     }),
     {
       reused: "ref",
-    }
+    },
   );
   expect(b).toMatchInlineSnapshot(`
     {
@@ -1746,7 +1791,9 @@ test("basic registry", () => {
   myRegistry.add(User, { id: "User" });
   myRegistry.add(Post, { id: "Post" });
 
-  const result = z.z.toJSONSchema(myRegistry, { uri: (id) => `https://example.com/${id}.json` });
+  const result = z.z.toJSONSchema(myRegistry, {
+    uri: (id) => `https://example.com/${id}.json`,
+  });
   expect(result).toMatchInlineSnapshot(`
     {
       "schemas": {
@@ -2157,7 +2204,9 @@ test("flatten simple intersections", () => {
     testBool: z.boolean(),
   });
 
-  const HelloSchema = FirstSchema.and(SecondSchema).and(ThirdSchema).describe("123");
+  const HelloSchema = FirstSchema.and(SecondSchema)
+    .and(ThirdSchema)
+    .describe("123");
 
   // Zod 3
   // console.log(JSON.stringify(zodToJsonSchema(HelloSchema), null, 2));
@@ -2284,7 +2333,9 @@ test("cycle detection - root", () => {
     },
   });
 
-  expect(() => z.toJSONSchema(schema, { cycles: "throw" })).toThrowErrorMatchingInlineSnapshot(`
+  expect(() =>
+    z.toJSONSchema(schema, { cycles: "throw" }),
+  ).toThrowErrorMatchingInlineSnapshot(`
     [Error: Cycle detected: #/properties/subcategories/items/<root>
 
     Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.]
@@ -2306,7 +2357,9 @@ test("cycle detection - mutual recursion", () => {
     },
   });
 
-  expect(() => z.toJSONSchema(A, { cycles: "throw" })).toThrowErrorMatchingInlineSnapshot(`
+  expect(() =>
+    z.toJSONSchema(A, { cycles: "throw" }),
+  ).toThrowErrorMatchingInlineSnapshot(`
     [Error: Cycle detected: #/properties/subcategories/items/properties/subcategories/items/<root>
 
     Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.]

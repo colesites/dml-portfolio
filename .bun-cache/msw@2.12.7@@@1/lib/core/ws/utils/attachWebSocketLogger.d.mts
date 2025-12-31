@@ -1,12 +1,17 @@
-import { WebSocketConnectionData, WebSocketClientConnection } from '@mswjs/interceptors/WebSocket';
+import {
+  WebSocketConnectionData,
+  WebSocketClientConnection,
+} from "@mswjs/interceptors/WebSocket";
 
 declare const colors: {
-    system: string;
-    outgoing: string;
-    incoming: string;
-    mocked: string;
+  system: string;
+  outgoing: string;
+  incoming: string;
+  mocked: string;
 };
-declare function attachWebSocketLogger(connection: WebSocketConnectionData): void;
+declare function attachWebSocketLogger(
+  connection: WebSocketConnectionData,
+): void;
 /**
  * Prints the WebSocket connection.
  * This is meant to be logged by every WebSocket handler

@@ -1,40 +1,38 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.extendSchema = extendSchema;
 exports.extendSchemaImpl = extendSchemaImpl;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
-var _keyMap = require('../jsutils/keyMap.js');
+var _keyMap = require("../jsutils/keyMap.js");
 
-var _mapValue = require('../jsutils/mapValue.js');
+var _mapValue = require("../jsutils/mapValue.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _predicates = require('../language/predicates.js');
+var _predicates = require("../language/predicates.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _directives = require('../type/directives.js');
+var _directives = require("../type/directives.js");
 
-var _introspection = require('../type/introspection.js');
+var _introspection = require("../type/introspection.js");
 
-var _scalars = require('../type/scalars.js');
+var _scalars = require("../type/scalars.js");
 
-var _schema = require('../type/schema.js');
+var _schema = require("../type/schema.js");
 
-var _validate = require('../validation/validate.js');
+var _validate = require("../validation/validate.js");
 
-var _values = require('../execution/values.js');
+var _values = require("../execution/values.js");
 
-var _valueFromAST = require('./valueFromAST.js');
+var _valueFromAST = require("./valueFromAST.js");
 
 /**
  * Produces a new schema given an existing schema and a document which may
@@ -51,7 +49,7 @@ var _valueFromAST = require('./valueFromAST.js');
 function extendSchema(schema, documentAST, options) {
   (0, _schema.assertSchema)(schema);
   (documentAST != null && documentAST.kind === _kinds.Kind.DOCUMENT) ||
-    (0, _devAssert.devAssert)(false, 'Must provide valid Document AST.');
+    (0, _devAssert.devAssert)(false, "Must provide valid Document AST.");
 
   if (
     (options === null || options === void 0 ? void 0 : options.assumeValid) !==
@@ -148,9 +146,9 @@ function extendSchemaImpl(schemaConfig, documentAST, options) {
       (_schemaDef = schemaDef) === null || _schemaDef === void 0
         ? void 0
         : (_schemaDef$descriptio = _schemaDef.description) === null ||
-          _schemaDef$descriptio === void 0
-        ? void 0
-        : _schemaDef$descriptio.value,
+            _schemaDef$descriptio === void 0
+          ? void 0
+          : _schemaDef$descriptio.value,
     ...operationTypes,
     types: Object.values(typeMap),
     directives: [
@@ -240,7 +238,7 @@ function extendSchemaImpl(schemaConfig, documentAST, options) {
     false ||
       (0, _invariant.invariant)(
         false,
-        'Unexpected type: ' + (0, _inspect.inspect)(type),
+        "Unexpected type: " + (0, _inspect.inspect)(type),
       );
   }
 

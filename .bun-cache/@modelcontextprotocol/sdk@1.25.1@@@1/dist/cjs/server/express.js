@@ -1,7 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+  (this && this.__importDefault) ||
+  ((mod) => (mod && mod.__esModule ? mod : { default: mod }));
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createMcpExpressApp = createMcpExpressApp;
 const express_1 = __importDefault(require("express"));
@@ -30,27 +30,27 @@ const hostHeaderValidation_js_1 = require("./middleware/hostHeaderValidation.js"
  * ```
  */
 function createMcpExpressApp(options = {}) {
-    const { host = '127.0.0.1', allowedHosts } = options;
-    const app = (0, express_1.default)();
-    app.use(express_1.default.json());
-    // If allowedHosts is explicitly provided, use that for validation
-    if (allowedHosts) {
-        app.use((0, hostHeaderValidation_js_1.hostHeaderValidation)(allowedHosts));
+  const { host = "127.0.0.1", allowedHosts } = options;
+  const app = (0, express_1.default)();
+  app.use(express_1.default.json());
+  // If allowedHosts is explicitly provided, use that for validation
+  if (allowedHosts) {
+    app.use((0, hostHeaderValidation_js_1.hostHeaderValidation)(allowedHosts));
+  } else {
+    // Apply DNS rebinding protection automatically for localhost hosts
+    const localhostHosts = ["127.0.0.1", "localhost", "::1"];
+    if (localhostHosts.includes(host)) {
+      app.use((0, hostHeaderValidation_js_1.localhostHostValidation)());
+    } else if (host === "0.0.0.0" || host === "::") {
+      // Warn when binding to all interfaces without DNS rebinding protection
+      // eslint-disable-next-line no-console
+      console.warn(
+        `Warning: Server is binding to ${host} without DNS rebinding protection. ` +
+          "Consider using the allowedHosts option to restrict allowed hosts, " +
+          "or use authentication to protect your server.",
+      );
     }
-    else {
-        // Apply DNS rebinding protection automatically for localhost hosts
-        const localhostHosts = ['127.0.0.1', 'localhost', '::1'];
-        if (localhostHosts.includes(host)) {
-            app.use((0, hostHeaderValidation_js_1.localhostHostValidation)());
-        }
-        else if (host === '0.0.0.0' || host === '::') {
-            // Warn when binding to all interfaces without DNS rebinding protection
-            // eslint-disable-next-line no-console
-            console.warn(`Warning: Server is binding to ${host} without DNS rebinding protection. ` +
-                'Consider using the allowedHosts option to restrict allowed hosts, ' +
-                'or use authentication to protect your server.');
-        }
-    }
-    return app;
+  }
+  return app;
 }
 //# sourceMappingURL=express.js.map

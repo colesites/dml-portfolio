@@ -8,14 +8,18 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var ssg_exports = {};
 __export(ssg_exports, {
   DEFAULT_OUTPUT_DIR: () => DEFAULT_OUTPUT_DIR,
@@ -26,7 +30,7 @@ __export(ssg_exports, {
   defaultPlugin: () => defaultPlugin,
   fetchRoutesContent: () => fetchRoutesContent,
   saveContentToFile: () => saveContentToFile,
-  toSSG: () => toSSG
+  toSSG: () => toSSG,
 });
 module.exports = __toCommonJS(ssg_exports);
 var import_utils = require("../../client/utils");
@@ -46,7 +50,11 @@ const generateFilePath = (routePath, outDir, mimeType, extensionMap) => {
     return (0, import_utils2.joinPaths)(outDir, `index.${extension}`);
   }
   if (routePath.endsWith("/")) {
-    return (0, import_utils2.joinPaths)(outDir, routePath, `index.${extension}`);
+    return (0, import_utils2.joinPaths)(
+      outDir,
+      routePath,
+      `index.${extension}`,
+    );
   }
   return (0, import_utils2.joinPaths)(outDir, `${routePath}.${extension}`);
 };
@@ -60,7 +68,7 @@ const parseResponseContent = async (response) => {
     }
   } catch (error) {
     throw new Error(
-      `Error processing response: ${error instanceof Error ? error.message : "Unknown error"}`
+      `Error processing response: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
   }
 };
@@ -68,7 +76,7 @@ const defaultExtensionMap = {
   "text/html": "html",
   "text/xml": "xml",
   "application/xml": "xml",
-  "application/yaml": "yaml"
+  "application/yaml": "yaml",
 };
 const determineExtension = (mimeType, userExtensionMap) => {
   const extensionMap = userExtensionMap || defaultExtensionMap;
@@ -123,7 +131,12 @@ const combineAfterGenerateHooks = (hooks, fsModule, options) => {
     }
   };
 };
-const fetchRoutesContent = function* (app, beforeRequestHook, afterResponseHook, concurrency) {
+const fetchRoutesContent = function* (
+  app,
+  beforeRequestHook,
+  afterResponseHook,
+  concurrency,
+) {
   const baseURL = "http://localhost";
   const pool = (0, import_concurrent.createPool)({ concurrency });
   for (const route of (0, import_utils2.filterStaticGenerateRoutes)(app)) {
@@ -149,20 +162,27 @@ const fetchRoutesContent = function* (app, beforeRequestHook, afterResponseHook,
         }
         const requestInit = {
           method: forGetInfoURLRequest.method,
-          headers: forGetInfoURLRequest.headers
+          headers: forGetInfoURLRequest.headers,
         };
         resolveGetInfo(
           (function* () {
             for (const param of forGetInfoURLRequest.ssgParams) {
               yield new Promise(async (resolveReq, rejectReq) => {
                 try {
-                  const replacedUrlParam = (0, import_utils.replaceUrlParam)(route.path, param);
-                  let response = await pool.run(
-                    () => app.request(replacedUrlParam, requestInit, {
-                      [import_middleware.SSG_CONTEXT]: true
-                    })
+                  const replacedUrlParam = (0, import_utils.replaceUrlParam)(
+                    route.path,
+                    param,
                   );
-                  if (response.headers.get(import_middleware.X_HONO_DISABLE_SSG_HEADER_KEY)) {
+                  let response = await pool.run(() =>
+                    app.request(replacedUrlParam, requestInit, {
+                      [import_middleware.SSG_CONTEXT]: true,
+                    }),
+                  );
+                  if (
+                    response.headers.get(
+                      import_middleware.X_HONO_DISABLE_SSG_HEADER_KEY,
+                    )
+                  ) {
                     resolveReq(void 0);
                     return;
                   }
@@ -174,19 +194,21 @@ const fetchRoutesContent = function* (app, beforeRequestHook, afterResponseHook,
                     }
                     response = maybeResponse;
                   }
-                  const mimeType = response.headers.get("Content-Type")?.split(";")[0] || DEFAULT_CONTENT_TYPE;
+                  const mimeType =
+                    response.headers.get("Content-Type")?.split(";")[0] ||
+                    DEFAULT_CONTENT_TYPE;
                   const content = await parseResponseContent(response);
                   resolveReq({
                     routePath: replacedUrlParam,
                     mimeType,
-                    content
+                    content,
                   });
                 } catch (error) {
                   rejectReq(error);
                 }
               });
             }
-          })()
+          })(),
         );
       } catch (error) {
         rejectGetInfo(error);
@@ -220,7 +242,7 @@ const defaultPlugin = {
       return false;
     }
     return res;
-  }
+  },
 };
 const toSSG = async (app, fs, options) => {
   let result;
@@ -232,33 +254,45 @@ const toSSG = async (app, fs, options) => {
   const afterGenerateHooks = [];
   if (options?.beforeRequestHook) {
     beforeRequestHooks.push(
-      ...Array.isArray(options.beforeRequestHook) ? options.beforeRequestHook : [options.beforeRequestHook]
+      ...(Array.isArray(options.beforeRequestHook)
+        ? options.beforeRequestHook
+        : [options.beforeRequestHook]),
     );
   }
   if (options?.afterResponseHook) {
     afterResponseHooks.push(
-      ...Array.isArray(options.afterResponseHook) ? options.afterResponseHook : [options.afterResponseHook]
+      ...(Array.isArray(options.afterResponseHook)
+        ? options.afterResponseHook
+        : [options.afterResponseHook]),
     );
   }
   if (options?.afterGenerateHook) {
     afterGenerateHooks.push(
-      ...Array.isArray(options.afterGenerateHook) ? options.afterGenerateHook : [options.afterGenerateHook]
+      ...(Array.isArray(options.afterGenerateHook)
+        ? options.afterGenerateHook
+        : [options.afterGenerateHook]),
     );
   }
   for (const plugin of plugins) {
     if (plugin.beforeRequestHook) {
       beforeRequestHooks.push(
-        ...Array.isArray(plugin.beforeRequestHook) ? plugin.beforeRequestHook : [plugin.beforeRequestHook]
+        ...(Array.isArray(plugin.beforeRequestHook)
+          ? plugin.beforeRequestHook
+          : [plugin.beforeRequestHook]),
       );
     }
     if (plugin.afterResponseHook) {
       afterResponseHooks.push(
-        ...Array.isArray(plugin.afterResponseHook) ? plugin.afterResponseHook : [plugin.afterResponseHook]
+        ...(Array.isArray(plugin.afterResponseHook)
+          ? plugin.afterResponseHook
+          : [plugin.afterResponseHook]),
       );
     }
     if (plugin.afterGenerateHook) {
       afterGenerateHooks.push(
-        ...Array.isArray(plugin.afterGenerateHook) ? plugin.afterGenerateHook : [plugin.afterGenerateHook]
+        ...(Array.isArray(plugin.afterGenerateHook)
+          ? plugin.afterGenerateHook
+          : [plugin.afterGenerateHook]),
       );
     }
   }
@@ -266,16 +300,16 @@ const toSSG = async (app, fs, options) => {
     const outputDir = options?.dir ?? DEFAULT_OUTPUT_DIR;
     const concurrency = options?.concurrency ?? DEFAULT_CONCURRENCY;
     const combinedBeforeRequestHook = combineBeforeRequestHooks(
-      beforeRequestHooks.length > 0 ? beforeRequestHooks : [(req) => req]
+      beforeRequestHooks.length > 0 ? beforeRequestHooks : [(req) => req],
     );
     const combinedAfterResponseHook = combineAfterResponseHooks(
-      afterResponseHooks.length > 0 ? afterResponseHooks : [(req) => req]
+      afterResponseHooks.length > 0 ? afterResponseHooks : [(req) => req],
     );
     const getInfoGen = fetchRoutesContent(
       app,
       combinedBeforeRequestHook,
       combinedAfterResponseHook,
-      concurrency
+      concurrency,
     );
     for (const getInfo of getInfoGen) {
       getInfoPromises.push(
@@ -285,10 +319,15 @@ const toSSG = async (app, fs, options) => {
           }
           for (const content of getContentGen) {
             savePromises.push(
-              saveContentToFile(content, fs, outputDir, options?.extensionMap).catch((e) => e)
+              saveContentToFile(
+                content,
+                fs,
+                outputDir,
+                options?.extensionMap,
+              ).catch((e) => e),
             );
           }
-        })
+        }),
       );
     }
     await Promise.all(getInfoPromises);
@@ -307,20 +346,25 @@ const toSSG = async (app, fs, options) => {
     result = { success: false, files: [], error: errorObj };
   }
   if (afterGenerateHooks.length > 0) {
-    const combinedAfterGenerateHooks = combineAfterGenerateHooks(afterGenerateHooks, fs, options);
+    const combinedAfterGenerateHooks = combineAfterGenerateHooks(
+      afterGenerateHooks,
+      fs,
+      options,
+    );
     await combinedAfterGenerateHooks(result, fs, options);
   }
   return result;
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  DEFAULT_OUTPUT_DIR,
-  combineAfterGenerateHooks,
-  combineAfterResponseHooks,
-  combineBeforeRequestHooks,
-  defaultExtensionMap,
-  defaultPlugin,
-  fetchRoutesContent,
-  saveContentToFile,
-  toSSG
-});
+0 &&
+  (module.exports = {
+    DEFAULT_OUTPUT_DIR,
+    combineAfterGenerateHooks,
+    combineAfterResponseHooks,
+    combineBeforeRequestHooks,
+    defaultExtensionMap,
+    defaultPlugin,
+    fetchRoutesContent,
+    saveContentToFile,
+    toSSG,
+  });

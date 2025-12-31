@@ -1,24 +1,22 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.buildASTSchema = buildASTSchema;
 exports.buildSchema = buildSchema;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
-var _parser = require('../language/parser.js');
+var _parser = require("../language/parser.js");
 
-var _directives = require('../type/directives.js');
+var _directives = require("../type/directives.js");
 
-var _schema = require('../type/schema.js');
+var _schema = require("../type/schema.js");
 
-var _validate = require('../validation/validate.js');
+var _validate = require("../validation/validate.js");
 
-var _extendSchema = require('./extendSchema.js');
+var _extendSchema = require("./extendSchema.js");
 
 /**
  * This takes the ast of a schema document produced by the parse function in
@@ -32,7 +30,7 @@ var _extendSchema = require('./extendSchema.js');
  */
 function buildASTSchema(documentAST, options) {
   (documentAST != null && documentAST.kind === _kinds.Kind.DOCUMENT) ||
-    (0, _devAssert.devAssert)(false, 'Must provide valid Document AST.');
+    (0, _devAssert.devAssert)(false, "Must provide valid Document AST.");
 
   if (
     (options === null || options === void 0 ? void 0 : options.assumeValid) !==
@@ -64,17 +62,17 @@ function buildASTSchema(documentAST, options) {
         // Note: While this could make early assertions to get the correctly
         // typed values below, that would throw immediately while type system
         // validation with validateSchema() will produce more actionable results.
-        case 'Query':
+        case "Query":
           // @ts-expect-error validated in `validateSchema`
           config.query = type;
           break;
 
-        case 'Mutation':
+        case "Mutation":
           // @ts-expect-error validated in `validateSchema`
           config.mutation = type;
           break;
 
-        case 'Subscription':
+        case "Subscription":
           // @ts-expect-error validated in `validateSchema`
           config.subscription = type;
           break;

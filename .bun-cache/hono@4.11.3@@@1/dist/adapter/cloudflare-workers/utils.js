@@ -30,6 +30,4 @@ var getContentFromKVAsset = async (path, options) => {
   }
   return content;
 };
-export {
-  getContentFromKVAsset
-};
+export { getContentFromKVAsset };

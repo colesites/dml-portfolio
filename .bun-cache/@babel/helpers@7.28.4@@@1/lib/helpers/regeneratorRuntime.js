@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _regeneratorRuntime;
 var _OverloadYield = require("./OverloadYield.js");
@@ -12,21 +12,24 @@ var _regeneratorAsyncIterator = require("./regeneratorAsyncIterator.js");
 var _regeneratorKeys = require("./regeneratorKeys.js");
 var _regeneratorValues = require("./regeneratorValues.js");
 function _regeneratorRuntime() {
-  "use strict";
-
   var r = (0, _regenerator.default)();
   var gen = r.m(_regeneratorRuntime);
-  var GeneratorFunctionPrototype = Object.getPrototypeOf ? Object.getPrototypeOf(gen) : gen.__proto__;
+  var GeneratorFunctionPrototype = Object.getPrototypeOf
+    ? Object.getPrototypeOf(gen)
+    : gen.__proto__;
   var GeneratorFunction = GeneratorFunctionPrototype.constructor;
   function isGeneratorFunction(genFun) {
     var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor ? ctor === GeneratorFunction || (ctor.displayName || ctor.name) === "GeneratorFunction" : false;
+    return ctor
+      ? ctor === GeneratorFunction ||
+          (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
   }
   var abruptMap = {
     throw: 1,
     return: 2,
     break: 3,
-    continue: 3
+    continue: 3,
   };
   function wrapInnerFn(innerFn) {
     var compatContext;
@@ -34,24 +37,20 @@ function _regeneratorRuntime() {
     return function (context) {
       if (!compatContext) {
         compatContext = {
-          stop: function () {
-            return callSyncState(context.a, 2);
-          },
-          catch: function () {
-            return context.v;
-          },
-          abrupt: function (type, arg) {
-            return callSyncState(context.a, abruptMap[type], arg);
-          },
-          delegateYield: function (iterable, resultName, nextLoc) {
+          stop: () => callSyncState(context.a, 2),
+          catch: () => context.v,
+          abrupt: (type, arg) => callSyncState(context.a, abruptMap[type], arg),
+          delegateYield: (iterable, resultName, nextLoc) => {
             compatContext.resultName = resultName;
-            return callSyncState(context.d, (0, _regeneratorValues.default)(iterable), nextLoc);
+            return callSyncState(
+              context.d,
+              (0, _regeneratorValues.default)(iterable),
+              nextLoc,
+            );
           },
-          finish: function (finallyLoc) {
-            return callSyncState(context.f, finallyLoc);
-          }
+          finish: (finallyLoc) => callSyncState(context.f, finallyLoc),
         };
-        callSyncState = function (fn, a1, a2) {
+        callSyncState = (fn, a1, a2) => {
           context.p = compatContext.prev;
           context.n = compatContext.next;
           try {
@@ -75,24 +74,32 @@ function _regeneratorRuntime() {
       }
     };
   }
-  return (exports.default = _regeneratorRuntime = function () {
-    return {
-      wrap: function (innerFn, outerFn, self, tryLocsList) {
-        return r.w(wrapInnerFn(innerFn), outerFn, self, tryLocsList && tryLocsList.reverse());
-      },
+  return (exports.default = _regeneratorRuntime =
+    () => ({
+      wrap: (innerFn, outerFn, self, tryLocsList) =>
+        r.w(
+          wrapInnerFn(innerFn),
+          outerFn,
+          self,
+          tryLocsList && tryLocsList.reverse(),
+        ),
       isGeneratorFunction: isGeneratorFunction,
       mark: r.m,
-      awrap: function (value, kind) {
-        return new _OverloadYield.default(value, kind);
-      },
+      awrap: (value, kind) => new _OverloadYield.default(value, kind),
       AsyncIterator: _regeneratorAsyncIterator.default,
-      async: function (innerFn, outerFn, self, tryLocsList, PromiseImpl) {
-        return (isGeneratorFunction(outerFn) ? _regeneratorAsyncGen.default : _regeneratorAsync.default)(wrapInnerFn(innerFn), outerFn, self, tryLocsList, PromiseImpl);
-      },
+      async: (innerFn, outerFn, self, tryLocsList, PromiseImpl) =>
+        (isGeneratorFunction(outerFn)
+          ? _regeneratorAsyncGen.default
+          : _regeneratorAsync.default)(
+          wrapInnerFn(innerFn),
+          outerFn,
+          self,
+          tryLocsList,
+          PromiseImpl,
+        ),
       keys: _regeneratorKeys.default,
-      values: _regeneratorValues.default
-    };
-  })();
+      values: _regeneratorValues.default,
+    }))();
 }
 
 //# sourceMappingURL=regeneratorRuntime.js.map

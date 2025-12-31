@@ -1,24 +1,22 @@
 // src/node/SetupServerApi.ts
-import { AsyncLocalStorage } from "async_hooks";
-import { ClientRequestInterceptor } from "@mswjs/interceptors/ClientRequest";
-import { XMLHttpRequestInterceptor } from "@mswjs/interceptors/XMLHttpRequest";
-import { FetchInterceptor } from "@mswjs/interceptors/fetch";
 
+import { BatchInterceptor, InterceptorReadyState } from "@mswjs/interceptors";
+import { ClientRequestInterceptor } from "@mswjs/interceptors/ClientRequest";
+import { FetchInterceptor } from "@mswjs/interceptors/fetch";
+import { XMLHttpRequestInterceptor } from "@mswjs/interceptors/XMLHttpRequest";
+import { AsyncLocalStorage } from "async_hooks";
 // src/node/SetupServerCommonApi.ts
 import { invariant } from "outvariant";
-import {
-  BatchInterceptor,
-  InterceptorReadyState
-} from "@mswjs/interceptors";
-import { SetupApi } from '../core/SetupApi.mjs';
-import { handleRequest } from '../core/utils/handleRequest.mjs';
-import { mergeRight } from '../core/utils/internal/mergeRight.mjs';
-import { InternalError, devUtils } from '../core/utils/internal/devUtils.mjs';
-import { handleWebSocketEvent } from '../core/ws/handleWebSocketEvent.mjs';
-import { webSocketInterceptor } from '../core/ws/webSocketInterceptor.mjs';
-import { isHandlerKind } from '../core/utils/internal/isHandlerKind.mjs';
+import { SetupApi } from "../core/SetupApi.mjs";
+import { handleRequest } from "../core/utils/handleRequest.mjs";
+import { devUtils, InternalError } from "../core/utils/internal/devUtils.mjs";
+import { isHandlerKind } from "../core/utils/internal/isHandlerKind.mjs";
+import { mergeRight } from "../core/utils/internal/mergeRight.mjs";
+import { handleWebSocketEvent } from "../core/ws/handleWebSocketEvent.mjs";
+import { webSocketInterceptor } from "../core/ws/webSocketInterceptor.mjs";
+
 var DEFAULT_LISTEN_OPTIONS = {
-  onUnhandledRequest: "warn"
+  onUnhandledRequest: "warn",
 };
 var SetupServerCommonApi = class extends SetupApi {
   interceptor;
@@ -27,7 +25,7 @@ var SetupServerCommonApi = class extends SetupApi {
     super(...handlers);
     this.interceptor = new BatchInterceptor({
       name: "setup-server",
-      interceptors
+      interceptors,
     });
     this.resolvedOptions = {};
   }
@@ -41,7 +39,9 @@ var SetupServerCommonApi = class extends SetupApi {
         const response = await handleRequest(
           request,
           requestId,
-          this.handlersController.currentHandlers().filter(isHandlerKind("RequestHandler")),
+          this.handlersController
+            .currentHandlers()
+            .filter(isHandlerKind("RequestHandler")),
           this.resolvedOptions,
           this.emitter,
           {
@@ -50,7 +50,7 @@ var SetupServerCommonApi = class extends SetupApi {
               if (acceptHeader) {
                 const nextAcceptHeader = acceptHeader.replace(
                   /(,\s+)?msw\/passthrough/,
-                  ""
+                  "",
                 );
                 if (nextAcceptHeader) {
                   request2.headers.set("accept", nextAcceptHeader);
@@ -58,14 +58,14 @@ var SetupServerCommonApi = class extends SetupApi {
                   request2.headers.delete("accept");
                 }
               }
-            }
-          }
+            },
+          },
         );
         if (response) {
           controller.respondWith(response);
         }
         return;
-      }
+      },
     );
     this.interceptor.on("unhandledException", ({ error }) => {
       if (error instanceof InternalError) {
@@ -80,10 +80,10 @@ var SetupServerCommonApi = class extends SetupApi {
           {
             response,
             request,
-            requestId
-          }
+            requestId,
+          },
         );
-      }
+      },
     );
     handleWebSocketEvent({
       getUnhandledRequestStrategy: () => {
@@ -92,17 +92,12 @@ var SetupServerCommonApi = class extends SetupApi {
       getHandlers: () => {
         return this.handlersController.currentHandlers();
       },
-      onMockedConnection: () => {
-      },
-      onPassthroughConnection: () => {
-      }
+      onMockedConnection: () => {},
+      onPassthroughConnection: () => {},
     });
   }
   listen(options = {}) {
-    this.resolvedOptions = mergeRight(
-      DEFAULT_LISTEN_OPTIONS,
-      options
-    );
+    this.resolvedOptions = mergeRight(DEFAULT_LISTEN_OPTIONS, options);
     this.interceptor.apply();
     this.init();
     this.subscriptions.push(() => this.interceptor.dispose());
@@ -110,12 +105,12 @@ var SetupServerCommonApi = class extends SetupApi {
     this.subscriptions.push(() => webSocketInterceptor.dispose());
     invariant(
       [InterceptorReadyState.APPLYING, InterceptorReadyState.APPLIED].includes(
-        this.interceptor.readyState
+        this.interceptor.readyState,
       ),
       devUtils.formatMessage(
-        'Failed to start "setupServer": the interceptor failed to apply. This is likely an issue with the library and you should report it at "%s".'
+        'Failed to start "setupServer": the interceptor failed to apply. This is likely an issue with the library and you should report it at "%s".',
       ),
-      "https://github.com/mswjs/msw/issues/new/choose"
+      "https://github.com/mswjs/msw/issues/new/choose",
     );
   }
   close() {
@@ -139,7 +134,8 @@ var AsyncHandlersController = class {
   reset(nextHandlers) {
     const context = this.context;
     context.handlers = [];
-    context.initialHandlers = nextHandlers.length > 0 ? nextHandlers : context.initialHandlers;
+    context.initialHandlers =
+      nextHandlers.length > 0 ? nextHandlers : context.initialHandlers;
   }
   currentHandlers() {
     const { initialHandlers, handlers } = this.context;
@@ -147,11 +143,14 @@ var AsyncHandlersController = class {
   }
 };
 var SetupServerApi = class extends SetupServerCommonApi {
-  constructor(handlers, interceptors = [
-    new ClientRequestInterceptor(),
-    new XMLHttpRequestInterceptor(),
-    new FetchInterceptor()
-  ]) {
+  constructor(
+    handlers,
+    interceptors = [
+      new ClientRequestInterceptor(),
+      new XMLHttpRequestInterceptor(),
+      new FetchInterceptor(),
+    ],
+  ) {
     super(interceptors, handlers);
     this.handlersController = new AsyncHandlersController(handlers);
   }
@@ -160,10 +159,10 @@ var SetupServerApi = class extends SetupServerCommonApi {
       return store.run(
         {
           initialHandlers: this.handlersController.currentHandlers(),
-          handlers: []
+          handlers: [],
         },
         callback,
-        ...args
+        ...args,
       );
     };
   }
@@ -177,8 +176,5 @@ var SetupServerApi = class extends SetupServerCommonApi {
 var setupServer = (...handlers) => {
   return new SetupServerApi(handlers);
 };
-export {
-  SetupServerApi,
-  setupServer
-};
+export { SetupServerApi, setupServer };
 //# sourceMappingURL=index.mjs.map

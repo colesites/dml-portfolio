@@ -1,4 +1,4 @@
-import { isObject } from './isObject'
+import { isObject } from "./isObject";
 
 /**
  * Deeply merges two given objects with the right one
@@ -10,21 +10,21 @@ export function mergeRight(
 ) {
   return Object.entries(right).reduce(
     (result, [key, rightValue]) => {
-      const leftValue = result[key]
+      const leftValue = result[key];
 
       if (Array.isArray(leftValue) && Array.isArray(rightValue)) {
-        result[key] = leftValue.concat(rightValue)
-        return result
+        result[key] = leftValue.concat(rightValue);
+        return result;
       }
 
       if (isObject(leftValue) && isObject(rightValue)) {
-        result[key] = mergeRight(leftValue, rightValue)
-        return result
+        result[key] = mergeRight(leftValue, rightValue);
+        return result;
       }
 
-      result[key] = rightValue
-      return result
+      result[key] = rightValue;
+      return result;
     },
     Object.assign({}, left),
-  )
+  );
 }

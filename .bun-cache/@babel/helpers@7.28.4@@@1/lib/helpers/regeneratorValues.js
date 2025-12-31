@@ -1,12 +1,15 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _regeneratorValues;
 function _regeneratorValues(iterable) {
   if (iterable != null) {
-    var iteratorMethod = iterable[typeof Symbol === "function" && Symbol.iterator || "@@iterator"],
+    var iteratorMethod =
+        iterable[
+          (typeof Symbol === "function" && Symbol.iterator) || "@@iterator"
+        ],
       i = 0;
     if (iteratorMethod) {
       return iteratorMethod.call(iterable);
@@ -16,13 +19,13 @@ function _regeneratorValues(iterable) {
     }
     if (!isNaN(iterable.length)) {
       return {
-        next: function () {
+        next: () => {
           if (iterable && i >= iterable.length) iterable = undefined;
           return {
             value: iterable && iterable[i++],
-            done: !iterable
+            done: !iterable,
           };
-        }
+        },
       };
     }
   }

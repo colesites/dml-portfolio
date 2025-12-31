@@ -1,33 +1,29 @@
-import AtRule from './at-rule.js'
-import Comment from './comment.js'
-import Declaration from './declaration.js'
-import Node, { ChildNode, ChildProps, NodeProps } from './node.js'
-import { Root } from './postcss.js'
-import Rule from './rule.js'
+import AtRule from "./at-rule.js";
+import Comment from "./comment.js";
+import Declaration from "./declaration.js";
+import Node, { ChildNode, ChildProps, NodeProps } from "./node.js";
+import { Root } from "./postcss.js";
+import Rule from "./rule.js";
 
 declare namespace Container {
   export type ContainerWithChildren<Child extends Node = ChildNode> = {
-    nodes: Child[]
-  } & (
-    | AtRule
-    | Root
-    | Rule
-  )
+    nodes: Child[];
+  } & (AtRule | Root | Rule);
 
   export interface ValueOptions {
     /**
      * String that’s used to narrow down values and speed up the regexp search.
      */
-    fast?: string
+    fast?: string;
 
     /**
      * An array of property names.
      */
-    props?: readonly string[]
+    props?: readonly string[];
   }
 
   export interface ContainerProps extends NodeProps {
-    nodes?: readonly (ChildProps | Node)[]
+    nodes?: readonly (ChildProps | Node)[];
   }
 
   /**
@@ -41,10 +37,10 @@ declare namespace Container {
     | readonly Node[]
     | readonly string[]
     | string
-    | undefined
+    | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  export { Container_ as default }
+  export { Container_ as default };
 }
 
 /**
@@ -65,7 +61,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * root.nodes[0].nodes[0].prop //=> 'color'
    * ```
    */
-  nodes: Child[] | undefined
+  nodes: Child[] | undefined;
 
   /**
    * The container’s first child.
@@ -74,7 +70,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * rule.first === rules.nodes[0]
    * ```
    */
-  get first(): Child | undefined
+  get first(): Child | undefined;
 
   /**
    * The container’s last child.
@@ -83,7 +79,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * rule.last === rule.nodes[rule.nodes.length - 1]
    * ```
    */
-  get last(): Child | undefined
+  get last(): Child | undefined;
   /**
    * Inserts new nodes to the end of the container.
    *
@@ -104,13 +100,13 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @param nodes New nodes.
    * @return This node for methods chain.
    */
-  append(...nodes: Container.NewChild[]): this
-  assign(overrides: Container.ContainerProps | object): this
-  clone(overrides?: Partial<Container.ContainerProps>): this
+  append(...nodes: Container.NewChild[]): this;
+  assign(overrides: Container.ContainerProps | object): this;
+  clone(overrides?: Partial<Container.ContainerProps>): this;
 
-  cloneAfter(overrides?: Partial<Container.ContainerProps>): this
+  cloneAfter(overrides?: Partial<Container.ContainerProps>): this;
 
-  cloneBefore(overrides?: Partial<Container.ContainerProps>): this
+  cloneBefore(overrides?: Partial<Container.ContainerProps>): this;
   /**
    * Iterates through the container’s immediate children,
    * calling `callback` for each child.
@@ -145,8 +141,8 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @return Returns `false` if iteration was broke.
    */
   each(
-    callback: (node: Child, index: number) => false | void
-  ): false | undefined
+    callback: (node: Child, index: number) => false | void,
+  ): false | undefined;
 
   /**
    * Returns `true` if callback returns `true`
@@ -160,8 +156,8 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @return Is every child pass condition.
    */
   every(
-    condition: (node: Child, index: number, nodes: Child[]) => boolean
-  ): boolean
+    condition: (node: Child, index: number, nodes: Child[]) => boolean,
+  ): boolean;
   /**
    * Returns a `child`’s index within the `Container#nodes` array.
    *
@@ -172,7 +168,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @param child Child of the current container.
    * @return Child index.
    */
-  index(child: Child | number): number
+  index(child: Child | number): number;
 
   /**
    * Insert new node after old node within the container.
@@ -181,7 +177,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @param newNode New node.
    * @return This node for methods chain.
    */
-  insertAfter(oldNode: Child | number, newNode: Container.NewChild): this
+  insertAfter(oldNode: Child | number, newNode: Container.NewChild): this;
 
   /**
    * Traverses the container’s descendant nodes, calling callback
@@ -211,7 +207,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @param newNode New node.
    * @return This node for methods chain.
    */
-  insertBefore(oldNode: Child | number, newNode: Container.NewChild): this
+  insertBefore(oldNode: Child | number, newNode: Container.NewChild): this;
   /**
    * Inserts new nodes to the start of the container.
    *
@@ -232,7 +228,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @param nodes New nodes.
    * @return This node for methods chain.
    */
-  prepend(...nodes: Container.NewChild[]): this
+  prepend(...nodes: Container.NewChild[]): this;
 
   /**
    * Add child to the end of the node.
@@ -244,7 +240,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @param child New node.
    * @return This node for methods chain.
    */
-  push(child: Child): this
+  push(child: Child): this;
 
   /**
    * Removes all children from the container
@@ -257,7 +253,7 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    *
    * @return This node for methods chain.
    */
-  removeAll(): this
+  removeAll(): this;
 
   /**
    * Removes node from the container and cleans the parent properties
@@ -273,12 +269,12 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @param child Child or child’s index.
    * @return This node for methods chain.
    */
-  removeChild(child: Child | number): this
+  removeChild(child: Child | number): this;
 
   replaceValues(
     pattern: RegExp | string,
-    replaced: { (substring: string, ...args: any[]): string } | string
-  ): this
+    replaced: ((substring: string, ...args: any[]) => string) | string,
+  ): this;
   /**
    * Passes all declaration values within the container that match pattern
    * through callback, replacing those values with the returned result
@@ -305,8 +301,8 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
   replaceValues(
     pattern: RegExp | string,
     options: Container.ValueOptions,
-    replaced: { (substring: string, ...args: any[]): string } | string
-  ): this
+    replaced: ((substring: string, ...args: any[]) => string) | string,
+  ): this;
 
   /**
    * Returns `true` if callback returns `true` for (at least) one
@@ -320,8 +316,8 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @return Is some child pass condition.
    */
   some(
-    condition: (node: Child, index: number, nodes: Child[]) => boolean
-  ): boolean
+    condition: (node: Child, index: number, nodes: Child[]) => boolean,
+  ): boolean;
 
   /**
    * Traverses the container’s descendant nodes, calling callback
@@ -343,8 +339,8 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    * @return  Returns `false` if iteration was broke.
    */
   walk(
-    callback: (node: ChildNode, index: number) => false | void
-  ): false | undefined
+    callback: (node: ChildNode, index: number) => false | void,
+  ): false | undefined;
 
   /**
    * Traverses the container’s descendant nodes, calling callback
@@ -377,18 +373,18 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    */
   walkAtRules(
     nameFilter: RegExp | string,
-    callback: (atRule: AtRule, index: number) => false | void
-  ): false | undefined
+    callback: (atRule: AtRule, index: number) => false | void,
+  ): false | undefined;
   walkAtRules(
-    callback: (atRule: AtRule, index: number) => false | void
-  ): false | undefined
+    callback: (atRule: AtRule, index: number) => false | void,
+  ): false | undefined;
 
   walkComments(
-    callback: (comment: Comment, indexed: number) => false | void
-  ): false | undefined
+    callback: (comment: Comment, indexed: number) => false | void,
+  ): false | undefined;
   walkComments(
-    callback: (comment: Comment, indexed: number) => false | void
-  ): false | undefined
+    callback: (comment: Comment, indexed: number) => false | void,
+  ): false | undefined;
 
   /**
    * Traverses the container’s descendant nodes, calling callback
@@ -421,11 +417,11 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    */
   walkDecls(
     propFilter: RegExp | string,
-    callback: (decl: Declaration, index: number) => false | void
-  ): false | undefined
+    callback: (decl: Declaration, index: number) => false | void,
+  ): false | undefined;
   walkDecls(
-    callback: (decl: Declaration, index: number) => false | void
-  ): false | undefined
+    callback: (decl: Declaration, index: number) => false | void,
+  ): false | undefined;
   /**
    * Traverses the container’s descendant nodes, calling callback
    * for each rule node.
@@ -450,11 +446,11 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
    */
   walkRules(
     selectorFilter: RegExp | string,
-    callback: (rule: Rule, index: number) => false | void
-  ): false | undefined
+    callback: (rule: Rule, index: number) => false | void,
+  ): false | undefined;
   walkRules(
-    callback: (rule: Rule, index: number) => false | void
-  ): false | undefined
+    callback: (rule: Rule, index: number) => false | void,
+  ): false | undefined;
   /**
    * An internal method that converts a {@link NewChild} into a list of actual
    * child nodes that can then be added to this container.
@@ -472,12 +468,12 @@ declare abstract class Container_<Child extends Node = ChildNode> extends Node {
   protected normalize(
     nodes: Container.NewChild,
     sample: Node | undefined,
-    type?: 'prepend' | false
-  ): Child[]
+    type?: "prepend" | false,
+  ): Child[];
 }
 
 declare class Container<
-  Child extends Node = ChildNode
+  Child extends Node = ChildNode,
 > extends Container_<Child> {}
 
-export = Container
+export = Container;

@@ -15,7 +15,5 @@ class WebSocketMemoryClientStore {
     }
   }
 }
-export {
-  WebSocketMemoryClientStore
-};
+export { WebSocketMemoryClientStore };
 //# sourceMappingURL=WebSocketMemoryClientStore.mjs.map

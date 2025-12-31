@@ -1,9 +1,7 @@
-'use strict';
-
-const color = require('kleur');
-const { cursor } = require('sisteransi');
-const MultiselectPrompt = require('./multiselect');
-const { clear, style, figures } = require('../util');
+const color = require("kleur");
+const { cursor } = require("sisteransi");
+const MultiselectPrompt = require("./multiselect");
+const { clear, style, figures } = require("../util");
 /**
  * MultiselectPrompt Base Element
  * @param {Object} opts Options
@@ -17,11 +15,11 @@ const { clear, style, figures } = require('../util');
  * @param {Stream} [opts.stdout] The Writable stream to write readline data to
  */
 class AutocompleteMultiselectPrompt extends MultiselectPrompt {
-  constructor(opts={}) {
+  constructor(opts = {}) {
     opts.overrideRender = true;
     super(opts);
-    this.inputValue = '';
-    this.clear = clear('', this.out.columns);
+    this.inputValue = "";
+    this.clear = clear("", this.out.columns);
     this.filteredOptions = this.value;
     this.render();
   }
@@ -59,7 +57,8 @@ class AutocompleteMultiselectPrompt extends MultiselectPrompt {
   }
 
   right() {
-    if (this.value.filter(e => e.selected).length >= this.maxChoices) return this.bell();
+    if (this.value.filter((e) => e.selected).length >= this.maxChoices)
+      return this.bell();
     this.filteredOptions[this.cursor].selected = true;
     this.render();
   }
@@ -73,24 +72,25 @@ class AutocompleteMultiselectPrompt extends MultiselectPrompt {
 
   updateFilteredOptions() {
     const currentHighlight = this.filteredOptions[this.cursor];
-    this.filteredOptions = this.value
-      .filter(v => {
-        if (this.inputValue) {
-          if (typeof v.title === 'string') {
-            if (v.title.toLowerCase().includes(this.inputValue.toLowerCase())) {
-              return true;
-            }
+    this.filteredOptions = this.value.filter((v) => {
+      if (this.inputValue) {
+        if (typeof v.title === "string") {
+          if (v.title.toLowerCase().includes(this.inputValue.toLowerCase())) {
+            return true;
           }
-          if (typeof v.value === 'string') {
-            if (v.value.toLowerCase().includes(this.inputValue.toLowerCase())) {
-              return true;
-            }
-          }
-          return false;
         }
-        return true;
-      });
-    const newHighlightIndex = this.filteredOptions.findIndex(v => v === currentHighlight)
+        if (typeof v.value === "string") {
+          if (v.value.toLowerCase().includes(this.inputValue.toLowerCase())) {
+            return true;
+          }
+        }
+        return false;
+      }
+      return true;
+    });
+    const newHighlightIndex = this.filteredOptions.findIndex(
+      (v) => v === currentHighlight,
+    );
     this.cursor = newHighlightIndex < 0 ? 0 : newHighlightIndex;
     this.render();
   }
@@ -101,7 +101,10 @@ class AutocompleteMultiselectPrompt extends MultiselectPrompt {
     if (v.selected) {
       v.selected = false;
       this.render();
-    } else if (v.disabled || this.value.filter(e => e.selected).length >= this.maxChoices) {
+    } else if (
+      v.disabled ||
+      this.value.filter((e) => e.selected).length >= this.maxChoices
+    ) {
       return this.bell();
     } else {
       v.selected = true;
@@ -115,7 +118,7 @@ class AutocompleteMultiselectPrompt extends MultiselectPrompt {
   }
 
   _(c, key) {
-    if (c === ' ') {
+    if (c === " ") {
       this.handleSpaceToggle();
     } else {
       this.handleInputChange(c);
@@ -124,7 +127,7 @@ class AutocompleteMultiselectPrompt extends MultiselectPrompt {
 
   renderInstructions() {
     if (this.instructions === undefined || this.instructions) {
-      if (typeof this.instructions === 'string') {
+      if (typeof this.instructions === "string") {
         return this.instructions;
       }
       return `
@@ -135,35 +138,50 @@ Instructions:
     enter/return: Complete answer
 `;
     }
-    return '';
+    return "";
   }
 
   renderCurrentInput() {
     return `
-Filtered results for: ${this.inputValue ? this.inputValue : color.gray('Enter something to filter')}\n`;
+Filtered results for: ${this.inputValue ? this.inputValue : color.gray("Enter something to filter")}\n`;
   }
 
   renderOption(cursor, v, i) {
     let title;
-    if (v.disabled) title = cursor === i ? color.gray().underline(v.title) : color.strikethrough().gray(v.title);
+    if (v.disabled)
+      title =
+        cursor === i
+          ? color.gray().underline(v.title)
+          : color.strikethrough().gray(v.title);
     else title = cursor === i ? color.cyan().underline(v.title) : v.title;
-    return (v.selected ? color.green(figures.radioOn) : figures.radioOff) + '  ' + title
+    return (
+      (v.selected ? color.green(figures.radioOn) : figures.radioOff) +
+      "  " +
+      title
+    );
   }
 
   renderDoneOrInstructions() {
     if (this.done) {
       return this.value
-        .filter(e => e.selected)
-        .map(v => v.title)
-        .join(', ');
+        .filter((e) => e.selected)
+        .map((v) => v.title)
+        .join(", ");
     }
 
-    const output = [color.gray(this.hint), this.renderInstructions(), this.renderCurrentInput()];
+    const output = [
+      color.gray(this.hint),
+      this.renderInstructions(),
+      this.renderCurrentInput(),
+    ];
 
-    if (this.filteredOptions.length && this.filteredOptions[this.cursor].disabled) {
+    if (
+      this.filteredOptions.length &&
+      this.filteredOptions[this.cursor].disabled
+    ) {
       output.push(color.yellow(this.warn));
     }
-    return output.join(' ');
+    return output.join(" ");
   }
 
   render() {
@@ -177,11 +195,13 @@ Filtered results for: ${this.inputValue ? this.inputValue : color.gray('Enter so
       style.symbol(this.done, this.aborted),
       color.bold(this.msg),
       style.delimiter(false),
-      this.renderDoneOrInstructions()
-    ].join(' ');
+      this.renderDoneOrInstructions(),
+    ].join(" ");
 
     if (this.showMinError) {
-      prompt += color.red(`You must select a minimum of ${this.minSelected} choices.`);
+      prompt += color.red(
+        `You must select a minimum of ${this.minSelected} choices.`,
+      );
       this.showMinError = false;
     }
     prompt += this.renderOptions(this.filteredOptions);

@@ -1,553 +1,373 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
-Object.defineProperty(exports, 'DEFAULT_DEPRECATION_REASON', {
+Object.defineProperty(exports, "DEFAULT_DEPRECATION_REASON", {
   enumerable: true,
-  get: function () {
-    return _directives.DEFAULT_DEPRECATION_REASON;
-  },
+  get: () => _directives.DEFAULT_DEPRECATION_REASON,
 });
-Object.defineProperty(exports, 'GRAPHQL_MAX_INT', {
+Object.defineProperty(exports, "GRAPHQL_MAX_INT", {
   enumerable: true,
-  get: function () {
-    return _scalars.GRAPHQL_MAX_INT;
-  },
+  get: () => _scalars.GRAPHQL_MAX_INT,
 });
-Object.defineProperty(exports, 'GRAPHQL_MIN_INT', {
+Object.defineProperty(exports, "GRAPHQL_MIN_INT", {
   enumerable: true,
-  get: function () {
-    return _scalars.GRAPHQL_MIN_INT;
-  },
+  get: () => _scalars.GRAPHQL_MIN_INT,
 });
-Object.defineProperty(exports, 'GraphQLBoolean', {
+Object.defineProperty(exports, "GraphQLBoolean", {
   enumerable: true,
-  get: function () {
-    return _scalars.GraphQLBoolean;
-  },
+  get: () => _scalars.GraphQLBoolean,
 });
-Object.defineProperty(exports, 'GraphQLDeprecatedDirective', {
+Object.defineProperty(exports, "GraphQLDeprecatedDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.GraphQLDeprecatedDirective;
-  },
+  get: () => _directives.GraphQLDeprecatedDirective,
 });
-Object.defineProperty(exports, 'GraphQLDirective', {
+Object.defineProperty(exports, "GraphQLDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.GraphQLDirective;
-  },
+  get: () => _directives.GraphQLDirective,
 });
-Object.defineProperty(exports, 'GraphQLEnumType', {
+Object.defineProperty(exports, "GraphQLEnumType", {
   enumerable: true,
-  get: function () {
-    return _definition.GraphQLEnumType;
-  },
+  get: () => _definition.GraphQLEnumType,
 });
-Object.defineProperty(exports, 'GraphQLFloat', {
+Object.defineProperty(exports, "GraphQLFloat", {
   enumerable: true,
-  get: function () {
-    return _scalars.GraphQLFloat;
-  },
+  get: () => _scalars.GraphQLFloat,
 });
-Object.defineProperty(exports, 'GraphQLID', {
+Object.defineProperty(exports, "GraphQLID", {
   enumerable: true,
-  get: function () {
-    return _scalars.GraphQLID;
-  },
+  get: () => _scalars.GraphQLID,
 });
-Object.defineProperty(exports, 'GraphQLIncludeDirective', {
+Object.defineProperty(exports, "GraphQLIncludeDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.GraphQLIncludeDirective;
-  },
+  get: () => _directives.GraphQLIncludeDirective,
 });
-Object.defineProperty(exports, 'GraphQLInputObjectType', {
+Object.defineProperty(exports, "GraphQLInputObjectType", {
   enumerable: true,
-  get: function () {
-    return _definition.GraphQLInputObjectType;
-  },
+  get: () => _definition.GraphQLInputObjectType,
 });
-Object.defineProperty(exports, 'GraphQLInt', {
+Object.defineProperty(exports, "GraphQLInt", {
   enumerable: true,
-  get: function () {
-    return _scalars.GraphQLInt;
-  },
+  get: () => _scalars.GraphQLInt,
 });
-Object.defineProperty(exports, 'GraphQLInterfaceType', {
+Object.defineProperty(exports, "GraphQLInterfaceType", {
   enumerable: true,
-  get: function () {
-    return _definition.GraphQLInterfaceType;
-  },
+  get: () => _definition.GraphQLInterfaceType,
 });
-Object.defineProperty(exports, 'GraphQLList', {
+Object.defineProperty(exports, "GraphQLList", {
   enumerable: true,
-  get: function () {
-    return _definition.GraphQLList;
-  },
+  get: () => _definition.GraphQLList,
 });
-Object.defineProperty(exports, 'GraphQLNonNull', {
+Object.defineProperty(exports, "GraphQLNonNull", {
   enumerable: true,
-  get: function () {
-    return _definition.GraphQLNonNull;
-  },
+  get: () => _definition.GraphQLNonNull,
 });
-Object.defineProperty(exports, 'GraphQLObjectType', {
+Object.defineProperty(exports, "GraphQLObjectType", {
   enumerable: true,
-  get: function () {
-    return _definition.GraphQLObjectType;
-  },
+  get: () => _definition.GraphQLObjectType,
 });
-Object.defineProperty(exports, 'GraphQLOneOfDirective', {
+Object.defineProperty(exports, "GraphQLOneOfDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.GraphQLOneOfDirective;
-  },
+  get: () => _directives.GraphQLOneOfDirective,
 });
-Object.defineProperty(exports, 'GraphQLScalarType', {
+Object.defineProperty(exports, "GraphQLScalarType", {
   enumerable: true,
-  get: function () {
-    return _definition.GraphQLScalarType;
-  },
+  get: () => _definition.GraphQLScalarType,
 });
-Object.defineProperty(exports, 'GraphQLSchema', {
+Object.defineProperty(exports, "GraphQLSchema", {
   enumerable: true,
-  get: function () {
-    return _schema.GraphQLSchema;
-  },
+  get: () => _schema.GraphQLSchema,
 });
-Object.defineProperty(exports, 'GraphQLSkipDirective', {
+Object.defineProperty(exports, "GraphQLSkipDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.GraphQLSkipDirective;
-  },
+  get: () => _directives.GraphQLSkipDirective,
 });
-Object.defineProperty(exports, 'GraphQLSpecifiedByDirective', {
+Object.defineProperty(exports, "GraphQLSpecifiedByDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.GraphQLSpecifiedByDirective;
-  },
+  get: () => _directives.GraphQLSpecifiedByDirective,
 });
-Object.defineProperty(exports, 'GraphQLString', {
+Object.defineProperty(exports, "GraphQLString", {
   enumerable: true,
-  get: function () {
-    return _scalars.GraphQLString;
-  },
+  get: () => _scalars.GraphQLString,
 });
-Object.defineProperty(exports, 'GraphQLUnionType', {
+Object.defineProperty(exports, "GraphQLUnionType", {
   enumerable: true,
-  get: function () {
-    return _definition.GraphQLUnionType;
-  },
+  get: () => _definition.GraphQLUnionType,
 });
-Object.defineProperty(exports, 'SchemaMetaFieldDef', {
+Object.defineProperty(exports, "SchemaMetaFieldDef", {
   enumerable: true,
-  get: function () {
-    return _introspection.SchemaMetaFieldDef;
-  },
+  get: () => _introspection.SchemaMetaFieldDef,
 });
-Object.defineProperty(exports, 'TypeKind', {
+Object.defineProperty(exports, "TypeKind", {
   enumerable: true,
-  get: function () {
-    return _introspection.TypeKind;
-  },
+  get: () => _introspection.TypeKind,
 });
-Object.defineProperty(exports, 'TypeMetaFieldDef', {
+Object.defineProperty(exports, "TypeMetaFieldDef", {
   enumerable: true,
-  get: function () {
-    return _introspection.TypeMetaFieldDef;
-  },
+  get: () => _introspection.TypeMetaFieldDef,
 });
-Object.defineProperty(exports, 'TypeNameMetaFieldDef', {
+Object.defineProperty(exports, "TypeNameMetaFieldDef", {
   enumerable: true,
-  get: function () {
-    return _introspection.TypeNameMetaFieldDef;
-  },
+  get: () => _introspection.TypeNameMetaFieldDef,
 });
-Object.defineProperty(exports, '__Directive', {
+Object.defineProperty(exports, "__Directive", {
   enumerable: true,
-  get: function () {
-    return _introspection.__Directive;
-  },
+  get: () => _introspection.__Directive,
 });
-Object.defineProperty(exports, '__DirectiveLocation', {
+Object.defineProperty(exports, "__DirectiveLocation", {
   enumerable: true,
-  get: function () {
-    return _introspection.__DirectiveLocation;
-  },
+  get: () => _introspection.__DirectiveLocation,
 });
-Object.defineProperty(exports, '__EnumValue', {
+Object.defineProperty(exports, "__EnumValue", {
   enumerable: true,
-  get: function () {
-    return _introspection.__EnumValue;
-  },
+  get: () => _introspection.__EnumValue,
 });
-Object.defineProperty(exports, '__Field', {
+Object.defineProperty(exports, "__Field", {
   enumerable: true,
-  get: function () {
-    return _introspection.__Field;
-  },
+  get: () => _introspection.__Field,
 });
-Object.defineProperty(exports, '__InputValue', {
+Object.defineProperty(exports, "__InputValue", {
   enumerable: true,
-  get: function () {
-    return _introspection.__InputValue;
-  },
+  get: () => _introspection.__InputValue,
 });
-Object.defineProperty(exports, '__Schema', {
+Object.defineProperty(exports, "__Schema", {
   enumerable: true,
-  get: function () {
-    return _introspection.__Schema;
-  },
+  get: () => _introspection.__Schema,
 });
-Object.defineProperty(exports, '__Type', {
+Object.defineProperty(exports, "__Type", {
   enumerable: true,
-  get: function () {
-    return _introspection.__Type;
-  },
+  get: () => _introspection.__Type,
 });
-Object.defineProperty(exports, '__TypeKind', {
+Object.defineProperty(exports, "__TypeKind", {
   enumerable: true,
-  get: function () {
-    return _introspection.__TypeKind;
-  },
+  get: () => _introspection.__TypeKind,
 });
-Object.defineProperty(exports, 'assertAbstractType', {
+Object.defineProperty(exports, "assertAbstractType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertAbstractType;
-  },
+  get: () => _definition.assertAbstractType,
 });
-Object.defineProperty(exports, 'assertCompositeType', {
+Object.defineProperty(exports, "assertCompositeType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertCompositeType;
-  },
+  get: () => _definition.assertCompositeType,
 });
-Object.defineProperty(exports, 'assertDirective', {
+Object.defineProperty(exports, "assertDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.assertDirective;
-  },
+  get: () => _directives.assertDirective,
 });
-Object.defineProperty(exports, 'assertEnumType', {
+Object.defineProperty(exports, "assertEnumType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertEnumType;
-  },
+  get: () => _definition.assertEnumType,
 });
-Object.defineProperty(exports, 'assertEnumValueName', {
+Object.defineProperty(exports, "assertEnumValueName", {
   enumerable: true,
-  get: function () {
-    return _assertName.assertEnumValueName;
-  },
+  get: () => _assertName.assertEnumValueName,
 });
-Object.defineProperty(exports, 'assertInputObjectType', {
+Object.defineProperty(exports, "assertInputObjectType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertInputObjectType;
-  },
+  get: () => _definition.assertInputObjectType,
 });
-Object.defineProperty(exports, 'assertInputType', {
+Object.defineProperty(exports, "assertInputType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertInputType;
-  },
+  get: () => _definition.assertInputType,
 });
-Object.defineProperty(exports, 'assertInterfaceType', {
+Object.defineProperty(exports, "assertInterfaceType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertInterfaceType;
-  },
+  get: () => _definition.assertInterfaceType,
 });
-Object.defineProperty(exports, 'assertLeafType', {
+Object.defineProperty(exports, "assertLeafType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertLeafType;
-  },
+  get: () => _definition.assertLeafType,
 });
-Object.defineProperty(exports, 'assertListType', {
+Object.defineProperty(exports, "assertListType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertListType;
-  },
+  get: () => _definition.assertListType,
 });
-Object.defineProperty(exports, 'assertName', {
+Object.defineProperty(exports, "assertName", {
   enumerable: true,
-  get: function () {
-    return _assertName.assertName;
-  },
+  get: () => _assertName.assertName,
 });
-Object.defineProperty(exports, 'assertNamedType', {
+Object.defineProperty(exports, "assertNamedType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertNamedType;
-  },
+  get: () => _definition.assertNamedType,
 });
-Object.defineProperty(exports, 'assertNonNullType', {
+Object.defineProperty(exports, "assertNonNullType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertNonNullType;
-  },
+  get: () => _definition.assertNonNullType,
 });
-Object.defineProperty(exports, 'assertNullableType', {
+Object.defineProperty(exports, "assertNullableType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertNullableType;
-  },
+  get: () => _definition.assertNullableType,
 });
-Object.defineProperty(exports, 'assertObjectType', {
+Object.defineProperty(exports, "assertObjectType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertObjectType;
-  },
+  get: () => _definition.assertObjectType,
 });
-Object.defineProperty(exports, 'assertOutputType', {
+Object.defineProperty(exports, "assertOutputType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertOutputType;
-  },
+  get: () => _definition.assertOutputType,
 });
-Object.defineProperty(exports, 'assertScalarType', {
+Object.defineProperty(exports, "assertScalarType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertScalarType;
-  },
+  get: () => _definition.assertScalarType,
 });
-Object.defineProperty(exports, 'assertSchema', {
+Object.defineProperty(exports, "assertSchema", {
   enumerable: true,
-  get: function () {
-    return _schema.assertSchema;
-  },
+  get: () => _schema.assertSchema,
 });
-Object.defineProperty(exports, 'assertType', {
+Object.defineProperty(exports, "assertType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertType;
-  },
+  get: () => _definition.assertType,
 });
-Object.defineProperty(exports, 'assertUnionType', {
+Object.defineProperty(exports, "assertUnionType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertUnionType;
-  },
+  get: () => _definition.assertUnionType,
 });
-Object.defineProperty(exports, 'assertValidSchema', {
+Object.defineProperty(exports, "assertValidSchema", {
   enumerable: true,
-  get: function () {
-    return _validate.assertValidSchema;
-  },
+  get: () => _validate.assertValidSchema,
 });
-Object.defineProperty(exports, 'assertWrappingType', {
+Object.defineProperty(exports, "assertWrappingType", {
   enumerable: true,
-  get: function () {
-    return _definition.assertWrappingType;
-  },
+  get: () => _definition.assertWrappingType,
 });
-Object.defineProperty(exports, 'getNamedType', {
+Object.defineProperty(exports, "getNamedType", {
   enumerable: true,
-  get: function () {
-    return _definition.getNamedType;
-  },
+  get: () => _definition.getNamedType,
 });
-Object.defineProperty(exports, 'getNullableType', {
+Object.defineProperty(exports, "getNullableType", {
   enumerable: true,
-  get: function () {
-    return _definition.getNullableType;
-  },
+  get: () => _definition.getNullableType,
 });
-Object.defineProperty(exports, 'introspectionTypes', {
+Object.defineProperty(exports, "introspectionTypes", {
   enumerable: true,
-  get: function () {
-    return _introspection.introspectionTypes;
-  },
+  get: () => _introspection.introspectionTypes,
 });
-Object.defineProperty(exports, 'isAbstractType', {
+Object.defineProperty(exports, "isAbstractType", {
   enumerable: true,
-  get: function () {
-    return _definition.isAbstractType;
-  },
+  get: () => _definition.isAbstractType,
 });
-Object.defineProperty(exports, 'isCompositeType', {
+Object.defineProperty(exports, "isCompositeType", {
   enumerable: true,
-  get: function () {
-    return _definition.isCompositeType;
-  },
+  get: () => _definition.isCompositeType,
 });
-Object.defineProperty(exports, 'isDirective', {
+Object.defineProperty(exports, "isDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.isDirective;
-  },
+  get: () => _directives.isDirective,
 });
-Object.defineProperty(exports, 'isEnumType', {
+Object.defineProperty(exports, "isEnumType", {
   enumerable: true,
-  get: function () {
-    return _definition.isEnumType;
-  },
+  get: () => _definition.isEnumType,
 });
-Object.defineProperty(exports, 'isInputObjectType', {
+Object.defineProperty(exports, "isInputObjectType", {
   enumerable: true,
-  get: function () {
-    return _definition.isInputObjectType;
-  },
+  get: () => _definition.isInputObjectType,
 });
-Object.defineProperty(exports, 'isInputType', {
+Object.defineProperty(exports, "isInputType", {
   enumerable: true,
-  get: function () {
-    return _definition.isInputType;
-  },
+  get: () => _definition.isInputType,
 });
-Object.defineProperty(exports, 'isInterfaceType', {
+Object.defineProperty(exports, "isInterfaceType", {
   enumerable: true,
-  get: function () {
-    return _definition.isInterfaceType;
-  },
+  get: () => _definition.isInterfaceType,
 });
-Object.defineProperty(exports, 'isIntrospectionType', {
+Object.defineProperty(exports, "isIntrospectionType", {
   enumerable: true,
-  get: function () {
-    return _introspection.isIntrospectionType;
-  },
+  get: () => _introspection.isIntrospectionType,
 });
-Object.defineProperty(exports, 'isLeafType', {
+Object.defineProperty(exports, "isLeafType", {
   enumerable: true,
-  get: function () {
-    return _definition.isLeafType;
-  },
+  get: () => _definition.isLeafType,
 });
-Object.defineProperty(exports, 'isListType', {
+Object.defineProperty(exports, "isListType", {
   enumerable: true,
-  get: function () {
-    return _definition.isListType;
-  },
+  get: () => _definition.isListType,
 });
-Object.defineProperty(exports, 'isNamedType', {
+Object.defineProperty(exports, "isNamedType", {
   enumerable: true,
-  get: function () {
-    return _definition.isNamedType;
-  },
+  get: () => _definition.isNamedType,
 });
-Object.defineProperty(exports, 'isNonNullType', {
+Object.defineProperty(exports, "isNonNullType", {
   enumerable: true,
-  get: function () {
-    return _definition.isNonNullType;
-  },
+  get: () => _definition.isNonNullType,
 });
-Object.defineProperty(exports, 'isNullableType', {
+Object.defineProperty(exports, "isNullableType", {
   enumerable: true,
-  get: function () {
-    return _definition.isNullableType;
-  },
+  get: () => _definition.isNullableType,
 });
-Object.defineProperty(exports, 'isObjectType', {
+Object.defineProperty(exports, "isObjectType", {
   enumerable: true,
-  get: function () {
-    return _definition.isObjectType;
-  },
+  get: () => _definition.isObjectType,
 });
-Object.defineProperty(exports, 'isOutputType', {
+Object.defineProperty(exports, "isOutputType", {
   enumerable: true,
-  get: function () {
-    return _definition.isOutputType;
-  },
+  get: () => _definition.isOutputType,
 });
-Object.defineProperty(exports, 'isRequiredArgument', {
+Object.defineProperty(exports, "isRequiredArgument", {
   enumerable: true,
-  get: function () {
-    return _definition.isRequiredArgument;
-  },
+  get: () => _definition.isRequiredArgument,
 });
-Object.defineProperty(exports, 'isRequiredInputField', {
+Object.defineProperty(exports, "isRequiredInputField", {
   enumerable: true,
-  get: function () {
-    return _definition.isRequiredInputField;
-  },
+  get: () => _definition.isRequiredInputField,
 });
-Object.defineProperty(exports, 'isScalarType', {
+Object.defineProperty(exports, "isScalarType", {
   enumerable: true,
-  get: function () {
-    return _definition.isScalarType;
-  },
+  get: () => _definition.isScalarType,
 });
-Object.defineProperty(exports, 'isSchema', {
+Object.defineProperty(exports, "isSchema", {
   enumerable: true,
-  get: function () {
-    return _schema.isSchema;
-  },
+  get: () => _schema.isSchema,
 });
-Object.defineProperty(exports, 'isSpecifiedDirective', {
+Object.defineProperty(exports, "isSpecifiedDirective", {
   enumerable: true,
-  get: function () {
-    return _directives.isSpecifiedDirective;
-  },
+  get: () => _directives.isSpecifiedDirective,
 });
-Object.defineProperty(exports, 'isSpecifiedScalarType', {
+Object.defineProperty(exports, "isSpecifiedScalarType", {
   enumerable: true,
-  get: function () {
-    return _scalars.isSpecifiedScalarType;
-  },
+  get: () => _scalars.isSpecifiedScalarType,
 });
-Object.defineProperty(exports, 'isType', {
+Object.defineProperty(exports, "isType", {
   enumerable: true,
-  get: function () {
-    return _definition.isType;
-  },
+  get: () => _definition.isType,
 });
-Object.defineProperty(exports, 'isUnionType', {
+Object.defineProperty(exports, "isUnionType", {
   enumerable: true,
-  get: function () {
-    return _definition.isUnionType;
-  },
+  get: () => _definition.isUnionType,
 });
-Object.defineProperty(exports, 'isWrappingType', {
+Object.defineProperty(exports, "isWrappingType", {
   enumerable: true,
-  get: function () {
-    return _definition.isWrappingType;
-  },
+  get: () => _definition.isWrappingType,
 });
-Object.defineProperty(exports, 'resolveObjMapThunk', {
+Object.defineProperty(exports, "resolveObjMapThunk", {
   enumerable: true,
-  get: function () {
-    return _definition.resolveObjMapThunk;
-  },
+  get: () => _definition.resolveObjMapThunk,
 });
-Object.defineProperty(exports, 'resolveReadonlyArrayThunk', {
+Object.defineProperty(exports, "resolveReadonlyArrayThunk", {
   enumerable: true,
-  get: function () {
-    return _definition.resolveReadonlyArrayThunk;
-  },
+  get: () => _definition.resolveReadonlyArrayThunk,
 });
-Object.defineProperty(exports, 'specifiedDirectives', {
+Object.defineProperty(exports, "specifiedDirectives", {
   enumerable: true,
-  get: function () {
-    return _directives.specifiedDirectives;
-  },
+  get: () => _directives.specifiedDirectives,
 });
-Object.defineProperty(exports, 'specifiedScalarTypes', {
+Object.defineProperty(exports, "specifiedScalarTypes", {
   enumerable: true,
-  get: function () {
-    return _scalars.specifiedScalarTypes;
-  },
+  get: () => _scalars.specifiedScalarTypes,
 });
-Object.defineProperty(exports, 'validateSchema', {
+Object.defineProperty(exports, "validateSchema", {
   enumerable: true,
-  get: function () {
-    return _validate.validateSchema;
-  },
+  get: () => _validate.validateSchema,
 });
 
-var _schema = require('./schema.js');
+var _schema = require("./schema.js");
 
-var _definition = require('./definition.js');
+var _definition = require("./definition.js");
 
-var _directives = require('./directives.js');
+var _directives = require("./directives.js");
 
-var _scalars = require('./scalars.js');
+var _scalars = require("./scalars.js");
 
-var _introspection = require('./introspection.js');
+var _introspection = require("./introspection.js");
 
-var _validate = require('./validate.js');
+var _validate = require("./validate.js");
 
-var _assertName = require('./assertName.js');
+var _assertName = require("./assertName.js");

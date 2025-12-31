@@ -1,5 +1,9 @@
 // src/adapter/cloudflare-workers/websocket.ts
-import { WSContext, defineWebSocketHelper } from "../../helper/websocket/index.js";
+import {
+  defineWebSocketHelper,
+  WSContext,
+} from "../../helper/websocket/index.js";
+
 var upgradeWebSocket = defineWebSocketHelper(async (c, events) => {
   const upgradeHeader = c.req.header("Upgrade");
   if (upgradeHeader !== "websocket") {
@@ -18,13 +22,15 @@ var upgradeWebSocket = defineWebSocketHelper(async (c, events) => {
       return server.readyState;
     },
     url: server.url ? new URL(server.url) : null,
-    send: (source) => server.send(source)
+    send: (source) => server.send(source),
   });
   if (events.onClose) {
     server.addEventListener("close", (evt) => events.onClose?.(evt, wsContext));
   }
   if (events.onMessage) {
-    server.addEventListener("message", (evt) => events.onMessage?.(evt, wsContext));
+    server.addEventListener("message", (evt) =>
+      events.onMessage?.(evt, wsContext),
+    );
   }
   if (events.onError) {
     server.addEventListener("error", (evt) => events.onError?.(evt, wsContext));
@@ -33,9 +39,7 @@ var upgradeWebSocket = defineWebSocketHelper(async (c, events) => {
   return new Response(null, {
     status: 101,
     // @ts-expect-error - webSocket is not typed
-    webSocket: client
+    webSocket: client,
   });
 });
-export {
-  upgradeWebSocket
-};
+export { upgradeWebSocket };

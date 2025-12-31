@@ -1,25 +1,23 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.ProvidedRequiredArgumentsOnDirectivesRule =
   ProvidedRequiredArgumentsOnDirectivesRule;
 exports.ProvidedRequiredArgumentsRule = ProvidedRequiredArgumentsRule;
 
-var _inspect = require('../../jsutils/inspect.js');
+var _inspect = require("../../jsutils/inspect.js");
 
-var _keyMap = require('../../jsutils/keyMap.js');
+var _keyMap = require("../../jsutils/keyMap.js");
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _kinds = require('../../language/kinds.js');
+var _kinds = require("../../language/kinds.js");
 
-var _printer = require('../../language/printer.js');
+var _printer = require("../../language/printer.js");
 
-var _definition = require('../../type/definition.js');
+var _definition = require("../../type/definition.js");
 
-var _directives = require('../../type/directives.js');
+var _directives = require("../../type/directives.js");
 
 /**
  * Provided required arguments
@@ -42,10 +40,11 @@ function ProvidedRequiredArgumentsRule(context) {
           return false;
         }
 
-        const providedArgs = new Set( // FIXME: https://github.com/graphql/graphql-js/issues/2203
+        const providedArgs = new Set(
+          // FIXME: https://github.com/graphql/graphql-js/issues/2203
           /* c8 ignore next */
           (_fieldNode$arguments = fieldNode.arguments) === null ||
-          _fieldNode$arguments === void 0
+            _fieldNode$arguments === void 0
             ? void 0
             : _fieldNode$arguments.map((arg) => arg.name.value),
         );

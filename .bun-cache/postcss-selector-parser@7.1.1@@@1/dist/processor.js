@@ -1,10 +1,10 @@
-"use strict";
-
 exports.__esModule = true;
 exports["default"] = void 0;
 var _parser = _interopRequireDefault(require("./parser"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-var Processor = /*#__PURE__*/function () {
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+var Processor = /*#__PURE__*/ (() => {
   function Processor(func, options) {
     this.func = func || function noop() {};
     this.funcRes = null;
@@ -42,29 +42,30 @@ var Processor = /*#__PURE__*/function () {
   };
   _proto._parseOptions = function _parseOptions(options) {
     return {
-      lossy: this._isLossy(options)
+      lossy: this._isLossy(options),
     };
   };
   _proto._run = function _run(rule, options) {
-    var _this = this;
     if (options === void 0) {
       options = {};
     }
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       try {
-        var root = _this._root(rule, options);
-        Promise.resolve(_this.func(root)).then(function (transform) {
-          var string = undefined;
-          if (_this._shouldUpdateSelector(rule, options)) {
-            string = root.toString();
-            rule.selector = string;
-          }
-          return {
-            transform: transform,
-            root: root,
-            string: string
-          };
-        }).then(resolve, reject);
+        var root = this._root(rule, options);
+        Promise.resolve(this.func(root))
+          .then((transform) => {
+            var string;
+            if (this._shouldUpdateSelector(rule, options)) {
+              string = root.toString();
+              rule.selector = string;
+            }
+            return {
+              transform: transform,
+              root: root,
+              string: string,
+            };
+          })
+          .then(resolve, reject);
       } catch (e) {
         reject(e);
         return;
@@ -78,9 +79,11 @@ var Processor = /*#__PURE__*/function () {
     var root = this._root(rule, options);
     var transform = this.func(root);
     if (transform && typeof transform.then === "function") {
-      throw new Error("Selector processor returned a promise to a synchronous call.");
+      throw new Error(
+        "Selector processor returned a promise to a synchronous call.",
+      );
     }
-    var string = undefined;
+    var string;
     if (options.updateSelector && typeof rule !== "string") {
       string = root.toString();
       rule.selector = string;
@@ -88,9 +91,9 @@ var Processor = /*#__PURE__*/function () {
     return {
       transform: transform,
       root: root,
-      string: string
+      string: string,
     };
-  }
+  };
 
   /**
    * Process rule into a selector AST.
@@ -98,12 +101,10 @@ var Processor = /*#__PURE__*/function () {
    * @param rule {postcss.Rule | string} The css selector to be processed
    * @param options The options for processing
    * @returns {Promise<parser.Root>} The AST of the selector after processing it.
-   */;
+   */
   _proto.ast = function ast(rule, options) {
-    return this._run(rule, options).then(function (result) {
-      return result.root;
-    });
-  }
+    return this._run(rule, options).then((result) => result.root);
+  };
 
   /**
    * Process rule into a selector AST synchronously.
@@ -111,10 +112,10 @@ var Processor = /*#__PURE__*/function () {
    * @param rule {postcss.Rule | string} The css selector to be processed
    * @param options The options for processing
    * @returns {parser.Root} The AST of the selector after processing it.
-   */;
+   */
   _proto.astSync = function astSync(rule, options) {
     return this._runSync(rule, options).root;
-  }
+  };
 
   /**
    * Process a selector into a transformed value asynchronously
@@ -122,12 +123,10 @@ var Processor = /*#__PURE__*/function () {
    * @param rule {postcss.Rule | string} The css selector to be processed
    * @param options The options for processing
    * @returns {Promise<any>} The value returned by the processor.
-   */;
+   */
   _proto.transform = function transform(rule, options) {
-    return this._run(rule, options).then(function (result) {
-      return result.transform;
-    });
-  }
+    return this._run(rule, options).then((result) => result.transform);
+  };
 
   /**
    * Process a selector into a transformed value synchronously.
@@ -135,10 +134,10 @@ var Processor = /*#__PURE__*/function () {
    * @param rule {postcss.Rule | string} The css selector to be processed
    * @param options The options for processing
    * @returns {any} The value returned by the processor.
-   */;
+   */
   _proto.transformSync = function transformSync(rule, options) {
     return this._runSync(rule, options).transform;
-  }
+  };
 
   /**
    * Process a selector into a new selector string asynchronously.
@@ -146,12 +145,12 @@ var Processor = /*#__PURE__*/function () {
    * @param rule {postcss.Rule | string} The css selector to be processed
    * @param options The options for processing
    * @returns {string} the selector after processing.
-   */;
+   */
   _proto.process = function process(rule, options) {
-    return this._run(rule, options).then(function (result) {
-      return result.string || result.root.toString();
-    });
-  }
+    return this._run(rule, options).then(
+      (result) => result.string || result.root.toString(),
+    );
+  };
 
   /**
    * Process a selector into a new selector string synchronously.
@@ -159,12 +158,12 @@ var Processor = /*#__PURE__*/function () {
    * @param rule {postcss.Rule | string} The css selector to be processed
    * @param options The options for processing
    * @returns {string} the selector after processing.
-   */;
+   */
   _proto.processSync = function processSync(rule, options) {
     var result = this._runSync(rule, options);
     return result.string || result.root.toString();
   };
   return Processor;
-}();
+})();
 exports["default"] = Processor;
 module.exports = exports.default;

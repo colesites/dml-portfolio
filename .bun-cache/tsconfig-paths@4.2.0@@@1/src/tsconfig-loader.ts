@@ -1,5 +1,6 @@
-import * as path from "path";
 import * as fs from "fs";
+import * as path from "path";
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import JSON5 = require("json5");
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -29,7 +30,7 @@ export interface TsConfigLoaderParams {
   loadSync?(
     cwd: string,
     filename?: string,
-    baseUrl?: string
+    baseUrl?: string,
   ): TsConfigLoaderResult;
 }
 
@@ -50,7 +51,7 @@ export function tsConfigLoader({
 function loadSyncDefault(
   cwd: string,
   filename?: string,
-  baseUrl?: string
+  baseUrl?: string,
 ): TsConfigLoaderResult {
   // Tsconfig.loadSync uses path.resolve. This is why we can use an absolute path as filename
 
@@ -92,7 +93,7 @@ function resolveConfigPath(cwd: string, filename?: string): string | undefined {
 }
 export function walkForTsConfig(
   directory: string,
-  readdirSync: (path: string) => string[] = fs.readdirSync
+  readdirSync: (path: string) => string[] = fs.readdirSync,
 ): string | undefined {
   const files = readdirSync(directory);
   const filesToCheck = ["tsconfig.json", "jsconfig.json"];
@@ -117,7 +118,7 @@ export function loadTsconfig(
   // eslint-disable-next-line no-shadow
   existsSync: (path: string) => boolean = fs.existsSync,
   readFileSync: (filename: string) => string = (filename: string) =>
-    fs.readFileSync(filename, "utf8")
+    fs.readFileSync(filename, "utf8"),
 ): Tsconfig | undefined {
   if (!existsSync(configFilePath)) {
     return undefined;
@@ -132,7 +133,7 @@ export function loadTsconfig(
     throw new Error(`${configFilePath} is malformed ${e.message}`);
   }
 
-  let extendedConfig = config.extends;
+  const extendedConfig = config.extends;
   if (extendedConfig) {
     let base: Tsconfig;
 
@@ -145,17 +146,17 @@ export function loadTsconfig(
               configFilePath,
               extendedConfigElement,
               existsSync,
-              readFileSync
-            )
+              readFileSync,
+            ),
           ),
-        {}
+        {},
       );
     } else {
       base = loadTsconfigFromExtends(
         configFilePath,
         extendedConfig,
         existsSync,
-        readFileSync
+        readFileSync,
       );
     }
 
@@ -173,7 +174,7 @@ function loadTsconfigFromExtends(
   extendedConfigValue: string,
   // eslint-disable-next-line no-shadow
   existsSync: (path: string) => boolean,
-  readFileSync: (filename: string) => string
+  readFileSync: (filename: string) => string,
 ): Tsconfig {
   if (
     typeof extendedConfigValue === "string" &&
@@ -191,7 +192,7 @@ function loadTsconfigFromExtends(
     extendedConfigPath = path.join(
       currentDir,
       "node_modules",
-      extendedConfigValue
+      extendedConfigValue,
     );
   }
 
@@ -204,7 +205,7 @@ function loadTsconfigFromExtends(
     const extendsDir = path.dirname(extendedConfigValue);
     config.compilerOptions.baseUrl = path.join(
       extendsDir,
-      config.compilerOptions.baseUrl
+      config.compilerOptions.baseUrl,
     );
   }
 
@@ -213,7 +214,7 @@ function loadTsconfigFromExtends(
 
 function mergeTsconfigs(
   base: Tsconfig | undefined,
-  config: Tsconfig | undefined
+  config: Tsconfig | undefined,
 ): Tsconfig {
   base = base || {};
   config = config || {};

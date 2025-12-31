@@ -1,10 +1,10 @@
-import type {Except} from './except.d.ts';
-import type {TupleOf} from './tuple-of.d.ts';
+import type { Except } from "./except.d.ts";
+import type { TupleOf } from "./tuple-of.d.ts";
 
 /**
 Methods to exclude.
 */
-type ArrayLengthMutationKeys = 'splice' | 'push' | 'pop' | 'shift' | 'unshift';
+type ArrayLengthMutationKeys = "splice" | "push" | "pop" | "shift" | "unshift";
 
 /**
 Create a type that represents an array of the given type and length. The `Array` prototype methods that manipulate its length are excluded from the resulting type.
@@ -89,9 +89,9 @@ console.log(toHex(color)); // `FixedLengthArray<number, 3>` is assignable to `re
 
 @category Array
 */
-export type FixedLengthArray<Element, Length extends number> =
-	Except<TupleOf<Length, Element>, ArrayLengthMutationKeys | number | 'length'>
-	& {readonly length: Length}
-	& (number extends Length ? {[n: number]: Element} : {}); // Add `number` index signature only for non-tuple arrays.
-
-export {};
+export type FixedLengthArray<Element, Length extends number> = Except<
+  TupleOf<Length, Element>,
+  ArrayLengthMutationKeys | number | "length"
+> & { readonly length: Length } & (number extends Length
+    ? { [n: number]: Element }
+    : {}); // Add `number` index signature only for non-tuple arrays.

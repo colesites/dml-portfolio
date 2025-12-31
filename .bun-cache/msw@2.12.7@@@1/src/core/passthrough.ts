@@ -1,4 +1,4 @@
-import type { HttpResponse } from './HttpResponse'
+import type { HttpResponse } from "./HttpResponse";
 
 /**
  * Performs the intercepted request as-is.
@@ -17,9 +17,9 @@ import type { HttpResponse } from './HttpResponse'
 export function passthrough(): HttpResponse<any> {
   return new Response(null, {
     status: 302,
-    statusText: 'Passthrough',
+    statusText: "Passthrough",
     headers: {
-      'x-msw-intention': 'passthrough',
+      "x-msw-intention": "passthrough",
     },
-  }) as HttpResponse<any>
+  }) as HttpResponse<any>;
 }

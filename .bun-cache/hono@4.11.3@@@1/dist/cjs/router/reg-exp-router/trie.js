@@ -8,17 +8,21 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var trie_exports = {};
 __export(trie_exports, {
-  Trie: () => Trie
+  Trie: () => Trie,
 });
 module.exports = __toCommonJS(trie_exports);
 var import_node = require("./node");
@@ -41,7 +45,7 @@ class Trie {
         break;
       }
     }
-    const tokens = path.match(/(?::[^\/]+)|(?:\/\*$)|./g) || [];
+    const tokens = path.match(/(?::[^/]+)|(?:\/\*$)|./g) || [];
     for (let i = groups.length - 1; i >= 0; i--) {
       const [mark] = groups[i];
       for (let j = tokens.length - 1; j >= 0; j--) {
@@ -51,7 +55,13 @@ class Trie {
         }
       }
     }
-    this.#root.insert(tokens, index, paramAssoc, this.#context, pathErrorCheckOnly);
+    this.#root.insert(
+      tokens,
+      index,
+      paramAssoc,
+      this.#context,
+      pathErrorCheckOnly,
+    );
     return paramAssoc;
   }
   buildRegExp() {
@@ -62,21 +72,25 @@ class Trie {
     let captureIndex = 0;
     const indexReplacementMap = [];
     const paramReplacementMap = [];
-    regexp = regexp.replace(/#(\d+)|@(\d+)|\.\*\$/g, (_, handlerIndex, paramIndex) => {
-      if (handlerIndex !== void 0) {
-        indexReplacementMap[++captureIndex] = Number(handlerIndex);
-        return "$()";
-      }
-      if (paramIndex !== void 0) {
-        paramReplacementMap[Number(paramIndex)] = ++captureIndex;
+    regexp = regexp.replace(
+      /#(\d+)|@(\d+)|\.\*\$/g,
+      (_, handlerIndex, paramIndex) => {
+        if (handlerIndex !== void 0) {
+          indexReplacementMap[++captureIndex] = Number(handlerIndex);
+          return "$()";
+        }
+        if (paramIndex !== void 0) {
+          paramReplacementMap[Number(paramIndex)] = ++captureIndex;
+          return "";
+        }
         return "";
-      }
-      return "";
-    });
+      },
+    );
     return [new RegExp(`^${regexp}`), indexReplacementMap, paramReplacementMap];
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  Trie
-});
+0 &&
+  (module.exports = {
+    Trie,
+  });

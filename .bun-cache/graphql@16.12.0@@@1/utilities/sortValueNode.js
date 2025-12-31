@@ -1,13 +1,11 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.sortValueNode = sortValueNode;
 
-var _naturalCompare = require('../jsutils/naturalCompare.js');
+var _naturalCompare = require("../jsutils/naturalCompare.js");
 
-var _kinds = require('../language/kinds.js');
+var _kinds = require("../language/kinds.js");
 
 /**
  * Sort ValueNode.

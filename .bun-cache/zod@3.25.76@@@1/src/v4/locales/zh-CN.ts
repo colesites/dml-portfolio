@@ -29,7 +29,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "空值(null)";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -75,7 +78,8 @@ const error: () => errors.$ZodErrorMap = () => {
       case "invalid_type":
         return `无效输入：期望 ${issue.expected}，实际接收 ${parsedType(issue.input)}`;
       case "invalid_value":
-        if (issue.values.length === 1) return `无效输入：期望 ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `无效输入：期望 ${util.stringifyPrimitive(issue.values[0])}`;
         return `无效选项：期望以下之一 ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
@@ -94,10 +98,14 @@ const error: () => errors.$ZodErrorMap = () => {
       }
       case "invalid_format": {
         const _issue = issue as errors.$ZodStringFormatIssues;
-        if (_issue.format === "starts_with") return `无效字符串：必须以 "${_issue.prefix}" 开头`;
-        if (_issue.format === "ends_with") return `无效字符串：必须以 "${_issue.suffix}" 结尾`;
-        if (_issue.format === "includes") return `无效字符串：必须包含 "${_issue.includes}"`;
-        if (_issue.format === "regex") return `无效字符串：必须满足正则表达式 ${_issue.pattern}`;
+        if (_issue.format === "starts_with")
+          return `无效字符串：必须以 "${_issue.prefix}" 开头`;
+        if (_issue.format === "ends_with")
+          return `无效字符串：必须以 "${_issue.suffix}" 结尾`;
+        if (_issue.format === "includes")
+          return `无效字符串：必须包含 "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `无效字符串：必须满足正则表达式 ${_issue.pattern}`;
         return `无效${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

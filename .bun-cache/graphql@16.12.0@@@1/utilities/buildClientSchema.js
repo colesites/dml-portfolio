@@ -1,31 +1,29 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.buildClientSchema = buildClientSchema;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _isObjectLike = require('../jsutils/isObjectLike.js');
+var _isObjectLike = require("../jsutils/isObjectLike.js");
 
-var _keyValMap = require('../jsutils/keyValMap.js');
+var _keyValMap = require("../jsutils/keyValMap.js");
 
-var _parser = require('../language/parser.js');
+var _parser = require("../language/parser.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _directives = require('../type/directives.js');
+var _directives = require("../type/directives.js");
 
-var _introspection = require('../type/introspection.js');
+var _introspection = require("../type/introspection.js");
 
-var _scalars = require('../type/scalars.js');
+var _scalars = require("../type/scalars.js");
 
-var _schema = require('../type/schema.js');
+var _schema = require("../type/schema.js");
 
-var _valueFromAST = require('./valueFromAST.js');
+var _valueFromAST = require("./valueFromAST.js");
 
 /**
  * Build a GraphQLSchema for use by client tools.
@@ -97,7 +95,7 @@ function buildClientSchema(introspection, options) {
       const itemRef = typeRef.ofType;
 
       if (!itemRef) {
-        throw new Error('Decorated type deeper than introspection query.');
+        throw new Error("Decorated type deeper than introspection query.");
       }
 
       return new _definition.GraphQLList(getType(itemRef));
@@ -107,7 +105,7 @@ function buildClientSchema(introspection, options) {
       const nullableRef = typeRef.ofType;
 
       if (!nullableRef) {
-        throw new Error('Decorated type deeper than introspection query.');
+        throw new Error("Decorated type deeper than introspection query.");
       }
 
       const nullableType = getType(nullableRef);

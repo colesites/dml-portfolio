@@ -2,7 +2,7 @@
  * Deprecated module: moved from curves/abstract/utils.js to curves/utils.js
  * @module
  */
-import * as u from '../utils.ts';
+import * as u from "../utils.ts";
 
 /** @deprecated moved to `@noble/curves/utils.js` */
 export type Hex = u.Hex;
@@ -35,7 +35,8 @@ export const utf8ToBytes: typeof u.utf8ToBytes = u.utf8ToBytes;
 /** @deprecated moved to `@noble/curves/utils.js` */
 export const abool: typeof u.abool = u.abool;
 /** @deprecated moved to `@noble/curves/utils.js` */
-export const numberToHexUnpadded: typeof u.numberToHexUnpadded = u.numberToHexUnpadded;
+export const numberToHexUnpadded: typeof u.numberToHexUnpadded =
+  u.numberToHexUnpadded;
 /** @deprecated moved to `@noble/curves/utils.js` */
 export const hexToNumber: typeof u.hexToNumber = u.hexToNumber;
 /** @deprecated moved to `@noble/curves/utils.js` */
@@ -47,7 +48,8 @@ export const numberToBytesBE: typeof u.numberToBytesBE = u.numberToBytesBE;
 /** @deprecated moved to `@noble/curves/utils.js` */
 export const numberToBytesLE: typeof u.numberToBytesLE = u.numberToBytesLE;
 /** @deprecated moved to `@noble/curves/utils.js` */
-export const numberToVarBytesBE: typeof u.numberToVarBytesBE = u.numberToVarBytesBE;
+export const numberToVarBytesBE: typeof u.numberToVarBytesBE =
+  u.numberToVarBytesBE;
 /** @deprecated moved to `@noble/curves/utils.js` */
 export const ensureBytes: typeof u.ensureBytes = u.ensureBytes;
 /** @deprecated moved to `@noble/curves/utils.js` */

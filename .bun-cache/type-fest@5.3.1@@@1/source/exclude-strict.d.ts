@@ -39,13 +39,11 @@ type Example2 = ExcludeStrict<{x: number; y: number} | {x: string; y: string}, u
 @category Improved Built-in
 */
 export type ExcludeStrict<
-	T,
-	U extends [U] extends [
-		// Ensure every member of `U` excludes something from `T`
-		U extends unknown ? ([T] extends [Exclude<T, U>] ? never : U) : never,
-	]
-		? unknown
-		: never,
+  T,
+  U extends [U] extends [
+    // Ensure every member of `U` excludes something from `T`
+    U extends unknown ? ([T] extends [Exclude<T, U>] ? never : U) : never,
+  ]
+    ? unknown
+    : never,
 > = Exclude<T, U>;
-
-export {};

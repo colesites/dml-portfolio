@@ -21,7 +21,9 @@ test("string coercion", () => {
   expect(schema.parse({ hello: "world!" })).toEqual("[object Object]");
   expect(schema.parse(["item", "another_item"])).toEqual("item,another_item");
   expect(schema.parse([])).toEqual("");
-  expect(schema.parse(new Date("2022-01-01T00:00:00.000Z"))).toEqual(new Date("2022-01-01T00:00:00.000Z").toString());
+  expect(schema.parse(new Date("2022-01-01T00:00:00.000Z"))).toEqual(
+    new Date("2022-01-01T00:00:00.000Z").toString(),
+  );
 });
 
 test("number coercion", () => {

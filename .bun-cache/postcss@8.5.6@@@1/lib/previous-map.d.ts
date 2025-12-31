@@ -1,10 +1,10 @@
-import { SourceMapConsumer } from 'source-map-js'
+import { SourceMapConsumer } from "source-map-js";
 
-import { ProcessOptions } from './postcss.js'
+import { ProcessOptions } from "./postcss.js";
 
 declare namespace PreviousMap {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  export { PreviousMap_ as default }
+  export { PreviousMap_ as default };
 }
 
 /**
@@ -23,39 +23,39 @@ declare class PreviousMap_ {
   /**
    * `sourceMappingURL` content.
    */
-  annotation?: string
+  annotation?: string;
 
   /**
    * The CSS source identifier. Contains `Input#file` if the user
    * set the `from` option, or `Input#id` if they did not.
    */
-  file?: string
+  file?: string;
 
   /**
    * Was source map inlined by data-uri to input CSS.
    */
-  inline: boolean
+  inline: boolean;
 
   /**
    * Path to source map file.
    */
-  mapFile?: string
+  mapFile?: string;
 
   /**
    * The directory with source map file, if source map is in separated file.
    */
-  root?: string
+  root?: string;
 
   /**
    * Source map file content.
    */
-  text?: string
+  text?: string;
 
   /**
    * @param css  Input CSS source.
    * @param opts Process options.
    */
-  constructor(css: string, opts?: ProcessOptions)
+  constructor(css: string, opts?: ProcessOptions);
 
   /**
    * Create a instance of `SourceMapGenerator` class
@@ -66,16 +66,16 @@ declare class PreviousMap_ {
    *
    * @return Object with source map information.
    */
-  consumer(): SourceMapConsumer
+  consumer(): SourceMapConsumer;
 
   /**
    * Does source map contains `sourcesContent` with input source text.
    *
    * @return Is `sourcesContent` present.
    */
-  withContent(): boolean
+  withContent(): boolean;
 }
 
 declare class PreviousMap extends PreviousMap_ {}
 
-export = PreviousMap
+export = PreviousMap;

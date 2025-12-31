@@ -1,7 +1,5 @@
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.cacheWrapper = cacheWrapper;
 exports.cacheWrapperSync = cacheWrapperSync;

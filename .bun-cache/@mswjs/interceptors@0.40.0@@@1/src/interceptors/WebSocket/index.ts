@@ -1,54 +1,54 @@
-import { Interceptor } from '../../Interceptor'
+import { Interceptor } from "../../Interceptor";
+import { emitAsync } from "../../utils/emitAsync";
+import { hasConfigurableGlobal } from "../../utils/hasConfigurableGlobal";
+import { bindEvent } from "./utils/bindEvent";
+import { WebSocketClassTransport } from "./WebSocketClassTransport";
 import {
-  WebSocketClientConnectionProtocol,
   WebSocketClientConnection,
+  WebSocketClientConnectionProtocol,
   type WebSocketClientEventMap,
-} from './WebSocketClientConnection'
-import {
-  WebSocketServerConnectionProtocol,
-  WebSocketServerConnection,
-  type WebSocketServerEventMap,
-} from './WebSocketServerConnection'
-import { WebSocketClassTransport } from './WebSocketClassTransport'
+} from "./WebSocketClientConnection";
 import {
   kClose,
   kPassthroughPromise,
   WebSocketOverride,
-} from './WebSocketOverride'
-import { bindEvent } from './utils/bindEvent'
-import { hasConfigurableGlobal } from '../../utils/hasConfigurableGlobal'
-import { emitAsync } from '../../utils/emitAsync'
+} from "./WebSocketOverride";
+import {
+  WebSocketServerConnection,
+  WebSocketServerConnectionProtocol,
+  type WebSocketServerEventMap,
+} from "./WebSocketServerConnection";
 
-export { type WebSocketData, WebSocketTransport } from './WebSocketTransport'
+export { type WebSocketData, WebSocketTransport } from "./WebSocketTransport";
 export {
-  WebSocketClientEventMap,
+  type WebSocketClientEventMap,
   WebSocketClientConnectionProtocol,
   WebSocketClientConnection,
-  WebSocketServerEventMap,
+  type WebSocketServerEventMap,
   WebSocketServerConnectionProtocol,
   WebSocketServerConnection,
-}
+};
 
 export {
-  CloseEvent,
   CancelableCloseEvent,
   CancelableMessageEvent,
-} from './utils/events'
+  CloseEvent,
+} from "./utils/events";
 
 export type WebSocketEventMap = {
-  connection: [args: WebSocketConnectionData]
-}
+  connection: [args: WebSocketConnectionData];
+};
 
 export type WebSocketConnectionData = {
   /**
    * The incoming WebSocket client connection.
    */
-  client: WebSocketClientConnection
+  client: WebSocketClientConnection;
 
   /**
    * The original WebSocket server connection.
    */
-  server: WebSocketServerConnection
+  server: WebSocketServerConnection;
 
   /**
    * The connection information.
@@ -57,48 +57,48 @@ export type WebSocketConnectionData = {
     /**
      * The protocols supported by the WebSocket client.
      */
-    protocols: string | Array<string> | undefined
-  }
-}
+    protocols: string | Array<string> | undefined;
+  };
+};
 
 /**
  * Intercept the outgoing WebSocket connections created using
  * the global `WebSocket` class.
  */
 export class WebSocketInterceptor extends Interceptor<WebSocketEventMap> {
-  static symbol = Symbol('websocket')
+  static symbol = Symbol("websocket");
 
   constructor() {
-    super(WebSocketInterceptor.symbol)
+    super(WebSocketInterceptor.symbol);
   }
 
   protected checkEnvironment(): boolean {
-    return hasConfigurableGlobal('WebSocket')
+    return hasConfigurableGlobal("WebSocket");
   }
 
   protected setup(): void {
     const originalWebSocketDescriptor = Object.getOwnPropertyDescriptor(
       globalThis,
-      'WebSocket'
-    )
+      "WebSocket",
+    );
 
     const WebSocketProxy = new Proxy(globalThis.WebSocket, {
       construct: (
         target,
         args: ConstructorParameters<typeof globalThis.WebSocket>,
-        newTarget
+        newTarget,
       ) => {
-        const [url, protocols] = args
+        const [url, protocols] = args;
 
         const createConnection = (): WebSocket => {
-          return Reflect.construct(target, args, newTarget)
-        }
+          return Reflect.construct(target, args, newTarget);
+        };
 
         // All WebSocket instances are mocked and don't forward
         // any events to the original server (no connection established).
         // To forward the events, the user must use the "server.send()" API.
-        const socket = new WebSocketOverride(url, protocols)
-        const transport = new WebSocketClassTransport(socket)
+        const socket = new WebSocketOverride(url, protocols);
+        const transport = new WebSocketClassTransport(socket);
 
         // Emit the "connection" event to the interceptor on the next tick
         // so the client can modify WebSocket options, like "binaryType"
@@ -108,41 +108,41 @@ export class WebSocketInterceptor extends Interceptor<WebSocketEventMap> {
             const server = new WebSocketServerConnection(
               socket,
               transport,
-              createConnection
-            )
+              createConnection,
+            );
 
             const hasConnectionListeners =
-              this.emitter.listenerCount('connection') > 0
+              this.emitter.listenerCount("connection") > 0;
 
             // The "globalThis.WebSocket" class stands for
             // the client-side connection. Assume it's established
             // as soon as the WebSocket instance is constructed.
-            await emitAsync(this.emitter, 'connection', {
+            await emitAsync(this.emitter, "connection", {
               client: new WebSocketClientConnection(socket, transport),
               server,
               info: {
                 protocols,
               },
-            })
+            });
 
             if (hasConnectionListeners) {
-              socket[kPassthroughPromise].resolve(false)
+              socket[kPassthroughPromise].resolve(false);
             } else {
-              socket[kPassthroughPromise].resolve(true)
+              socket[kPassthroughPromise].resolve(true);
 
-              server.connect()
+              server.connect();
 
               // Forward the "open" event from the original server
               // to the mock WebSocket client in the case of a passthrough connection.
-              server.addEventListener('open', () => {
-                socket.dispatchEvent(bindEvent(socket, new Event('open')))
+              server.addEventListener("open", () => {
+                socket.dispatchEvent(bindEvent(socket, new Event("open")));
 
                 // Forward the original connection protocol to the
                 // mock WebSocket client.
-                if (server['realWebSocket']) {
-                  socket.protocol = server['realWebSocket'].protocol
+                if (server["realWebSocket"]) {
+                  socket.protocol = server["realWebSocket"].protocol;
                 }
-              })
+              });
             }
           } catch (error) {
             /**
@@ -152,7 +152,7 @@ export class WebSocketInterceptor extends Interceptor<WebSocketEventMap> {
              * in `queueMicrotask` from being process-wide and uncatchable.
              */
             if (error instanceof Error) {
-              socket.dispatchEvent(new Event('error'))
+              socket.dispatchEvent(new Event("error"));
 
               // No need to close the connection if it's already being closed.
               // E.g. the interceptor called `client.close()` and then threw an error.
@@ -160,29 +160,29 @@ export class WebSocketInterceptor extends Interceptor<WebSocketEventMap> {
                 socket.readyState !== WebSocket.CLOSING &&
                 socket.readyState !== WebSocket.CLOSED
               ) {
-                socket[kClose](1011, error.message, false)
+                socket[kClose](1011, error.message, false);
               }
 
-              console.error(error)
+              console.error(error);
             }
           }
-        })
+        });
 
-        return socket
+        return socket;
       },
-    })
+    });
 
-    Object.defineProperty(globalThis, 'WebSocket', {
+    Object.defineProperty(globalThis, "WebSocket", {
       value: WebSocketProxy,
       configurable: true,
-    })
+    });
 
     this.subscriptions.push(() => {
       Object.defineProperty(
         globalThis,
-        'WebSocket',
-        originalWebSocketDescriptor!
-      )
-    })
+        "WebSocket",
+        originalWebSocketDescriptor!,
+      );
+    });
   }
 }

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.assertSimpleType = assertSimpleType;
 exports.makeStrongCache = makeStrongCache;
@@ -10,14 +10,12 @@ exports.makeWeakCache = makeWeakCache;
 exports.makeWeakCacheSync = makeWeakCacheSync;
 function _gensync() {
   const data = require("gensync");
-  _gensync = function () {
-    return data;
-  };
+  _gensync = () => data;
   return data;
 }
 var _async = require("../gensync-utils/async.js");
 var _util = require("./util.js");
-const synchronize = gen => {
+const synchronize = (gen) => {
   return _gensync()(gen).sync;
 };
 function* genTrue() {
@@ -42,7 +40,13 @@ function makeCachedFunction(CallCache, handler) {
   return function* cachedFunction(arg, data) {
     const asyncContext = yield* (0, _async.isAsync)();
     const callCache = asyncContext ? callCacheAsync : callCacheSync;
-    const cached = yield* getCachedValueOrWait(asyncContext, callCache, futureCache, arg, data);
+    const cached = yield* getCachedValueOrWait(
+      asyncContext,
+      callCache,
+      futureCache,
+      arg,
+      data,
+    );
     if (cached.valid) return cached.value;
     const cache = new CacheConfigurator(data);
     const handlerResult = handler(arg, cache);
@@ -66,22 +70,26 @@ function makeCachedFunction(CallCache, handler) {
 function* getCachedValue(cache, arg, data) {
   const cachedValue = cache.get(arg);
   if (cachedValue) {
-    for (const {
-      value,
-      valid
-    } of cachedValue) {
-      if (yield* valid(data)) return {
-        valid: true,
-        value
-      };
+    for (const { value, valid } of cachedValue) {
+      if (yield* valid(data))
+        return {
+          valid: true,
+          value,
+        };
     }
   }
   return {
     valid: false,
-    value: null
+    value: null,
   };
 }
-function* getCachedValueOrWait(asyncContext, callCache, futureCache, arg, data) {
+function* getCachedValueOrWait(
+  asyncContext,
+  callCache,
+  futureCache,
+  arg,
+  data,
+) {
   const cached = yield* getCachedValue(callCache, arg, data);
   if (cached.valid) {
     return cached;
@@ -92,13 +100,13 @@ function* getCachedValueOrWait(asyncContext, callCache, futureCache, arg, data) 
       const value = yield* (0, _async.waitFor)(cached.value.promise);
       return {
         valid: true,
-        value
+        value,
       };
     }
   }
   return {
     valid: false,
-    value: null
+    value: null,
   };
 }
 function setupAsyncLocks(config, futureCache, arg) {
@@ -112,30 +120,36 @@ function updateFunctionCache(cache, config, arg, value) {
   config.deactivate();
   switch (config.mode()) {
     case "forever":
-      cachedValue = [{
-        value,
-        valid: genTrue
-      }];
+      cachedValue = [
+        {
+          value,
+          valid: genTrue,
+        },
+      ];
       cache.set(arg, cachedValue);
       break;
     case "invalidate":
-      cachedValue = [{
-        value,
-        valid: config.validator()
-      }];
+      cachedValue = [
+        {
+          value,
+          valid: config.validator(),
+        },
+      ];
       cache.set(arg, cachedValue);
       break;
     case "valid":
       if (cachedValue) {
         cachedValue.push({
           value,
-          valid: config.validator()
+          valid: config.validator(),
         });
       } else {
-        cachedValue = [{
-          value,
-          valid: config.validator()
-        }];
+        cachedValue = [
+          {
+            value,
+            valid: config.validator(),
+          },
+        ];
         cache.set(arg, cachedValue);
       }
   }
@@ -185,13 +199,18 @@ class CacheConfigurator {
       throw new Error("Cannot change caching after evaluation has completed.");
     }
     if (this._never || this._forever) {
-      throw new Error("Caching has already been configured with .never or .forever()");
+      throw new Error(
+        "Caching has already been configured with .never or .forever()",
+      );
     }
     this._configured = true;
     const key = handler(this._data);
-    const fn = (0, _async.maybeAsync)(handler, `You appear to be using an async cache handler, but Babel has been called synchronously`);
+    const fn = (0, _async.maybeAsync)(
+      handler,
+      `You appear to be using an async cache handler, but Babel has been called synchronously`,
+    );
     if ((0, _async.isThenable)(key)) {
-      return key.then(key => {
+      return key.then((key) => {
         this._pairs.push([key, fn]);
         return key;
       });
@@ -222,23 +241,37 @@ class CacheConfigurator {
 function makeSimpleConfigurator(cache) {
   function cacheFn(val) {
     if (typeof val === "boolean") {
-      if (val) cache.forever();else cache.never();
+      if (val) cache.forever();
+      else cache.never();
       return;
     }
     return cache.using(() => assertSimpleType(val()));
   }
   cacheFn.forever = () => cache.forever();
   cacheFn.never = () => cache.never();
-  cacheFn.using = cb => cache.using(() => assertSimpleType(cb()));
-  cacheFn.invalidate = cb => cache.invalidate(() => assertSimpleType(cb()));
+  cacheFn.using = (cb) => cache.using(() => assertSimpleType(cb()));
+  cacheFn.invalidate = (cb) => cache.invalidate(() => assertSimpleType(cb()));
   return cacheFn;
 }
 function assertSimpleType(value) {
   if ((0, _async.isThenable)(value)) {
-    throw new Error(`You appear to be using an async cache handler, ` + `which your current version of Babel does not support. ` + `We may add support for this in the future, ` + `but if you're on the most recent version of @babel/core and still ` + `seeing this error, then you'll need to synchronously handle your caching logic.`);
+    throw new Error(
+      `You appear to be using an async cache handler, ` +
+        `which your current version of Babel does not support. ` +
+        `We may add support for this in the future, ` +
+        `but if you're on the most recent version of @babel/core and still ` +
+        `seeing this error, then you'll need to synchronously handle your caching logic.`,
+    );
   }
-  if (value != null && typeof value !== "string" && typeof value !== "boolean" && typeof value !== "number") {
-    throw new Error("Cache keys must be either string, boolean, number, null, or undefined.");
+  if (
+    value != null &&
+    typeof value !== "string" &&
+    typeof value !== "boolean" &&
+    typeof value !== "number"
+  ) {
+    throw new Error(
+      "Cache keys must be either string, boolean, number, null, or undefined.",
+    );
   }
   return value;
 }
@@ -247,7 +280,7 @@ class Lock {
     this.released = false;
     this.promise = void 0;
     this._resolve = void 0;
-    this.promise = new Promise(resolve => {
+    this.promise = new Promise((resolve) => {
       this._resolve = resolve;
     });
   }

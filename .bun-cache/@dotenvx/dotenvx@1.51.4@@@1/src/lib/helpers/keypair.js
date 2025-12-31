@@ -1,21 +1,21 @@
-const { PrivateKey } = require('eciesjs')
+const { PrivateKey } = require("eciesjs");
 
-function keypair (existingPrivateKey) {
-  let kp
+function keypair(existingPrivateKey) {
+  let kp;
 
   if (existingPrivateKey) {
-    kp = new PrivateKey(Buffer.from(existingPrivateKey, 'hex'))
+    kp = new PrivateKey(Buffer.from(existingPrivateKey, "hex"));
   } else {
-    kp = new PrivateKey()
+    kp = new PrivateKey();
   }
 
-  const publicKey = kp.publicKey.toHex()
-  const privateKey = kp.secret.toString('hex')
+  const publicKey = kp.publicKey.toHex();
+  const privateKey = kp.secret.toString("hex");
 
   return {
     publicKey,
-    privateKey
-  }
+    privateKey,
+  };
 }
 
-module.exports = keypair
+module.exports = keypair;

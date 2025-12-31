@@ -12,5 +12,6 @@ export const secp256r1 = p256n;
 /** @deprecated use `import { p256_hasher } from '@noble/curves/nist.js';` */
 export const hashToCurve = /* @__PURE__ */ (() => p256_hasher.hashToCurve)();
 /** @deprecated use `import { p256_hasher } from '@noble/curves/nist.js';` */
-export const encodeToCurve = /* @__PURE__ */ (() => p256_hasher.encodeToCurve)();
+export const encodeToCurve = /* @__PURE__ */ (() =>
+  p256_hasher.encodeToCurve)();
 //# sourceMappingURL=p256.js.map

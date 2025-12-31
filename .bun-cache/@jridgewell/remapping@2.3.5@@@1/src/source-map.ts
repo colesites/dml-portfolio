@@ -1,7 +1,6 @@
-import { toDecodedMap, toEncodedMap } from '@jridgewell/gen-mapping';
-
-import type { GenMapping } from '@jridgewell/gen-mapping';
-import type { DecodedSourceMap, EncodedSourceMap, Options } from './types';
+import type { GenMapping } from "@jridgewell/gen-mapping";
+import { toDecodedMap, toEncodedMap } from "@jridgewell/gen-mapping";
+import type { DecodedSourceMap, EncodedSourceMap, Options } from "./types";
 
 /**
  * A SourceMap v3 compatible sourcemap, which only includes fields that were
@@ -9,7 +8,7 @@ import type { DecodedSourceMap, EncodedSourceMap, Options } from './types';
  */
 export default class SourceMap {
   declare file?: string | null;
-  declare mappings: EncodedSourceMap['mappings'] | DecodedSourceMap['mappings'];
+  declare mappings: EncodedSourceMap["mappings"] | DecodedSourceMap["mappings"];
   declare sourceRoot?: string;
   declare names: string[];
   declare sources: (string | null)[];
@@ -21,14 +20,14 @@ export default class SourceMap {
     const out = options.decodedMappings ? toDecodedMap(map) : toEncodedMap(map);
     this.version = out.version; // SourceMap spec says this should be first.
     this.file = out.file;
-    this.mappings = out.mappings as SourceMap['mappings'];
-    this.names = out.names as SourceMap['names'];
-    this.ignoreList = out.ignoreList as SourceMap['ignoreList'];
+    this.mappings = out.mappings as SourceMap["mappings"];
+    this.names = out.names as SourceMap["names"];
+    this.ignoreList = out.ignoreList as SourceMap["ignoreList"];
     this.sourceRoot = out.sourceRoot;
 
-    this.sources = out.sources as SourceMap['sources'];
+    this.sources = out.sources as SourceMap["sources"];
     if (!options.excludeContent) {
-      this.sourcesContent = out.sourcesContent as SourceMap['sourcesContent'];
+      this.sourcesContent = out.sourcesContent as SourceMap["sourcesContent"];
     }
   }
 

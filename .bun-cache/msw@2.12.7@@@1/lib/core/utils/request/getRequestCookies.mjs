@@ -1,8 +1,9 @@
 import {
   parse as parseCookie,
-  serialize as serializeCookie
-} from '../../../shims/cookie.mjs';
-import { cookieStore } from '../cookieStore.mjs';
+  serialize as serializeCookie,
+} from "../../../shims/cookie.mjs";
+import { cookieStore } from "../cookieStore.mjs";
+
 function parseCookies(input) {
   const parsedCookies = parseCookie(input);
   const cookies = {};
@@ -23,7 +24,9 @@ function getDocumentCookies(request) {
   switch (request.credentials) {
     case "same-origin": {
       const requestUrl = new URL(request.url);
-      return location.origin === requestUrl.origin ? getAllDocumentCookies() : {};
+      return location.origin === requestUrl.origin
+        ? getAllDocumentCookies()
+        : {};
     }
     case "include": {
       return getAllDocumentCookies();
@@ -35,17 +38,19 @@ function getDocumentCookies(request) {
 }
 function getAllRequestCookies(request) {
   const requestCookieHeader = request.headers.get("cookie");
-  const cookiesFromHeaders = requestCookieHeader ? parseCookies(requestCookieHeader) : {};
+  const cookiesFromHeaders = requestCookieHeader
+    ? parseCookies(requestCookieHeader)
+    : {};
   const cookiesFromDocument = getDocumentCookies(request);
   for (const name in cookiesFromDocument) {
     request.headers.append(
       "cookie",
-      serializeCookie(name, cookiesFromDocument[name])
+      serializeCookie(name, cookiesFromDocument[name]),
     );
   }
   const cookiesFromStore = cookieStore.getCookies(request.url);
   const storedCookiesObject = Object.fromEntries(
-    cookiesFromStore.map((cookie) => [cookie.key, cookie.value])
+    cookiesFromStore.map((cookie) => [cookie.key, cookie.value]),
   );
   for (const cookie of cookiesFromStore) {
     request.headers.append("cookie", cookie.toString());
@@ -53,10 +58,8 @@ function getAllRequestCookies(request) {
   return {
     ...cookiesFromDocument,
     ...storedCookiesObject,
-    ...cookiesFromHeaders
+    ...cookiesFromHeaders,
   };
 }
-export {
-  getAllRequestCookies
-};
+export { getAllRequestCookies };
 //# sourceMappingURL=getRequestCookies.mjs.map

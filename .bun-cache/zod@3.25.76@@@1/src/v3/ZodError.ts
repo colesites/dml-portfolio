@@ -4,7 +4,10 @@ import type { TypeOf, ZodType } from "./index.js";
 
 type allKeys<T> = T extends any ? keyof T : never;
 
-export type inferFlattenedErrors<T extends ZodType<any, any, any>, U = string> = typeToFlattenedError<TypeOf<T>, U>;
+export type inferFlattenedErrors<
+  T extends ZodType<any, any, any>,
+  U = string,
+> = typeToFlattenedError<TypeOf<T>, U>;
 export type typeToFlattenedError<T, U = string> = {
   formErrors: U[];
   fieldErrors: {
@@ -189,7 +192,10 @@ export type ZodFormattedError<T, U = string> = {
   _errors: U[];
 } & recursiveZodFormattedError<NonNullable<T>>;
 
-export type inferFormattedError<T extends ZodType<any, any, any>, U = string> = ZodFormattedError<TypeOf<T>, U>;
+export type inferFormattedError<
+  T extends ZodType<any, any, any>,
+  U = string,
+> = ZodFormattedError<TypeOf<T>, U>;
 
 export class ZodError<T = any> extends Error {
   issues: ZodIssue[] = [];
@@ -216,10 +222,7 @@ export class ZodError<T = any> extends Error {
   format<U>(mapper: (issue: ZodIssue) => U): ZodFormattedError<T, U>;
   format(_mapper?: any) {
     const mapper: (issue: ZodIssue) => any =
-      _mapper ||
-      function (issue: ZodIssue) {
-        return issue.message;
-      };
+      _mapper || ((issue: ZodIssue) => issue.message);
     const fieldErrors: ZodFormattedError<T> = { _errors: [] } as any;
     const processError = (error: ZodError) => {
       for (const issue of error.issues) {
@@ -295,7 +298,9 @@ export class ZodError<T = any> extends Error {
 
   flatten(): typeToFlattenedError<T>;
   flatten<U>(mapper?: (issue: ZodIssue) => U): typeToFlattenedError<T, U>;
-  flatten<U = string>(mapper: (issue: ZodIssue) => U = (issue: ZodIssue) => issue.message as any): any {
+  flatten<U = string>(
+    mapper: (issue: ZodIssue) => U = (issue: ZodIssue) => issue.message as any,
+  ): any {
     const fieldErrors: any = {};
     const formErrors: U[] = [];
     for (const sub of this.issues) {
@@ -315,7 +320,9 @@ export class ZodError<T = any> extends Error {
   }
 }
 
-type stripPath<T extends object> = T extends any ? util.OmitKeys<T, "path"> : never;
+type stripPath<T extends object> = T extends any
+  ? util.OmitKeys<T, "path">
+  : never;
 
 export type IssueData = stripPath<ZodIssueOptionalMessage> & {
   path?: (string | number)[];
@@ -327,4 +334,7 @@ export type ErrorMapCtx = {
   data: any;
 };
 
-export type ZodErrorMap = (issue: ZodIssueOptionalMessage, _ctx: ErrorMapCtx) => { message: string };
+export type ZodErrorMap = (
+  issue: ZodIssueOptionalMessage,
+  _ctx: ErrorMapCtx,
+) => { message: string };

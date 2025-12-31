@@ -1,10 +1,10 @@
 export type Options = {
-	/**
+  /**
 	Match only the first ANSI escape.
 
 	@default false
 	*/
-	readonly onlyFirst: boolean;
+  readonly onlyFirst: boolean;
 };
 
 /**

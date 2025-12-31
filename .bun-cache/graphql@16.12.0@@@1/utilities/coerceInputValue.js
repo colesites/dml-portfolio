@@ -1,29 +1,27 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.coerceInputValue = coerceInputValue;
 
-var _didYouMean = require('../jsutils/didYouMean.js');
+var _didYouMean = require("../jsutils/didYouMean.js");
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
-var _isIterableObject = require('../jsutils/isIterableObject.js');
+var _isIterableObject = require("../jsutils/isIterableObject.js");
 
-var _isObjectLike = require('../jsutils/isObjectLike.js');
+var _isObjectLike = require("../jsutils/isObjectLike.js");
 
-var _Path = require('../jsutils/Path.js');
+var _Path = require("../jsutils/Path.js");
 
-var _printPathArray = require('../jsutils/printPathArray.js');
+var _printPathArray = require("../jsutils/printPathArray.js");
 
-var _suggestionList = require('../jsutils/suggestionList.js');
+var _suggestionList = require("../jsutils/suggestionList.js");
 
-var _GraphQLError = require('../error/GraphQLError.js');
+var _GraphQLError = require("../error/GraphQLError.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
 /**
  * Coerces a JavaScript value given a GraphQL Input Type.
@@ -33,13 +31,13 @@ function coerceInputValue(inputValue, type, onError = defaultOnError) {
 }
 
 function defaultOnError(path, invalidValue, error) {
-  let errorPrefix = 'Invalid value ' + (0, _inspect.inspect)(invalidValue);
+  let errorPrefix = "Invalid value " + (0, _inspect.inspect)(invalidValue);
 
   if (path.length > 0) {
     errorPrefix += ` at "value${(0, _printPathArray.printPathArray)(path)}"`;
   }
 
-  error.message = errorPrefix + ': ' + error.message;
+  error.message = errorPrefix + ": " + error.message;
   throw error;
 }
 
@@ -212,6 +210,6 @@ function coerceInputValueImpl(inputValue, type, onError, path) {
   false ||
     (0, _invariant.invariant)(
       false,
-      'Unexpected input type: ' + (0, _inspect.inspect)(type),
+      "Unexpected input type: " + (0, _inspect.inspect)(type),
     );
 }

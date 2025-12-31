@@ -14,9 +14,9 @@ declare namespace list {
      * @param str Comma-separated values.
      * @return Split values.
      */
-    comma(str: string): string[]
+    comma(str: string): string[];
 
-    default: List
+    default: List;
 
     /**
      * Safely splits space-separated values (such as those for `background`,
@@ -31,7 +31,7 @@ declare namespace list {
      * @param str Space-separated values.
      * @return Split values.
      */
-    space(str: string): string[]
+    space(str: string): string[];
 
     /**
      * Safely splits values.
@@ -50,11 +50,11 @@ declare namespace list {
     split(
       string: string,
       separators: readonly string[],
-      last: boolean
-    ): string[]
-  }
+      last: boolean,
+    ): string[];
+  };
 }
 
-declare const list: list.List
+declare const list: list.List;
 
-export = list
+export = list;

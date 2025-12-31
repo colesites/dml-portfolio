@@ -1,12 +1,12 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = void 0;
 var _index = require("../validators/generated/index.js");
 var _index2 = require("../builders/generated/index.js");
-var _default = exports.default = toStatement;
+var _default = (exports.default = toStatement);
 function toStatement(node, ignore) {
   if ((0, _index.isStatement)(node)) {
     return node;

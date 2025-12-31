@@ -1,26 +1,17 @@
-/*!
- * body-parser
- * Copyright(c) 2014 Jonathan Ong
- * Copyright(c) 2014-2015 Douglas Christopher Wilson
- * MIT Licensed
- */
-
-'use strict'
-
 /**
  * Module dependencies.
  * @private
  */
 
-var debug = require('debug')('body-parser:json')
-var read = require('../read')
-var { normalizeOptions } = require('../utils')
+var debug = require("debug")("body-parser:json");
+var read = require("../read");
+var { normalizeOptions } = require("../utils");
 
 /**
  * Module exports.
  */
 
-module.exports = json
+module.exports = json;
 
 /**
  * RegExp to match the first non-space in a string.
@@ -34,10 +25,10 @@ module.exports = json
  *            %x0D )              ; Carriage return
  */
 
-var FIRST_CHAR_REGEXP = /^[\x20\x09\x0a\x0d]*([^\x20\x09\x0a\x0d])/ // eslint-disable-line no-control-regex
+var FIRST_CHAR_REGEXP = /^[\x20\x09\x0a\x0d]*([^\x20\x09\x0a\x0d])/; // eslint-disable-line no-control-regex
 
-var JSON_SYNTAX_CHAR = '#'
-var JSON_SYNTAX_REGEXP = /#+/g
+var JSON_SYNTAX_CHAR = "#";
+var JSON_SYNTAX_REGEXP = /#+/g;
 
 /**
  * Create a middleware to parse JSON bodies.
@@ -47,48 +38,48 @@ var JSON_SYNTAX_REGEXP = /#+/g
  * @public
  */
 
-function json (options) {
-  const normalizedOptions = normalizeOptions(options, 'application/json')
+function json(options) {
+  const normalizedOptions = normalizeOptions(options, "application/json");
 
-  var reviver = options?.reviver
-  var strict = options?.strict !== false
+  var reviver = options?.reviver;
+  var strict = options?.strict !== false;
 
-  function parse (body) {
+  function parse(body) {
     if (body.length === 0) {
       // special-case empty json body, as it's a common client-side mistake
       // TODO: maybe make this configurable or part of "strict" option
-      return {}
+      return {};
     }
 
     if (strict) {
-      var first = firstchar(body)
+      var first = firstchar(body);
 
-      if (first !== '{' && first !== '[') {
-        debug('strict violation')
-        throw createStrictSyntaxError(body, first)
+      if (first !== "{" && first !== "[") {
+        debug("strict violation");
+        throw createStrictSyntaxError(body, first);
       }
     }
 
     try {
-      debug('parse json')
-      return JSON.parse(body, reviver)
+      debug("parse json");
+      return JSON.parse(body, reviver);
     } catch (e) {
       throw normalizeJsonSyntaxError(e, {
         message: e.message,
-        stack: e.stack
-      })
+        stack: e.stack,
+      });
     }
   }
 
   const readOptions = {
     ...normalizedOptions,
     // assert charset per RFC 7159 sec 8.1
-    isValidCharset: (charset) => charset.slice(0, 4) === 'utf-'
-  }
+    isValidCharset: (charset) => charset.slice(0, 4) === "utf-",
+  };
 
-  return function jsonParser (req, res, next) {
-    read(req, res, next, parse, debug, readOptions)
-  }
+  return function jsonParser(req, res, next) {
+    read(req, res, next, parse, debug, readOptions);
+  };
 }
 
 /**
@@ -100,27 +91,28 @@ function json (options) {
  * @private
  */
 
-function createStrictSyntaxError (str, char) {
-  var index = str.indexOf(char)
-  var partial = ''
+function createStrictSyntaxError(str, char) {
+  var index = str.indexOf(char);
+  var partial = "";
 
   if (index !== -1) {
-    partial = str.substring(0, index) + JSON_SYNTAX_CHAR
+    partial = str.substring(0, index) + JSON_SYNTAX_CHAR;
 
     for (var i = index + 1; i < str.length; i++) {
-      partial += JSON_SYNTAX_CHAR
+      partial += JSON_SYNTAX_CHAR;
     }
   }
 
   try {
-    JSON.parse(partial); /* istanbul ignore next */ throw new SyntaxError('strict violation')
+    JSON.parse(partial); /* istanbul ignore next */
+    throw new SyntaxError("strict violation");
   } catch (e) {
     return normalizeJsonSyntaxError(e, {
-      message: e.message.replace(JSON_SYNTAX_REGEXP, function (placeholder) {
-        return str.substring(index, index + placeholder.length)
-      }),
-      stack: e.stack
-    })
+      message: e.message.replace(JSON_SYNTAX_REGEXP, (placeholder) =>
+        str.substring(index, index + placeholder.length),
+      ),
+      stack: e.stack,
+    });
   }
 }
 
@@ -132,12 +124,10 @@ function createStrictSyntaxError (str, char) {
  * @private
  */
 
-function firstchar (str) {
-  var match = FIRST_CHAR_REGEXP.exec(str)
+function firstchar(str) {
+  var match = FIRST_CHAR_REGEXP.exec(str);
 
-  return match
-    ? match[1]
-    : undefined
+  return match ? match[1] : undefined;
 }
 
 /**
@@ -148,19 +138,19 @@ function firstchar (str) {
  * @return {SyntaxError}
  */
 
-function normalizeJsonSyntaxError (error, obj) {
-  var keys = Object.getOwnPropertyNames(error)
+function normalizeJsonSyntaxError(error, obj) {
+  var keys = Object.getOwnPropertyNames(error);
 
   for (var i = 0; i < keys.length; i++) {
-    var key = keys[i]
-    if (key !== 'stack' && key !== 'message') {
-      delete error[key]
+    var key = keys[i];
+    if (key !== "stack" && key !== "message") {
+      delete error[key];
     }
   }
 
   // replace stack before message for Node.js 0.10 and below
-  error.stack = obj.stack.replace(error.message, obj.message)
-  error.message = obj.message
+  error.stack = obj.stack.replace(error.message, obj.message);
+  error.message = obj.message;
 
-  return error
+  return error;
 }

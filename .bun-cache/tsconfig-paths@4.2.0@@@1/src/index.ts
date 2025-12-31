@@ -1,24 +1,25 @@
 // register is used from register.js in root dir
+
 export {
-  createMatchPath,
-  matchFromAbsolutePaths,
-  MatchPath,
-} from "./match-path-sync";
-export {
-  createMatchPathAsync,
-  matchFromAbsolutePathsAsync,
-  MatchPathAsync,
-} from "./match-path-async";
-export { register } from "./register";
-export {
-  loadConfig,
+  ConfigLoaderFailResult,
   ConfigLoaderResult,
   ConfigLoaderSuccessResult,
-  ConfigLoaderFailResult,
+  loadConfig,
 } from "./config-loader";
 export {
-  ReadJsonSync,
-  ReadJsonAsync,
-  FileExistsSync,
   FileExistsAsync,
+  FileExistsSync,
+  ReadJsonAsync,
+  ReadJsonSync,
 } from "./filesystem";
+export {
+  createMatchPathAsync,
+  MatchPathAsync,
+  matchFromAbsolutePathsAsync,
+} from "./match-path-async";
+export {
+  createMatchPath,
+  MatchPath,
+  matchFromAbsolutePaths,
+} from "./match-path-sync";
+export { register } from "./register";

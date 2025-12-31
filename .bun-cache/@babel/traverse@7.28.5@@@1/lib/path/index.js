@@ -1,9 +1,13 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
-exports.default = exports.SHOULD_STOP = exports.SHOULD_SKIP = exports.REMOVED = void 0;
+exports.default =
+  exports.SHOULD_STOP =
+  exports.SHOULD_SKIP =
+  exports.REMOVED =
+    void 0;
 var virtualTypes = require("./lib/virtual-types.js");
 var _debug = require("debug");
 var _index = require("../index.js");
@@ -25,14 +29,12 @@ var NodePath_modification = require("./modification.js");
 var NodePath_family = require("./family.js");
 var NodePath_comments = require("./comments.js");
 var NodePath_virtual_types_validator = require("./lib/virtual-types-validator.js");
-const {
-  validate
-} = _t;
+const { validate } = _t;
 const debug = _debug("babel");
-const REMOVED = exports.REMOVED = 1 << 0;
-const SHOULD_STOP = exports.SHOULD_STOP = 1 << 1;
-const SHOULD_SKIP = exports.SHOULD_SKIP = 1 << 2;
-const NodePath_Final = exports.default = class NodePath {
+const REMOVED = (exports.REMOVED = 1 << 0);
+const SHOULD_STOP = (exports.SHOULD_STOP = 1 << 1);
+const SHOULD_SKIP = (exports.SHOULD_SKIP = 1 << 2);
+const NodePath_Final = (exports.default = class NodePath {
   constructor(hub, parent) {
     this.contexts = [];
     this.state = null;
@@ -55,28 +57,24 @@ const NodePath_Final = exports.default = class NodePath {
     return (this._traverseFlags & 1) > 0;
   }
   set removed(v) {
-    if (v) this._traverseFlags |= 1;else this._traverseFlags &= -2;
+    if (v) this._traverseFlags |= 1;
+    else this._traverseFlags &= -2;
   }
   get shouldStop() {
     return (this._traverseFlags & 2) > 0;
   }
   set shouldStop(v) {
-    if (v) this._traverseFlags |= 2;else this._traverseFlags &= -3;
+    if (v) this._traverseFlags |= 2;
+    else this._traverseFlags &= -3;
   }
   get shouldSkip() {
     return (this._traverseFlags & 4) > 0;
   }
   set shouldSkip(v) {
-    if (v) this._traverseFlags |= 4;else this._traverseFlags &= -5;
+    if (v) this._traverseFlags |= 4;
+    else this._traverseFlags &= -5;
   }
-  static get({
-    hub,
-    parentPath,
-    parent,
-    container,
-    listKey,
-    key
-  }) {
+  static get({ hub, parentPath, parent, container, listKey, key }) {
     if (!hub && parentPath) {
       hub = parentPath.hub;
     }
@@ -100,7 +98,7 @@ const NodePath_Final = exports.default = class NodePath {
     if (this.data == null) {
       this.data = Object.create(null);
     }
-    return this.data[key] = val;
+    return (this.data[key] = val);
   }
   getData(key, def) {
     if (this.data == null) {
@@ -130,7 +128,7 @@ const NodePath_Final = exports.default = class NodePath {
       let key = path.key;
       if (path.inList) key = `${path.listKey}[${key}]`;
       parts.unshift(key);
-    } while (path = path.parentPath);
+    } while ((path = path.parentPath));
     return parts.join(".");
   }
   debug(message) {
@@ -151,13 +149,14 @@ const NodePath_Final = exports.default = class NodePath {
   get parentKey() {
     return this.listKey || this.key;
   }
-};
+});
 const methods = {
   findParent: NodePath_ancestry.findParent,
   find: NodePath_ancestry.find,
   getFunctionParent: NodePath_ancestry.getFunctionParent,
   getStatementParent: NodePath_ancestry.getStatementParent,
-  getEarliestCommonAncestorFrom: NodePath_ancestry.getEarliestCommonAncestorFrom,
+  getEarliestCommonAncestorFrom:
+    NodePath_ancestry.getEarliestCommonAncestorFrom,
   getDeepestCommonAncestorFrom: NodePath_ancestry.getDeepestCommonAncestorFrom,
   getAncestry: NodePath_ancestry.getAncestry,
   isAncestor: NodePath_ancestry.isAncestor,
@@ -171,7 +170,8 @@ const methods = {
   replaceWithMultiple: NodePath_replacement.replaceWithMultiple,
   replaceWithSourceString: NodePath_replacement.replaceWithSourceString,
   replaceWith: NodePath_replacement.replaceWith,
-  replaceExpressionWithStatements: NodePath_replacement.replaceExpressionWithStatements,
+  replaceExpressionWithStatements:
+    NodePath_replacement.replaceExpressionWithStatements,
   replaceInline: NodePath_replacement.replaceInline,
   evaluateTruthy: NodePath_evaluation.evaluateTruthy,
   evaluate: NodePath_evaluation.evaluate,
@@ -184,14 +184,17 @@ const methods = {
   matchesPattern: NodePath_introspection.matchesPattern,
   isStatic: NodePath_introspection.isStatic,
   isNodeType: NodePath_introspection.isNodeType,
-  canHaveVariableDeclarationOrExpression: NodePath_introspection.canHaveVariableDeclarationOrExpression,
-  canSwapBetweenExpressionAndStatement: NodePath_introspection.canSwapBetweenExpressionAndStatement,
+  canHaveVariableDeclarationOrExpression:
+    NodePath_introspection.canHaveVariableDeclarationOrExpression,
+  canSwapBetweenExpressionAndStatement:
+    NodePath_introspection.canSwapBetweenExpressionAndStatement,
   isCompletionRecord: NodePath_introspection.isCompletionRecord,
   isStatementOrBlock: NodePath_introspection.isStatementOrBlock,
   referencesImport: NodePath_introspection.referencesImport,
   getSource: NodePath_introspection.getSource,
   willIMaybeExecuteBefore: NodePath_introspection.willIMaybeExecuteBefore,
-  _guessExecutionStatusRelativeTo: NodePath_introspection._guessExecutionStatusRelativeTo,
+  _guessExecutionStatusRelativeTo:
+    NodePath_introspection._guessExecutionStatusRelativeTo,
   resolve: NodePath_introspection.resolve,
   isConstantExpression: NodePath_introspection.isConstantExpression,
   isInStrictMode: NodePath_introspection.isInStrictMode,
@@ -202,7 +205,8 @@ const methods = {
   stop: NodePath_context.stop,
   setContext: NodePath_context.setContext,
   requeue: NodePath_context.requeue,
-  requeueComputedKeyAndDecorators: NodePath_context.requeueComputedKeyAndDecorators,
+  requeueComputedKeyAndDecorators:
+    NodePath_context.requeueComputedKeyAndDecorators,
   remove: NodePath_removal.remove,
   insertBefore: NodePath_modification.insertBefore,
   insertAfter: NodePath_modification.insertAfter,
@@ -220,57 +224,57 @@ const methods = {
   getBindingIdentifiers: NodePath_family.getBindingIdentifiers,
   getOuterBindingIdentifiers: NodePath_family.getOuterBindingIdentifiers,
   getBindingIdentifierPaths: NodePath_family.getBindingIdentifierPaths,
-  getOuterBindingIdentifierPaths: NodePath_family.getOuterBindingIdentifierPaths,
+  getOuterBindingIdentifierPaths:
+    NodePath_family.getOuterBindingIdentifierPaths,
   shareCommentsWithSiblings: NodePath_comments.shareCommentsWithSiblings,
   addComment: NodePath_comments.addComment,
-  addComments: NodePath_comments.addComments
+  addComments: NodePath_comments.addComments,
 };
 Object.assign(NodePath_Final.prototype, methods);
-{
-  NodePath_Final.prototype.arrowFunctionToShadowed = NodePath_conversion[String("arrowFunctionToShadowed")];
-  Object.assign(NodePath_Final.prototype, {
-    has: NodePath_introspection[String("has")],
-    is: NodePath_introspection[String("is")],
-    isnt: NodePath_introspection[String("isnt")],
-    equals: NodePath_introspection[String("equals")],
-    hoist: NodePath_modification[String("hoist")],
-    updateSiblingKeys: NodePath_modification.updateSiblingKeys,
-    call: NodePath_context.call,
-    isBlacklisted: NodePath_context[String("isBlacklisted")],
-    setScope: NodePath_context.setScope,
-    resync: NodePath_context.resync,
-    popContext: NodePath_context.popContext,
-    pushContext: NodePath_context.pushContext,
-    setup: NodePath_context.setup,
-    setKey: NodePath_context.setKey
-  });
-}
-{
-  NodePath_Final.prototype._guessExecutionStatusRelativeToDifferentFunctions = NodePath_introspection._guessExecutionStatusRelativeTo;
-  NodePath_Final.prototype._guessExecutionStatusRelativeToDifferentFunctions = NodePath_introspection._guessExecutionStatusRelativeTo;
-  Object.assign(NodePath_Final.prototype, {
-    _getTypeAnnotation: NodePath_inference._getTypeAnnotation,
-    _replaceWith: NodePath_replacement._replaceWith,
-    _resolve: NodePath_introspection._resolve,
-    _call: NodePath_context._call,
-    _resyncParent: NodePath_context._resyncParent,
-    _resyncKey: NodePath_context._resyncKey,
-    _resyncList: NodePath_context._resyncList,
-    _resyncRemoved: NodePath_context._resyncRemoved,
-    _getQueueContexts: NodePath_context._getQueueContexts,
-    _removeFromScope: NodePath_removal._removeFromScope,
-    _callRemovalHooks: NodePath_removal._callRemovalHooks,
-    _remove: NodePath_removal._remove,
-    _markRemoved: NodePath_removal._markRemoved,
-    _assertUnremoved: NodePath_removal._assertUnremoved,
-    _containerInsert: NodePath_modification._containerInsert,
-    _containerInsertBefore: NodePath_modification._containerInsertBefore,
-    _containerInsertAfter: NodePath_modification._containerInsertAfter,
-    _verifyNodeList: NodePath_modification._verifyNodeList,
-    _getKey: NodePath_family._getKey,
-    _getPattern: NodePath_family._getPattern
-  });
-}
+NodePath_Final.prototype.arrowFunctionToShadowed =
+  NodePath_conversion[String("arrowFunctionToShadowed")];
+Object.assign(NodePath_Final.prototype, {
+  has: NodePath_introspection[String("has")],
+  is: NodePath_introspection[String("is")],
+  isnt: NodePath_introspection[String("isnt")],
+  equals: NodePath_introspection[String("equals")],
+  hoist: NodePath_modification[String("hoist")],
+  updateSiblingKeys: NodePath_modification.updateSiblingKeys,
+  call: NodePath_context.call,
+  isBlacklisted: NodePath_context[String("isBlacklisted")],
+  setScope: NodePath_context.setScope,
+  resync: NodePath_context.resync,
+  popContext: NodePath_context.popContext,
+  pushContext: NodePath_context.pushContext,
+  setup: NodePath_context.setup,
+  setKey: NodePath_context.setKey,
+});
+NodePath_Final.prototype._guessExecutionStatusRelativeToDifferentFunctions =
+  NodePath_introspection._guessExecutionStatusRelativeTo;
+NodePath_Final.prototype._guessExecutionStatusRelativeToDifferentFunctions =
+  NodePath_introspection._guessExecutionStatusRelativeTo;
+Object.assign(NodePath_Final.prototype, {
+  _getTypeAnnotation: NodePath_inference._getTypeAnnotation,
+  _replaceWith: NodePath_replacement._replaceWith,
+  _resolve: NodePath_introspection._resolve,
+  _call: NodePath_context._call,
+  _resyncParent: NodePath_context._resyncParent,
+  _resyncKey: NodePath_context._resyncKey,
+  _resyncList: NodePath_context._resyncList,
+  _resyncRemoved: NodePath_context._resyncRemoved,
+  _getQueueContexts: NodePath_context._getQueueContexts,
+  _removeFromScope: NodePath_removal._removeFromScope,
+  _callRemovalHooks: NodePath_removal._callRemovalHooks,
+  _remove: NodePath_removal._remove,
+  _markRemoved: NodePath_removal._markRemoved,
+  _assertUnremoved: NodePath_removal._assertUnremoved,
+  _containerInsert: NodePath_modification._containerInsert,
+  _containerInsertBefore: NodePath_modification._containerInsertBefore,
+  _containerInsertAfter: NodePath_modification._containerInsertAfter,
+  _verifyNodeList: NodePath_modification._verifyNodeList,
+  _getKey: NodePath_family._getKey,
+  _getPattern: NodePath_family._getPattern,
+});
 for (const type of t.TYPES) {
   const typeKey = `is${type}`;
   const fn = t[typeKey];

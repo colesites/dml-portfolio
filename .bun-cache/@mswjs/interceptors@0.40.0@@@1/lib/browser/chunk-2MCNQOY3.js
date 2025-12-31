@@ -1,33 +1,21 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 
+var _chunkLK6DILFKjs = require("./chunk-LK6DILFK.js");
 
+var _chunkFW45TRCBjs = require("./chunk-FW45TRCB.js");
 
-var _chunkLK6DILFKjs = require('./chunk-LK6DILFK.js');
+var _chunk57RIRQUYjs = require("./chunk-57RIRQUY.js");
 
+var _chunk2HUMWGRDjs = require("./chunk-2HUMWGRD.js");
 
-
-var _chunkFW45TRCBjs = require('./chunk-FW45TRCB.js');
-
-
-
-
-
-var _chunk57RIRQUYjs = require('./chunk-57RIRQUY.js');
-
-
-var _chunk2HUMWGRDjs = require('./chunk-2HUMWGRD.js');
-
-
-
-
-var _chunkJQ2S7G56js = require('./chunk-JQ2S7G56.js');
+var _chunkJQ2S7G56js = require("./chunk-JQ2S7G56.js");
 
 // src/interceptors/XMLHttpRequest/index.ts
-var _outvariant = require('outvariant');
+var _outvariant = require("outvariant");
 
 // src/interceptors/XMLHttpRequest/XMLHttpRequestController.ts
 
-var _isnodeprocess = require('is-node-process');
+var _isnodeprocess = require("is-node-process");
 
 // src/interceptors/XMLHttpRequest/utils/concatArrayBuffer.ts
 function concatArrayBuffer(left, right) {
@@ -60,7 +48,8 @@ var EventPolyfill = class {
     this.returnValue = true;
     this.type = type;
     this.target = (options == null ? void 0 : options.target) || null;
-    this.currentTarget = (options == null ? void 0 : options.currentTarget) || null;
+    this.currentTarget =
+      (options == null ? void 0 : options.currentTarget) || null;
     this.timeStamp = Date.now();
   }
   composedPath() {
@@ -74,17 +63,16 @@ var EventPolyfill = class {
   preventDefault() {
     this.defaultPrevented = true;
   }
-  stopPropagation() {
-  }
-  stopImmediatePropagation() {
-  }
+  stopPropagation() {}
+  stopImmediatePropagation() {}
 };
 
 // src/interceptors/XMLHttpRequest/polyfills/ProgressEventPolyfill.ts
 var ProgressEventPolyfill = class extends EventPolyfill {
   constructor(type, init) {
     super(type);
-    this.lengthComputable = (init == null ? void 0 : init.lengthComputable) || false;
+    this.lengthComputable =
+      (init == null ? void 0 : init.lengthComputable) || false;
     this.composed = (init == null ? void 0 : init.composed) || false;
     this.loaded = (init == null ? void 0 : init.loaded) || 0;
     this.total = (init == null ? void 0 : init.total) || 0;
@@ -101,17 +89,21 @@ function createEvent(target, type, init) {
     "loadend",
     "load",
     "timeout",
-    "abort"
+    "abort",
   ];
-  const ProgressEventClass = SUPPORTS_PROGRESS_EVENT ? ProgressEvent : ProgressEventPolyfill;
-  const event = progressEvents.includes(type) ? new ProgressEventClass(type, {
-    lengthComputable: true,
-    loaded: (init == null ? void 0 : init.loaded) || 0,
-    total: (init == null ? void 0 : init.total) || 0
-  }) : new EventPolyfill(type, {
-    target,
-    currentTarget: target
-  });
+  const ProgressEventClass = SUPPORTS_PROGRESS_EVENT
+    ? ProgressEvent
+    : ProgressEventPolyfill;
+  const event = progressEvents.includes(type)
+    ? new ProgressEventClass(type, {
+        lengthComputable: true,
+        loaded: (init == null ? void 0 : init.loaded) || 0,
+        total: (init == null ? void 0 : init.total) || 0,
+      })
+    : new EventPolyfill(type, {
+        target,
+        currentTarget: target,
+      });
   return event;
 }
 
@@ -120,7 +112,7 @@ function findPropertySource(target, propertyName) {
   if (!(propertyName in target)) {
     return null;
   }
-  const hasProperty = Object.prototype.hasOwnProperty.call(target, propertyName);
+  const hasProperty = Object.hasOwn(target, propertyName);
   if (hasProperty) {
     return target;
   }
@@ -137,19 +129,22 @@ function optionsToProxyHandler(options) {
   const { constructorCall, methodCall, getProperty, setProperty } = options;
   const handler = {};
   if (typeof constructorCall !== "undefined") {
-    handler.construct = function(target, args, newTarget) {
+    handler.construct = (target, args, newTarget) => {
       const next = Reflect.construct.bind(null, target, args, newTarget);
       return constructorCall.call(newTarget, args, next);
     };
   }
-  handler.set = function(target, propertyName, nextValue) {
+  handler.set = (target, propertyName, nextValue) => {
     const next = () => {
       const propertySource = findPropertySource(target, propertyName) || target;
       const ownDescriptors = Reflect.getOwnPropertyDescriptor(
         propertySource,
-        propertyName
+        propertyName,
       );
-      if (typeof (ownDescriptors == null ? void 0 : ownDescriptors.set) !== "undefined") {
+      if (
+        typeof (ownDescriptors == null ? void 0 : ownDescriptors.set) !==
+        "undefined"
+      ) {
         ownDescriptors.set.apply(target, [nextValue]);
         return true;
       }
@@ -157,7 +152,7 @@ function optionsToProxyHandler(options) {
         writable: true,
         enumerable: true,
         configurable: true,
-        value: nextValue
+        value: nextValue,
       });
     };
     if (typeof setProperty !== "undefined") {
@@ -165,9 +160,12 @@ function optionsToProxyHandler(options) {
     }
     return next();
   };
-  handler.get = function(target, propertyName, receiver) {
+  handler.get = (target, propertyName, receiver) => {
     const next = () => target[propertyName];
-    const value = typeof getProperty !== "undefined" ? getProperty.call(target, [propertyName, receiver], next) : next();
+    const value =
+      typeof getProperty !== "undefined"
+        ? getProperty.call(target, [propertyName, receiver], next)
+        : next();
     if (typeof value === "function") {
       return (...args) => {
         const next2 = value.bind(target, ...args);
@@ -189,7 +187,7 @@ function isDomParserSupportedType(type) {
     "application/xml",
     "image/svg+xml",
     "text/html",
-    "text/xml"
+    "text/xml",
   ];
   return supportedTypes.some((supportedType) => {
     return type.startsWith(supportedType);
@@ -208,14 +206,18 @@ function parseJson(data) {
 
 // src/interceptors/XMLHttpRequest/utils/createResponse.ts
 function createResponse(request, body) {
-  const responseBodyOrNull = _chunk57RIRQUYjs.FetchResponse.isResponseWithBody(request.status) ? body : null;
+  const responseBodyOrNull = _chunk57RIRQUYjs.FetchResponse.isResponseWithBody(
+    request.status,
+  )
+    ? body
+    : null;
   return new (0, _chunk57RIRQUYjs.FetchResponse)(responseBodyOrNull, {
     url: request.responseURL,
     status: request.status,
     statusText: request.statusText,
     headers: createHeadersFromXMLHttpRequestHeaders(
-      request.getAllResponseHeaders()
-    )
+      request.getAllResponseHeaders(),
+    ),
   });
 }
 function createHeadersFromXMLHttpRequestHeaders(headersString) {
@@ -244,7 +246,7 @@ async function getBodyByteLength(input) {
 
 // src/interceptors/XMLHttpRequest/XMLHttpRequestController.ts
 var kIsRequestHandled = Symbol("kIsRequestHandled");
-var IS_NODE = _isnodeprocess.isNodeProcess.call(void 0, );
+var IS_NODE = _isnodeprocess.isNodeProcess.call(void 0);
 var kFetchRequest = Symbol("kFetchRequest");
 var XMLHttpRequestController = class {
   constructor(initialRequest, logger) {
@@ -255,16 +257,14 @@ var XMLHttpRequestController = class {
     this[kIsRequestHandled] = false;
     this.events = /* @__PURE__ */ new Map();
     this.uploadEvents = /* @__PURE__ */ new Map();
-    this.requestId = _chunkJQ2S7G56js.createRequestId.call(void 0, );
+    this.requestId = _chunkJQ2S7G56js.createRequestId.call(void 0);
     this.requestHeaders = new Headers();
     this.responseBuffer = new Uint8Array();
     this.request = createProxy(initialRequest, {
       setProperty: ([propertyName, nextValue], invoke) => {
         switch (propertyName) {
           case "ontimeout": {
-            const eventName = propertyName.slice(
-              2
-            );
+            const eventName = propertyName.slice(2);
             this.request.addEventListener(eventName, nextValue);
             return invoke();
           }
@@ -311,35 +311,41 @@ var XMLHttpRequestController = class {
                    * the ambiguous response body, as the request's "responseType" may differ.
                    * @see https://xhr.spec.whatwg.org/#the-response-attribute
                    */
-                  this.request.response
+                  this.request.response,
                 );
                 this.onResponse.call(this, {
                   response: fetchResponse,
                   isMockedResponse: this[kIsRequestHandled],
                   request: fetchRequest,
-                  requestId: this.requestId
+                  requestId: this.requestId,
                 });
               }
             });
-            const requestBody = typeof body === "string" ? _chunkLK6DILFKjs.encodeBuffer.call(void 0, body) : body;
+            const requestBody =
+              typeof body === "string"
+                ? _chunkLK6DILFKjs.encodeBuffer.call(void 0, body)
+                : body;
             const fetchRequest = this.toFetchApiRequest(requestBody);
             this[kFetchRequest] = fetchRequest.clone();
             queueMicrotask(() => {
               var _a;
-              const onceRequestSettled = ((_a = this.onRequest) == null ? void 0 : _a.call(this, {
-                request: fetchRequest,
-                requestId: this.requestId
-              })) || Promise.resolve();
+              const onceRequestSettled =
+                ((_a = this.onRequest) == null
+                  ? void 0
+                  : _a.call(this, {
+                      request: fetchRequest,
+                      requestId: this.requestId,
+                    })) || Promise.resolve();
               onceRequestSettled.finally(() => {
                 if (!this[kIsRequestHandled]) {
                   this.logger.info(
                     "request callback settled but request has not been handled (readystate %d), performing as-is...",
-                    this.request.readyState
+                    this.request.readyState,
                   );
                   if (IS_NODE) {
                     this.request.setRequestHeader(
                       _chunkJQ2S7G56js.INTERNAL_REQUEST_ID_HEADER_NAME,
-                      this.requestId
+                      this.requestId,
                     );
                   }
                   return invoke();
@@ -352,7 +358,7 @@ var XMLHttpRequestController = class {
             return invoke();
           }
         }
-      }
+      },
     });
     define(
       this.request,
@@ -367,9 +373,7 @@ var XMLHttpRequestController = class {
             case "onload":
             case "ontimeout":
             case "onloadend": {
-              const eventName = propertyName.slice(
-                2
-              );
+              const eventName = propertyName.slice(2);
               this.registerUploadEvent(eventName, nextValue);
             }
           }
@@ -384,8 +388,8 @@ var XMLHttpRequestController = class {
               return invoke();
             }
           }
-        }
-      })
+        },
+      }),
     );
   }
   registerEvent(eventName, listener) {
@@ -408,29 +412,29 @@ var XMLHttpRequestController = class {
     this[kIsRequestHandled] = true;
     if (this[kFetchRequest]) {
       const totalRequestBodyLength = await getBodyByteLength(
-        this[kFetchRequest]
+        this[kFetchRequest],
       );
       this.trigger("loadstart", this.request.upload, {
         loaded: 0,
-        total: totalRequestBodyLength
+        total: totalRequestBodyLength,
       });
       this.trigger("progress", this.request.upload, {
         loaded: totalRequestBodyLength,
-        total: totalRequestBodyLength
+        total: totalRequestBodyLength,
       });
       this.trigger("load", this.request.upload, {
         loaded: totalRequestBodyLength,
-        total: totalRequestBodyLength
+        total: totalRequestBodyLength,
       });
       this.trigger("loadend", this.request.upload, {
         loaded: totalRequestBodyLength,
-        total: totalRequestBodyLength
+        total: totalRequestBodyLength,
       });
     }
     this.logger.info(
       "responding with a mocked response: %d %s",
       response.status,
-      response.statusText
+      response.statusText,
     );
     define(this.request, "status", response.status);
     define(this.request, "statusText", response.statusText);
@@ -446,10 +450,10 @@ var XMLHttpRequestController = class {
         this.logger.info(
           'resolved response header "%s" to',
           args[0],
-          headerValue
+          headerValue,
         );
         return headerValue;
-      }
+      },
     });
     this.request.getAllResponseHeaders = new Proxy(
       this.request.getAllResponseHeaders,
@@ -457,40 +461,47 @@ var XMLHttpRequestController = class {
         apply: () => {
           this.logger.info("getAllResponseHeaders");
           if (this.request.readyState < this.request.HEADERS_RECEIVED) {
-            this.logger.info("headers not received yet, returning empty string");
+            this.logger.info(
+              "headers not received yet, returning empty string",
+            );
             return "";
           }
           const headersList = Array.from(response.headers.entries());
-          const allHeaders = headersList.map(([headerName, headerValue]) => {
-            return `${headerName}: ${headerValue}`;
-          }).join("\r\n");
+          const allHeaders = headersList
+            .map(([headerName, headerValue]) => {
+              return `${headerName}: ${headerValue}`;
+            })
+            .join("\r\n");
           this.logger.info("resolved all response headers to", allHeaders);
           return allHeaders;
-        }
-      }
+        },
+      },
     );
     Object.defineProperties(this.request, {
       response: {
         enumerable: true,
         configurable: false,
-        get: () => this.response
+        get: () => this.response,
       },
       responseText: {
         enumerable: true,
         configurable: false,
-        get: () => this.responseText
+        get: () => this.responseText,
       },
       responseXML: {
         enumerable: true,
         configurable: false,
-        get: () => this.responseXML
-      }
+        get: () => this.responseXML,
+      },
     });
     const totalResponseBodyLength = await getBodyByteLength(response.clone());
-    this.logger.info("calculated response body length", totalResponseBodyLength);
+    this.logger.info(
+      "calculated response body length",
+      totalResponseBodyLength,
+    );
     this.trigger("loadstart", this.request, {
       loaded: 0,
-      total: totalResponseBodyLength
+      total: totalResponseBodyLength,
     });
     this.setReadyState(this.request.HEADERS_RECEIVED);
     this.setReadyState(this.request.LOADING);
@@ -499,11 +510,11 @@ var XMLHttpRequestController = class {
       this.setReadyState(this.request.DONE);
       this.trigger("load", this.request, {
         loaded: this.responseBuffer.byteLength,
-        total: totalResponseBodyLength
+        total: totalResponseBodyLength,
       });
       this.trigger("loadend", this.request, {
         loaded: this.responseBuffer.byteLength,
-        total: totalResponseBodyLength
+        total: totalResponseBodyLength,
       });
     };
     if (response.body) {
@@ -521,7 +532,7 @@ var XMLHttpRequestController = class {
           this.responseBuffer = concatArrayBuffer(this.responseBuffer, value);
           this.trigger("progress", this.request, {
             loaded: this.responseBuffer.byteLength,
-            total: totalResponseBodyLength
+            total: totalResponseBodyLength,
           });
         }
         readNextResponseBodyChunk();
@@ -537,7 +548,7 @@ var XMLHttpRequestController = class {
   get response() {
     this.logger.info(
       "getResponse (responseType: %s)",
-      this.request.responseType
+      this.request.responseType,
     );
     if (this.request.readyState !== this.request.DONE) {
       return null;
@@ -549,19 +560,23 @@ var XMLHttpRequestController = class {
         return responseJson;
       }
       case "arraybuffer": {
-        const arrayBuffer = _chunkLK6DILFKjs.toArrayBuffer.call(void 0, this.responseBuffer);
+        const arrayBuffer = _chunkLK6DILFKjs.toArrayBuffer.call(
+          void 0,
+          this.responseBuffer,
+        );
         this.logger.info("resolved response ArrayBuffer", arrayBuffer);
         return arrayBuffer;
       }
       case "blob": {
-        const mimeType = this.request.getResponseHeader("Content-Type") || "text/plain";
+        const mimeType =
+          this.request.getResponseHeader("Content-Type") || "text/plain";
         const responseBlob = new Blob([this.responseBufferToText()], {
-          type: mimeType
+          type: mimeType,
         });
         this.logger.info(
           "resolved response Blob (mime type: %s)",
           responseBlob,
-          mimeType
+          mimeType,
         );
         return responseBlob;
       }
@@ -570,18 +585,22 @@ var XMLHttpRequestController = class {
         this.logger.info(
           'resolving "%s" response type as text',
           this.request.responseType,
-          responseText
+          responseText,
         );
         return responseText;
       }
     }
   }
   get responseText() {
-    _outvariant.invariant.call(void 0, 
+    _outvariant.invariant.call(
+      void 0,
       this.request.responseType === "" || this.request.responseType === "text",
-      "InvalidStateError: The object is in invalid state."
+      "InvalidStateError: The object is in invalid state.",
     );
-    if (this.request.readyState !== this.request.LOADING && this.request.readyState !== this.request.DONE) {
+    if (
+      this.request.readyState !== this.request.LOADING &&
+      this.request.readyState !== this.request.DONE
+    ) {
       return "";
     }
     const responseText = this.responseBufferToText();
@@ -589,9 +608,11 @@ var XMLHttpRequestController = class {
     return responseText;
   }
   get responseXML() {
-    _outvariant.invariant.call(void 0, 
-      this.request.responseType === "" || this.request.responseType === "document",
-      "InvalidStateError: The object is in invalid state."
+    _outvariant.invariant.call(
+      void 0,
+      this.request.responseType === "" ||
+        this.request.responseType === "document",
+      "InvalidStateError: The object is in invalid state.",
     );
     if (this.request.readyState !== this.request.DONE) {
       return null;
@@ -599,14 +620,14 @@ var XMLHttpRequestController = class {
     const contentType = this.request.getResponseHeader("Content-Type") || "";
     if (typeof DOMParser === "undefined") {
       console.warn(
-        "Cannot retrieve XMLHttpRequest response body as XML: DOMParser is not defined. You are likely using an environment that is not browser or does not polyfill browser globals correctly."
+        "Cannot retrieve XMLHttpRequest response body as XML: DOMParser is not defined. You are likely using an environment that is not browser or does not polyfill browser globals correctly.",
       );
       return null;
     }
     if (isDomParserSupportedType(contentType)) {
       return new DOMParser().parseFromString(
         this.responseBufferToText(),
-        contentType
+        contentType,
       );
     }
     return null;
@@ -625,7 +646,7 @@ var XMLHttpRequestController = class {
     this.logger.info(
       "setReadyState: %d -> %d",
       this.request.readyState,
-      nextReadyState
+      nextReadyState,
     );
     if (this.request.readyState === nextReadyState) {
       this.logger.info("ready state identical, skipping transition...");
@@ -649,13 +670,14 @@ var XMLHttpRequestController = class {
       this.logger.info('found a direct "%s" callback, calling...', eventName);
       callback.call(target, event);
     }
-    const events = target instanceof XMLHttpRequestUpload ? this.uploadEvents : this.events;
+    const events =
+      target instanceof XMLHttpRequestUpload ? this.uploadEvents : this.events;
     for (const [registeredEventName, listeners] of events) {
       if (registeredEventName === eventName) {
         this.logger.info(
           'found %d listener(s) for "%s" event, calling...',
           listeners.length,
-          eventName
+          eventName,
         );
         listeners.forEach((listener) => listener.call(target, event));
       }
@@ -666,7 +688,8 @@ var XMLHttpRequestController = class {
    */
   toFetchApiRequest(body) {
     this.logger.info("converting request to a Fetch API Request...");
-    const resolvedBody = body instanceof Document ? body.documentElement.innerText : body;
+    const resolvedBody =
+      body instanceof Document ? body.documentElement.innerText : body;
     const fetchRequest = new Request(this.url.href, {
       method: this.method,
       headers: this.requestHeaders,
@@ -674,7 +697,9 @@ var XMLHttpRequestController = class {
        * @see https://xhr.spec.whatwg.org/#cross-origin-credentials
        */
       credentials: this.request.withCredentials ? "include" : "same-origin",
-      body: ["GET", "HEAD"].includes(this.method.toUpperCase()) ? null : resolvedBody
+      body: ["GET", "HEAD"].includes(this.method.toUpperCase())
+        ? null
+        : resolvedBody,
     });
     const proxyHeaders = createProxy(fetchRequest.headers, {
       methodCall: ([methodName, args], invoke) => {
@@ -688,13 +713,13 @@ var XMLHttpRequestController = class {
           case "delete": {
             const [headerName] = args;
             console.warn(
-              `XMLHttpRequest: Cannot remove a "${headerName}" header from the Fetch API representation of the "${fetchRequest.method} ${fetchRequest.url}" request. XMLHttpRequest headers cannot be removed.`
+              `XMLHttpRequest: Cannot remove a "${headerName}" header from the Fetch API representation of the "${fetchRequest.method} ${fetchRequest.url}" request. XMLHttpRequest headers cannot be removed.`,
             );
             break;
           }
         }
         return invoke();
-      }
+      },
     });
     define(fetchRequest, "headers", proxyHeaders);
     _chunk57RIRQUYjs.setRawRequest.call(void 0, fetchRequest, this.request);
@@ -714,89 +739,85 @@ function define(target, property, value) {
     // Ensure writable properties to allow redefining readonly properties.
     writable: true,
     enumerable: true,
-    value
+    value,
   });
 }
 
 // src/interceptors/XMLHttpRequest/XMLHttpRequestProxy.ts
-function createXMLHttpRequestProxy({
-  emitter,
-  logger
-}) {
+function createXMLHttpRequestProxy({ emitter, logger }) {
   const XMLHttpRequestProxy = new Proxy(globalThis.XMLHttpRequest, {
     construct(target, args, newTarget) {
       logger.info("constructed new XMLHttpRequest");
-      const originalRequest = Reflect.construct(
-        target,
-        args,
-        newTarget
-      );
+      const originalRequest = Reflect.construct(target, args, newTarget);
       const prototypeDescriptors = Object.getOwnPropertyDescriptors(
-        target.prototype
+        target.prototype,
       );
       for (const propertyName in prototypeDescriptors) {
         Reflect.defineProperty(
           originalRequest,
           propertyName,
-          prototypeDescriptors[propertyName]
+          prototypeDescriptors[propertyName],
         );
       }
       const xhrRequestController = new XMLHttpRequestController(
         originalRequest,
-        logger
+        logger,
       );
-      xhrRequestController.onRequest = async function({ request, requestId }) {
-        const controller = new (0, _chunk57RIRQUYjs.RequestController)(request, {
-          passthrough: () => {
-            this.logger.info(
-              "no mocked response received, performing request as-is..."
-            );
+      xhrRequestController.onRequest = async function ({ request, requestId }) {
+        const controller = new (0, _chunk57RIRQUYjs.RequestController)(
+          request,
+          {
+            passthrough: () => {
+              this.logger.info(
+                "no mocked response received, performing request as-is...",
+              );
+            },
+            respondWith: async (response) => {
+              if (_chunkFW45TRCBjs.isResponseError.call(void 0, response)) {
+                this.errorWith(new TypeError("Network error"));
+                return;
+              }
+              await this.respondWith(response);
+            },
+            errorWith: (reason) => {
+              this.logger.info("request errored!", { error: reason });
+              if (reason instanceof Error) {
+                this.errorWith(reason);
+              }
+            },
           },
-          respondWith: async (response) => {
-            if (_chunkFW45TRCBjs.isResponseError.call(void 0, response)) {
-              this.errorWith(new TypeError("Network error"));
-              return;
-            }
-            await this.respondWith(response);
-          },
-          errorWith: (reason) => {
-            this.logger.info("request errored!", { error: reason });
-            if (reason instanceof Error) {
-              this.errorWith(reason);
-            }
-          }
-        });
+        );
         this.logger.info("awaiting mocked response...");
         this.logger.info(
           'emitting the "request" event for %s listener(s)...',
-          emitter.listenerCount("request")
+          emitter.listenerCount("request"),
         );
         await _chunkFW45TRCBjs.handleRequest.call(void 0, {
           request,
           requestId,
           controller,
-          emitter
+          emitter,
         });
       };
-      xhrRequestController.onResponse = async function({
+      xhrRequestController.onResponse = async function ({
         response,
         isMockedResponse,
         request,
-        requestId
+        requestId,
       }) {
         this.logger.info(
           'emitting the "response" event for %s listener(s)...',
-          emitter.listenerCount("response")
+          emitter.listenerCount("response"),
         );
         emitter.emit("response", {
           response,
           isMockedResponse,
           request,
-          requestId
+          requestId,
         });
       };
       return xhrRequestController.request;
-    }
+    },
   });
   return XMLHttpRequestProxy;
 }
@@ -807,45 +828,55 @@ var _XMLHttpRequestInterceptor = class extends _chunkJQ2S7G56js.Interceptor {
     super(_XMLHttpRequestInterceptor.interceptorSymbol);
   }
   checkEnvironment() {
-    return _chunk2HUMWGRDjs.hasConfigurableGlobal.call(void 0, "XMLHttpRequest");
+    return _chunk2HUMWGRDjs.hasConfigurableGlobal.call(
+      void 0,
+      "XMLHttpRequest",
+    );
   }
   setup() {
     const logger = this.logger.extend("setup");
     logger.info('patching "XMLHttpRequest" module...');
     const PureXMLHttpRequest = globalThis.XMLHttpRequest;
-    _outvariant.invariant.call(void 0, 
+    _outvariant.invariant.call(
+      void 0,
       !PureXMLHttpRequest[_chunk57RIRQUYjs.IS_PATCHED_MODULE],
-      'Failed to patch the "XMLHttpRequest" module: already patched.'
+      'Failed to patch the "XMLHttpRequest" module: already patched.',
     );
     globalThis.XMLHttpRequest = createXMLHttpRequestProxy({
       emitter: this.emitter,
-      logger: this.logger
+      logger: this.logger,
     });
     logger.info(
       'native "XMLHttpRequest" module patched!',
-      globalThis.XMLHttpRequest.name
+      globalThis.XMLHttpRequest.name,
     );
-    Object.defineProperty(globalThis.XMLHttpRequest, _chunk57RIRQUYjs.IS_PATCHED_MODULE, {
-      enumerable: true,
-      configurable: true,
-      value: true
-    });
+    Object.defineProperty(
+      globalThis.XMLHttpRequest,
+      _chunk57RIRQUYjs.IS_PATCHED_MODULE,
+      {
+        enumerable: true,
+        configurable: true,
+        value: true,
+      },
+    );
     this.subscriptions.push(() => {
-      Object.defineProperty(globalThis.XMLHttpRequest, _chunk57RIRQUYjs.IS_PATCHED_MODULE, {
-        value: void 0
-      });
+      Object.defineProperty(
+        globalThis.XMLHttpRequest,
+        _chunk57RIRQUYjs.IS_PATCHED_MODULE,
+        {
+          value: void 0,
+        },
+      );
       globalThis.XMLHttpRequest = PureXMLHttpRequest;
       logger.info(
         'native "XMLHttpRequest" module restored!',
-        globalThis.XMLHttpRequest.name
+        globalThis.XMLHttpRequest.name,
       );
     });
   }
 };
 var XMLHttpRequestInterceptor = _XMLHttpRequestInterceptor;
 XMLHttpRequestInterceptor.interceptorSymbol = Symbol("xhr");
-
-
 
 exports.XMLHttpRequestInterceptor = XMLHttpRequestInterceptor;
 //# sourceMappingURL=chunk-2MCNQOY3.js.map

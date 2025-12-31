@@ -1,8 +1,8 @@
-import { devAssert } from '../jsutils/devAssert.mjs';
-import { inspect } from '../jsutils/inspect.mjs';
-import { isObjectLike } from '../jsutils/isObjectLike.mjs';
-import { keyValMap } from '../jsutils/keyValMap.mjs';
-import { parseValue } from '../language/parser.mjs';
+import { devAssert } from "../jsutils/devAssert.mjs";
+import { inspect } from "../jsutils/inspect.mjs";
+import { isObjectLike } from "../jsutils/isObjectLike.mjs";
+import { keyValMap } from "../jsutils/keyValMap.mjs";
+import { parseValue } from "../language/parser.mjs";
 import {
   assertInterfaceType,
   assertNullableType,
@@ -17,12 +17,12 @@ import {
   GraphQLUnionType,
   isInputType,
   isOutputType,
-} from '../type/definition.mjs';
-import { GraphQLDirective } from '../type/directives.mjs';
-import { introspectionTypes, TypeKind } from '../type/introspection.mjs';
-import { specifiedScalarTypes } from '../type/scalars.mjs';
-import { GraphQLSchema } from '../type/schema.mjs';
-import { valueFromAST } from './valueFromAST.mjs';
+} from "../type/definition.mjs";
+import { GraphQLDirective } from "../type/directives.mjs";
+import { introspectionTypes, TypeKind } from "../type/introspection.mjs";
+import { specifiedScalarTypes } from "../type/scalars.mjs";
+import { GraphQLSchema } from "../type/schema.mjs";
+import { valueFromAST } from "./valueFromAST.mjs";
 /**
  * Build a GraphQLSchema for use by client tools.
  *
@@ -91,7 +91,7 @@ export function buildClientSchema(introspection, options) {
       const itemRef = typeRef.ofType;
 
       if (!itemRef) {
-        throw new Error('Decorated type deeper than introspection query.');
+        throw new Error("Decorated type deeper than introspection query.");
       }
 
       return new GraphQLList(getType(itemRef));
@@ -101,7 +101,7 @@ export function buildClientSchema(introspection, options) {
       const nullableRef = typeRef.ofType;
 
       if (!nullableRef) {
-        throw new Error('Decorated type deeper than introspection query.');
+        throw new Error("Decorated type deeper than introspection query.");
       }
 
       const nullableType = getType(nullableRef);

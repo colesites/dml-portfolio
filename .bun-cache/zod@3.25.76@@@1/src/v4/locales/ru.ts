@@ -2,7 +2,12 @@ import type { $ZodStringFormats } from "../core/checks.js";
 import type * as errors from "../core/errors.js";
 import * as util from "../core/util.js";
 
-function getRussianPlural(count: number, one: string, few: string, many: string): string {
+function getRussianPlural(
+  count: number,
+  one: string,
+  few: string,
+  many: string,
+): string {
   const absCount = Math.abs(count);
   const lastDigit = absCount % 10;
   const lastTwoDigits = absCount % 100;
@@ -85,7 +90,10 @@ const error: () => errors.$ZodErrorMap = () => {
           return "null";
         }
 
-        if (Object.getPrototypeOf(data) !== Object.prototype && data.constructor) {
+        if (
+          Object.getPrototypeOf(data) !== Object.prototype &&
+          data.constructor
+        ) {
           return data.constructor.name;
         }
       }
@@ -131,14 +139,20 @@ const error: () => errors.$ZodErrorMap = () => {
       case "invalid_type":
         return `Неверный ввод: ожидалось ${issue.expected}, получено ${parsedType(issue.input)}`;
       case "invalid_value":
-        if (issue.values.length === 1) return `Неверный ввод: ожидалось ${util.stringifyPrimitive(issue.values[0])}`;
+        if (issue.values.length === 1)
+          return `Неверный ввод: ожидалось ${util.stringifyPrimitive(issue.values[0])}`;
         return `Неверный вариант: ожидалось одно из ${util.joinValues(issue.values, "|")}`;
       case "too_big": {
         const adj = issue.inclusive ? "<=" : "<";
         const sizing = getSizing(issue.origin);
         if (sizing) {
           const maxValue = Number(issue.maximum);
-          const unit = getRussianPlural(maxValue, sizing.unit.one, sizing.unit.few, sizing.unit.many);
+          const unit = getRussianPlural(
+            maxValue,
+            sizing.unit.one,
+            sizing.unit.few,
+            sizing.unit.many,
+          );
           return `Слишком большое значение: ожидалось, что ${issue.origin ?? "значение"} будет иметь ${adj}${issue.maximum.toString()} ${unit}`;
         }
         return `Слишком большое значение: ожидалось, что ${issue.origin ?? "значение"} будет ${adj}${issue.maximum.toString()}`;
@@ -148,17 +162,26 @@ const error: () => errors.$ZodErrorMap = () => {
         const sizing = getSizing(issue.origin);
         if (sizing) {
           const minValue = Number(issue.minimum);
-          const unit = getRussianPlural(minValue, sizing.unit.one, sizing.unit.few, sizing.unit.many);
+          const unit = getRussianPlural(
+            minValue,
+            sizing.unit.one,
+            sizing.unit.few,
+            sizing.unit.many,
+          );
           return `Слишком маленькое значение: ожидалось, что ${issue.origin} будет иметь ${adj}${issue.minimum.toString()} ${unit}`;
         }
         return `Слишком маленькое значение: ожидалось, что ${issue.origin} будет ${adj}${issue.minimum.toString()}`;
       }
       case "invalid_format": {
         const _issue = issue as errors.$ZodStringFormatIssues;
-        if (_issue.format === "starts_with") return `Неверная строка: должна начинаться с "${_issue.prefix}"`;
-        if (_issue.format === "ends_with") return `Неверная строка: должна заканчиваться на "${_issue.suffix}"`;
-        if (_issue.format === "includes") return `Неверная строка: должна содержать "${_issue.includes}"`;
-        if (_issue.format === "regex") return `Неверная строка: должна соответствовать шаблону ${_issue.pattern}`;
+        if (_issue.format === "starts_with")
+          return `Неверная строка: должна начинаться с "${_issue.prefix}"`;
+        if (_issue.format === "ends_with")
+          return `Неверная строка: должна заканчиваться на "${_issue.suffix}"`;
+        if (_issue.format === "includes")
+          return `Неверная строка: должна содержать "${_issue.includes}"`;
+        if (_issue.format === "regex")
+          return `Неверная строка: должна соответствовать шаблону ${_issue.pattern}`;
         return `Неверный ${Nouns[_issue.format] ?? issue.format}`;
       }
       case "not_multiple_of":

@@ -1,4 +1,4 @@
-import type { URL } from 'url';
+import type { URL } from "url";
 
 export interface DotenvParseOptions {
   /**
@@ -46,7 +46,7 @@ export interface DotenvParseOutput {
  */
 export function parse<T extends DotenvParseOutput = DotenvParseOutput>(
   src: string | Buffer,
-  options?: DotenvParseOptions
+  options?: DotenvParseOptions,
 ): T;
 
 export interface DotenvConfigOptions {
@@ -138,14 +138,14 @@ export interface DotenvConfigOptions {
   quiet?: boolean;
 
   logLevel?:
-    | 'error'
-    | 'warn'
-    | 'success'
-    | 'successv'
-    | 'info'
-    | 'help'
-    | 'verbose'
-    | 'debug';
+    | "error"
+    | "warn"
+    | "success"
+    | "successv"
+    | "info"
+    | "help"
+    | "verbose"
+    | "debug";
 
   /**
    * Turn off Dotenvx Ops features - https://dotenvx.com/ops
@@ -232,14 +232,14 @@ export type SetOutput = {
  * Set a single environment variable.
  *
  * @see https://dotenvx.com/docs
- * @param key - KEY 
+ * @param key - KEY
  * @param value - value
  * @param options - additional options. example: `{ encrypt: false }`
  */
 export function set(
   key: string,
   value: string,
-  options?: SetOptions
+  options?: SetOptions,
 ): SetOutput;
 
 export interface GetOptions {
@@ -278,13 +278,10 @@ export interface GetOptions {
  * Get a single environment variable.
  *
  * @see https://dotenvx.com/docs
- * @param key - KEY 
+ * @param key - KEY
  * @param options - additional options. example: `{ overload: true }`
  */
-export function get(
-  key: string,
-  options?: GetOptions
-): string;
+export function get(key: string, options?: GetOptions): string;
 
 /**
  * List all env files in the current working directory
@@ -296,7 +293,7 @@ export function get(
 export function ls(
   directory: string,
   envFile: string | string[],
-  excludeEnvFile: string | string[]
+  excludeEnvFile: string | string[],
 ): string[];
 
 export type GenExampleOutput = {
@@ -316,5 +313,5 @@ export type GenExampleOutput = {
  */
 export function genexample(
   directory: string,
-  envFile: string
+  envFile: string,
 ): GenExampleOutput;

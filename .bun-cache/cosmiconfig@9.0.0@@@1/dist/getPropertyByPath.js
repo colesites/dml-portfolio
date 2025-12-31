@@ -1,7 +1,5 @@
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.getPropertyByPath = getPropertyByPath;
 
@@ -11,11 +9,11 @@ exports.getPropertyByPath = getPropertyByPath;
 // Nested property names that include periods, within a path, are only
 // understood in array paths.
 function getPropertyByPath(source, path) {
-  if (typeof path === 'string' && Object.prototype.hasOwnProperty.call(source, path)) {
+  if (typeof path === "string" && Object.hasOwn(source, path)) {
     return source[path];
   }
 
-  const parsedPath = typeof path === 'string' ? path.split('.') : path; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const parsedPath = typeof path === "string" ? path.split(".") : path; // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   return parsedPath.reduce((previous, key) => {
     if (previous === undefined) {

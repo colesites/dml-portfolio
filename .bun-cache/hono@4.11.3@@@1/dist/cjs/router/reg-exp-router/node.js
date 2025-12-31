@@ -8,18 +8,22 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var node_exports = {};
 __export(node_exports, {
   Node: () => Node,
-  PATH_ERROR: () => PATH_ERROR
+  PATH_ERROR: () => PATH_ERROR,
 });
 module.exports = __toCommonJS(node_exports);
 const LABEL_REG_EXP_STR = "[^/]+";
@@ -29,14 +33,17 @@ const PATH_ERROR = /* @__PURE__ */ Symbol();
 const regExpMetaChars = new Set(".\\+*[^]$()");
 function compareKey(a, b) {
   if (a.length === 1) {
-    return b.length === 1 ? a < b ? -1 : 1 : -1;
+    return b.length === 1 ? (a < b ? -1 : 1) : -1;
   }
   if (b.length === 1) {
     return 1;
   }
   if (a === ONLY_WILDCARD_REG_EXP_STR || a === TAIL_WILDCARD_REG_EXP_STR) {
     return 1;
-  } else if (b === ONLY_WILDCARD_REG_EXP_STR || b === TAIL_WILDCARD_REG_EXP_STR) {
+  } else if (
+    b === ONLY_WILDCARD_REG_EXP_STR ||
+    b === TAIL_WILDCARD_REG_EXP_STR
+  ) {
     return -1;
   }
   if (a === LABEL_REG_EXP_STR) {
@@ -44,7 +51,7 @@ function compareKey(a, b) {
   } else if (b === LABEL_REG_EXP_STR) {
     return -1;
   }
-  return a.length === b.length ? a < b ? -1 : 1 : b.length - a.length;
+  return a.length === b.length ? (a < b ? -1 : 1) : b.length - a.length;
 }
 class Node {
   #index;
@@ -62,7 +69,14 @@ class Node {
       return;
     }
     const [token, ...restTokens] = tokens;
-    const pattern = token === "*" ? restTokens.length === 0 ? ["", "", ONLY_WILDCARD_REG_EXP_STR] : ["", "", LABEL_REG_EXP_STR] : token === "/*" ? ["", "", TAIL_WILDCARD_REG_EXP_STR] : token.match(/^\:([^\{\}]+)(?:\{(.+)\})?$/);
+    const pattern =
+      token === "*"
+        ? restTokens.length === 0
+          ? ["", "", ONLY_WILDCARD_REG_EXP_STR]
+          : ["", "", LABEL_REG_EXP_STR]
+        : token === "/*"
+          ? ["", "", TAIL_WILDCARD_REG_EXP_STR]
+          : token.match(/^:([^{}]+)(?:\{(.+)\})?$/);
     let node;
     if (pattern) {
       const name = pattern[1];
@@ -78,9 +92,13 @@ class Node {
       }
       node = this.#children[regexpStr];
       if (!node) {
-        if (Object.keys(this.#children).some(
-          (k) => k !== ONLY_WILDCARD_REG_EXP_STR && k !== TAIL_WILDCARD_REG_EXP_STR
-        )) {
+        if (
+          Object.keys(this.#children).some(
+            (k) =>
+              k !== ONLY_WILDCARD_REG_EXP_STR &&
+              k !== TAIL_WILDCARD_REG_EXP_STR,
+          )
+        ) {
           throw PATH_ERROR;
         }
         if (pathErrorCheckOnly) {
@@ -97,9 +115,14 @@ class Node {
     } else {
       node = this.#children[token];
       if (!node) {
-        if (Object.keys(this.#children).some(
-          (k) => k.length > 1 && k !== ONLY_WILDCARD_REG_EXP_STR && k !== TAIL_WILDCARD_REG_EXP_STR
-        )) {
+        if (
+          Object.keys(this.#children).some(
+            (k) =>
+              k.length > 1 &&
+              k !== ONLY_WILDCARD_REG_EXP_STR &&
+              k !== TAIL_WILDCARD_REG_EXP_STR,
+          )
+        ) {
           throw PATH_ERROR;
         }
         if (pathErrorCheckOnly) {
@@ -114,7 +137,13 @@ class Node {
     const childKeys = Object.keys(this.#children).sort(compareKey);
     const strList = childKeys.map((k) => {
       const c = this.#children[k];
-      return (typeof c.#varIndex === "number" ? `(${k})@${c.#varIndex}` : regExpMetaChars.has(k) ? `\\${k}` : k) + c.buildRegExpStr();
+      return (
+        (typeof c.#varIndex === "number"
+          ? `(${k})@${c.#varIndex}`
+          : regExpMetaChars.has(k)
+            ? `\\${k}`
+            : k) + c.buildRegExpStr()
+      );
     });
     if (typeof this.#index === "number") {
       strList.unshift(`#${this.#index}`);
@@ -129,7 +158,8 @@ class Node {
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  Node,
-  PATH_ERROR
-});
+0 &&
+  (module.exports = {
+    Node,
+    PATH_ERROR,
+  });

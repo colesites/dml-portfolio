@@ -1,12 +1,16 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = removeTypeDuplicates;
 var _index = require("../../validators/generated/index.js");
 function getQualifiedName(node) {
-  return (0, _index.isIdentifier)(node) ? node.name : (0, _index.isThisExpression)(node) ? "this" : `${node.right.name}.${getQualifiedName(node.left)}`;
+  return (0, _index.isIdentifier)(node)
+    ? node.name
+    : (0, _index.isThisExpression)(node)
+      ? "this"
+      : `${node.right.name}.${getQualifiedName(node.left)}`;
 }
 function removeTypeDuplicates(nodesIn) {
   const nodes = Array.from(nodesIn);
@@ -43,7 +47,9 @@ function removeTypeDuplicates(nodesIn) {
         const existingTypeArguments = existing[typeArgumentsKey];
         if (existingTypeArguments) {
           existingTypeArguments.params.push(...typeArguments.params);
-          existingTypeArguments.params = removeTypeDuplicates(existingTypeArguments.params);
+          existingTypeArguments.params = removeTypeDuplicates(
+            existingTypeArguments.params,
+          );
         } else {
           existing = typeArguments;
         }

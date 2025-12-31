@@ -1,12 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports._guessExecutionStatusRelativeTo = _guessExecutionStatusRelativeTo;
 exports._resolve = _resolve;
-exports.canHaveVariableDeclarationOrExpression = canHaveVariableDeclarationOrExpression;
-exports.canSwapBetweenExpressionAndStatement = canSwapBetweenExpressionAndStatement;
+exports.canHaveVariableDeclarationOrExpression =
+  canHaveVariableDeclarationOrExpression;
+exports.canSwapBetweenExpressionAndStatement =
+  canSwapBetweenExpressionAndStatement;
 exports.getSource = getSource;
 exports.isCompletionRecord = isCompletionRecord;
 exports.isConstantExpression = isConstantExpression;
@@ -28,39 +30,37 @@ const {
   isLiteral,
   isStringLiteral,
   isType,
-  matchesPattern: _matchesPattern
+  matchesPattern: _matchesPattern,
 } = _t;
 function matchesPattern(pattern, allowPartial) {
   return _matchesPattern(this.node, pattern, allowPartial);
 }
-{
-  exports.has = function has(key) {
-    var _this$node;
-    const val = (_this$node = this.node) == null ? void 0 : _this$node[key];
-    if (val && Array.isArray(val)) {
-      return !!val.length;
-    } else {
-      return !!val;
-    }
-  };
-}
+exports.has = function has(key) {
+  var _this$node;
+  const val = (_this$node = this.node) == null ? void 0 : _this$node[key];
+  if (val && Array.isArray(val)) {
+    return !!val.length;
+  } else {
+    return !!val;
+  }
+};
 function isStatic() {
   return this.scope.isStatic(this.node);
 }
-{
-  exports.is = exports.has;
-  exports.isnt = function isnt(key) {
-    return !this.has(key);
-  };
-  exports.equals = function equals(key, value) {
-    return this.node[key] === value;
-  };
-}
+exports.is = exports.has;
+exports.isnt = function isnt(key) {
+  return !this.has(key);
+};
+exports.equals = function equals(key, value) {
+  return this.node[key] === value;
+};
 function isNodeType(type) {
   return isType(this.type, type);
 }
 function canHaveVariableDeclarationOrExpression() {
-  return (this.key === "init" || this.key === "left") && this.parentPath.isFor();
+  return (
+    (this.key === "init" || this.key === "left") && this.parentPath.isFor()
+  );
 }
 function canSwapBetweenExpressionAndStatement(replacement) {
   if (this.key !== "body" || !this.parentPath.isArrowFunctionExpression()) {
@@ -77,10 +77,7 @@ function isCompletionRecord(allowInsideFunction) {
   let path = this;
   let first = true;
   do {
-    const {
-      type,
-      container
-    } = path;
+    const { type, container } = path;
     if (!first && (path.isFunction() || type === "StaticBlock")) {
       return !!allowInsideFunction;
     }
@@ -88,11 +85,18 @@ function isCompletionRecord(allowInsideFunction) {
     if (Array.isArray(container) && path.key !== container.length - 1) {
       return false;
     }
-  } while ((path = path.parentPath) && !path.isProgram() && !path.isDoExpression());
+  } while (
+    (path = path.parentPath) &&
+    !path.isProgram() &&
+    !path.isDoExpression()
+  );
   return true;
 }
 function isStatementOrBlock() {
-  if (this.parentPath.isLabeledStatement() || isBlockStatement(this.container)) {
+  if (
+    this.parentPath.isLabeledStatement() ||
+    isBlockStatement(this.container)
+  ) {
     return false;
   } else {
     return STATEMENT_OR_BLOCK_KEYS.includes(this.key);
@@ -100,11 +104,21 @@ function isStatementOrBlock() {
 }
 function referencesImport(moduleSource, importName) {
   if (!this.isReferencedIdentifier()) {
-    if (this.isJSXMemberExpression() && this.node.property.name === importName || (this.isMemberExpression() || this.isOptionalMemberExpression()) && (this.node.computed ? isStringLiteral(this.node.property, {
-      value: importName
-    }) : this.node.property.name === importName)) {
+    if (
+      (this.isJSXMemberExpression() &&
+        this.node.property.name === importName) ||
+      ((this.isMemberExpression() || this.isOptionalMemberExpression()) &&
+        (this.node.computed
+          ? isStringLiteral(this.node.property, {
+              value: importName,
+            })
+          : this.node.property.name === importName))
+    ) {
       const object = this.get("object");
-      return object.isReferencedIdentifier() && object.referencesImport(moduleSource, "*");
+      return (
+        object.isReferencedIdentifier() &&
+        object.referencesImport(moduleSource, "*")
+      );
     }
     return false;
   }
@@ -124,9 +138,12 @@ function referencesImport(moduleSource, importName) {
   if (path.isImportNamespaceSpecifier() && importName === "*") {
     return true;
   }
-  if (path.isImportSpecifier() && isIdentifier(path.node.imported, {
-    name: importName
-  })) {
+  if (
+    path.isImportSpecifier() &&
+    isIdentifier(path.node.imported, {
+      name: importName,
+    })
+  ) {
     return true;
   }
   return false;
@@ -143,7 +160,12 @@ function willIMaybeExecuteBefore(target) {
   return this._guessExecutionStatusRelativeTo(target) !== "after";
 }
 function getOuterFunction(path) {
-  return path.isProgram() ? path : (path.parentPath.scope.getFunctionParent() || path.parentPath.scope.getProgramParent()).path;
+  return path.isProgram()
+    ? path
+    : (
+        path.parentPath.scope.getFunctionParent() ||
+        path.parentPath.scope.getProgramParent()
+      ).path;
 }
 function isExecutionUncertain(type, key) {
   switch (type) {
@@ -189,21 +211,25 @@ function _guessExecutionStatusRelativeTo(target) {
 function _guessExecutionStatusRelativeToCached(base, target, cache) {
   const funcParent = {
     this: getOuterFunction(base),
-    target: getOuterFunction(target)
+    target: getOuterFunction(target),
   };
   if (funcParent.target.node !== funcParent.this.node) {
-    return _guessExecutionStatusRelativeToDifferentFunctionsCached(base, funcParent.target, cache);
+    return _guessExecutionStatusRelativeToDifferentFunctionsCached(
+      base,
+      funcParent.target,
+      cache,
+    );
   }
   const paths = {
     target: target.getAncestry(),
-    this: base.getAncestry()
+    this: base.getAncestry(),
   };
   if (paths.target.includes(base)) return "after";
   if (paths.this.includes(target)) return "before";
   let commonPath;
   const commonIndex = {
     target: 0,
-    this: 0
+    this: 0,
   };
   while (!commonPath && commonIndex.this < paths.this.length) {
     const path = paths.this[commonIndex.this];
@@ -215,28 +241,44 @@ function _guessExecutionStatusRelativeToCached(base, target, cache) {
     }
   }
   if (!commonPath) {
-    throw new Error("Internal Babel error - The two compared nodes" + " don't appear to belong to the same program.");
+    throw new Error(
+      "Internal Babel error - The two compared nodes" +
+        " don't appear to belong to the same program.",
+    );
   }
-  if (isExecutionUncertainInList(paths.this, commonIndex.this - 1) || isExecutionUncertainInList(paths.target, commonIndex.target - 1)) {
+  if (
+    isExecutionUncertainInList(paths.this, commonIndex.this - 1) ||
+    isExecutionUncertainInList(paths.target, commonIndex.target - 1)
+  ) {
     return "unknown";
   }
   const divergence = {
     this: paths.this[commonIndex.this - 1],
-    target: paths.target[commonIndex.target - 1]
+    target: paths.target[commonIndex.target - 1],
   };
-  if (divergence.target.listKey && divergence.this.listKey && divergence.target.container === divergence.this.container) {
+  if (
+    divergence.target.listKey &&
+    divergence.this.listKey &&
+    divergence.target.container === divergence.this.container
+  ) {
     return divergence.target.key > divergence.this.key ? "before" : "after";
   }
   const keys = VISITOR_KEYS[commonPath.type];
   const keyPosition = {
     this: keys.indexOf(divergence.this.parentKey),
-    target: keys.indexOf(divergence.target.parentKey)
+    target: keys.indexOf(divergence.target.parentKey),
   };
   return keyPosition.target > keyPosition.this ? "before" : "after";
 }
-function _guessExecutionStatusRelativeToDifferentFunctionsInternal(base, target, cache) {
+function _guessExecutionStatusRelativeToDifferentFunctionsInternal(
+  base,
+  target,
+  cache,
+) {
   if (!target.isFunctionDeclaration()) {
-    if (_guessExecutionStatusRelativeToCached(base, target, cache) === "before") {
+    if (
+      _guessExecutionStatusRelativeToCached(base, target, cache) === "before"
+    ) {
       return "before";
     }
     return "unknown";
@@ -248,7 +290,7 @@ function _guessExecutionStatusRelativeToDifferentFunctionsInternal(base, target,
   const referencePaths = binding.referencePaths;
   let allStatus;
   for (const path of referencePaths) {
-    const childOfFunction = !!path.find(path => path.node === target.node);
+    const childOfFunction = !!path.find((path) => path.node === target.node);
     if (childOfFunction) continue;
     if (path.key !== "callee" || !path.parentPath.isCallExpression()) {
       return "unknown";
@@ -262,19 +304,27 @@ function _guessExecutionStatusRelativeToDifferentFunctionsInternal(base, target,
   }
   return allStatus;
 }
-function _guessExecutionStatusRelativeToDifferentFunctionsCached(base, target, cache) {
+function _guessExecutionStatusRelativeToDifferentFunctionsCached(
+  base,
+  target,
+  cache,
+) {
   let nodeMap = cache.get(base.node);
   let cached;
   if (!nodeMap) {
-    cache.set(base.node, nodeMap = new Map());
-  } else if (cached = nodeMap.get(target.node)) {
+    cache.set(base.node, (nodeMap = new Map()));
+  } else if ((cached = nodeMap.get(target.node))) {
     if (cached === SYMBOL_CHECKING) {
       return "unknown";
     }
     return cached;
   }
   nodeMap.set(target.node, SYMBOL_CHECKING);
-  const result = _guessExecutionStatusRelativeToDifferentFunctionsInternal(base, target, cache);
+  const result = _guessExecutionStatusRelativeToDifferentFunctionsInternal(
+    base,
+    target,
+    cache,
+  );
   nodeMap.set(target.node, result);
   return result;
 }
@@ -289,7 +339,8 @@ function _resolve(dangerous, resolved) {
   if (this.isVariableDeclarator()) {
     if (this.get("id").isIdentifier()) {
       return this.get("init").resolve(dangerous, resolved);
-    } else {}
+    } else {
+    }
   } else if (this.isReferencedIdentifier()) {
     const binding = this.scope.getBinding(this.node.name);
     if (!binding) return;
@@ -297,7 +348,7 @@ function _resolve(dangerous, resolved) {
     if (binding.kind === "module") return;
     if (binding.path !== this) {
       const ret = binding.path.resolve(dangerous, resolved);
-      if (this.find(parent => parent.node === ret.node)) return;
+      if (this.find((parent) => parent.node === ret.node)) return;
       return ret;
     }
   } else if (this.isTypeCastExpression()) {
@@ -312,12 +363,16 @@ function _resolve(dangerous, resolved) {
       for (const prop of props) {
         if (!prop.isProperty()) continue;
         const key = prop.get("key");
-        let match = prop.isnt("computed") && key.isIdentifier({
-          name: targetName
-        });
-        match = match || key.isLiteral({
-          value: targetName
-        });
+        let match =
+          prop.isnt("computed") &&
+          key.isIdentifier({
+            name: targetName,
+          });
+        match =
+          match ||
+          key.isLiteral({
+            value: targetName,
+          });
         if (match) return prop.get("value").resolve(dangerous, resolved);
       }
     } else if (target.isArrayExpression() && !isNaN(+targetName)) {
@@ -338,7 +393,9 @@ function isConstantExpression() {
       return false;
     }
     if (this.isTemplateLiteral()) {
-      return this.get("expressions").every(expression => expression.isConstantExpression());
+      return this.get("expressions").every((expression) =>
+        expression.isConstantExpression(),
+      );
     }
     return true;
   }
@@ -349,33 +406,51 @@ function isConstantExpression() {
     return this.get("argument").isConstantExpression();
   }
   if (this.isBinaryExpression()) {
-    const {
-      operator
-    } = this.node;
-    return operator !== "in" && operator !== "instanceof" && this.get("left").isConstantExpression() && this.get("right").isConstantExpression();
+    const { operator } = this.node;
+    return (
+      operator !== "in" &&
+      operator !== "instanceof" &&
+      this.get("left").isConstantExpression() &&
+      this.get("right").isConstantExpression()
+    );
   }
   if (this.isMemberExpression()) {
-    return !this.node.computed && this.get("object").isIdentifier({
-      name: "Symbol"
-    }) && !this.scope.hasBinding("Symbol", {
-      noGlobals: true
-    });
+    return (
+      !this.node.computed &&
+      this.get("object").isIdentifier({
+        name: "Symbol",
+      }) &&
+      !this.scope.hasBinding("Symbol", {
+        noGlobals: true,
+      })
+    );
   }
   if (this.isCallExpression()) {
-    return this.node.arguments.length === 1 && this.get("callee").matchesPattern("Symbol.for") && !this.scope.hasBinding("Symbol", {
-      noGlobals: true
-    }) && this.get("arguments")[0].isStringLiteral();
+    return (
+      this.node.arguments.length === 1 &&
+      this.get("callee").matchesPattern("Symbol.for") &&
+      !this.scope.hasBinding("Symbol", {
+        noGlobals: true,
+      }) &&
+      this.get("arguments")[0].isStringLiteral()
+    );
   }
   return false;
 }
 function isInStrictMode() {
   const start = this.isProgram() ? this : this.parentPath;
-  const strictParent = start.find(path => {
-    if (path.isProgram({
-      sourceType: "module"
-    })) return true;
+  const strictParent = start.find((path) => {
+    if (
+      path.isProgram({
+        sourceType: "module",
+      })
+    )
+      return true;
     if (path.isClass()) return true;
-    if (path.isArrowFunctionExpression() && !path.get("body").isBlockStatement()) {
+    if (
+      path.isArrowFunctionExpression() &&
+      !path.get("body").isBlockStatement()
+    ) {
       return false;
     }
     let body;

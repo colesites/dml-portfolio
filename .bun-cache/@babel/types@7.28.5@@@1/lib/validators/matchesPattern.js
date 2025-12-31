@@ -1,19 +1,25 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = matchesPattern;
 var _index = require("./generated/index.js");
 function isMemberExpressionLike(node) {
-  return (0, _index.isMemberExpression)(node) || (0, _index.isMetaProperty)(node);
+  return (
+    (0, _index.isMemberExpression)(node) || (0, _index.isMetaProperty)(node)
+  );
 }
 function matchesPattern(member, match, allowPartial) {
   if (!isMemberExpressionLike(member)) return false;
   const parts = Array.isArray(match) ? match : match.split(".");
   const nodes = [];
   let node;
-  for (node = member; isMemberExpressionLike(node); node = (_object = node.object) != null ? _object : node.meta) {
+  for (
+    node = member;
+    isMemberExpressionLike(node);
+    node = (_object = node.object) != null ? _object : node.meta
+  ) {
     var _object;
     nodes.push(node.property);
   }

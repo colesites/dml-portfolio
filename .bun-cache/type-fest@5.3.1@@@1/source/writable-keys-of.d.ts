@@ -1,4 +1,4 @@
-import type {ReadonlyKeysOf} from './readonly-keys-of.d.ts';
+import type { ReadonlyKeysOf } from "./readonly-keys-of.d.ts";
 
 /**
 Extract all writable keys from the given type.
@@ -26,9 +26,6 @@ const update1: UpdateRequest<User> = {
 
 @category Utilities
 */
-export type WritableKeysOf<Type extends object> =
-	Type extends unknown // For distributing `Type`
-		? Exclude<keyof Type, ReadonlyKeysOf<Type>>
-		: never; // Should never happen
-
-export {};
+export type WritableKeysOf<Type extends object> = Type extends unknown // For distributing `Type`
+  ? Exclude<keyof Type, ReadonlyKeysOf<Type>>
+  : never; // Should never happen

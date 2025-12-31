@@ -14,6 +14,8 @@ exports.isTerminal = isTerminal;
  * @experimental
  */
 function isTerminal(status) {
-    return status === 'completed' || status === 'failed' || status === 'cancelled';
+  return (
+    status === "completed" || status === "failed" || status === "cancelled"
+  );
 }
 //# sourceMappingURL=interfaces.js.map

@@ -6,6 +6,6 @@ export function isAsyncIterable(maybeAsyncIterable) {
   return (
     typeof (maybeAsyncIterable === null || maybeAsyncIterable === void 0
       ? void 0
-      : maybeAsyncIterable[Symbol.asyncIterator]) === 'function'
+      : maybeAsyncIterable[Symbol.asyncIterator]) === "function"
   );
 }

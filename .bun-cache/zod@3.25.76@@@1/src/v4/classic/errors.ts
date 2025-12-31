@@ -8,10 +8,14 @@ export type ZodIssue = core.$ZodIssue;
 export interface ZodError<T = unknown> extends $ZodError<T> {
   /** @deprecated Use the `z.treeifyError(err)` function instead. */
   format(): core.$ZodFormattedError<T>;
-  format<U>(mapper: (issue: core.$ZodIssue) => U): core.$ZodFormattedError<T, U>;
+  format<U>(
+    mapper: (issue: core.$ZodIssue) => U,
+  ): core.$ZodFormattedError<T, U>;
   /** @deprecated Use the `z.treeifyError(err)` function instead. */
   flatten(): core.$ZodFlattenedError<T>;
-  flatten<U>(mapper: (issue: core.$ZodIssue) => U): core.$ZodFlattenedError<T, U>;
+  flatten<U>(
+    mapper: (issue: core.$ZodIssue) => U,
+  ): core.$ZodFlattenedError<T, U>;
   /** @deprecated Push directly to `.issues` instead. */
   addIssue(issue: core.$ZodIssue): void;
   /** @deprecated Push directly to `.issues` instead. */
@@ -54,18 +58,25 @@ const initializer = (inst: ZodError, issues: core.$ZodIssue[]) => {
   //   },
   // });
 };
-export const ZodError: core.$constructor<ZodError> = core.$constructor("ZodError", initializer);
-export const ZodRealError: core.$constructor<ZodError> = core.$constructor("ZodError", initializer, {
-  Parent: Error,
-});
+export const ZodError: core.$constructor<ZodError> = core.$constructor(
+  "ZodError",
+  initializer,
+);
+export const ZodRealError: core.$constructor<ZodError> = core.$constructor(
+  "ZodError",
+  initializer,
+  {
+    Parent: Error,
+  },
+);
 
 export type {
+  /** @deprecated Use `z.core.$ZodErrorMap` instead. */
+  $ZodErrorMap as ZodErrorMap,
   /** @deprecated Use `z.core.$ZodFlattenedError` instead. */
   $ZodFlattenedError as ZodFlattenedError,
   /** @deprecated Use `z.core.$ZodFormattedError` instead. */
   $ZodFormattedError as ZodFormattedError,
-  /** @deprecated Use `z.core.$ZodErrorMap` instead. */
-  $ZodErrorMap as ZodErrorMap,
 } from "../core/index.js";
 
 /** @deprecated Use `z.core.$ZodRawIssue` instead. */

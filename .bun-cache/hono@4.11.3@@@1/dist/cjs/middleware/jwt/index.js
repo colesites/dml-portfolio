@@ -8,29 +8,34 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var jwt_exports = {};
 __export(jwt_exports, {
   decode: () => import_jwt.decode,
   jwt: () => import_jwt.jwt,
   sign: () => import_jwt.sign,
   verify: () => import_jwt.verify,
-  verifyWithJwks: () => import_jwt.verifyWithJwks
+  verifyWithJwks: () => import_jwt.verifyWithJwks,
 });
 module.exports = __toCommonJS(jwt_exports);
 var import_jwt = require("./jwt");
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  decode,
-  jwt,
-  sign,
-  verify,
-  verifyWithJwks
-});
+0 &&
+  (module.exports = {
+    decode,
+    jwt,
+    sign,
+    verify,
+    verifyWithJwks,
+  });

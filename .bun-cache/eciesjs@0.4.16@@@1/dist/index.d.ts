@@ -7,7 +7,10 @@
  * @param data - Data to encrypt.
  * @returns Encrypted payload, format: `public key || encrypted`.
  */
-export declare function encrypt(receiverRawPK: string | Uint8Array, data: Uint8Array): Buffer;
+export declare function encrypt(
+  receiverRawPK: string | Uint8Array,
+  data: Uint8Array,
+): Buffer;
 /**
  * Decrypts data with a receiver's private key.
  * @description From version 0.5.0, `Uint8Array` will be returned instead of `Buffer`.
@@ -17,16 +20,35 @@ export declare function encrypt(receiverRawPK: string | Uint8Array, data: Uint8A
  * @param data - Data to decrypt.
  * @returns Decrypted plain text.
  */
-export declare function decrypt(receiverRawSK: string | Uint8Array, data: Uint8Array): Buffer;
+export declare function decrypt(
+  receiverRawSK: string | Uint8Array,
+  data: Uint8Array,
+): Buffer;
 export { ECIES_CONFIG } from "./config";
 export { PrivateKey, PublicKey } from "./keys";
 /** @deprecated - use `import utils from "eciesjs/utils"` instead. */
 export declare const utils: {
-    aesEncrypt: (key: Uint8Array, plainText: Uint8Array, AAD?: Uint8Array) => Uint8Array;
-    aesDecrypt: (key: Uint8Array, cipherText: Uint8Array, AAD?: Uint8Array) => Uint8Array;
-    symEncrypt: (key: Uint8Array, plainText: Uint8Array, AAD?: Uint8Array) => Uint8Array;
-    symDecrypt: (key: Uint8Array, cipherText: Uint8Array, AAD?: Uint8Array) => Uint8Array;
-    decodeHex: (hex: string) => Uint8Array;
-    getValidSecret: (curve?: import("./config").EllipticCurve) => Uint8Array;
-    remove0x: (hex: string) => string;
+  aesEncrypt: (
+    key: Uint8Array,
+    plainText: Uint8Array,
+    AAD?: Uint8Array,
+  ) => Uint8Array;
+  aesDecrypt: (
+    key: Uint8Array,
+    cipherText: Uint8Array,
+    AAD?: Uint8Array,
+  ) => Uint8Array;
+  symEncrypt: (
+    key: Uint8Array,
+    plainText: Uint8Array,
+    AAD?: Uint8Array,
+  ) => Uint8Array;
+  symDecrypt: (
+    key: Uint8Array,
+    cipherText: Uint8Array,
+    AAD?: Uint8Array,
+  ) => Uint8Array;
+  decodeHex: (hex: string) => Uint8Array;
+  getValidSecret: (curve?: import("./config").EllipticCurve) => Uint8Array;
+  remove0x: (hex: string) => string;
 };

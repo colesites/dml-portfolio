@@ -14,14 +14,14 @@
       "$comment": "Non-empty fragments not allowed.",
       "pattern": "^[^#]*#?$"
     },
-    "$schema": {"$ref": "#/$defs/uriString"},
-    "$ref": {"$ref": "#/$defs/uriReferenceString"},
-    "$anchor": {"$ref": "#/$defs/anchorString"},
-    "$dynamicRef": {"$ref": "#/$defs/uriReferenceString"},
-    "$dynamicAnchor": {"$ref": "#/$defs/anchorString"},
+    "$schema": { "$ref": "#/$defs/uriString" },
+    "$ref": { "$ref": "#/$defs/uriReferenceString" },
+    "$anchor": { "$ref": "#/$defs/anchorString" },
+    "$dynamicRef": { "$ref": "#/$defs/uriReferenceString" },
+    "$dynamicAnchor": { "$ref": "#/$defs/anchorString" },
     "$vocabulary": {
       "type": "object",
-      "propertyNames": {"$ref": "#/$defs/uriString"},
+      "propertyNames": { "$ref": "#/$defs/uriString" },
       "additionalProperties": {
         "type": "boolean"
       }
@@ -31,7 +31,7 @@
     },
     "$defs": {
       "type": "object",
-      "additionalProperties": {"$dynamicRef": "#meta"}
+      "additionalProperties": { "$dynamicRef": "#meta" }
     }
   },
   "$defs": {

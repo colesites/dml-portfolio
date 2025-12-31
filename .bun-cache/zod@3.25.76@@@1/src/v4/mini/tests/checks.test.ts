@@ -136,7 +136,7 @@ test("abort early", () => {
   const schema = z.string().check(
     z.refine((val) => val.length > 1),
     z.refine((val) => val.length > 2, { abort: true }),
-    z.refine((val) => val.length > 3)
+    z.refine((val) => val.length > 3),
   );
   const data = "";
   const result = z.safeParse(schema, data);

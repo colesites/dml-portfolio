@@ -1,5 +1,5 @@
-const kCancelable = Symbol('kCancelable')
-const kDefaultPrevented = Symbol('kDefaultPrevented')
+const kCancelable = Symbol("kCancelable");
+const kDefaultPrevented = Symbol("kDefaultPrevented");
 
 /**
  * A `MessageEvent` superset that supports event cancellation
@@ -10,85 +10,85 @@ const kDefaultPrevented = Symbol('kDefaultPrevented')
  */
 export class CancelableMessageEvent<T = any> extends MessageEvent<T> {
   [kCancelable]: boolean;
-  [kDefaultPrevented]: boolean
+  [kDefaultPrevented]: boolean;
 
   constructor(type: string, init: MessageEventInit<T>) {
-    super(type, init)
-    this[kCancelable] = !!init.cancelable
-    this[kDefaultPrevented] = false
+    super(type, init);
+    this[kCancelable] = !!init.cancelable;
+    this[kDefaultPrevented] = false;
   }
 
   get cancelable() {
-    return this[kCancelable]
+    return this[kCancelable];
   }
 
   set cancelable(nextCancelable) {
-    this[kCancelable] = nextCancelable
+    this[kCancelable] = nextCancelable;
   }
 
   get defaultPrevented() {
-    return this[kDefaultPrevented]
+    return this[kDefaultPrevented];
   }
 
   set defaultPrevented(nextDefaultPrevented) {
-    this[kDefaultPrevented] = nextDefaultPrevented
+    this[kDefaultPrevented] = nextDefaultPrevented;
   }
 
   public preventDefault(): void {
     if (this.cancelable && !this[kDefaultPrevented]) {
-      this[kDefaultPrevented] = true
+      this[kDefaultPrevented] = true;
     }
   }
 }
 
 interface CloseEventInit extends EventInit {
-  code?: number
-  reason?: string
-  wasClean?: boolean
+  code?: number;
+  reason?: string;
+  wasClean?: boolean;
 }
 
 export class CloseEvent extends Event {
-  public code: number
-  public reason: string
-  public wasClean: boolean
+  public code: number;
+  public reason: string;
+  public wasClean: boolean;
 
   constructor(type: string, init: CloseEventInit = {}) {
-    super(type, init)
-    this.code = init.code === undefined ? 0 : init.code
-    this.reason = init.reason === undefined ? '' : init.reason
-    this.wasClean = init.wasClean === undefined ? false : init.wasClean
+    super(type, init);
+    this.code = init.code === undefined ? 0 : init.code;
+    this.reason = init.reason === undefined ? "" : init.reason;
+    this.wasClean = init.wasClean === undefined ? false : init.wasClean;
   }
 }
 
 export class CancelableCloseEvent extends CloseEvent {
   [kCancelable]: boolean;
-  [kDefaultPrevented]: boolean
+  [kDefaultPrevented]: boolean;
 
   constructor(type: string, init: CloseEventInit = {}) {
-    super(type, init)
-    this[kCancelable] = !!init.cancelable
-    this[kDefaultPrevented] = false
+    super(type, init);
+    this[kCancelable] = !!init.cancelable;
+    this[kDefaultPrevented] = false;
   }
 
   get cancelable() {
-    return this[kCancelable]
+    return this[kCancelable];
   }
 
   set cancelable(nextCancelable) {
-    this[kCancelable] = nextCancelable
+    this[kCancelable] = nextCancelable;
   }
 
   get defaultPrevented() {
-    return this[kDefaultPrevented]
+    return this[kDefaultPrevented];
   }
 
   set defaultPrevented(nextDefaultPrevented) {
-    this[kDefaultPrevented] = nextDefaultPrevented
+    this[kDefaultPrevented] = nextDefaultPrevented;
   }
 
   public preventDefault(): void {
     if (this.cancelable && !this[kDefaultPrevented]) {
-      this[kDefaultPrevented] = true
+      this[kDefaultPrevented] = true;
     }
   }
 }

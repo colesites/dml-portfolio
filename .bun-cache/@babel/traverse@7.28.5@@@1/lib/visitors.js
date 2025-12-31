@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.environmentVisitor = environmentVisitor;
 exports.explode = explode$1;
@@ -17,7 +17,7 @@ const {
   DEPRECATED_ALIASES,
   FLIPPED_ALIAS_KEYS,
   TYPES,
-  __internal__deprecationWarning: deprecationWarning
+  __internal__deprecationWarning: deprecationWarning,
 } = _t;
 function isVirtualType(type) {
   return type in virtualTypes;
@@ -54,7 +54,9 @@ function explode$1(visitor) {
     if (types !== null) {
       for (const type of types) {
         var _visitor$type;
-        (_visitor$type = visitor[type]) != null ? _visitor$type : visitor[type] = {};
+        (_visitor$type = visitor[type]) != null
+          ? _visitor$type
+          : (visitor[type] = {});
         mergePair(visitor[type], fns);
       }
     } else {
@@ -94,7 +96,10 @@ function explode$1(visitor) {
 function verify$1(visitor) {
   if (visitor._verified) return;
   if (typeof visitor === "function") {
-    throw new Error("You passed `traverse()` a function when it expected a visitor object, " + "are you sure you didn't mean `{ enter: Function }`?");
+    throw new Error(
+      "You passed `traverse()` a function when it expected a visitor object, " +
+        "are you sure you didn't mean `{ enter: Function }`?",
+    );
   }
   for (const nodeType of Object.keys(visitor)) {
     if (nodeType === "enter" || nodeType === "exit") {
@@ -102,15 +107,23 @@ function verify$1(visitor) {
     }
     if (shouldIgnoreKey(nodeType)) continue;
     if (!TYPES.includes(nodeType)) {
-      throw new Error(`You gave us a visitor for the node type ${nodeType} but it's not a valid type in @babel/traverse ${"7.28.5"}`);
+      throw new Error(
+        `You gave us a visitor for the node type ${nodeType} but it's not a valid type in @babel/traverse ${"7.28.5"}`,
+      );
     }
     const visitors = visitor[nodeType];
     if (typeof visitors === "object") {
       for (const visitorKey of Object.keys(visitors)) {
         if (visitorKey === "enter" || visitorKey === "exit") {
-          validateVisitorMethods(`${nodeType}.${visitorKey}`, visitors[visitorKey]);
+          validateVisitorMethods(
+            `${nodeType}.${visitorKey}`,
+            visitors[visitorKey],
+          );
         } else {
-          throw new Error("You passed `traverse()` a visitor object with the property " + `${nodeType} that has the invalid property ${visitorKey}`);
+          throw new Error(
+            "You passed `traverse()` a visitor object with the property " +
+              `${nodeType} that has the invalid property ${visitorKey}`,
+          );
         }
       }
     }
@@ -121,23 +134,23 @@ function validateVisitorMethods(path, val) {
   const fns = [].concat(val);
   for (const fn of fns) {
     if (typeof fn !== "function") {
-      throw new TypeError(`Non-function found defined in ${path} with type ${typeof fn}`);
+      throw new TypeError(
+        `Non-function found defined in ${path} with type ${typeof fn}`,
+      );
     }
   }
 }
 function merge(visitors, states = [], wrapper) {
   const mergedVisitor = {
     _verified: true,
-    _exploded: true
+    _exploded: true,
   };
-  {
-    Object.defineProperty(mergedVisitor, "_exploded", {
-      enumerable: false
-    });
-    Object.defineProperty(mergedVisitor, "_verified", {
-      enumerable: false
-    });
-  }
+  Object.defineProperty(mergedVisitor, "_exploded", {
+    enumerable: false,
+  });
+  Object.defineProperty(mergedVisitor, "_verified", {
+    enumerable: false,
+  });
   for (let i = 0; i < visitors.length; i++) {
     const visitor = explode$1(visitors[i]);
     const state = states[i];
@@ -163,10 +176,10 @@ function wrapWithStateOrWrapper(oldVisitor, state, wrapper) {
   for (const phase of ["enter", "exit"]) {
     let fns = oldVisitor[phase];
     if (!Array.isArray(fns)) continue;
-    fns = fns.map(function (fn) {
+    fns = fns.map((fn) => {
       let newFn = fn;
       if (state) {
-        newFn = function (path) {
+        newFn = (path) => {
           fn.call(state, path, state);
         };
       }
@@ -188,7 +201,7 @@ function ensureEntranceObjects(obj) {
     const fns = obj[key];
     if (typeof fns === "function") {
       obj[key] = {
-        enter: fns
+        enter: fns,
       };
     }
   }
@@ -214,10 +227,8 @@ function shouldIgnoreKey(key) {
   if (key === "denylist" || key === "noScope" || key === "skipKeys") {
     return true;
   }
-  {
-    if (key === "blacklist") {
-      return true;
-    }
+  if (key === "blacklist") {
+    return true;
   }
   return false;
 }
@@ -247,7 +258,7 @@ const _environmentVisitor = {
     } else {
       path.requeueComputedKeyAndDecorators();
     }
-  }
+  },
 };
 function environmentVisitor(visitor) {
   return merge([_environmentVisitor, visitor]);

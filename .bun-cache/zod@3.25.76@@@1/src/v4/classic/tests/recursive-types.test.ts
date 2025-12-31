@@ -144,8 +144,12 @@ test("pick and omit with getter", () => {
   PickedCategory.parse(picked);
   OmittedCategory.parse(omitted);
 
-  expect(() => PickedCategory.parse({ name: "test", subcategories: [] })).toThrow();
-  expect(() => OmittedCategory.parse({ name: "test", subcategories: [] })).toThrow();
+  expect(() =>
+    PickedCategory.parse({ name: "test", subcategories: [] }),
+  ).toThrow();
+  expect(() =>
+    OmittedCategory.parse({ name: "test", subcategories: [] }),
+  ).toThrow();
 });
 
 test("deferred self-recursion", () => {

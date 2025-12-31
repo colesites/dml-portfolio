@@ -8,25 +8,32 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var validator_exports = {};
 __export(validator_exports, {
-  validator: () => validator
+  validator: () => validator,
 });
 module.exports = __toCommonJS(validator_exports);
 var import_cookie = require("../helper/cookie");
 var import_http_exception = require("../http-exception");
 var import_buffer = require("../utils/buffer");
-const jsonRegex = /^application\/([a-z-\.]+\+)?json(;\s*[a-zA-Z0-9\-]+\=([^;]+))*$/;
-const multipartRegex = /^multipart\/form-data(;\s?boundary=[a-zA-Z0-9'"()+_,\-./:=?]+)?$/;
-const urlencodedRegex = /^application\/x-www-form-urlencoded(;\s*[a-zA-Z0-9\-]+\=([^;]+))*$/;
+const jsonRegex =
+  /^application\/([a-z-.]+\+)?json(;\s*[a-zA-Z0-9-]+=([^;]+))*$/;
+const multipartRegex =
+  /^multipart\/form-data(;\s?boundary=[a-zA-Z0-9'"()+_,\-./:=?]+)?$/;
+const urlencodedRegex =
+  /^application\/x-www-form-urlencoded(;\s*[a-zA-Z0-9-]+=([^;]+))*$/;
 const validator = (target, validationFunc) => {
   return async (c, next) => {
     let value = {};
@@ -44,7 +51,13 @@ const validator = (target, validationFunc) => {
         }
         break;
       case "form": {
-        if (!contentType || !(multipartRegex.test(contentType) || urlencodedRegex.test(contentType))) {
+        if (
+          !contentType ||
+          !(
+            multipartRegex.test(contentType) ||
+            urlencodedRegex.test(contentType)
+          )
+        ) {
           break;
         }
         let formData;
@@ -53,7 +66,10 @@ const validator = (target, validationFunc) => {
         } else {
           try {
             const arrayBuffer = await c.req.arrayBuffer();
-            formData = await (0, import_buffer.bufferToFormData)(arrayBuffer, contentType);
+            formData = await (0, import_buffer.bufferToFormData)(
+              arrayBuffer,
+              contentType,
+            );
             c.req.bodyCache.formData = formData;
           } catch (e) {
             let message = "Malformed FormData request.";
@@ -64,10 +80,8 @@ const validator = (target, validationFunc) => {
         const form = {};
         formData.forEach((value2, key) => {
           if (key.endsWith("[]")) {
-            ;
             (form[key] ??= []).push(value2);
           } else if (Array.isArray(form[key])) {
-            ;
             form[key].push(value2);
           } else if (key in form) {
             form[key] = [form[key], value2];
@@ -82,7 +96,7 @@ const validator = (target, validationFunc) => {
         value = Object.fromEntries(
           Object.entries(c.req.queries()).map(([k, v]) => {
             return v.length === 1 ? [k, v[0]] : [k, v];
-          })
+          }),
         );
         break;
       case "param":
@@ -104,6 +118,7 @@ const validator = (target, validationFunc) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  validator
-});
+0 &&
+  (module.exports = {
+    validator,
+  });

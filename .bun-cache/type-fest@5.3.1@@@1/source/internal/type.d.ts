@@ -1,8 +1,8 @@
-import type {If} from '../if.d.ts';
-import type {IsAny} from '../is-any.d.ts';
-import type {IsNever} from '../is-never.d.ts';
-import type {Primitive} from '../primitive.d.ts';
-import type {UnknownArray} from '../unknown-array.d.ts';
+import type { If } from "../if.d.ts";
+import type { IsAny } from "../is-any.d.ts";
+import type { IsNever } from "../is-never.d.ts";
+import type { Primitive } from "../primitive.d.ts";
+import type { UnknownArray } from "../unknown-array.d.ts";
 
 /**
 Matches any primitive, `void`, `Date`, or `RegExp` value.
@@ -12,21 +12,33 @@ export type BuiltIns = Primitive | void | Date | RegExp;
 /**
 Matches non-recursive types.
 */
-export type NonRecursiveType = BuiltIns | Function | (new (...arguments_: any[]) => unknown) | Promise<unknown>;
+export type NonRecursiveType =
+  | BuiltIns
+  | Function
+  | (new (
+      ...arguments_: any[]
+    ) => unknown)
+  | Promise<unknown>;
 
 /**
 Matches maps, sets, or arrays.
 */
-export type MapsSetsOrArrays = ReadonlyMap<unknown, unknown> | WeakMap<WeakKey, unknown> | ReadonlySet<unknown> | WeakSet<WeakKey> | UnknownArray;
+export type MapsSetsOrArrays =
+  | ReadonlyMap<unknown, unknown>
+  | WeakMap<WeakKey, unknown>
+  | ReadonlySet<unknown>
+  | WeakSet<WeakKey>
+  | UnknownArray;
 
 /**
 Returns a boolean for whether the two given types extends the base type.
 */
-export type IsBothExtends<BaseType, FirstType, SecondType> = FirstType extends BaseType
-	? SecondType extends BaseType
-		? true
-		: false
-	: false;
+export type IsBothExtends<BaseType, FirstType, SecondType> =
+  FirstType extends BaseType
+    ? SecondType extends BaseType
+      ? true
+      : false
+    : false;
 
 /**
 Test if the given function has multiple call signatures.
@@ -36,14 +48,18 @@ Needed to handle the case of a single call signature with properties.
 Multiple call signatures cannot currently be supported due to a TypeScript limitation.
 @see https://github.com/microsoft/TypeScript/issues/29732
 */
-export type HasMultipleCallSignatures<T extends (...arguments_: any[]) => unknown> =
-	T extends {(...arguments_: infer A): unknown; (...arguments_: infer B): unknown}
-		? B extends A
-			? A extends B
-				? false
-				: true
-			: true
-		: false;
+export type HasMultipleCallSignatures<
+  T extends (...arguments_: any[]) => unknown,
+> = T extends {
+  (...arguments_: infer A): unknown;
+  (...arguments_: infer B): unknown;
+}
+  ? B extends A
+    ? A extends B
+      ? false
+      : true
+    : true
+  : false;
 
 /**
 Returns a boolean for whether the given `boolean` is not `false`.
@@ -80,10 +96,10 @@ type B = Not<false>;
 ```
 */
 export type Not<A extends boolean> = A extends true
-	? false
-	: A extends false
-		? true
-		: never;
+  ? false
+  : A extends false
+    ? true
+    : never;
 
 /**
 An if-else-like type that resolves depending on whether the given type is `any` or `never`.
@@ -129,8 +145,12 @@ type T2 = TrimLeftOptimised<NineHundredNinetyNineSpaces>;
 //=> ''
 ```
 */
-export type IfNotAnyOrNever<T, IfNotAnyOrNever, IfAny = any, IfNever = never> =
-	If<IsAny<T>, IfAny, If<IsNever<T>, IfNever, IfNotAnyOrNever>>;
+export type IfNotAnyOrNever<
+  T,
+  IfNotAnyOrNever,
+  IfAny = any,
+  IfNever = never,
+> = If<IsAny<T>, IfAny, If<IsNever<T>, IfNever, IfNotAnyOrNever>>;
 
 /**
 Returns a boolean for whether the given type is `any` or `never`.
@@ -157,8 +177,8 @@ export type IsAnyOrNever<T> = IsNotFalse<IsAny<T> | IsNever<T>>;
 /**
 Indicates the value of `exactOptionalPropertyTypes` compiler option.
 */
-export type IsExactOptionalPropertyTypesEnabled = [(string | undefined)?] extends [string?]
-	? false
-	: true;
-
-export {};
+export type IsExactOptionalPropertyTypesEnabled = [
+  (string | undefined)?,
+] extends [string?]
+  ? false
+  : true;

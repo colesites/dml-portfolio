@@ -1,13 +1,16 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.isIterableIterator = isIterableIterator;
 exports.mergeOptions = mergeOptions;
 function mergeOptions(target, source) {
   for (const k of Object.keys(source)) {
-    if ((k === "parserOpts" || k === "generatorOpts" || k === "assumptions") && source[k]) {
+    if (
+      (k === "parserOpts" || k === "generatorOpts" || k === "assumptions") &&
+      source[k]
+    ) {
       const parserOpts = source[k];
       const targetObj = target[k] || (target[k] = {});
       mergeDefaultFields(targetObj, parserOpts);
@@ -24,7 +27,11 @@ function mergeDefaultFields(target, source) {
   }
 }
 function isIterableIterator(value) {
-  return !!value && typeof value.next === "function" && typeof value[Symbol.iterator] === "function";
+  return (
+    !!value &&
+    typeof value.next === "function" &&
+    typeof value[Symbol.iterator] === "function"
+  );
 }
 0 && 0;
 

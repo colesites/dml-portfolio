@@ -1,5 +1,5 @@
-import type {ApplyDefaultOptions} from './internal/index.d.ts';
-import type {IsEqual} from './is-equal.d.ts';
+import type { ApplyDefaultOptions } from "./internal/index.d.ts";
+import type { IsEqual } from "./is-equal.d.ts";
 
 /**
 Filter out keys from an object.
@@ -28,21 +28,25 @@ type Filtered = Filter<'bar', 'foo'>;
 
 @see {Except}
 */
-type Filter<KeyType, ExcludeType> = IsEqual<KeyType, ExcludeType> extends true ? never : (KeyType extends ExcludeType ? never : KeyType);
+type Filter<KeyType, ExcludeType> = IsEqual<KeyType, ExcludeType> extends true
+  ? never
+  : KeyType extends ExcludeType
+    ? never
+    : KeyType;
 
 export type ExceptOptions = {
-	/**
+  /**
 	Disallow assigning non-specified properties.
 
 	Note that any omitted properties in the resulting type will be present in autocomplete as `undefined`.
 
 	@default false
 	*/
-	requireExactProps?: boolean;
+  requireExactProps?: boolean;
 };
 
 type DefaultExceptOptions = {
-	requireExactProps: false;
+  requireExactProps: false;
 };
 
 /**
@@ -100,13 +104,25 @@ type PostPayloadFixed = Except<UserData, 'email'>;
 
 @category Object
 */
-export type Except<ObjectType, KeysType extends keyof ObjectType, Options extends ExceptOptions = {}> =
-	_Except<ObjectType, KeysType, ApplyDefaultOptions<ExceptOptions, DefaultExceptOptions, Options>>;
+export type Except<
+  ObjectType,
+  KeysType extends keyof ObjectType,
+  Options extends ExceptOptions = {},
+> = _Except<
+  ObjectType,
+  KeysType,
+  ApplyDefaultOptions<ExceptOptions, DefaultExceptOptions, Options>
+>;
 
-type _Except<ObjectType, KeysType extends keyof ObjectType, Options extends Required<ExceptOptions>> = {
-	[KeyType in keyof ObjectType as Filter<KeyType, KeysType>]: ObjectType[KeyType];
-} & (Options['requireExactProps'] extends true
-	? Partial<Record<KeysType, never>>
-	: {});
-
-export {};
+type _Except<
+  ObjectType,
+  KeysType extends keyof ObjectType,
+  Options extends Required<ExceptOptions>,
+> = {
+  [KeyType in keyof ObjectType as Filter<
+    KeyType,
+    KeysType
+  >]: ObjectType[KeyType];
+} & (Options["requireExactProps"] extends true
+  ? Partial<Record<KeysType, never>>
+  : {});

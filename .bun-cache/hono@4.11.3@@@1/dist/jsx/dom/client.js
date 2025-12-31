@@ -1,11 +1,11 @@
 // src/jsx/dom/client.ts
 import { useState } from "../hooks/index.js";
 import { buildNode, renderNode } from "./render.js";
+
 var createRoot = (element, options = {}) => {
-  let setJsxNode = (
+  let setJsxNode =
     // unmounted
-    void 0
-  );
+    void 0;
   if (Object.keys(options).length > 0) {
     console.warn("createRoot options are not supported yet");
   }
@@ -24,17 +24,17 @@ var createRoot = (element, options = {}) => {
               setJsxNode = _setJsxNode;
               return _jsxNode;
             },
-            props: {}
+            props: {},
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           }),
-          element
+          element,
         );
       }
     },
     unmount() {
       setJsxNode?.(null);
       setJsxNode = null;
-    }
+    },
   };
 };
 var hydrateRoot = (element, reactNode, options = {}) => {
@@ -44,10 +44,6 @@ var hydrateRoot = (element, reactNode, options = {}) => {
 };
 var client_default = {
   createRoot,
-  hydrateRoot
+  hydrateRoot,
 };
-export {
-  createRoot,
-  client_default as default,
-  hydrateRoot
-};
+export { createRoot, client_default as default, hydrateRoot };

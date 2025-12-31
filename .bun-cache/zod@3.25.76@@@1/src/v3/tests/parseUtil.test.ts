@@ -1,7 +1,12 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { expect, test } from "vitest";
 
-import { type SyncParseReturnType, isAborted, isDirty, isValid } from "../helpers/parseUtil.js";
+import {
+  isAborted,
+  isDirty,
+  isValid,
+  type SyncParseReturnType,
+} from "../helpers/parseUtil.js";
 
 test("parseUtil isInvalid should use structural typing", () => {
   // Test for issue #556: https://github.com/colinhacks/zod/issues/556

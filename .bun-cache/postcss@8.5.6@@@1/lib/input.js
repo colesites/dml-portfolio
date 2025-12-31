@@ -1,59 +1,57 @@
-'use strict'
+const { nanoid } = require("nanoid/non-secure");
+const { isAbsolute, resolve } = require("path");
+const { SourceMapConsumer, SourceMapGenerator } = require("source-map-js");
+const { fileURLToPath, pathToFileURL } = require("url");
 
-let { nanoid } = require('nanoid/non-secure')
-let { isAbsolute, resolve } = require('path')
-let { SourceMapConsumer, SourceMapGenerator } = require('source-map-js')
-let { fileURLToPath, pathToFileURL } = require('url')
+const CssSyntaxError = require("./css-syntax-error");
+const PreviousMap = require("./previous-map");
+const terminalHighlight = require("./terminal-highlight");
 
-let CssSyntaxError = require('./css-syntax-error')
-let PreviousMap = require('./previous-map')
-let terminalHighlight = require('./terminal-highlight')
+const lineToIndexCache = Symbol("lineToIndexCache");
 
-let lineToIndexCache = Symbol('lineToIndexCache')
-
-let sourceMapAvailable = Boolean(SourceMapConsumer && SourceMapGenerator)
-let pathAvailable = Boolean(resolve && isAbsolute)
+const sourceMapAvailable = Boolean(SourceMapConsumer && SourceMapGenerator);
+const pathAvailable = Boolean(resolve && isAbsolute);
 
 function getLineToIndex(input) {
-  if (input[lineToIndexCache]) return input[lineToIndexCache]
-  let lines = input.css.split('\n')
-  let lineToIndex = new Array(lines.length)
-  let prevIndex = 0
+  if (input[lineToIndexCache]) return input[lineToIndexCache];
+  const lines = input.css.split("\n");
+  const lineToIndex = new Array(lines.length);
+  let prevIndex = 0;
 
   for (let i = 0, l = lines.length; i < l; i++) {
-    lineToIndex[i] = prevIndex
-    prevIndex += lines[i].length + 1
+    lineToIndex[i] = prevIndex;
+    prevIndex += lines[i].length + 1;
   }
 
-  input[lineToIndexCache] = lineToIndex
-  return lineToIndex
+  input[lineToIndexCache] = lineToIndex;
+  return lineToIndex;
 }
 
 class Input {
   get from() {
-    return this.file || this.id
+    return this.file || this.id;
   }
 
   constructor(css, opts = {}) {
     if (
       css === null ||
-      typeof css === 'undefined' ||
-      (typeof css === 'object' && !css.toString)
+      typeof css === "undefined" ||
+      (typeof css === "object" && !css.toString)
     ) {
-      throw new Error(`PostCSS received ${css} instead of CSS string`)
+      throw new Error(`PostCSS received ${css} instead of CSS string`);
     }
 
-    this.css = css.toString()
+    this.css = css.toString();
 
-    if (this.css[0] === '\uFEFF' || this.css[0] === '\uFFFE') {
-      this.hasBOM = true
-      this.css = this.css.slice(1)
+    if (this.css[0] === "\uFEFF" || this.css[0] === "\uFFFE") {
+      this.hasBOM = true;
+      this.css = this.css.slice(1);
     } else {
-      this.hasBOM = false
+      this.hasBOM = false;
     }
 
-    this.document = this.css
-    if (opts.document) this.document = opts.document.toString()
+    this.document = this.css;
+    if (opts.document) this.document = opts.document.toString();
 
     if (opts.from) {
       if (
@@ -61,63 +59,63 @@ class Input {
         /^\w+:\/\//.test(opts.from) ||
         isAbsolute(opts.from)
       ) {
-        this.file = opts.from
+        this.file = opts.from;
       } else {
-        this.file = resolve(opts.from)
+        this.file = resolve(opts.from);
       }
     }
 
     if (pathAvailable && sourceMapAvailable) {
-      let map = new PreviousMap(this.css, opts)
+      const map = new PreviousMap(this.css, opts);
       if (map.text) {
-        this.map = map
-        let file = map.consumer().file
-        if (!this.file && file) this.file = this.mapResolve(file)
+        this.map = map;
+        const file = map.consumer().file;
+        if (!this.file && file) this.file = this.mapResolve(file);
       }
     }
 
     if (!this.file) {
-      this.id = '<input css ' + nanoid(6) + '>'
+      this.id = "<input css " + nanoid(6) + ">";
     }
-    if (this.map) this.map.file = this.from
+    if (this.map) this.map.file = this.from;
   }
 
   error(message, line, column, opts = {}) {
-    let endColumn, endLine, endOffset, offset, result
+    let endColumn, endLine, endOffset, offset, result;
 
-    if (line && typeof line === 'object') {
-      let start = line
-      let end = column
-      if (typeof start.offset === 'number') {
-        offset = start.offset
-        let pos = this.fromOffset(offset)
-        line = pos.line
-        column = pos.col
+    if (line && typeof line === "object") {
+      const start = line;
+      const end = column;
+      if (typeof start.offset === "number") {
+        offset = start.offset;
+        const pos = this.fromOffset(offset);
+        line = pos.line;
+        column = pos.col;
       } else {
-        line = start.line
-        column = start.column
-        offset = this.fromLineAndColumn(line, column)
+        line = start.line;
+        column = start.column;
+        offset = this.fromLineAndColumn(line, column);
       }
-      if (typeof end.offset === 'number') {
-        endOffset = end.offset
-        let pos = this.fromOffset(endOffset)
-        endLine = pos.line
-        endColumn = pos.col
+      if (typeof end.offset === "number") {
+        endOffset = end.offset;
+        const pos = this.fromOffset(endOffset);
+        endLine = pos.line;
+        endColumn = pos.col;
       } else {
-        endLine = end.line
-        endColumn = end.column
-        endOffset = this.fromLineAndColumn(end.line, end.column)
+        endLine = end.line;
+        endColumn = end.column;
+        endOffset = this.fromLineAndColumn(end.line, end.column);
       }
     } else if (!column) {
-      offset = line
-      let pos = this.fromOffset(offset)
-      line = pos.line
-      column = pos.col
+      offset = line;
+      const pos = this.fromOffset(offset);
+      line = pos.line;
+      column = pos.col;
     } else {
-      offset = this.fromLineAndColumn(line, column)
+      offset = this.fromLineAndColumn(line, column);
     }
 
-    let origin = this.origin(line, column, endLine, endColumn)
+    const origin = this.origin(line, column, endLine, endColumn);
     if (origin) {
       result = new CssSyntaxError(
         message,
@@ -129,8 +127,8 @@ class Input {
           : { column: origin.endColumn, line: origin.endLine },
         origin.source,
         origin.file,
-        opts.plugin
-      )
+        opts.plugin,
+      );
     } else {
       result = new CssSyntaxError(
         message,
@@ -138,128 +136,141 @@ class Input {
         endLine === undefined ? column : { column: endColumn, line: endLine },
         this.css,
         this.file,
-        opts.plugin
-      )
+        opts.plugin,
+      );
     }
 
-    result.input = { column, endColumn, endLine, endOffset, line, offset, source: this.css }
+    result.input = {
+      column,
+      endColumn,
+      endLine,
+      endOffset,
+      line,
+      offset,
+      source: this.css,
+    };
     if (this.file) {
       if (pathToFileURL) {
-        result.input.url = pathToFileURL(this.file).toString()
+        result.input.url = pathToFileURL(this.file).toString();
       }
-      result.input.file = this.file
+      result.input.file = this.file;
     }
 
-    return result
+    return result;
   }
 
   fromLineAndColumn(line, column) {
-    let lineToIndex = getLineToIndex(this)
-    let index = lineToIndex[line - 1]
-    return index + column - 1
+    const lineToIndex = getLineToIndex(this);
+    const index = lineToIndex[line - 1];
+    return index + column - 1;
   }
 
   fromOffset(offset) {
-    let lineToIndex = getLineToIndex(this)
-    let lastLine = lineToIndex[lineToIndex.length - 1]
+    const lineToIndex = getLineToIndex(this);
+    const lastLine = lineToIndex[lineToIndex.length - 1];
 
-    let min = 0
+    let min = 0;
     if (offset >= lastLine) {
-      min = lineToIndex.length - 1
+      min = lineToIndex.length - 1;
     } else {
-      let max = lineToIndex.length - 2
-      let mid
+      let max = lineToIndex.length - 2;
+      let mid;
       while (min < max) {
-        mid = min + ((max - min) >> 1)
+        mid = min + ((max - min) >> 1);
         if (offset < lineToIndex[mid]) {
-          max = mid - 1
+          max = mid - 1;
         } else if (offset >= lineToIndex[mid + 1]) {
-          min = mid + 1
+          min = mid + 1;
         } else {
-          min = mid
-          break
+          min = mid;
+          break;
         }
       }
     }
     return {
       col: offset - lineToIndex[min] + 1,
-      line: min + 1
-    }
+      line: min + 1,
+    };
   }
 
   mapResolve(file) {
     if (/^\w+:\/\//.test(file)) {
-      return file
+      return file;
     }
-    return resolve(this.map.consumer().sourceRoot || this.map.root || '.', file)
+    return resolve(
+      this.map.consumer().sourceRoot || this.map.root || ".",
+      file,
+    );
   }
 
   origin(line, column, endLine, endColumn) {
-    if (!this.map) return false
-    let consumer = this.map.consumer()
+    if (!this.map) return false;
+    const consumer = this.map.consumer();
 
-    let from = consumer.originalPositionFor({ column, line })
-    if (!from.source) return false
+    const from = consumer.originalPositionFor({ column, line });
+    if (!from.source) return false;
 
-    let to
-    if (typeof endLine === 'number') {
-      to = consumer.originalPositionFor({ column: endColumn, line: endLine })
+    let to;
+    if (typeof endLine === "number") {
+      to = consumer.originalPositionFor({ column: endColumn, line: endLine });
     }
 
-    let fromUrl
+    let fromUrl;
 
     if (isAbsolute(from.source)) {
-      fromUrl = pathToFileURL(from.source)
+      fromUrl = pathToFileURL(from.source);
     } else {
       fromUrl = new URL(
         from.source,
-        this.map.consumer().sourceRoot || pathToFileURL(this.map.mapFile)
-      )
+        this.map.consumer().sourceRoot || pathToFileURL(this.map.mapFile),
+      );
     }
 
-    let result = {
+    const result = {
       column: from.column,
       endColumn: to && to.column,
       endLine: to && to.line,
       line: from.line,
-      url: fromUrl.toString()
-    }
+      url: fromUrl.toString(),
+    };
 
-    if (fromUrl.protocol === 'file:') {
+    if (fromUrl.protocol === "file:") {
       if (fileURLToPath) {
-        result.file = fileURLToPath(fromUrl)
+        result.file = fileURLToPath(fromUrl);
       } else {
         /* c8 ignore next 2 */
-        throw new Error(`file: protocol is not available in this PostCSS build`)
+        throw new Error(
+          `file: protocol is not available in this PostCSS build`,
+        );
       }
     }
 
-    let source = consumer.sourceContentFor(from.source)
-    if (source) result.source = source
+    const source = consumer.sourceContentFor(from.source);
+    if (source) result.source = source;
 
-    return result
+    return result;
   }
 
   toJSON() {
-    let json = {}
-    for (let name of ['hasBOM', 'css', 'file', 'id']) {
+    const json = {};
+    for (const name of ["hasBOM", "css", "file", "id"]) {
       if (this[name] != null) {
-        json[name] = this[name]
+        json[name] = this[name];
       }
     }
     if (this.map) {
-      json.map = { ...this.map }
+      json.map = { ...this.map };
       if (json.map.consumerCache) {
-        json.map.consumerCache = undefined
+        json.map.consumerCache = undefined;
       }
     }
-    return json
+    return json;
   }
 }
 
-module.exports = Input
-Input.default = Input
+module.exports = Input;
+Input.default = Input;
 
 if (terminalHighlight && terminalHighlight.registerInput) {
-  terminalHighlight.registerInput(Input)
+  terminalHighlight.registerInput(Input);
 }

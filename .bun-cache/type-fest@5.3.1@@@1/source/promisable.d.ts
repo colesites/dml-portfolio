@@ -23,5 +23,3 @@ await logger(() => Promise.resolve('bar'));
 @category Async
 */
 export type Promisable<T> = T | PromiseLike<T>;
-
-export {};

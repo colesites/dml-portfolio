@@ -1,20 +1,22 @@
-import type {ErrorNoParams, Vocabulary} from "../../types"
-import additionalItems, {AdditionalItemsError} from "./additionalItems"
-import prefixItems from "./prefixItems"
-import items from "./items"
-import items2020, {ItemsError} from "./items2020"
-import contains, {ContainsError} from "./contains"
-import dependencies, {DependenciesError} from "./dependencies"
-import propertyNames, {PropertyNamesError} from "./propertyNames"
-import additionalProperties, {AdditionalPropertiesError} from "./additionalProperties"
-import properties from "./properties"
-import patternProperties from "./patternProperties"
-import notKeyword, {NotKeywordError} from "./not"
-import anyOf, {AnyOfError} from "./anyOf"
-import oneOf, {OneOfError} from "./oneOf"
-import allOf from "./allOf"
-import ifKeyword, {IfKeywordError} from "./if"
-import thenElse from "./thenElse"
+import type { ErrorNoParams, Vocabulary } from "../../types";
+import additionalItems, { type AdditionalItemsError } from "./additionalItems";
+import additionalProperties, {
+  type AdditionalPropertiesError,
+} from "./additionalProperties";
+import allOf from "./allOf";
+import anyOf, { type AnyOfError } from "./anyOf";
+import contains, { type ContainsError } from "./contains";
+import dependencies, { type DependenciesError } from "./dependencies";
+import ifKeyword, { type IfKeywordError } from "./if";
+import items from "./items";
+import items2020, { type ItemsError } from "./items2020";
+import notKeyword, { type NotKeywordError } from "./not";
+import oneOf, { type OneOfError } from "./oneOf";
+import patternProperties from "./patternProperties";
+import prefixItems from "./prefixItems";
+import properties from "./properties";
+import propertyNames, { type PropertyNamesError } from "./propertyNames";
+import thenElse from "./thenElse";
 
 export default function getApplicator(draft2020 = false): Vocabulary {
   const applicator = [
@@ -31,12 +33,12 @@ export default function getApplicator(draft2020 = false): Vocabulary {
     dependencies,
     properties,
     patternProperties,
-  ]
+  ];
   // array
-  if (draft2020) applicator.push(prefixItems, items2020)
-  else applicator.push(additionalItems, items)
-  applicator.push(contains)
-  return applicator
+  if (draft2020) applicator.push(prefixItems, items2020);
+  else applicator.push(additionalItems, items);
+  applicator.push(contains);
+  return applicator;
 }
 
 export type ApplicatorKeywordError =
@@ -50,4 +52,4 @@ export type ApplicatorKeywordError =
   | AnyOfError
   | OneOfError
   | NotKeywordError
-  | PropertyNamesError
+  | PropertyNamesError;

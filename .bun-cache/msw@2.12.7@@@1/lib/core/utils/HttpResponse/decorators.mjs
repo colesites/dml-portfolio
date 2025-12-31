@@ -1,5 +1,6 @@
-import statuses from '../../../shims/statuses.mjs';
 import { Headers as HeadersPolyfill } from "headers-polyfill";
+import statuses from "../../../shims/statuses.mjs";
+
 const { message } = statuses;
 const kSetCookie = Symbol("kSetCookie");
 function normalizeResponseInit(init = {}) {
@@ -10,7 +11,7 @@ function normalizeResponseInit(init = {}) {
     ...init,
     headers,
     status,
-    statusText
+    statusText,
   };
 }
 function decorateResponse(response, init) {
@@ -18,7 +19,7 @@ function decorateResponse(response, init) {
     Object.defineProperty(response, "type", {
       value: init.type,
       enumerable: true,
-      writable: false
+      writable: false,
     });
   }
   const responseCookies = init.headers.get("set-cookie");
@@ -26,11 +27,11 @@ function decorateResponse(response, init) {
     Object.defineProperty(response, kSetCookie, {
       value: responseCookies,
       enumerable: false,
-      writable: false
+      writable: false,
     });
     if (typeof document !== "undefined") {
       const responseCookiePairs = HeadersPolyfill.prototype.getSetCookie.call(
-        init.headers
+        init.headers,
       );
       for (const cookieString of responseCookiePairs) {
         document.cookie = cookieString;
@@ -39,9 +40,5 @@ function decorateResponse(response, init) {
   }
   return response;
 }
-export {
-  decorateResponse,
-  kSetCookie,
-  normalizeResponseInit
-};
+export { decorateResponse, kSetCookie, normalizeResponseInit };
 //# sourceMappingURL=decorators.mjs.map

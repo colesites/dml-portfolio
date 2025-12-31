@@ -1,16 +1,16 @@
-import { inspect } from '../jsutils/inspect.mjs';
-import { invariant } from '../jsutils/invariant.mjs';
-import { isIterableObject } from '../jsutils/isIterableObject.mjs';
-import { isObjectLike } from '../jsutils/isObjectLike.mjs';
-import { Kind } from '../language/kinds.mjs';
+import { inspect } from "../jsutils/inspect.mjs";
+import { invariant } from "../jsutils/invariant.mjs";
+import { isIterableObject } from "../jsutils/isIterableObject.mjs";
+import { isObjectLike } from "../jsutils/isObjectLike.mjs";
+import { Kind } from "../language/kinds.mjs";
 import {
   isEnumType,
   isInputObjectType,
   isLeafType,
   isListType,
   isNonNullType,
-} from '../type/definition.mjs';
-import { GraphQLID } from '../type/scalars.mjs';
+} from "../type/definition.mjs";
+import { GraphQLID } from "../type/scalars.mjs";
 /**
  * Produces a GraphQL Value AST given a JavaScript object.
  * Function will match JavaScript/JSON values to GraphQL AST schema format
@@ -119,14 +119,14 @@ export function astFromValue(value, type) {
       return null;
     } // Others serialize based on their corresponding JavaScript scalar types.
 
-    if (typeof serialized === 'boolean') {
+    if (typeof serialized === "boolean") {
       return {
         kind: Kind.BOOLEAN,
         value: serialized,
       };
     } // JavaScript numbers can be Int or Float values.
 
-    if (typeof serialized === 'number' && Number.isFinite(serialized)) {
+    if (typeof serialized === "number" && Number.isFinite(serialized)) {
       const stringNum = String(serialized);
       return integerStringRegExp.test(stringNum)
         ? {
@@ -139,7 +139,7 @@ export function astFromValue(value, type) {
           };
     }
 
-    if (typeof serialized === 'string') {
+    if (typeof serialized === "string") {
       // Enum types use Enum literals.
       if (isEnumType(type)) {
         return {
@@ -166,7 +166,7 @@ export function astFromValue(value, type) {
   /* c8 ignore next 3 */
   // Not reachable, all possible types have been considered.
 
-  false || invariant(false, 'Unexpected input type: ' + inspect(type));
+  false || invariant(false, "Unexpected input type: " + inspect(type));
 }
 /**
  * IntValue:

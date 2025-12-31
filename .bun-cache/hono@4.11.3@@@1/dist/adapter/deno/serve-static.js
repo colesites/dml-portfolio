@@ -1,6 +1,7 @@
 // src/adapter/deno/serve-static.ts
 import { join } from "node:path";
 import { serveStatic as baseServeStatic } from "../../middleware/serve-static/index.js";
+
 var { open, lstatSync, errors } = Deno;
 var serveStatic = (options) => {
   return async function serveStatic2(c, next) {
@@ -23,18 +24,15 @@ var serveStatic = (options) => {
       try {
         const stat = lstatSync(path);
         isDir2 = stat.isDirectory;
-      } catch {
-      }
+      } catch {}
       return isDir2;
     };
     return baseServeStatic({
       ...options,
       getContent,
       join,
-      isDir
+      isDir,
     })(c, next);
   };
 };
-export {
-  serveStatic
-};
+export { serveStatic };

@@ -3,4 +3,6 @@
  * @param iterable
  * @returns a readable stream
  */
-export declare function fromAnyIterable<R>(iterable: Iterable<R> | AsyncIterable<R>): ReadableStream<R>;
+export declare function fromAnyIterable<R>(
+  iterable: Iterable<R> | AsyncIterable<R>,
+): ReadableStream<R>;

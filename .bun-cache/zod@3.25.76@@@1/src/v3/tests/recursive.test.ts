@@ -1,4 +1,4 @@
-// @ts-ignore TS6133
+// @ts-expect-error TS6133
 import { test } from "vitest";
 
 import { z } from "zod/v3";
@@ -41,7 +41,7 @@ test("recursion with z.lazy", () => {
     z.object({
       name: z.string(),
       subcategories: z.array(Category),
-    })
+    }),
   );
   Category.parse(testCategory);
 });
@@ -74,7 +74,7 @@ test("recursion involving union type", () => {
         value: z.number(),
         next: LinkedListSchema,
       }),
-    ])
+    ]),
   );
   LinkedListSchema.parse(linkedListExample);
 });

@@ -3,15 +3,14 @@
  * Handles Headers objects, arrays of tuples, and plain objects.
  */
 export function normalizeHeaders(headers) {
-    if (!headers)
-        return {};
-    if (headers instanceof Headers) {
-        return Object.fromEntries(headers.entries());
-    }
-    if (Array.isArray(headers)) {
-        return Object.fromEntries(headers);
-    }
-    return { ...headers };
+  if (!headers) return {};
+  if (headers instanceof Headers) {
+    return Object.fromEntries(headers.entries());
+  }
+  if (Array.isArray(headers)) {
+    return Object.fromEntries(headers);
+  }
+  return { ...headers };
 }
 /**
  * Creates a fetch function that includes base RequestInit options.
@@ -22,18 +21,23 @@ export function normalizeHeaders(headers) {
  * @returns A wrapped fetch function that merges base options with call-specific options
  */
 export function createFetchWithInit(baseFetch = fetch, baseInit) {
-    if (!baseInit) {
-        return baseFetch;
-    }
-    // Return a wrapped fetch that merges base RequestInit with call-specific init
-    return async (url, init) => {
-        const mergedInit = {
-            ...baseInit,
-            ...init,
-            // Headers need special handling - merge instead of replace
-            headers: init?.headers ? { ...normalizeHeaders(baseInit.headers), ...normalizeHeaders(init.headers) } : baseInit.headers
-        };
-        return baseFetch(url, mergedInit);
+  if (!baseInit) {
+    return baseFetch;
+  }
+  // Return a wrapped fetch that merges base RequestInit with call-specific init
+  return async (url, init) => {
+    const mergedInit = {
+      ...baseInit,
+      ...init,
+      // Headers need special handling - merge instead of replace
+      headers: init?.headers
+        ? {
+            ...normalizeHeaders(baseInit.headers),
+            ...normalizeHeaders(init.headers),
+          }
+        : baseInit.headers,
     };
+    return baseFetch(url, mergedInit);
+  };
 }
 //# sourceMappingURL=transport.js.map

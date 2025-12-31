@@ -1,16 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.transformFile = transformFile;
 exports.transformFileAsync = transformFileAsync;
 exports.transformFileSync = transformFileSync;
 function _gensync() {
   const data = require("gensync");
-  _gensync = function () {
-    return data;
-  };
+  _gensync = () => data;
   return data;
 }
 var _index = require("./config/index.js");
@@ -19,7 +17,7 @@ var fs = require("./gensync-utils/fs.js");
 ({});
 const transformFileRunner = _gensync()(function* (filename, opts) {
   const options = Object.assign({}, opts, {
-    filename
+    filename,
   });
   const config = yield* (0, _index.default)(options);
   if (config === null) return null;

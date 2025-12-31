@@ -1,6 +1,7 @@
-import * as allStatuses from 'statuses'
-const statuses = (allStatuses as any).default || allStatuses
+import * as allStatuses from "statuses";
 
-export const message = statuses.message as typeof import('statuses').message
+const statuses = (allStatuses as any).default || allStatuses;
 
-export default statuses
+export const message = statuses.message as typeof import("statuses").message;
+
+export default statuses;

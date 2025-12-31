@@ -28,7 +28,7 @@ test("do not allow error and message together", () => {
     z.string().refine((_) => true, {
       message: "override",
       error: (iss) => (iss.input === undefined ? "asdf" : null),
-    })
+    }),
   ).toThrow();
 });
 
@@ -162,7 +162,10 @@ test("override error in refinement", () => {
 });
 
 test("array minimum", () => {
-  let result = z.array(z.string()).min(3, "tooshort").safeParse(["asdf", "qwer"]);
+  let result = z
+    .array(z.string())
+    .min(3, "tooshort")
+    .safeParse(["asdf", "qwer"]);
   expect(result.success).toBe(false);
   expect(result.error!.issues[0].code).toEqual("too_small");
   expect(result.error!.issues[0].message).toEqual("tooshort");
@@ -339,7 +342,7 @@ test("detect issue with input fallback", () => {
       (val) => {
         if (typeof val !== "number") throw new Error();
         return (val ^ 2) > 10;
-      } // should be number but it's a string
+      }, // should be number but it's a string
     );
   expect(() => schema.parse("hello")).toThrow(z.ZodError);
 });
@@ -372,7 +375,9 @@ test("formatting", () => {
 
   // test custom mapper
   type FormattedErrorWithNumber = z.inferFormattedError<typeof schema, number>;
-  const errorWithNumber: FormattedErrorWithNumber = result2.error!.format(() => 5);
+  const errorWithNumber: FormattedErrorWithNumber = result2.error!.format(
+    () => 5,
+  );
   expect(errorWithNumber._errors).toEqual([]);
   expect(errorWithNumber.inner?._errors).toEqual([]);
   expect(errorWithNumber.inner?.name?._errors).toEqual([5]);
@@ -481,7 +486,9 @@ test("formatting with nullable and optional fields", () => {
 });
 
 test("inferFlattenedErrors", () => {
-  const schemaWithTransform = z.object({ foo: z.string() }).transform((o) => ({ bar: o.foo }));
+  const schemaWithTransform = z
+    .object({ foo: z.string() })
+    .transform((o) => ({ bar: o.foo }));
 
   const result = schemaWithTransform.safeParse({});
 
@@ -648,10 +655,14 @@ test("string error params", () => {
   expect(d.safeParse("not-a-date").error!.issues[0].message).toBe("Bad date!");
 
   const e = z.array(z.string(), "Bad array!");
-  expect(e.safeParse("not-an-array").error!.issues[0].message).toBe("Bad array!");
+  expect(e.safeParse("not-an-array").error!.issues[0].message).toBe(
+    "Bad array!",
+  );
 
   const f = z.array(z.string()).min(5, "Too few items!");
-  expect(f.safeParse(["a", "b"]).error!.issues[0].message).toBe("Too few items!");
+  expect(f.safeParse(["a", "b"]).error!.issues[0].message).toBe(
+    "Too few items!",
+  );
 
   const g = z.set(z.string(), "Bad set!");
   expect(g.safeParse("not-a-set").error!.issues[0].message).toBe("Bad set!");
@@ -697,7 +708,9 @@ test("error serialization", () => {
         }
       ]]
     `);
-    expect(inspect(e).split("\n").slice(0, 8).join("\n")).toMatchInlineSnapshot(`
+    expect(
+      inspect(e).split("\n").slice(0, 8).join("\n"),
+    ).toMatchInlineSnapshot(`
       "ZodError: [
         {
           "expected": "string",

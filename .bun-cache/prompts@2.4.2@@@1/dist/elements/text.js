@@ -1,22 +1,47 @@
-"use strict";
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) {
+  return function () {
+    var args = arguments;
+    return new Promise((resolve, reject) => {
+      var gen = fn.apply(this, args);
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+      _next(undefined);
+    });
+  };
+}
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+const color = require("kleur");
 
-const color = require('kleur');
+const Prompt = require("./prompt");
 
-const Prompt = require('./prompt');
+const _require = require("sisteransi"),
+  erase = _require.erase,
+  cursor = _require.cursor;
 
-const _require = require('sisteransi'),
-      erase = _require.erase,
-      cursor = _require.cursor;
-
-const _require2 = require('../util'),
-      style = _require2.style,
-      clear = _require2.clear,
-      lines = _require2.lines,
-      figures = _require2.figures;
+const _require2 = require("../util"),
+  style = _require2.style,
+  clear = _require2.clear,
+  lines = _require2.lines,
+  figures = _require2.figures;
 /**
  * TextPrompt Base Element
  * @param {Object} opts Options
@@ -28,7 +53,6 @@ const _require2 = require('../util'),
  * @param {Stream} [opts.stdout] The Writable stream to write readline data to
  * @param {String} [opts.error] The invalid error label
  */
-
 
 class TextPrompt extends Prompt {
   constructor(opts = {}) {
@@ -84,7 +108,7 @@ class TextPrompt extends Prompt {
     this.red = false;
     this.fire();
     this.render();
-    this.out.write('\n');
+    this.out.write("\n");
     this.close();
   }
 
@@ -129,7 +153,7 @@ class TextPrompt extends Prompt {
 
       _this2.render();
 
-      _this2.out.write('\n');
+      _this2.out.write("\n");
 
       _this2.close();
     })();
@@ -150,8 +174,8 @@ class TextPrompt extends Prompt {
   }
 
   _(c, key) {
-    let s1 = this.value.slice(0, this.cursor);
-    let s2 = this.value.slice(this.cursor);
+    const s1 = this.value.slice(0, this.cursor);
+    const s2 = this.value.slice(this.cursor);
     this.value = `${s1}${c}${s2}`;
     this.red = false;
     this.cursor = this.placeholder ? 0 : s1.length + 1;
@@ -160,8 +184,8 @@ class TextPrompt extends Prompt {
 
   delete() {
     if (this.isCursorAtStart()) return this.bell();
-    let s1 = this.value.slice(0, this.cursor - 1);
-    let s2 = this.value.slice(this.cursor);
+    const s1 = this.value.slice(0, this.cursor - 1);
+    const s2 = this.value.slice(this.cursor);
     this.value = `${s1}${s2}`;
     this.red = false;
 
@@ -176,9 +200,10 @@ class TextPrompt extends Prompt {
   }
 
   deleteForward() {
-    if (this.cursor * this.scale >= this.rendered.length || this.placeholder) return this.bell();
-    let s1 = this.value.slice(0, this.cursor);
-    let s2 = this.value.slice(this.cursor + 1);
+    if (this.cursor * this.scale >= this.rendered.length || this.placeholder)
+      return this.bell();
+    const s1 = this.value.slice(0, this.cursor);
+    const s2 = this.value.slice(this.cursor + 1);
     this.value = `${s1}${s2}`;
     this.red = false;
 
@@ -208,38 +233,64 @@ class TextPrompt extends Prompt {
   }
 
   right() {
-    if (this.cursor * this.scale >= this.rendered.length || this.placeholder) return this.bell();
+    if (this.cursor * this.scale >= this.rendered.length || this.placeholder)
+      return this.bell();
     this.moveCursor(1);
     this.render();
   }
 
   isCursorAtStart() {
-    return this.cursor === 0 || this.placeholder && this.cursor === 1;
+    return this.cursor === 0 || (this.placeholder && this.cursor === 1);
   }
 
   isCursorAtEnd() {
-    return this.cursor === this.rendered.length || this.placeholder && this.cursor === this.rendered.length + 1;
+    return (
+      this.cursor === this.rendered.length ||
+      (this.placeholder && this.cursor === this.rendered.length + 1)
+    );
   }
 
   render() {
     if (this.closed) return;
 
     if (!this.firstRender) {
-      if (this.outputError) this.out.write(cursor.down(lines(this.outputError, this.out.columns) - 1) + clear(this.outputError, this.out.columns));
+      if (this.outputError)
+        this.out.write(
+          cursor.down(lines(this.outputError, this.out.columns) - 1) +
+            clear(this.outputError, this.out.columns),
+        );
       this.out.write(clear(this.outputText, this.out.columns));
     }
 
     super.render();
-    this.outputError = '';
-    this.outputText = [style.symbol(this.done, this.aborted), color.bold(this.msg), style.delimiter(this.done), this.red ? color.red(this.rendered) : this.rendered].join(` `);
+    this.outputError = "";
+    this.outputText = [
+      style.symbol(this.done, this.aborted),
+      color.bold(this.msg),
+      style.delimiter(this.done),
+      this.red ? color.red(this.rendered) : this.rendered,
+    ].join(` `);
 
     if (this.error) {
-      this.outputError += this.errorMsg.split(`\n`).reduce((a, l, i) => a + `\n${i ? ' ' : figures.pointerSmall} ${color.red().italic(l)}`, ``);
+      this.outputError += this.errorMsg
+        .split(`\n`)
+        .reduce(
+          (a, l, i) =>
+            a + `\n${i ? " " : figures.pointerSmall} ${color.red().italic(l)}`,
+          ``,
+        );
     }
 
-    this.out.write(erase.line + cursor.to(0) + this.outputText + cursor.save + this.outputError + cursor.restore + cursor.move(this.cursorOffset, 0));
+    this.out.write(
+      erase.line +
+        cursor.to(0) +
+        this.outputText +
+        cursor.save +
+        this.outputError +
+        cursor.restore +
+        cursor.move(this.cursorOffset, 0),
+    );
   }
-
 }
 
 module.exports = TextPrompt;

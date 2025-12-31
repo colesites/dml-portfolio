@@ -8,29 +8,39 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var router_exports = {};
 __export(router_exports, {
-  LinearRouter: () => LinearRouter
+  LinearRouter: () => LinearRouter,
 });
 module.exports = __toCommonJS(router_exports);
 var import_router = require("../../router");
 var import_url = require("../../utils/url");
 const emptyParams = /* @__PURE__ */ Object.create(null);
-const splitPathRe = /\/(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/[^\/\?]+|(\?)/g;
+const splitPathRe = /\/(:\w+(?:{(?:(?:{[\d,]+})|[^}])+})?)|\/[^/?]+|(\?)/g;
 const splitByStarRe = /\*/;
 class LinearRouter {
   name = "LinearRouter";
   #routes = [];
   add(method, path, handler) {
-    for (let i = 0, paths = (0, import_url.checkOptionalParameter)(path) || [path], len = paths.length; i < len; i++) {
+    for (
+      let i = 0,
+        paths = (0, import_url.checkOptionalParameter)(path) || [path],
+        len = paths.length;
+      i < len;
+      i++
+    ) {
       this.#routes.push([method, paths[i], handler]);
     }
   }
@@ -38,7 +48,10 @@ class LinearRouter {
     const handlers = [];
     ROUTES_LOOP: for (let i = 0, len = this.#routes.length; i < len; i++) {
       const [routeMethod, routePath, handler] = this.#routes[i];
-      if (routeMethod === method || routeMethod === import_router.METHOD_NAME_ALL) {
+      if (
+        routeMethod === method ||
+        routeMethod === import_router.METHOD_NAME_ALL
+      ) {
         if (routePath === "*" || routePath === "/*") {
           handlers.push([handler, emptyParams]);
           continue;
@@ -50,8 +63,11 @@ class LinearRouter {
             handlers.push([handler, emptyParams]);
           }
         } else if (hasStar && !hasLabel) {
-          const endsWithStar = routePath.charCodeAt(routePath.length - 1) === 42;
-          const parts = (endsWithStar ? routePath.slice(0, -2) : routePath).split(splitByStarRe);
+          const endsWithStar =
+            routePath.charCodeAt(routePath.length - 1) === 42;
+          const parts = (
+            endsWithStar ? routePath.slice(0, -2) : routePath
+          ).split(splitByStarRe);
           const lastIndex = parts.length - 1;
           for (let j = 0, pos = 0, len2 = parts.length; j < len2; j++) {
             const part = parts[j];
@@ -61,7 +77,11 @@ class LinearRouter {
             }
             pos += part.length;
             if (j === lastIndex) {
-              if (!endsWithStar && pos !== path.length && !(pos === path.length - 1 && path.charCodeAt(pos) === 47)) {
+              if (
+                !endsWithStar &&
+                pos !== path.length &&
+                !(pos === path.length - 1 && path.charCodeAt(pos) === 47)
+              ) {
                 continue ROUTES_LOOP;
               }
             } else {
@@ -91,11 +111,18 @@ class LinearRouter {
               if (name.charCodeAt(name.length - 1) === 125) {
                 const openBracePos = name.indexOf("{");
                 const next = parts[j + 1];
-                const lookahead = next && next[1] !== ":" && next[1] !== "*" ? `(?=${next})` : "";
+                const lookahead =
+                  next && next[1] !== ":" && next[1] !== "*"
+                    ? `(?=${next})`
+                    : "";
                 const pattern = name.slice(openBracePos + 1, -1) + lookahead;
                 const restPath = path.slice(pos + 1);
                 const match = new RegExp(pattern, "d").exec(restPath);
-                if (!match || match.indices[0][0] !== 0 || match.indices[0][1] === 0) {
+                if (
+                  !match ||
+                  match.indices[0][0] !== 0 ||
+                  match.indices[0][1] === 0
+                ) {
                   continue ROUTES_LOOP;
                 }
                 name = name.slice(0, openBracePos);
@@ -121,7 +148,10 @@ class LinearRouter {
               pos += part.length;
             }
             if (j === lastIndex) {
-              if (pos !== path.length && !(pos === path.length - 1 && path.charCodeAt(pos) === 47)) {
+              if (
+                pos !== path.length &&
+                !(pos === path.length - 1 && path.charCodeAt(pos) === 47)
+              ) {
                 continue ROUTES_LOOP;
               }
             }
@@ -136,6 +166,7 @@ class LinearRouter {
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  LinearRouter
-});
+0 &&
+  (module.exports = {
+    LinearRouter,
+  });

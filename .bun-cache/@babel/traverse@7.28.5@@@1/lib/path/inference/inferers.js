@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.ArrayExpression = ArrayExpression;
 exports.AssignmentExpression = AssignmentExpression;
@@ -9,12 +9,15 @@ exports.BinaryExpression = BinaryExpression;
 exports.BooleanLiteral = BooleanLiteral;
 exports.CallExpression = CallExpression;
 exports.ConditionalExpression = ConditionalExpression;
-exports.ClassDeclaration = exports.ClassExpression = exports.FunctionDeclaration = exports.ArrowFunctionExpression = exports.FunctionExpression = Func;
+exports.ClassDeclaration =
+  exports.ClassExpression =
+  exports.FunctionDeclaration =
+  exports.ArrowFunctionExpression =
+  exports.FunctionExpression =
+    Func;
 Object.defineProperty(exports, "Identifier", {
   enumerable: true,
-  get: function () {
-    return _infererReference.default;
-  }
+  get: () => _infererReference.default,
 });
 exports.LogicalExpression = LogicalExpression;
 exports.NewExpression = NewExpression;
@@ -55,7 +58,7 @@ const {
   tupleTypeAnnotation,
   unionTypeAnnotation,
   voidTypeAnnotation,
-  isIdentifier
+  isIdentifier,
 } = _t;
 function VariableDeclarator() {
   if (!this.get("id").isIdentifier()) return;
@@ -106,15 +109,24 @@ function BinaryExpression(node) {
     } else if (left.isBaseType("string") || right.isBaseType("string")) {
       return stringTypeAnnotation();
     }
-    return unionTypeAnnotation([stringTypeAnnotation(), numberTypeAnnotation()]);
+    return unionTypeAnnotation([
+      stringTypeAnnotation(),
+      numberTypeAnnotation(),
+    ]);
   }
 }
 function LogicalExpression() {
-  const argumentTypes = [this.get("left").getTypeAnnotation(), this.get("right").getTypeAnnotation()];
+  const argumentTypes = [
+    this.get("left").getTypeAnnotation(),
+    this.get("right").getTypeAnnotation(),
+  ];
   return (0, _util.createUnionType)(argumentTypes);
 }
 function ConditionalExpression() {
-  const argumentTypes = [this.get("consequent").getTypeAnnotation(), this.get("alternate").getTypeAnnotation()];
+  const argumentTypes = [
+    this.get("consequent").getTypeAnnotation(),
+    this.get("alternate").getTypeAnnotation(),
+  ];
   return (0, _util.createUnionType)(argumentTypes);
 }
 function SequenceExpression() {
@@ -165,17 +177,21 @@ const isObjectKeys = buildMatchMemberExpression("Object.keys");
 const isObjectValues = buildMatchMemberExpression("Object.values");
 const isObjectEntries = buildMatchMemberExpression("Object.entries");
 function CallExpression() {
-  const {
-    callee
-  } = this.node;
+  const { callee } = this.node;
   if (isObjectKeys(callee)) {
     return arrayTypeAnnotation(stringTypeAnnotation());
-  } else if (isArrayFrom(callee) || isObjectValues(callee) || isIdentifier(callee, {
-    name: "Array"
-  })) {
+  } else if (
+    isArrayFrom(callee) ||
+    isObjectValues(callee) ||
+    isIdentifier(callee, {
+      name: "Array",
+    })
+  ) {
     return arrayTypeAnnotation(anyTypeAnnotation());
   } else if (isObjectEntries(callee)) {
-    return arrayTypeAnnotation(tupleTypeAnnotation([stringTypeAnnotation(), anyTypeAnnotation()]));
+    return arrayTypeAnnotation(
+      tupleTypeAnnotation([stringTypeAnnotation(), anyTypeAnnotation()]),
+    );
   }
   return resolveCall(this.get("callee"));
 }
@@ -185,9 +201,7 @@ function TaggedTemplateExpression() {
 function resolveCall(callee) {
   callee = callee.resolve();
   if (callee.isFunction()) {
-    const {
-      node
-    } = callee;
+    const { node } = callee;
     if (node.async) {
       if (node.generator) {
         return genericTypeAnnotation(identifier("AsyncIterator"));
@@ -199,7 +213,8 @@ function resolveCall(callee) {
         return genericTypeAnnotation(identifier("Iterator"));
       } else if (callee.node.returnType) {
         return callee.node.returnType;
-      } else {}
+      } else {
+      }
     }
   }
 }

@@ -8,24 +8,29 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var csrf_exports = {};
 __export(csrf_exports, {
-  csrf: () => csrf
+  csrf: () => csrf,
 });
 module.exports = __toCommonJS(csrf_exports);
 var import_http_exception = require("../../http-exception");
 const secFetchSiteValues = ["same-origin", "same-site", "none", "cross-site"];
 const isSecFetchSite = (value) => secFetchSiteValues.includes(value);
 const isSafeMethodRe = /^(GET|HEAD)$/;
-const isRequestedByFormElementRe = /^\b(application\/x-www-form-urlencoded|multipart\/form-data|text\/plain)\b/i;
+const isRequestedByFormElementRe =
+  /^\b(application\/x-www-form-urlencoded|multipart\/form-data|text\/plain)\b/i;
 const csrf = (options) => {
   const originHandler = ((optsOrigin) => {
     if (!optsOrigin) {
@@ -65,7 +70,14 @@ const csrf = (options) => {
     return await secFetchSiteHandler(secFetchSite, c);
   };
   return async function csrf2(c, next) {
-    if (!isSafeMethodRe.test(c.req.method) && isRequestedByFormElementRe.test(c.req.header("content-type") || "text/plain") && !await isAllowedSecFetchSite(c.req.header("sec-fetch-site"), c) && !await isAllowedOrigin(c.req.header("origin"), c)) {
+    if (
+      !isSafeMethodRe.test(c.req.method) &&
+      isRequestedByFormElementRe.test(
+        c.req.header("content-type") || "text/plain",
+      ) &&
+      !(await isAllowedSecFetchSite(c.req.header("sec-fetch-site"), c)) &&
+      !(await isAllowedOrigin(c.req.header("origin"), c))
+    ) {
       const res = new Response("Forbidden", { status: 403 });
       throw new import_http_exception.HTTPException(403, { res });
     }
@@ -73,6 +85,7 @@ const csrf = (options) => {
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  csrf
-});
+0 &&
+  (module.exports = {
+    csrf,
+  });

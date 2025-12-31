@@ -8,18 +8,22 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var HttpResponse_exports = {};
 __export(HttpResponse_exports, {
   HttpResponse: () => HttpResponse,
-  bodyType: () => bodyType
+  bodyType: () => bodyType,
 });
 module.exports = __toCommonJS(HttpResponse_exports);
 var import_interceptors = require("@mswjs/interceptors");
@@ -49,7 +53,7 @@ class HttpResponse extends import_interceptors.FetchResponse {
     if (!responseInit.headers.has("Content-Length")) {
       responseInit.headers.set(
         "Content-Length",
-        body ? new Blob([body]).size.toString() : "0"
+        body ? new Blob([body]).size.toString() : "0",
       );
     }
     return new HttpResponse(body, responseInit);
@@ -69,7 +73,7 @@ class HttpResponse extends import_interceptors.FetchResponse {
     if (!responseInit.headers.has("Content-Length")) {
       responseInit.headers.set(
         "Content-Length",
-        responseText ? new Blob([responseText]).size.toString() : "0"
+        responseText ? new Blob([responseText]).size.toString() : "0",
       );
     }
     return new HttpResponse(responseText, responseInit);
@@ -128,7 +132,10 @@ class HttpResponse extends import_interceptors.FetchResponse {
    * HttpResponse.formData(data)
    */
   static formData(body, init) {
-    return new HttpResponse(body, (0, import_decorators.normalizeResponseInit)(init));
+    return new HttpResponse(
+      body,
+      (0, import_decorators.normalizeResponseInit)(init),
+    );
   }
 }
 //# sourceMappingURL=HttpResponse.js.map

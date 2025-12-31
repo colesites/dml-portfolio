@@ -1,4 +1,4 @@
-import type {UnknownArray} from './unknown-array.d.ts';
+import type { UnknownArray } from "./unknown-array.d.ts";
 
 /**
 Extracts the element type of an array or tuple.
@@ -38,9 +38,4 @@ getRandomElement(['foo', 'bar', 'baz'] as const);
 
 @category Array
 */
-export type ArrayElement<T> =
-	T extends UnknownArray
-		? T[number]
-		: never;
-
-export {};
+export type ArrayElement<T> = T extends UnknownArray ? T[number] : never;

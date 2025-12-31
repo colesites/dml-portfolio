@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.getHighestUnreleased = getHighestUnreleased;
 exports.getLowestImplementedVersion = getLowestImplementedVersion;
@@ -12,8 +12,11 @@ exports.semverify = semverify;
 var _semver = require("semver");
 var _helperValidatorOption = require("@babel/helper-validator-option");
 var _targets = require("./targets.js");
-const versionRegExp = /^(?:\d+|\d(?:\d?[^\d\n\r\u2028\u2029]\d+|\d{2,}(?:[^\d\n\r\u2028\u2029]\d+)?))$/;
-const v = new _helperValidatorOption.OptionValidator("@babel/helper-compilation-targets");
+const versionRegExp =
+  /^(?:\d+|\d(?:\d?[^\d\n\r\u2028\u2029]\d+|\d{2,}(?:[^\d\n\r\u2028\u2029]\d+)?))$/;
+const v = new _helperValidatorOption.OptionValidator(
+  "@babel/helper-compilation-targets",
+);
 function semverMin(first, second) {
   return first && _semver.lt(first, second) ? first : second;
 }
@@ -21,7 +24,11 @@ function semverify(version) {
   if (typeof version === "string" && _semver.valid(version)) {
     return version;
   }
-  v.invariant(typeof version === "number" || typeof version === "string" && versionRegExp.test(version), `'${version}' is not a valid version`);
+  v.invariant(
+    typeof version === "number" ||
+      (typeof version === "string" && versionRegExp.test(version)),
+    `'${version}' is not a valid version`,
+  );
   version = version.toString();
   let pos = 0;
   let num = 0;
@@ -32,7 +39,9 @@ function semverify(version) {
 }
 function isUnreleasedVersion(version, env) {
   const unreleasedLabel = _targets.unreleasedLabels[env];
-  return !!unreleasedLabel && unreleasedLabel === version.toString().toLowerCase();
+  return (
+    !!unreleasedLabel && unreleasedLabel === version.toString().toLowerCase()
+  );
 }
 function getLowestUnreleased(a, b, env) {
   const unreleasedLabel = _targets.unreleasedLabels[env];

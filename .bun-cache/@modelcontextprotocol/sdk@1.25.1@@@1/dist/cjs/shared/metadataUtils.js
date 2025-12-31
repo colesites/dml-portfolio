@@ -11,15 +11,15 @@ exports.getDisplayName = getDisplayName;
  * This implements the spec requirement: "if no title is provided, name should be used for display purposes"
  */
 function getDisplayName(metadata) {
-    // First check for title (not undefined and not empty string)
-    if (metadata.title !== undefined && metadata.title !== '') {
-        return metadata.title;
-    }
-    // Then check for annotations.title (only present in Tool objects)
-    if ('annotations' in metadata && metadata.annotations?.title) {
-        return metadata.annotations.title;
-    }
-    // Finally fall back to name
-    return metadata.name;
+  // First check for title (not undefined and not empty string)
+  if (metadata.title !== undefined && metadata.title !== "") {
+    return metadata.title;
+  }
+  // Then check for annotations.title (only present in Tool objects)
+  if ("annotations" in metadata && metadata.annotations?.title) {
+    return metadata.annotations.title;
+  }
+  // Finally fall back to name
+  return metadata.name;
 }
 //# sourceMappingURL=metadataUtils.js.map

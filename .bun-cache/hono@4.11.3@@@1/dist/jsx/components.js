@@ -5,10 +5,13 @@ import { DOM_RENDERER } from "./constants.js";
 import { useContext } from "./context.js";
 import { ErrorBoundary as ErrorBoundaryDomRenderer } from "./dom/components.js";
 import { StreamingContext } from "./streaming.js";
+
 var errorBoundaryCounter = 0;
 var childrenToString = async (children) => {
   try {
-    return children.flat().map((c) => c == null || typeof c === "boolean" ? "" : c.toString());
+    return children
+      .flat()
+      .map((c) => (c == null || typeof c === "boolean" ? "" : c.toString()));
   } catch (e) {
     if (e instanceof Promise) {
       await e;
@@ -33,14 +36,14 @@ var ErrorBoundary = async ({ children, fallback, fallbackRender, onError }) => {
   };
   let resArray = [];
   try {
-    resArray = children.map(
-      (c) => c == null || typeof c === "boolean" ? "" : c.toString()
+    resArray = children.map((c) =>
+      c == null || typeof c === "boolean" ? "" : c.toString(),
     );
   } catch (e) {
     fallbackStr = await fallback?.toString();
     if (e instanceof Promise) {
       resArray = [
-        e.then(() => childrenToString(children)).catch((e2) => fallbackRes(e2))
+        e.then(() => childrenToString(children)).catch((e2) => fallbackRes(e2)),
       ];
     } else {
       resArray = [fallbackRes(e)];
@@ -49,7 +52,9 @@ var ErrorBoundary = async ({ children, fallback, fallbackRender, onError }) => {
   if (resArray.some((res) => res instanceof Promise)) {
     fallbackStr ||= await fallback?.toString();
     const index = errorBoundaryCounter++;
-    const replaceRe = RegExp(`(<template id="E:${index}"></template>.*?)(.*?)(<!--E:${index}-->)`);
+    const replaceRe = RegExp(
+      `(<template id="E:${index}"></template>.*?)(.*?)(<!--E:${index}-->)`,
+    );
     const caught = false;
     const catchCallback = ({ error: error2, buffer }) => {
       if (caught) {
@@ -59,7 +64,9 @@ var ErrorBoundary = async ({ children, fallback, fallbackRender, onError }) => {
       if (buffer) {
         buffer[0] = buffer[0].replace(replaceRe, fallbackResString);
       }
-      return buffer ? "" : `<template data-hono-target="E:${index}">${fallbackResString}</template><script>
+      return buffer
+        ? ""
+        : `<template data-hono-target="E:${index}">${fallbackResString}</template><script>
 ((d,c,n) => {
 c=d.currentScript.previousSibling
 d=d.getElementById('E:${index}')
@@ -70,19 +77,22 @@ d.replaceWith(c.content)
 </script>`;
     };
     let error;
-    const promiseAll = Promise.all(resArray).catch((e) => error = e);
+    const promiseAll = Promise.all(resArray).catch((e) => (error = e));
     return raw(`<template id="E:${index}"></template><!--E:${index}-->`, [
       ({ phase, buffer, context }) => {
         if (phase === HtmlEscapedCallbackPhase.BeforeStream) {
           return;
         }
-        return promiseAll.then(async (htmlArray) => {
-          if (error) {
-            throw error;
-          }
-          htmlArray = htmlArray.flat();
-          const content = htmlArray.join("");
-          let html = buffer ? "" : `<template data-hono-target="E:${index}">${content}</template><script${nonce ? ` nonce="${nonce}"` : ""}>
+        return promiseAll
+          .then(async (htmlArray) => {
+            if (error) {
+              throw error;
+            }
+            htmlArray = htmlArray.flat();
+            const content = htmlArray.join("");
+            let html = buffer
+              ? ""
+              : `<template data-hono-target="E:${index}">${content}</template><script${nonce ? ` nonce="${nonce}"` : ""}>
 ((d,c) => {
 c=d.currentScript.previousSibling
 d=d.getElementById('E:${index}')
@@ -90,40 +100,51 @@ if(!d)return
 d.parentElement.insertBefore(c.content,d.nextSibling)
 })(document)
 </script>`;
-          if (htmlArray.every((html2) => !html2.callbacks?.length)) {
-            if (buffer) {
-              buffer[0] = buffer[0].replace(replaceRe, content);
-            }
-            return html;
-          }
-          if (buffer) {
-            buffer[0] = buffer[0].replace(
-              replaceRe,
-              (_all, pre, _, post) => `${pre}${content}${post}`
-            );
-          }
-          const callbacks = htmlArray.map((html2) => html2.callbacks || []).flat();
-          if (phase === HtmlEscapedCallbackPhase.Stream) {
-            html = await resolveCallback(
-              html,
-              HtmlEscapedCallbackPhase.BeforeStream,
-              true,
-              context
-            );
-          }
-          let resolvedCount = 0;
-          const promises = callbacks.map(
-            (c) => (...args) => c(...args)?.then((content2) => {
-              resolvedCount++;
+            if (htmlArray.every((html2) => !html2.callbacks?.length)) {
               if (buffer) {
-                if (resolvedCount === callbacks.length) {
-                  buffer[0] = buffer[0].replace(replaceRe, (_all, _pre, content3) => content3);
-                }
-                buffer[0] += content2;
-                return raw("", content2.callbacks);
+                buffer[0] = buffer[0].replace(replaceRe, content);
               }
-              return raw(
-                content2 + (resolvedCount !== callbacks.length ? "" : `<script>
+              return html;
+            }
+            if (buffer) {
+              buffer[0] = buffer[0].replace(
+                replaceRe,
+                (_all, pre, _, post) => `${pre}${content}${post}`,
+              );
+            }
+            const callbacks = htmlArray.flatMap(
+              (html2) => html2.callbacks || [],
+            );
+            if (phase === HtmlEscapedCallbackPhase.Stream) {
+              html = await resolveCallback(
+                html,
+                HtmlEscapedCallbackPhase.BeforeStream,
+                true,
+                context,
+              );
+            }
+            let resolvedCount = 0;
+            const promises = callbacks.map(
+              (c) =>
+                (...args) =>
+                  c(...args)
+                    ?.then((content2) => {
+                      resolvedCount++;
+                      if (buffer) {
+                        if (resolvedCount === callbacks.length) {
+                          buffer[0] = buffer[0].replace(
+                            replaceRe,
+                            (_all, _pre, content3) => content3,
+                          );
+                        }
+                        buffer[0] += content2;
+                        return raw("", content2.callbacks);
+                      }
+                      return raw(
+                        content2 +
+                          (resolvedCount !== callbacks.length
+                            ? ""
+                            : `<script>
 ((d,c,n) => {
 d=d.getElementById('E:${index}')
 if(!d)return
@@ -133,20 +154,21 @@ n.remove()
 d.remove()
 })(document)
 </script>`),
-                content2.callbacks
-              );
-            }).catch((error2) => catchCallback({ error: error2, buffer }))
-          );
-          return raw(html, promises);
-        }).catch((error2) => catchCallback({ error: error2, buffer }));
-      }
+                        content2.callbacks,
+                      );
+                    })
+                    .catch((error2) =>
+                      catchCallback({ error: error2, buffer }),
+                    ),
+            );
+            return raw(html, promises);
+          })
+          .catch((error2) => catchCallback({ error: error2, buffer }));
+      },
     ]);
   } else {
     return raw(resArray.join(""));
   }
 };
 ErrorBoundary[DOM_RENDERER] = ErrorBoundaryDomRenderer;
-export {
-  ErrorBoundary,
-  childrenToString
-};
+export { ErrorBoundary, childrenToString };

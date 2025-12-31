@@ -1,4 +1,4 @@
-import type { GetConnInfo } from '../../helper/conninfo';
+import type { GetConnInfo } from "../../helper/conninfo";
 /**
  * Get ConnInfo with Bun
  * @param c Context

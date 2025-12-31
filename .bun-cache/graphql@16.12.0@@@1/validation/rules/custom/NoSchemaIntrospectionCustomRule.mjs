@@ -1,6 +1,6 @@
-import { GraphQLError } from '../../../error/GraphQLError.mjs';
-import { getNamedType } from '../../../type/definition.mjs';
-import { isIntrospectionType } from '../../../type/introspection.mjs';
+import { GraphQLError } from "../../../error/GraphQLError.mjs";
+import { getNamedType } from "../../../type/definition.mjs";
+import { isIntrospectionType } from "../../../type/introspection.mjs";
 
 /**
  * Prohibit introspection queries

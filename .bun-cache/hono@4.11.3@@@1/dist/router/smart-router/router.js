@@ -1,5 +1,9 @@
 // src/router/smart-router/router.ts
-import { MESSAGE_MATCHER_IS_ALREADY_BUILT, UnsupportedPathError } from "../../router.js";
+import {
+  MESSAGE_MATCHER_IS_ALREADY_BUILT,
+  UnsupportedPathError,
+} from "../../router.js";
+
 var SmartRouter = class {
   name = "SmartRouter";
   #routers = [];
@@ -53,6 +57,4 @@ var SmartRouter = class {
     return this.#routers[0];
   }
 };
-export {
-  SmartRouter
-};
+export { SmartRouter };

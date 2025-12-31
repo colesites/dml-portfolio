@@ -1,11 +1,9 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.getLocation = getLocation;
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
 const LineRegExp = /\r\n|[\n\r]/g;
 /**
@@ -21,7 +19,7 @@ function getLocation(source, position) {
   let line = 1;
 
   for (const match of source.body.matchAll(LineRegExp)) {
-    typeof match.index === 'number' || (0, _invariant.invariant)(false);
+    typeof match.index === "number" || (0, _invariant.invariant)(false);
 
     if (match.index >= position) {
       break;

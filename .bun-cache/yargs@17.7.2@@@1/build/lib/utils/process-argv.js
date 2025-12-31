@@ -1,17 +1,16 @@
 function getProcessArgvBinIndex() {
-    if (isBundledElectronApp())
-        return 0;
-    return 1;
+  if (isBundledElectronApp()) return 0;
+  return 1;
 }
 function isBundledElectronApp() {
-    return isElectronApp() && !process.defaultApp;
+  return isElectronApp() && !process.defaultApp;
 }
 function isElectronApp() {
-    return !!process.versions.electron;
+  return !!process.versions.electron;
 }
 export function hideBin(argv) {
-    return argv.slice(getProcessArgvBinIndex() + 1);
+  return argv.slice(getProcessArgvBinIndex() + 1);
 }
 export function getProcessArgvBin() {
-    return process.argv[getProcessArgvBinIndex()];
+  return process.argv[getProcessArgvBinIndex()];
 }

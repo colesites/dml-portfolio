@@ -1,53 +1,51 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.DangerousChangeType = exports.BreakingChangeType = void 0;
 exports.findBreakingChanges = findBreakingChanges;
 exports.findDangerousChanges = findDangerousChanges;
 
-var _inspect = require('../jsutils/inspect.js');
+var _inspect = require("../jsutils/inspect.js");
 
-var _invariant = require('../jsutils/invariant.js');
+var _invariant = require("../jsutils/invariant.js");
 
-var _keyMap = require('../jsutils/keyMap.js');
+var _keyMap = require("../jsutils/keyMap.js");
 
-var _printer = require('../language/printer.js');
+var _printer = require("../language/printer.js");
 
-var _definition = require('../type/definition.js');
+var _definition = require("../type/definition.js");
 
-var _scalars = require('../type/scalars.js');
+var _scalars = require("../type/scalars.js");
 
-var _astFromValue = require('./astFromValue.js');
+var _astFromValue = require("./astFromValue.js");
 
-var _sortValueNode = require('./sortValueNode.js');
+var _sortValueNode = require("./sortValueNode.js");
 
 var BreakingChangeType;
 exports.BreakingChangeType = BreakingChangeType;
 
-(function (BreakingChangeType) {
-  BreakingChangeType['TYPE_REMOVED'] = 'TYPE_REMOVED';
-  BreakingChangeType['TYPE_CHANGED_KIND'] = 'TYPE_CHANGED_KIND';
-  BreakingChangeType['TYPE_REMOVED_FROM_UNION'] = 'TYPE_REMOVED_FROM_UNION';
-  BreakingChangeType['VALUE_REMOVED_FROM_ENUM'] = 'VALUE_REMOVED_FROM_ENUM';
-  BreakingChangeType['REQUIRED_INPUT_FIELD_ADDED'] =
-    'REQUIRED_INPUT_FIELD_ADDED';
-  BreakingChangeType['IMPLEMENTED_INTERFACE_REMOVED'] =
-    'IMPLEMENTED_INTERFACE_REMOVED';
-  BreakingChangeType['FIELD_REMOVED'] = 'FIELD_REMOVED';
-  BreakingChangeType['FIELD_CHANGED_KIND'] = 'FIELD_CHANGED_KIND';
-  BreakingChangeType['REQUIRED_ARG_ADDED'] = 'REQUIRED_ARG_ADDED';
-  BreakingChangeType['ARG_REMOVED'] = 'ARG_REMOVED';
-  BreakingChangeType['ARG_CHANGED_KIND'] = 'ARG_CHANGED_KIND';
-  BreakingChangeType['DIRECTIVE_REMOVED'] = 'DIRECTIVE_REMOVED';
-  BreakingChangeType['DIRECTIVE_ARG_REMOVED'] = 'DIRECTIVE_ARG_REMOVED';
-  BreakingChangeType['REQUIRED_DIRECTIVE_ARG_ADDED'] =
-    'REQUIRED_DIRECTIVE_ARG_ADDED';
-  BreakingChangeType['DIRECTIVE_REPEATABLE_REMOVED'] =
-    'DIRECTIVE_REPEATABLE_REMOVED';
-  BreakingChangeType['DIRECTIVE_LOCATION_REMOVED'] =
-    'DIRECTIVE_LOCATION_REMOVED';
+((BreakingChangeType) => {
+  BreakingChangeType["TYPE_REMOVED"] = "TYPE_REMOVED";
+  BreakingChangeType["TYPE_CHANGED_KIND"] = "TYPE_CHANGED_KIND";
+  BreakingChangeType["TYPE_REMOVED_FROM_UNION"] = "TYPE_REMOVED_FROM_UNION";
+  BreakingChangeType["VALUE_REMOVED_FROM_ENUM"] = "VALUE_REMOVED_FROM_ENUM";
+  BreakingChangeType["REQUIRED_INPUT_FIELD_ADDED"] =
+    "REQUIRED_INPUT_FIELD_ADDED";
+  BreakingChangeType["IMPLEMENTED_INTERFACE_REMOVED"] =
+    "IMPLEMENTED_INTERFACE_REMOVED";
+  BreakingChangeType["FIELD_REMOVED"] = "FIELD_REMOVED";
+  BreakingChangeType["FIELD_CHANGED_KIND"] = "FIELD_CHANGED_KIND";
+  BreakingChangeType["REQUIRED_ARG_ADDED"] = "REQUIRED_ARG_ADDED";
+  BreakingChangeType["ARG_REMOVED"] = "ARG_REMOVED";
+  BreakingChangeType["ARG_CHANGED_KIND"] = "ARG_CHANGED_KIND";
+  BreakingChangeType["DIRECTIVE_REMOVED"] = "DIRECTIVE_REMOVED";
+  BreakingChangeType["DIRECTIVE_ARG_REMOVED"] = "DIRECTIVE_ARG_REMOVED";
+  BreakingChangeType["REQUIRED_DIRECTIVE_ARG_ADDED"] =
+    "REQUIRED_DIRECTIVE_ARG_ADDED";
+  BreakingChangeType["DIRECTIVE_REPEATABLE_REMOVED"] =
+    "DIRECTIVE_REPEATABLE_REMOVED";
+  BreakingChangeType["DIRECTIVE_LOCATION_REMOVED"] =
+    "DIRECTIVE_LOCATION_REMOVED";
 })(
   BreakingChangeType || (exports.BreakingChangeType = BreakingChangeType = {}),
 );
@@ -55,15 +53,15 @@ exports.BreakingChangeType = BreakingChangeType;
 var DangerousChangeType;
 exports.DangerousChangeType = DangerousChangeType;
 
-(function (DangerousChangeType) {
-  DangerousChangeType['VALUE_ADDED_TO_ENUM'] = 'VALUE_ADDED_TO_ENUM';
-  DangerousChangeType['TYPE_ADDED_TO_UNION'] = 'TYPE_ADDED_TO_UNION';
-  DangerousChangeType['OPTIONAL_INPUT_FIELD_ADDED'] =
-    'OPTIONAL_INPUT_FIELD_ADDED';
-  DangerousChangeType['OPTIONAL_ARG_ADDED'] = 'OPTIONAL_ARG_ADDED';
-  DangerousChangeType['IMPLEMENTED_INTERFACE_ADDED'] =
-    'IMPLEMENTED_INTERFACE_ADDED';
-  DangerousChangeType['ARG_DEFAULT_VALUE_CHANGE'] = 'ARG_DEFAULT_VALUE_CHANGE';
+((DangerousChangeType) => {
+  DangerousChangeType["VALUE_ADDED_TO_ENUM"] = "VALUE_ADDED_TO_ENUM";
+  DangerousChangeType["TYPE_ADDED_TO_UNION"] = "TYPE_ADDED_TO_UNION";
+  DangerousChangeType["OPTIONAL_INPUT_FIELD_ADDED"] =
+    "OPTIONAL_INPUT_FIELD_ADDED";
+  DangerousChangeType["OPTIONAL_ARG_ADDED"] = "OPTIONAL_ARG_ADDED";
+  DangerousChangeType["IMPLEMENTED_INTERFACE_ADDED"] =
+    "IMPLEMENTED_INTERFACE_ADDED";
+  DangerousChangeType["ARG_DEFAULT_VALUE_CHANGE"] = "ARG_DEFAULT_VALUE_CHANGE";
 })(
   DangerousChangeType ||
     (exports.DangerousChangeType = DangerousChangeType = {}),
@@ -478,27 +476,27 @@ function isChangeSafeForInputObjectFieldOrFieldArg(oldType, newType) {
 
 function typeKindName(type) {
   if ((0, _definition.isScalarType)(type)) {
-    return 'a Scalar type';
+    return "a Scalar type";
   }
 
   if ((0, _definition.isObjectType)(type)) {
-    return 'an Object type';
+    return "an Object type";
   }
 
   if ((0, _definition.isInterfaceType)(type)) {
-    return 'an Interface type';
+    return "an Interface type";
   }
 
   if ((0, _definition.isUnionType)(type)) {
-    return 'a Union type';
+    return "a Union type";
   }
 
   if ((0, _definition.isEnumType)(type)) {
-    return 'an Enum type';
+    return "an Enum type";
   }
 
   if ((0, _definition.isInputObjectType)(type)) {
-    return 'an Input type';
+    return "an Input type";
   }
   /* c8 ignore next 3 */
   // Not reachable, all possible types have been considered.
@@ -506,7 +504,7 @@ function typeKindName(type) {
   false ||
     (0, _invariant.invariant)(
       false,
-      'Unexpected type: ' + (0, _inspect.inspect)(type),
+      "Unexpected type: " + (0, _inspect.inspect)(type),
     );
 }
 

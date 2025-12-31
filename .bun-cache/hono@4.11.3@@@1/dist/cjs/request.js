@@ -8,25 +8,30 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var request_exports = {};
 __export(request_exports, {
   HonoRequest: () => HonoRequest,
-  cloneRawRequest: () => cloneRawRequest
+  cloneRawRequest: () => cloneRawRequest,
 });
 module.exports = __toCommonJS(request_exports);
 var import_http_exception = require("./http-exception");
 var import_constants = require("./request/constants");
 var import_body = require("./utils/body");
 var import_url = require("./utils/url");
-const tryDecodeURIComponent = (str) => (0, import_url.tryDecode)(str, import_url.decodeURIComponent_);
+const tryDecodeURIComponent = (str) =>
+  (0, import_url.tryDecode)(str, import_url.decodeURIComponent_);
 class HonoRequest {
   /**
    * `.raw` can get the raw Request object.
@@ -73,15 +78,17 @@ class HonoRequest {
   #getDecodedParam(key) {
     const paramKey = this.#matchResult[0][this.routeIndex][1][key];
     const param = this.#getParamValue(paramKey);
-    return param && /\%/.test(param) ? tryDecodeURIComponent(param) : param;
+    return param && /%/.test(param) ? tryDecodeURIComponent(param) : param;
   }
   #getAllDecodedParams() {
     const decoded = {};
     const keys = Object.keys(this.#matchResult[0][this.routeIndex][1]);
     for (const key of keys) {
-      const value = this.#getParamValue(this.#matchResult[0][this.routeIndex][1][key]);
+      const value = this.#getParamValue(
+        this.#matchResult[0][this.routeIndex][1][key],
+      );
       if (value !== void 0) {
-        decoded[key] = /\%/.test(value) ? tryDecodeURIComponent(value) : value;
+        decoded[key] = /%/.test(value) ? tryDecodeURIComponent(value) : value;
       }
     }
     return decoded;
@@ -106,7 +113,10 @@ class HonoRequest {
     return headerData;
   }
   async parseBody(options) {
-    return this.bodyCache.parsedBody ??= await (0, import_body.parseBody)(this, options);
+    return (this.bodyCache.parsedBody ??= await (0, import_body.parseBody)(
+      this,
+      options,
+    ));
   }
   #cachedBody = (key) => {
     const { bodyCache, raw } = this;
@@ -123,7 +133,7 @@ class HonoRequest {
         return new Response(body)[key]();
       });
     }
-    return bodyCache[key] = raw[key]();
+    return (bodyCache[key] = raw[key]());
   };
   /**
    * `.json()` can parse Request body of type `application/json`
@@ -289,7 +299,8 @@ class HonoRequest {
    * ```
    */
   get routePath() {
-    return this.#matchResult[0].map(([[, route]]) => route)[this.routeIndex].path;
+    return this.#matchResult[0].map(([[, route]]) => route)[this.routeIndex]
+      .path;
   }
 }
 const cloneRawRequest = async (req) => {
@@ -299,7 +310,8 @@ const cloneRawRequest = async (req) => {
   const cacheKey = Object.keys(req.bodyCache)[0];
   if (!cacheKey) {
     throw new import_http_exception.HTTPException(500, {
-      message: "Cannot clone request: body was already consumed and not cached. Please use HonoRequest methods (e.g., req.json(), req.text()) instead of consuming req.raw directly."
+      message:
+        "Cannot clone request: body was already consumed and not cached. Please use HonoRequest methods (e.g., req.json(), req.text()) instead of consuming req.raw directly.",
     });
   }
   const requestInit = {
@@ -314,12 +326,13 @@ const cloneRawRequest = async (req) => {
     redirect: req.raw.redirect,
     referrer: req.raw.referrer,
     referrerPolicy: req.raw.referrerPolicy,
-    signal: req.raw.signal
+    signal: req.raw.signal,
   };
   return new Request(req.url, requestInit);
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  HonoRequest,
-  cloneRawRequest
-});
+0 &&
+  (module.exports = {
+    HonoRequest,
+    cloneRawRequest,
+  });

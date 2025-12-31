@@ -1,4 +1,4 @@
-import type {IsAny} from './is-any.d.ts';
+import type { IsAny } from "./is-any.d.ts";
 
 /**
 An if-else-like type that resolves depending on whether the given type is `any`.
@@ -21,8 +21,8 @@ type ShouldBeBar = IfAny<'not any', 'foo', 'bar'>;
 @category Type Guard
 @category Utilities
 */
-export type IfAny<T, TypeIfAny = true, TypeIfNotAny = false> = (
-	IsAny<T> extends true ? TypeIfAny : TypeIfNotAny
-);
-
-export {};
+export type IfAny<
+  T,
+  TypeIfAny = true,
+  TypeIfNotAny = false,
+> = IsAny<T> extends true ? TypeIfAny : TypeIfNotAny;

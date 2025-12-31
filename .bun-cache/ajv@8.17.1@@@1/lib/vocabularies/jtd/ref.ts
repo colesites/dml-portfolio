@@ -1,56 +1,63 @@
-import type {CodeKeywordDefinition, AnySchemaObject} from "../../types"
-import type {KeywordCxt} from "../../compile/validate"
-import {compileSchema, SchemaEnv} from "../../compile"
-import {_, not, nil, stringify} from "../../compile/codegen"
-import MissingRefError from "../../compile/ref_error"
-import N from "../../compile/names"
-import {getValidate, callRef} from "../core/ref"
-import {checkMetadata} from "./metadata"
+import { compileSchema, SchemaEnv } from "../../compile";
+import { _, nil, not, stringify } from "../../compile/codegen";
+import N from "../../compile/names";
+import MissingRefError from "../../compile/ref_error";
+import type { KeywordCxt } from "../../compile/validate";
+import type { AnySchemaObject, CodeKeywordDefinition } from "../../types";
+import { callRef, getValidate } from "../core/ref";
+import { checkMetadata } from "./metadata";
 
 const def: CodeKeywordDefinition = {
   keyword: "ref",
   schemaType: "string",
   code(cxt: KeywordCxt) {
-    checkMetadata(cxt)
-    const {gen, data, schema: ref, parentSchema, it} = cxt
+    checkMetadata(cxt);
+    const { gen, data, schema: ref, parentSchema, it } = cxt;
     const {
-      schemaEnv: {root},
-    } = it
-    const valid = gen.name("valid")
+      schemaEnv: { root },
+    } = it;
+    const valid = gen.name("valid");
     if (parentSchema.nullable) {
-      gen.var(valid, _`${data} === null`)
-      gen.if(not(valid), validateJtdRef)
+      gen.var(valid, _`${data} === null`);
+      gen.if(not(valid), validateJtdRef);
     } else {
-      gen.var(valid, false)
-      validateJtdRef()
+      gen.var(valid, false);
+      validateJtdRef();
     }
-    cxt.ok(valid)
+    cxt.ok(valid);
 
     function validateJtdRef(): void {
-      const refSchema = (root.schema as AnySchemaObject).definitions?.[ref]
+      const refSchema = (root.schema as AnySchemaObject).definitions?.[ref];
       if (!refSchema) {
-        throw new MissingRefError(it.opts.uriResolver, "", ref, `No definition ${ref}`)
+        throw new MissingRefError(
+          it.opts.uriResolver,
+          "",
+          ref,
+          `No definition ${ref}`,
+        );
       }
-      if (hasRef(refSchema) || !it.opts.inlineRefs) callValidate(refSchema)
-      else inlineRefSchema(refSchema)
+      if (hasRef(refSchema) || !it.opts.inlineRefs) callValidate(refSchema);
+      else inlineRefSchema(refSchema);
     }
 
     function callValidate(schema: AnySchemaObject): void {
       const sch = compileSchema.call(
         it.self,
-        new SchemaEnv({schema, root, schemaPath: `/definitions/${ref}`})
-      )
-      const v = getValidate(cxt, sch)
-      const errsCount = gen.const("_errs", N.errors)
-      callRef(cxt, v, sch, sch.$async)
-      gen.assign(valid, _`${errsCount} === ${N.errors}`)
+        new SchemaEnv({ schema, root, schemaPath: `/definitions/${ref}` }),
+      );
+      const v = getValidate(cxt, sch);
+      const errsCount = gen.const("_errs", N.errors);
+      callRef(cxt, v, sch, sch.$async);
+      gen.assign(valid, _`${errsCount} === ${N.errors}`);
     }
 
     function inlineRefSchema(schema: AnySchemaObject): void {
       const schName = gen.scopeValue(
         "schema",
-        it.opts.code.source === true ? {ref: schema, code: stringify(schema)} : {ref: schema}
-      )
+        it.opts.code.source === true
+          ? { ref: schema, code: stringify(schema) }
+          : { ref: schema },
+      );
       cxt.subschema(
         {
           schema,
@@ -59,18 +66,22 @@ const def: CodeKeywordDefinition = {
           topSchemaRef: schName,
           errSchemaPath: `/definitions/${ref}`,
         },
-        valid
-      )
+        valid,
+      );
     }
   },
-}
+};
 
 export function hasRef(schema: AnySchemaObject): boolean {
   for (const key in schema) {
-    let sch: AnySchemaObject
-    if (key === "ref" || (typeof (sch = schema[key]) == "object" && hasRef(sch))) return true
+    let sch: AnySchemaObject;
+    if (
+      key === "ref" ||
+      (typeof (sch = schema[key]) == "object" && hasRef(sch))
+    )
+      return true;
   }
-  return false
+  return false;
 }
 
-export default def
+export default def;

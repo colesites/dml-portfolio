@@ -1,7 +1,8 @@
 // src/router/reg-exp-router/prepared-router.ts
 import { METHOD_NAME_ALL } from "../../router.js";
-import { match, emptyParam } from "./matcher.js";
+import { emptyParam, match } from "./matcher.js";
 import { RegExpRouter } from "./router.js";
+
 var PreparedRegExpRouter = class {
   name = "PreparedRegExpRouter";
   #matchers;
@@ -24,7 +25,6 @@ var PreparedRegExpRouter = class {
         if (typeof index === "number") {
           matcher[1][index].push([handler, map]);
         } else {
-          ;
           matcher[2][index || path][0].push([handler, map]);
         }
       });
@@ -39,8 +39,8 @@ var PreparedRegExpRouter = class {
       }
       this.#matchers[method] = [
         all[0],
-        all[1].map((list) => Array.isArray(list) ? list.slice() : 0),
-        staticMap
+        all[1].map((list) => (Array.isArray(list) ? list.slice() : 0)),
+        staticMap,
       ];
     }
     if (path === "/*" || path === "*") {
@@ -96,7 +96,7 @@ var buildInitParams = ({ paths }) => {
           if (relocateMap[path]) {
             relocateMap[path][0][1] = {
               ...relocateMap[path][0][1],
-              ...map
+              ...map,
             };
           } else {
             relocateMap[path] = [[[], map]];
@@ -128,15 +128,10 @@ var buildInitParams = ({ paths }) => {
   return [matchers, relocateMap];
 };
 var serializeInitParams = ([matchers, relocateMap]) => {
-  const matchersStr = JSON.stringify(
-    matchers,
-    (_, value) => value instanceof RegExp ? `##${value.toString()}##` : value
+  const matchersStr = JSON.stringify(matchers, (_, value) =>
+    value instanceof RegExp ? `##${value.toString()}##` : value,
   ).replace(/"##(.+?)##"/g, (_, str) => str.replace(/\\\\/g, "\\"));
   const relocateMapStr = JSON.stringify(relocateMap);
   return `[${matchersStr},${relocateMapStr}]`;
 };
-export {
-  PreparedRegExpRouter,
-  buildInitParams,
-  serializeInitParams
-};
+export { PreparedRegExpRouter, buildInitParams, serializeInitParams };

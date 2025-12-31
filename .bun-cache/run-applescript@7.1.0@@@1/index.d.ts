@@ -1,5 +1,5 @@
 export type Options = {
-	/**
+  /**
 	Change the output style.
 
 	When `false`, returns the value in a [recompilable source form](https://ss64.com/osx/osascript.html).
@@ -16,14 +16,14 @@ export type Options = {
 	//=> '"unicorn"'
 	```
 	*/
-	readonly humanReadableOutput?: boolean;
+  readonly humanReadableOutput?: boolean;
 
-	/**
+  /**
 	An AbortSignal that can be used to cancel the AppleScript execution.
 
 	Only supported by the async function.
 	*/
-	readonly signal?: AbortSignal;
+  readonly signal?: AbortSignal;
 };
 
 /**
@@ -43,8 +43,8 @@ console.log(result);
 ```
 */
 export function runAppleScript(
-	script: string,
-	options?: Options
+  script: string,
+  options?: Options,
 ): Promise<string>;
 
 /**

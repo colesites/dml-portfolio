@@ -1,7 +1,7 @@
-import type {_DefaultDelimiterCaseOptions} from './delimiter-case.d.ts';
-import type {ApplyDefaultOptions} from './internal/index.d.ts';
-import type {SnakeCase} from './snake-case.d.ts';
-import type {WordsOptions} from './words.d.ts';
+import type { _DefaultDelimiterCaseOptions } from "./delimiter-case.d.ts";
+import type { ApplyDefaultOptions } from "./internal/index.d.ts";
+import type { SnakeCase } from "./snake-case.d.ts";
+import type { WordsOptions } from "./words.d.ts";
 
 /**
 Convert a string literal to screaming-snake-case.
@@ -21,10 +21,13 @@ const someVariableNoSplitOnNumbers: ScreamingSnakeCase<'p2pNetwork', {splitOnNum
 @category Template literal
  */
 export type ScreamingSnakeCase<
-	Value,
-	Options extends WordsOptions = {},
+  Value,
+  Options extends WordsOptions = {},
 > = Value extends string
-	? Uppercase<SnakeCase<Value, ApplyDefaultOptions<WordsOptions, _DefaultDelimiterCaseOptions, Options>>>
-	: Value;
-
-export {};
+  ? Uppercase<
+      SnakeCase<
+        Value,
+        ApplyDefaultOptions<WordsOptions, _DefaultDelimiterCaseOptions, Options>
+      >
+    >
+  : Value;

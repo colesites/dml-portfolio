@@ -1,17 +1,15 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.VariablesAreInputTypesRule = VariablesAreInputTypesRule;
 
-var _GraphQLError = require('../../error/GraphQLError.js');
+var _GraphQLError = require("../../error/GraphQLError.js");
 
-var _printer = require('../../language/printer.js');
+var _printer = require("../../language/printer.js");
 
-var _definition = require('../../type/definition.js');
+var _definition = require("../../type/definition.js");
 
-var _typeFromAST = require('../../utilities/typeFromAST.js');
+var _typeFromAST = require("../../utilities/typeFromAST.js");
 
 /**
  * Variables are input types

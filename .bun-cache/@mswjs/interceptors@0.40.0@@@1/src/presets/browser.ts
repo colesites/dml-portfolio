@@ -1,5 +1,5 @@
-import { FetchInterceptor } from '../interceptors/fetch'
-import { XMLHttpRequestInterceptor } from '../interceptors/XMLHttpRequest'
+import { FetchInterceptor } from "../interceptors/fetch";
+import { XMLHttpRequestInterceptor } from "../interceptors/XMLHttpRequest";
 
 /**
  * The default preset provisions the interception of requests
@@ -8,4 +8,4 @@ import { XMLHttpRequestInterceptor } from '../interceptors/XMLHttpRequest'
 export default [
   new FetchInterceptor(),
   new XMLHttpRequestInterceptor(),
-] as const
+] as const;

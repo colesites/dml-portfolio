@@ -86,7 +86,9 @@ test("nested", () => {
     inner: "qwer",
   });
   type input = z.input<typeof outer>;
-  expectTypeOf<input>().toEqualTypeOf<{ inner?: string | undefined } | undefined>();
+  expectTypeOf<input>().toEqualTypeOf<
+    { inner?: string | undefined } | undefined
+  >();
   type out = z.output<typeof outer>;
   expectTypeOf<out>().toEqualTypeOf<{ inner: string }>();
   expect(outer.parse(undefined)).toEqual({ inner: "qwer" });
@@ -138,7 +140,9 @@ test("nested prefault/default", () => {
     d,
   });
 
-  expect(obj.safeParse({ a: "a1", b: "b1", c: "c1", d: "d1" })).toMatchInlineSnapshot(`
+  expect(
+    obj.safeParse({ a: "a1", b: "b1", c: "c1", d: "d1" }),
+  ).toMatchInlineSnapshot(`
     {
       "data": {
         "a": "a1",
@@ -150,7 +154,9 @@ test("nested prefault/default", () => {
     }
   `);
 
-  expect(obj.safeParse({ a: "f", b: "f", c: "f", d: "f" })).toMatchInlineSnapshot(`
+  expect(
+    obj.safeParse({ a: "f", b: "f", c: "f", d: "f" }),
+  ).toMatchInlineSnapshot(`
     {
       "error": [ZodError: [
       {
@@ -198,7 +204,9 @@ test("nested prefault/default", () => {
     }
   `);
 
-  expect(obj.safeParse({ a: undefined, b: undefined, c: undefined, d: undefined })).toMatchInlineSnapshot(`
+  expect(
+    obj.safeParse({ a: undefined, b: undefined, c: undefined, d: undefined }),
+  ).toMatchInlineSnapshot(`
     {
       "data": {
         "a": "a",
@@ -216,7 +224,9 @@ test("nested prefault/default", () => {
     c: c.optional(),
     d: d.optional(),
   });
-  expect(obj2.safeParse({ a: undefined, b: undefined, c: undefined, d: undefined })).toMatchInlineSnapshot(`
+  expect(
+    obj2.safeParse({ a: undefined, b: undefined, c: undefined, d: undefined }),
+  ).toMatchInlineSnapshot(`
     {
       "data": {
         "a": "a",
@@ -265,7 +275,7 @@ test("failing default", () => {
       b: undefined,
       c: undefined,
       d: undefined,
-    }).error!.issues
+    }).error!.issues,
   ).toMatchInlineSnapshot(`
     [
       {

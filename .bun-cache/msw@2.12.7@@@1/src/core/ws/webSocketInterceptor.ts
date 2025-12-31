@@ -1,3 +1,3 @@
-import { WebSocketInterceptor } from '@mswjs/interceptors/WebSocket'
+import { WebSocketInterceptor } from "@mswjs/interceptors/WebSocket";
 
-export const webSocketInterceptor = new WebSocketInterceptor()
+export const webSocketInterceptor = new WebSocketInterceptor();

@@ -1,4 +1,4 @@
-import type {ParseError} from './errors.ts'
+import type { ParseError } from "./errors.ts";
 
 /**
  * EventSource parser instance.
@@ -16,7 +16,7 @@ export interface EventSourceParser {
    * @param chunk - The chunk to parse. Can be a partial, eg in the case of streaming messages.
    * @public
    */
-  feed(chunk: string): void
+  feed(chunk: string): void;
 
   /**
    * Resets the parser state. This is required when you have a new stream of messages -
@@ -29,7 +29,7 @@ export interface EventSourceParser {
    *
    * @public
    */
-  reset(options?: {consume?: boolean}): void
+  reset(options?: { consume?: boolean }): void;
 }
 
 /**
@@ -43,18 +43,18 @@ export interface EventSourceMessage {
    * implementation in that browsers will default this to `message`, whereas this parser will
    * leave this as `undefined` if not explicitly declared.
    */
-  event?: string | undefined
+  event?: string | undefined;
 
   /**
    * ID of the message, if any was provided by the server. Can be used by clients to keep the
    * last received message ID in sync when reconnecting.
    */
-  id?: string | undefined
+  id?: string | undefined;
 
   /**
    * The data received for this message
    */
-  data: string
+  data: string;
 }
 
 /**
@@ -70,21 +70,21 @@ export interface ParserCallbacks {
    *
    * @param event - The parsed event/message
    */
-  onEvent?: ((event: EventSourceMessage) => void) | undefined
+  onEvent?: ((event: EventSourceMessage) => void) | undefined;
 
   /**
    * Callback for when the server sends a new reconnection interval through the `retry` field.
    *
    * @param retry - The number of milliseconds to wait before reconnecting.
    */
-  onRetry?: ((retry: number) => void) | undefined
+  onRetry?: ((retry: number) => void) | undefined;
 
   /**
    * Callback for when a comment is encountered in the stream.
    *
    * @param comment - The comment encountered in the stream.
    */
-  onComment?: ((comment: string) => void) | undefined
+  onComment?: ((comment: string) => void) | undefined;
 
   /**
    * Callback for when an error occurs during parsing. This is a catch-all for any errors
@@ -93,5 +93,5 @@ export interface ParserCallbacks {
    *
    * @param error - The error that occurred during parsing
    */
-  onError?: ((error: ParseError) => void) | undefined
+  onError?: ((error: ParseError) => void) | undefined;
 }

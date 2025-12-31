@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = _inherits;
 var _setPrototypeOf = require("./setPrototypeOf.js");
@@ -13,11 +13,11 @@ function _inherits(subClass, superClass) {
     constructor: {
       value: subClass,
       writable: true,
-      configurable: true
-    }
+      configurable: true,
+    },
   });
   Object.defineProperty(subClass, "prototype", {
-    writable: false
+    writable: false,
   });
   if (superClass) (0, _setPrototypeOf.default)(subClass, superClass);
 }

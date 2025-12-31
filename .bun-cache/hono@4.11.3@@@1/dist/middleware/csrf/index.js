@@ -1,9 +1,11 @@
 // src/middleware/csrf/index.ts
 import { HTTPException } from "../../http-exception.js";
+
 var secFetchSiteValues = ["same-origin", "same-site", "none", "cross-site"];
 var isSecFetchSite = (value) => secFetchSiteValues.includes(value);
 var isSafeMethodRe = /^(GET|HEAD)$/;
-var isRequestedByFormElementRe = /^\b(application\/x-www-form-urlencoded|multipart\/form-data|text\/plain)\b/i;
+var isRequestedByFormElementRe =
+  /^\b(application\/x-www-form-urlencoded|multipart\/form-data|text\/plain)\b/i;
 var csrf = (options) => {
   const originHandler = ((optsOrigin) => {
     if (!optsOrigin) {
@@ -43,13 +45,18 @@ var csrf = (options) => {
     return await secFetchSiteHandler(secFetchSite, c);
   };
   return async function csrf2(c, next) {
-    if (!isSafeMethodRe.test(c.req.method) && isRequestedByFormElementRe.test(c.req.header("content-type") || "text/plain") && !await isAllowedSecFetchSite(c.req.header("sec-fetch-site"), c) && !await isAllowedOrigin(c.req.header("origin"), c)) {
+    if (
+      !isSafeMethodRe.test(c.req.method) &&
+      isRequestedByFormElementRe.test(
+        c.req.header("content-type") || "text/plain",
+      ) &&
+      !(await isAllowedSecFetchSite(c.req.header("sec-fetch-site"), c)) &&
+      !(await isAllowedOrigin(c.req.header("origin"), c))
+    ) {
       const res = new Response("Forbidden", { status: 403 });
       throw new HTTPException(403, { res });
     }
     await next();
   };
 };
-export {
-  csrf
-};
+export { csrf };

@@ -4,14 +4,14 @@
  * and exposed in `tldts.ts` and `tldts-experimental.ts` bundle entrypoints.
  */
 
-import getDomain from './domain';
-import getDomainWithoutSuffix from './domain-without-suffix';
-import extractHostname from './extract-hostname';
-import isIp from './is-ip';
-import isValidHostname from './is-valid';
-import { IPublicSuffix, ISuffixLookupOptions } from './lookup/interface';
-import { IOptions, setDefaults } from './options';
-import getSubdomain from './subdomain';
+import getDomain from "./domain";
+import getDomainWithoutSuffix from "./domain-without-suffix";
+import extractHostname from "./extract-hostname";
+import isIp from "./is-ip";
+import isValidHostname from "./is-valid";
+import type { IPublicSuffix, ISuffixLookupOptions } from "./lookup/interface";
+import { type IOptions, setDefaults } from "./options";
+import getSubdomain from "./subdomain";
 
 export interface IResult {
   // `hostname` is either a registered name (including but not limited to a
@@ -62,7 +62,7 @@ export function resetResult(result: IResult): void {
 // an early stop mechanism (simulating some form of laziness) to avoid doing
 // more work than necessary to perform a given action (e.g.: we don't need to
 // extract the domain and subdomain if we are only interested in public suffix).
-export const enum FLAG {
+export enum FLAG {
   HOSTNAME,
   IS_VALID,
   PUBLIC_SUFFIX,
@@ -87,7 +87,7 @@ export function parseImpl(
   // Very fast approximate check to make sure `url` is a string. This is needed
   // because the library will not necessarily be used in a typed setup and
   // values of arbitrary types might be given as argument.
-  if (typeof url !== 'string') {
+  if (typeof url !== "string") {
     return result;
   }
 

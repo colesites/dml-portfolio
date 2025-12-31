@@ -25,7 +25,16 @@ export interface $ZodIssueInvalidType<Input = unknown> extends $ZodIssueBase {
 
 export interface $ZodIssueTooBig<Input = unknown> extends $ZodIssueBase {
   readonly code: "too_big";
-  readonly origin: "number" | "int" | "bigint" | "date" | "string" | "array" | "set" | "file" | (string & {});
+  readonly origin:
+    | "number"
+    | "int"
+    | "bigint"
+    | "date"
+    | "string"
+    | "array"
+    | "set"
+    | "file"
+    | (string & {});
   readonly maximum: number | bigint;
   readonly inclusive?: boolean;
   readonly exact?: boolean;
@@ -34,7 +43,16 @@ export interface $ZodIssueTooBig<Input = unknown> extends $ZodIssueBase {
 
 export interface $ZodIssueTooSmall<Input = unknown> extends $ZodIssueBase {
   readonly code: "too_small";
-  readonly origin: "number" | "int" | "bigint" | "date" | "string" | "array" | "set" | "file" | (string & {});
+  readonly origin:
+    | "number"
+    | "int"
+    | "bigint"
+    | "date"
+    | "string"
+    | "array"
+    | "set"
+    | "file"
+    | (string & {});
   readonly minimum: number | bigint;
   /** True if the allowable range includes the minimum */
   readonly inclusive?: boolean;
@@ -50,7 +68,9 @@ export interface $ZodIssueInvalidStringFormat extends $ZodIssueBase {
   readonly input: string;
 }
 
-export interface $ZodIssueNotMultipleOf<Input extends number | bigint = number | bigint> extends $ZodIssueBase {
+export interface $ZodIssueNotMultipleOf<
+  Input extends number | bigint = number | bigint,
+> extends $ZodIssueBase {
   readonly code: "not_multiple_of";
   readonly divisor: number;
   readonly input: Input;
@@ -75,7 +95,8 @@ export interface $ZodIssueInvalidKey<Input = unknown> extends $ZodIssueBase {
   readonly input: Input;
 }
 
-export interface $ZodIssueInvalidElement<Input = unknown> extends $ZodIssueBase {
+export interface $ZodIssueInvalidElement<Input = unknown>
+  extends $ZodIssueBase {
   readonly code: "invalid_element";
   readonly origin: "map" | "set";
   readonly key: unknown;
@@ -99,21 +120,28 @@ export interface $ZodIssueCustom extends $ZodIssueBase {
 ////     first-party string formats     ////
 ////////////////////////////////////////////
 
-export interface $ZodIssueStringCommonFormats extends $ZodIssueInvalidStringFormat {
-  format: Exclude<$ZodStringFormats, "regex" | "jwt" | "starts_with" | "ends_with" | "includes">;
+export interface $ZodIssueStringCommonFormats
+  extends $ZodIssueInvalidStringFormat {
+  format: Exclude<
+    $ZodStringFormats,
+    "regex" | "jwt" | "starts_with" | "ends_with" | "includes"
+  >;
 }
 
-export interface $ZodIssueStringInvalidRegex extends $ZodIssueInvalidStringFormat {
+export interface $ZodIssueStringInvalidRegex
+  extends $ZodIssueInvalidStringFormat {
   format: "regex";
   pattern: string;
 }
 
-export interface $ZodIssueStringInvalidJWT extends $ZodIssueInvalidStringFormat {
+export interface $ZodIssueStringInvalidJWT
+  extends $ZodIssueInvalidStringFormat {
   format: "jwt";
   algorithm?: string;
 }
 
-export interface $ZodIssueStringStartsWith extends $ZodIssueInvalidStringFormat {
+export interface $ZodIssueStringStartsWith
+  extends $ZodIssueInvalidStringFormat {
   format: "starts_with";
   prefix: string;
 }
@@ -155,7 +183,9 @@ export type $ZodIssue =
 
 export type $ZodIssueCode = $ZodIssue["code"];
 
-export type $ZodRawIssue<T extends $ZodIssueBase = $ZodIssue> = T extends any ? RawIssue<T> : never;
+export type $ZodRawIssue<T extends $ZodIssueBase = $ZodIssue> = T extends any
+  ? RawIssue<T>
+  : never;
 type RawIssue<T extends $ZodIssueBase> = util.Flatten<
   util.MakePartial<T, "message" | "path"> & {
     /** The input data */
@@ -209,9 +239,16 @@ const initializer = (inst: $ZodError, def: $ZodIssue[]): void => {
   });
 };
 
-export const $ZodError: $constructor<$ZodError> = $constructor("$ZodError", initializer);
+export const $ZodError: $constructor<$ZodError> = $constructor(
+  "$ZodError",
+  initializer,
+);
 interface $ZodRealError<T = any> extends $ZodError<T> {}
-export const $ZodRealError: $constructor<$ZodRealError> = $constructor("$ZodError", initializer, { Parent: Error });
+export const $ZodRealError: $constructor<$ZodRealError> = $constructor(
+  "$ZodError",
+  initializer,
+  { Parent: Error },
+);
 
 ///////////////////    ERROR UTILITIES   ////////////////////////
 
@@ -225,8 +262,14 @@ type _FlattenedError<T, U = string> = {
 };
 
 export function flattenError<T>(error: $ZodError<T>): _FlattenedError<T>;
-export function flattenError<T, U>(error: $ZodError<T>, mapper?: (issue: $ZodIssue) => U): _FlattenedError<T, U>;
-export function flattenError(error: $ZodError, mapper = (issue: $ZodIssue) => issue.message): any {
+export function flattenError<T, U>(
+  error: $ZodError<T>,
+  mapper?: (issue: $ZodIssue) => U,
+): _FlattenedError<T, U>;
+export function flattenError(
+  error: $ZodError,
+  mapper = (issue: $ZodIssue) => issue.message,
+): any {
   const fieldErrors: any = {};
   const formErrors: any[] = [];
   for (const sub of error.issues) {
@@ -253,13 +296,13 @@ export type $ZodFormattedError<T, U = string> = {
 } & util.Flatten<_ZodFormattedError<T, U>>;
 
 export function formatError<T>(error: $ZodError<T>): $ZodFormattedError<T>;
-export function formatError<T, U>(error: $ZodError<T>, mapper?: (issue: $ZodIssue) => U): $ZodFormattedError<T, U>;
+export function formatError<T, U>(
+  error: $ZodError<T>,
+  mapper?: (issue: $ZodIssue) => U,
+): $ZodFormattedError<T, U>;
 export function formatError<T>(error: $ZodError, _mapper?: any) {
   const mapper: (issue: $ZodIssue) => any =
-    _mapper ||
-    function (issue: $ZodIssue) {
-      return issue.message;
-    };
+    _mapper || ((issue: $ZodIssue) => issue.message);
   const fieldErrors: $ZodFormattedError<T> = { _errors: [] } as any;
   const processError = (error: { issues: $ZodIssue[] }) => {
     for (const issue of error.issues) {
@@ -300,19 +343,25 @@ export type $ZodErrorTree<T, U = string> = T extends [any, ...any[]]
   : T extends any[]
     ? { errors: U[]; items?: Array<$ZodErrorTree<T[number], U>> }
     : T extends object
-      ? { errors: U[]; properties?: { [K in keyof T]?: $ZodErrorTree<T[K], U> } }
+      ? {
+          errors: U[];
+          properties?: { [K in keyof T]?: $ZodErrorTree<T[K], U> };
+        }
       : { errors: U[] };
 
 export function treeifyError<T>(error: $ZodError<T>): $ZodErrorTree<T>;
-export function treeifyError<T, U>(error: $ZodError<T>, mapper?: (issue: $ZodIssue) => U): $ZodErrorTree<T, U>;
+export function treeifyError<T, U>(
+  error: $ZodError<T>,
+  mapper?: (issue: $ZodIssue) => U,
+): $ZodErrorTree<T, U>;
 export function treeifyError<T>(error: $ZodError, _mapper?: any) {
   const mapper: (issue: $ZodIssue) => any =
-    _mapper ||
-    function (issue: $ZodIssue) {
-      return issue.message;
-    };
+    _mapper || ((issue: $ZodIssue) => issue.message);
   const result: $ZodErrorTree<T> = { errors: [] } as any;
-  const processError = (error: { issues: $ZodIssue[] }, path: PropertyKey[] = []) => {
+  const processError = (
+    error: { issues: $ZodIssue[] },
+    path: PropertyKey[] = [],
+  ) => {
     for (const issue of error.issues) {
       if (issue.code === "invalid_union" && issue.errors.length) {
         // regular union error
@@ -393,7 +442,8 @@ export function toDotPath(path: (string | number | symbol)[]): string {
   const segs: string[] = [];
   for (const seg of path) {
     if (typeof seg === "number") segs.push(`[${seg}]`);
-    else if (typeof seg === "symbol") segs.push(`[${JSON.stringify(String(seg))}]`);
+    else if (typeof seg === "symbol")
+      segs.push(`[${JSON.stringify(String(seg))}]`);
     else if (/[^\w$]/.test(seg)) segs.push(`[${JSON.stringify(seg)}]`);
     else {
       if (segs.length) segs.push(".");
@@ -411,7 +461,9 @@ interface BaseError {
 export function prettifyError(error: BaseError): string {
   const lines: string[] = [];
   // sort by path length
-  const issues = [...error.issues].sort((a, b) => a.path.length - b.path.length);
+  const issues = [...error.issues].sort(
+    (a, b) => a.path.length - b.path.length,
+  );
 
   // Process each issue
   for (const issue of issues) {

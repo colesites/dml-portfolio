@@ -1,11 +1,5 @@
-import {
-  emitAsync,
-  hasConfigurableGlobal
-} from "../../chunk-VYSDLBSS.mjs";
-import {
-  Interceptor,
-  createRequestId
-} from "../../chunk-Z5TSB3T6.mjs";
+import { emitAsync, hasConfigurableGlobal } from "../../chunk-VYSDLBSS.mjs";
+import { createRequestId, Interceptor } from "../../chunk-Z5TSB3T6.mjs";
 
 // src/interceptors/WebSocket/utils/bindEvent.ts
 function bindEvent(target, event) {
@@ -13,13 +7,13 @@ function bindEvent(target, event) {
     target: {
       value: target,
       enumerable: true,
-      writable: true
+      writable: true,
     },
     currentTarget: {
       value: target,
       enumerable: true,
-      writable: true
-    }
+      writable: true,
+    },
   });
   return event;
 }
@@ -89,8 +83,7 @@ kCancelable, kDefaultPrevented;
 // src/interceptors/WebSocket/WebSocketClientConnection.ts
 var kEmitter = Symbol("kEmitter");
 var kBoundListener = Symbol("kBoundListener");
-var WebSocketClientConnectionProtocol = class {
-};
+var WebSocketClientConnectionProtocol = class {};
 var WebSocketClientConnection = class {
   constructor(socket, transport) {
     this.socket = socket;
@@ -104,8 +97,8 @@ var WebSocketClientConnection = class {
         new CancelableMessageEvent("message", {
           data: event.data,
           origin: event.origin,
-          cancelable: true
-        })
+          cancelable: true,
+        }),
       );
       this[kEmitter].dispatchEvent(message);
       if (message.defaultPrevented) {
@@ -114,7 +107,7 @@ var WebSocketClientConnection = class {
     });
     this.transport.addEventListener("close", (event) => {
       this[kEmitter].dispatchEvent(
-        bindEvent(this.socket, new CloseEvent("close", event))
+        bindEvent(this.socket, new CloseEvent("close", event)),
       );
     });
   }
@@ -127,13 +120,13 @@ var WebSocketClientConnection = class {
       Object.defineProperty(listener, kBoundListener, {
         value: boundListener,
         enumerable: false,
-        configurable: false
+        configurable: false,
       });
     }
     this[kEmitter].addEventListener(
       type,
       Reflect.get(listener, kBoundListener),
-      options
+      options,
     );
   }
   /**
@@ -143,7 +136,7 @@ var WebSocketClientConnection = class {
     this[kEmitter].removeEventListener(
       event,
       Reflect.get(listener, kBoundListener),
-      options
+      options,
     );
   }
   /**
@@ -163,13 +156,13 @@ var WebSocketClientConnection = class {
 };
 kEmitter;
 
-// src/interceptors/WebSocket/WebSocketServerConnection.ts
-import { invariant as invariant2 } from "outvariant";
-
-// src/interceptors/WebSocket/WebSocketOverride.ts
-import { invariant } from "outvariant";
 import { DeferredPromise } from "@open-draft/deferred-promise";
-var WEBSOCKET_CLOSE_CODE_RANGE_ERROR = "InvalidAccessError: close code out of user configurable range";
+// src/interceptors/WebSocket/WebSocketServerConnection.ts
+// src/interceptors/WebSocket/WebSocketOverride.ts
+import { invariant, invariant as invariant2 } from "outvariant";
+
+var WEBSOCKET_CLOSE_CODE_RANGE_ERROR =
+  "InvalidAccessError: close code out of user configurable range";
 var kPassthroughPromise = Symbol("kPassthroughPromise");
 var kOnSend = Symbol("kOnSend");
 var kClose = Symbol("kClose");
@@ -195,7 +188,12 @@ var WebSocketOverride = class extends EventTarget {
       if (await this[kPassthroughPromise]) {
         return;
       }
-      this.protocol = typeof protocols === "string" ? protocols : Array.isArray(protocols) && protocols.length > 0 ? protocols[0] : "";
+      this.protocol =
+        typeof protocols === "string"
+          ? protocols
+          : Array.isArray(protocols) && protocols.length > 0
+            ? protocols[0]
+            : "";
       if (this.readyState === this.CONNECTING) {
         this.readyState = this.OPEN;
         this.dispatchEvent(bindEvent(this, new Event("open")));
@@ -213,10 +211,7 @@ var WebSocketOverride = class extends EventTarget {
     return this._onopen;
   }
   set onmessage(listener) {
-    this.removeEventListener(
-      "message",
-      this._onmessage
-    );
+    this.removeEventListener("message", this._onmessage);
     this._onmessage = listener;
     if (listener !== null) {
       this.addEventListener("message", listener);
@@ -266,12 +261,16 @@ var WebSocketOverride = class extends EventTarget {
   close(code = 1e3, reason) {
     invariant(code, WEBSOCKET_CLOSE_CODE_RANGE_ERROR);
     invariant(
-      code === 1e3 || code >= 3e3 && code <= 4999,
-      WEBSOCKET_CLOSE_CODE_RANGE_ERROR
+      code === 1e3 || (code >= 3e3 && code <= 4999),
+      WEBSOCKET_CLOSE_CODE_RANGE_ERROR,
     );
     this[kClose](code, reason);
   }
-  [(kPassthroughPromise, kOnSend, kClose)](code = 1e3, reason, wasClean = true) {
+  [(kPassthroughPromise, kOnSend, kClose)](
+    code = 1e3,
+    reason,
+    wasClean = true,
+  ) {
     if (this.readyState === this.CLOSING || this.readyState === this.CLOSED) {
       return;
     }
@@ -284,9 +283,9 @@ var WebSocketOverride = class extends EventTarget {
           new CloseEvent("close", {
             code,
             reason,
-            wasClean
-          })
-        )
+            wasClean,
+          }),
+        ),
       );
       this._onopen = null;
       this._onmessage = null;
@@ -295,11 +294,7 @@ var WebSocketOverride = class extends EventTarget {
     });
   }
   addEventListener(type, listener, options) {
-    return super.addEventListener(
-      type,
-      listener,
-      options
-    );
+    return super.addEventListener(type, listener, options);
   }
   removeEventListener(type, callback, options) {
     return super.removeEventListener(type, callback, options);
@@ -323,8 +318,7 @@ function getDataSize(data) {
 var kEmitter2 = Symbol("kEmitter");
 var kBoundListener2 = Symbol("kBoundListener");
 var kSend = Symbol("kSend");
-var WebSocketServerConnectionProtocol = class {
-};
+var WebSocketServerConnectionProtocol = class {};
 var WebSocketServerConnection = class {
   constructor(client, transport, createConnection) {
     this.client = client;
@@ -345,7 +339,7 @@ var WebSocketServerConnection = class {
     });
     this.transport.addEventListener(
       "incoming",
-      this.handleIncomingMessage.bind(this)
+      this.handleIncomingMessage.bind(this),
     );
   }
   /**
@@ -355,7 +349,7 @@ var WebSocketServerConnection = class {
   get socket() {
     invariant2(
       this.realWebSocket,
-      'Cannot access "socket" on the original WebSocket server object: the connection is not open. Did you forget to call `server.connect()`?'
+      'Cannot access "socket" on the original WebSocket server object: the connection is not open. Did you forget to call `server.connect()`?',
     );
     return this.realWebSocket;
   }
@@ -365,7 +359,7 @@ var WebSocketServerConnection = class {
   connect() {
     invariant2(
       !this.realWebSocket || this.realWebSocket.readyState !== WebSocket.OPEN,
-      'Failed to call "connect()" on the original WebSocket instance: the connection already open'
+      'Failed to call "connect()" on the original WebSocket instance: the connection already open',
     );
     const realWebSocket = this.createConnection();
     realWebSocket.binaryType = this.client.binaryType;
@@ -373,10 +367,10 @@ var WebSocketServerConnection = class {
       "open",
       (event) => {
         this[kEmitter2].dispatchEvent(
-          bindEvent(this.realWebSocket, new Event("open", event))
+          bindEvent(this.realWebSocket, new Event("open", event)),
         );
       },
-      { once: true }
+      { once: true },
     );
     realWebSocket.addEventListener("message", (event) => {
       this.transport.dispatchEvent(
@@ -384,9 +378,9 @@ var WebSocketServerConnection = class {
           this.realWebSocket,
           new MessageEvent("incoming", {
             data: event.data,
-            origin: event.origin
-          })
-        )
+            origin: event.origin,
+          }),
+        ),
       );
     });
     this.client.addEventListener(
@@ -395,8 +389,8 @@ var WebSocketServerConnection = class {
         this.handleMockClose(event);
       },
       {
-        signal: this.mockCloseController.signal
-      }
+        signal: this.mockCloseController.signal,
+      },
     );
     realWebSocket.addEventListener(
       "close",
@@ -404,13 +398,13 @@ var WebSocketServerConnection = class {
         this.handleRealClose(event);
       },
       {
-        signal: this.realCloseController.signal
-      }
+        signal: this.realCloseController.signal,
+      },
     );
     realWebSocket.addEventListener("error", () => {
       const errorEvent = bindEvent(
         realWebSocket,
-        new Event("error", { cancelable: true })
+        new Event("error", { cancelable: true }),
       );
       this[kEmitter2].dispatchEvent(errorEvent);
       if (!errorEvent.defaultPrevented) {
@@ -427,13 +421,13 @@ var WebSocketServerConnection = class {
       const boundListener = listener.bind(this.client);
       Object.defineProperty(listener, kBoundListener2, {
         value: boundListener,
-        enumerable: false
+        enumerable: false,
       });
     }
     this[kEmitter2].addEventListener(
       event,
       Reflect.get(listener, kBoundListener2),
-      options
+      options,
     );
   }
   /**
@@ -443,7 +437,7 @@ var WebSocketServerConnection = class {
     this[kEmitter2].removeEventListener(
       event,
       Reflect.get(listener, kBoundListener2),
-      options
+      options,
     );
   }
   /**
@@ -461,9 +455,12 @@ var WebSocketServerConnection = class {
     invariant2(
       realWebSocket,
       'Failed to call "server.send()" for "%s": the connection is not open. Did you forget to call "server.connect()"?',
-      this.client.url
+      this.client.url,
     );
-    if (realWebSocket.readyState === WebSocket.CLOSING || realWebSocket.readyState === WebSocket.CLOSED) {
+    if (
+      realWebSocket.readyState === WebSocket.CLOSING ||
+      realWebSocket.readyState === WebSocket.CLOSED
+    ) {
       return;
     }
     if (realWebSocket.readyState === WebSocket.CONNECTING) {
@@ -472,7 +469,7 @@ var WebSocketServerConnection = class {
         () => {
           realWebSocket.send(data);
         },
-        { once: true }
+        { once: true },
       );
       return;
     }
@@ -486,10 +483,13 @@ var WebSocketServerConnection = class {
     invariant2(
       realWebSocket,
       'Failed to close server connection for "%s": the connection is not open. Did you forget to call "server.connect()"?',
-      this.client.url
+      this.client.url,
     );
     this.realCloseController.abort();
-    if (realWebSocket.readyState === WebSocket.CLOSING || realWebSocket.readyState === WebSocket.CLOSED) {
+    if (
+      realWebSocket.readyState === WebSocket.CLOSING ||
+      realWebSocket.readyState === WebSocket.CLOSED
+    ) {
       return;
     }
     realWebSocket.close();
@@ -503,9 +503,9 @@ var WebSocketServerConnection = class {
              * always results in clean closures.
              */
             code: 1e3,
-            cancelable: true
-          })
-        )
+            cancelable: true,
+          }),
+        ),
       );
     });
   }
@@ -515,8 +515,8 @@ var WebSocketServerConnection = class {
       new CancelableMessageEvent("message", {
         data: event.data,
         origin: event.origin,
-        cancelable: true
-      })
+        cancelable: true,
+      }),
     );
     this[kEmitter2].dispatchEvent(messageEvent);
     if (!messageEvent.defaultPrevented) {
@@ -532,9 +532,9 @@ var WebSocketServerConnection = class {
           // the "already being dispatched" exception.
           new MessageEvent("message", {
             data: event.data,
-            origin: event.origin
-          })
-        )
+            origin: event.origin,
+          }),
+        ),
       );
     }
   }
@@ -551,8 +551,8 @@ var WebSocketServerConnection = class {
         code: event.code,
         reason: event.reason,
         wasClean: event.wasClean,
-        cancelable: true
-      })
+        cancelable: true,
+      }),
     );
     this[kEmitter2].dispatchEvent(closeEvent);
     if (!closeEvent.defaultPrevented) {
@@ -567,7 +567,9 @@ var WebSocketClassTransport = class extends EventTarget {
     super();
     this.socket = socket;
     this.socket.addEventListener("close", (event) => {
-      this.dispatchEvent(bindEvent(this.socket, new CloseEvent("close", event)));
+      this.dispatchEvent(
+        bindEvent(this.socket, new CloseEvent("close", event)),
+      );
     });
     this.socket[kOnSend] = (data) => {
       this.dispatchEvent(
@@ -578,9 +580,9 @@ var WebSocketClassTransport = class extends EventTarget {
           new CancelableMessageEvent("outgoing", {
             data,
             origin: this.socket.url,
-            cancelable: true
-          })
-        )
+            cancelable: true,
+          }),
+        ),
       );
     };
   }
@@ -592,7 +594,10 @@ var WebSocketClassTransport = class extends EventTarget {
   }
   send(data) {
     queueMicrotask(() => {
-      if (this.socket.readyState === this.socket.CLOSING || this.socket.readyState === this.socket.CLOSED) {
+      if (
+        this.socket.readyState === this.socket.CLOSING ||
+        this.socket.readyState === this.socket.CLOSED
+      ) {
         return;
       }
       const dispatchEvent = () => {
@@ -609,9 +614,9 @@ var WebSocketClassTransport = class extends EventTarget {
             this.socket,
             new MessageEvent("message", {
               data,
-              origin: this.socket.url
-            })
-          )
+              origin: this.socket.url,
+            }),
+          ),
         );
       };
       if (this.socket.readyState === this.socket.CONNECTING) {
@@ -620,7 +625,7 @@ var WebSocketClassTransport = class extends EventTarget {
           () => {
             dispatchEvent();
           },
-          { once: true }
+          { once: true },
         );
       } else {
         dispatchEvent();
@@ -643,7 +648,7 @@ var _WebSocketInterceptor = class extends Interceptor {
   setup() {
     const originalWebSocketDescriptor = Object.getOwnPropertyDescriptor(
       globalThis,
-      "WebSocket"
+      "WebSocket",
     );
     const WebSocketProxy = new Proxy(globalThis.WebSocket, {
       construct: (target, args, newTarget) => {
@@ -658,15 +663,16 @@ var _WebSocketInterceptor = class extends Interceptor {
             const server = new WebSocketServerConnection(
               socket,
               transport,
-              createConnection
+              createConnection,
             );
-            const hasConnectionListeners = this.emitter.listenerCount("connection") > 0;
+            const hasConnectionListeners =
+              this.emitter.listenerCount("connection") > 0;
             await emitAsync(this.emitter, "connection", {
               client: new WebSocketClientConnection(socket, transport),
               server,
               info: {
-                protocols
-              }
+                protocols,
+              },
             });
             if (hasConnectionListeners) {
               socket[kPassthroughPromise].resolve(false);
@@ -683,7 +689,10 @@ var _WebSocketInterceptor = class extends Interceptor {
           } catch (error) {
             if (error instanceof Error) {
               socket.dispatchEvent(new Event("error"));
-              if (socket.readyState !== WebSocket.CLOSING && socket.readyState !== WebSocket.CLOSED) {
+              if (
+                socket.readyState !== WebSocket.CLOSING &&
+                socket.readyState !== WebSocket.CLOSED
+              ) {
                 socket[kClose](1011, error.message, false);
               }
               console.error(error);
@@ -691,17 +700,17 @@ var _WebSocketInterceptor = class extends Interceptor {
           }
         });
         return socket;
-      }
+      },
     });
     Object.defineProperty(globalThis, "WebSocket", {
       value: WebSocketProxy,
-      configurable: true
+      configurable: true,
     });
     this.subscriptions.push(() => {
       Object.defineProperty(
         globalThis,
         "WebSocket",
-        originalWebSocketDescriptor
+        originalWebSocketDescriptor,
       );
     });
   }
@@ -716,6 +725,6 @@ export {
   WebSocketClientConnectionProtocol,
   WebSocketInterceptor,
   WebSocketServerConnection,
-  WebSocketServerConnectionProtocol
+  WebSocketServerConnectionProtocol,
 };
 //# sourceMappingURL=index.mjs.map

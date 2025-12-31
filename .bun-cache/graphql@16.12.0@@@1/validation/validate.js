@@ -1,6 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.assertValidSDL = assertValidSDL;
@@ -8,19 +6,19 @@ exports.assertValidSDLExtension = assertValidSDLExtension;
 exports.validate = validate;
 exports.validateSDL = validateSDL;
 
-var _devAssert = require('../jsutils/devAssert.js');
+var _devAssert = require("../jsutils/devAssert.js");
 
-var _GraphQLError = require('../error/GraphQLError.js');
+var _GraphQLError = require("../error/GraphQLError.js");
 
-var _visitor = require('../language/visitor.js');
+var _visitor = require("../language/visitor.js");
 
-var _validate = require('../type/validate.js');
+var _validate = require("../type/validate.js");
 
-var _TypeInfo = require('../utilities/TypeInfo.js');
+var _TypeInfo = require("../utilities/TypeInfo.js");
 
-var _specifiedRules = require('./specifiedRules.js');
+var _specifiedRules = require("./specifiedRules.js");
 
-var _ValidationContext = require('./ValidationContext.js');
+var _ValidationContext = require("./ValidationContext.js");
 
 /**
  * Implements the "Validation" section of the spec.
@@ -58,7 +56,7 @@ function validate(
       null && _options$maxErrors !== void 0
       ? _options$maxErrors
       : 100;
-  documentAST || (0, _devAssert.devAssert)(false, 'Must provide document.'); // If the schema used for validation is invalid, throw an error.
+  documentAST || (0, _devAssert.devAssert)(false, "Must provide document."); // If the schema used for validation is invalid, throw an error.
 
   (0, _validate.assertValidSchema)(schema);
   const abortObj = Object.freeze({});
@@ -71,7 +69,7 @@ function validate(
       if (errors.length >= maxErrors) {
         errors.push(
           new _GraphQLError.GraphQLError(
-            'Too many validation errors, error limit reached. Validation aborted.',
+            "Too many validation errors, error limit reached. Validation aborted.",
           ),
         ); // eslint-disable-next-line @typescript-eslint/no-throw-literal
 
@@ -132,7 +130,7 @@ function assertValidSDL(documentAST) {
   const errors = validateSDL(documentAST);
 
   if (errors.length !== 0) {
-    throw new Error(errors.map((error) => error.message).join('\n\n'));
+    throw new Error(errors.map((error) => error.message).join("\n\n"));
   }
 }
 /**
@@ -146,6 +144,6 @@ function assertValidSDLExtension(documentAST, schema) {
   const errors = validateSDL(documentAST, schema);
 
   if (errors.length !== 0) {
-    throw new Error(errors.map((error) => error.message).join('\n\n'));
+    throw new Error(errors.map((error) => error.message).join("\n\n"));
   }
 }

@@ -49,113 +49,120 @@ const webStandardStreamableHttp_js_1 = require("./webStandardStreamableHttp.js")
  * - No session validation is performed
  */
 class StreamableHTTPServerTransport {
-    constructor(options = {}) {
-        // Store auth and parsedBody per request for passing through to handleRequest
-        this._requestContext = new WeakMap();
-        this._webStandardTransport = new webStandardStreamableHttp_js_1.WebStandardStreamableHTTPServerTransport(options);
-        // Create a request listener that wraps the web standard transport
-        // getRequestListener converts Node.js HTTP to Web Standard and properly handles SSE streaming
-        this._requestListener = (0, node_server_1.getRequestListener)(async (webRequest) => {
-            // Get context if available (set during handleRequest)
-            const context = this._requestContext.get(webRequest);
-            return this._webStandardTransport.handleRequest(webRequest, {
-                authInfo: context?.authInfo,
-                parsedBody: context?.parsedBody
-            });
+  constructor(options = {}) {
+    // Store auth and parsedBody per request for passing through to handleRequest
+    this._requestContext = new WeakMap();
+    this._webStandardTransport =
+      new webStandardStreamableHttp_js_1.WebStandardStreamableHTTPServerTransport(
+        options,
+      );
+    // Create a request listener that wraps the web standard transport
+    // getRequestListener converts Node.js HTTP to Web Standard and properly handles SSE streaming
+    this._requestListener = (0, node_server_1.getRequestListener)(
+      async (webRequest) => {
+        // Get context if available (set during handleRequest)
+        const context = this._requestContext.get(webRequest);
+        return this._webStandardTransport.handleRequest(webRequest, {
+          authInfo: context?.authInfo,
+          parsedBody: context?.parsedBody,
         });
-    }
-    /**
-     * Gets the session ID for this transport instance.
-     */
-    get sessionId() {
-        return this._webStandardTransport.sessionId;
-    }
-    /**
-     * Sets callback for when the transport is closed.
-     */
-    set onclose(handler) {
-        this._webStandardTransport.onclose = handler;
-    }
-    get onclose() {
-        return this._webStandardTransport.onclose;
-    }
-    /**
-     * Sets callback for transport errors.
-     */
-    set onerror(handler) {
-        this._webStandardTransport.onerror = handler;
-    }
-    get onerror() {
-        return this._webStandardTransport.onerror;
-    }
-    /**
-     * Sets callback for incoming messages.
-     */
-    set onmessage(handler) {
-        this._webStandardTransport.onmessage = handler;
-    }
-    get onmessage() {
-        return this._webStandardTransport.onmessage;
-    }
-    /**
-     * Starts the transport. This is required by the Transport interface but is a no-op
-     * for the Streamable HTTP transport as connections are managed per-request.
-     */
-    async start() {
-        return this._webStandardTransport.start();
-    }
-    /**
-     * Closes the transport and all active connections.
-     */
-    async close() {
-        return this._webStandardTransport.close();
-    }
-    /**
-     * Sends a JSON-RPC message through the transport.
-     */
-    async send(message, options) {
-        return this._webStandardTransport.send(message, options);
-    }
-    /**
-     * Handles an incoming HTTP request, whether GET or POST.
-     *
-     * This method converts Node.js HTTP objects to Web Standard Request/Response
-     * and delegates to the underlying WebStandardStreamableHTTPServerTransport.
-     *
-     * @param req - Node.js IncomingMessage, optionally with auth property from middleware
-     * @param res - Node.js ServerResponse
-     * @param parsedBody - Optional pre-parsed body from body-parser middleware
-     */
-    async handleRequest(req, res, parsedBody) {
-        // Store context for this request to pass through auth and parsedBody
-        // We need to intercept the request creation to attach this context
-        const authInfo = req.auth;
-        // Create a custom handler that includes our context
-        const handler = (0, node_server_1.getRequestListener)(async (webRequest) => {
-            return this._webStandardTransport.handleRequest(webRequest, {
-                authInfo,
-                parsedBody
-            });
+      },
+    );
+  }
+  /**
+   * Gets the session ID for this transport instance.
+   */
+  get sessionId() {
+    return this._webStandardTransport.sessionId;
+  }
+  /**
+   * Sets callback for when the transport is closed.
+   */
+  set onclose(handler) {
+    this._webStandardTransport.onclose = handler;
+  }
+  get onclose() {
+    return this._webStandardTransport.onclose;
+  }
+  /**
+   * Sets callback for transport errors.
+   */
+  set onerror(handler) {
+    this._webStandardTransport.onerror = handler;
+  }
+  get onerror() {
+    return this._webStandardTransport.onerror;
+  }
+  /**
+   * Sets callback for incoming messages.
+   */
+  set onmessage(handler) {
+    this._webStandardTransport.onmessage = handler;
+  }
+  get onmessage() {
+    return this._webStandardTransport.onmessage;
+  }
+  /**
+   * Starts the transport. This is required by the Transport interface but is a no-op
+   * for the Streamable HTTP transport as connections are managed per-request.
+   */
+  async start() {
+    return this._webStandardTransport.start();
+  }
+  /**
+   * Closes the transport and all active connections.
+   */
+  async close() {
+    return this._webStandardTransport.close();
+  }
+  /**
+   * Sends a JSON-RPC message through the transport.
+   */
+  async send(message, options) {
+    return this._webStandardTransport.send(message, options);
+  }
+  /**
+   * Handles an incoming HTTP request, whether GET or POST.
+   *
+   * This method converts Node.js HTTP objects to Web Standard Request/Response
+   * and delegates to the underlying WebStandardStreamableHTTPServerTransport.
+   *
+   * @param req - Node.js IncomingMessage, optionally with auth property from middleware
+   * @param res - Node.js ServerResponse
+   * @param parsedBody - Optional pre-parsed body from body-parser middleware
+   */
+  async handleRequest(req, res, parsedBody) {
+    // Store context for this request to pass through auth and parsedBody
+    // We need to intercept the request creation to attach this context
+    const authInfo = req.auth;
+    // Create a custom handler that includes our context
+    const handler = (0, node_server_1.getRequestListener)(
+      async (webRequest) => {
+        return this._webStandardTransport.handleRequest(webRequest, {
+          authInfo,
+          parsedBody,
         });
-        // Delegate to the request listener which handles all the Node.js <-> Web Standard conversion
-        // including proper SSE streaming support
-        await handler(req, res);
-    }
-    /**
-     * Close an SSE stream for a specific request, triggering client reconnection.
-     * Use this to implement polling behavior during long-running operations -
-     * client will reconnect after the retry interval specified in the priming event.
-     */
-    closeSSEStream(requestId) {
-        this._webStandardTransport.closeSSEStream(requestId);
-    }
-    /**
-     * Close the standalone GET SSE stream, triggering client reconnection.
-     * Use this to implement polling behavior for server-initiated notifications.
-     */
-    closeStandaloneSSEStream() {
-        this._webStandardTransport.closeStandaloneSSEStream();
-    }
+      },
+    );
+    // Delegate to the request listener which handles all the Node.js <-> Web Standard conversion
+    // including proper SSE streaming support
+    await handler(req, res);
+  }
+  /**
+   * Close an SSE stream for a specific request, triggering client reconnection.
+   * Use this to implement polling behavior during long-running operations -
+   * client will reconnect after the retry interval specified in the priming event.
+   */
+  closeSSEStream(requestId) {
+    this._webStandardTransport.closeSSEStream(requestId);
+  }
+  /**
+   * Close the standalone GET SSE stream, triggering client reconnection.
+   * Use this to implement polling behavior for server-initiated notifications.
+   */
+  closeStandaloneSSEStream() {
+    this._webStandardTransport.closeStandaloneSSEStream();
+  }
 }
 exports.StreamableHTTPServerTransport = StreamableHTTPServerTransport;
 //# sourceMappingURL=streamableHttp.js.map

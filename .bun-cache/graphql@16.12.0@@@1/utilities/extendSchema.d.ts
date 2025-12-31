@@ -1,9 +1,9 @@
-import type { DocumentNode } from '../language/ast';
+import type { DocumentNode } from "../language/ast";
 import type {
   GraphQLSchemaNormalizedConfig,
   GraphQLSchemaValidationOptions,
-} from '../type/schema';
-import { GraphQLSchema } from '../type/schema';
+} from "../type/schema";
+import { GraphQLSchema } from "../type/schema";
 interface Options extends GraphQLSchemaValidationOptions {
   /**
    * Set to true to assume the SDL is valid.
@@ -37,4 +37,3 @@ export declare function extendSchemaImpl(
   documentAST: DocumentNode,
   options?: Options,
 ): GraphQLSchemaNormalizedConfig;
-export {};

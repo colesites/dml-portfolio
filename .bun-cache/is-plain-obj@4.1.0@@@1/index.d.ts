@@ -32,4 +32,6 @@ isPlainObject(Math);
 //=> false
 ```
 */
-export default function isPlainObject<Value>(value: unknown): value is Record<PropertyKey, Value>;
+export default function isPlainObject<Value>(
+  value: unknown,
+): value is Record<PropertyKey, Value>;

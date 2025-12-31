@@ -1,5 +1,5 @@
 interface GetTimestampOptions {
-    milliseconds?: boolean;
+  milliseconds?: boolean;
 }
 /**
  * Returns a timestamp string in a "HH:MM:SS" format.

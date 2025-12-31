@@ -262,7 +262,7 @@ test("enum async parse", async () => {
 enum nativeEnumTest {
   asdf = "qwer",
 }
-// @ts-ignore
+// @ts-expect-error
 const nativeEnumSchema = z.nativeEnum(nativeEnumTest);
 test("nativeEnum async parse", async () => {
   const goodData = nativeEnumTest.asdf;
@@ -337,7 +337,7 @@ test("async validation multiple errors 2", async () => {
                 new Promise((resolve) => {
                   setTimeout(() => resolve(false), 500);
                 })
-            : () => false
+            : () => false,
         ),
       }),
     });

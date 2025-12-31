@@ -1,5 +1,6 @@
-import { GraphQLError } from '../../error/GraphQLError.mjs';
-import { Kind } from '../../language/kinds.mjs';
+import { GraphQLError } from "../../error/GraphQLError.mjs";
+import { Kind } from "../../language/kinds.mjs";
+
 const MAX_LISTS_DEPTH = 3;
 export function MaxIntrospectionDepthRule(context) {
   /**
@@ -36,10 +37,10 @@ export function MaxIntrospectionDepthRule(context) {
 
     if (
       node.kind === Kind.FIELD && // check all introspection lists
-      (node.name.value === 'fields' ||
-        node.name.value === 'interfaces' ||
-        node.name.value === 'possibleTypes' ||
-        node.name.value === 'inputFields')
+      (node.name.value === "fields" ||
+        node.name.value === "interfaces" ||
+        node.name.value === "possibleTypes" ||
+        node.name.value === "inputFields")
     ) {
       // eslint-disable-next-line no-param-reassign
       depth++;
@@ -49,7 +50,7 @@ export function MaxIntrospectionDepthRule(context) {
       }
     } // handles fields and inline fragments
 
-    if ('selectionSet' in node && node.selectionSet) {
+    if ("selectionSet" in node && node.selectionSet) {
       for (const child of node.selectionSet.selections) {
         if (checkDepth(child, visitedFragments, depth)) {
           return true;
@@ -62,10 +63,10 @@ export function MaxIntrospectionDepthRule(context) {
 
   return {
     Field(node) {
-      if (node.name.value === '__schema' || node.name.value === '__type') {
+      if (node.name.value === "__schema" || node.name.value === "__type") {
         if (checkDepth(node)) {
           context.reportError(
-            new GraphQLError('Maximum introspection depth exceeded', {
+            new GraphQLError("Maximum introspection depth exceeded", {
               nodes: [node],
             }),
           );

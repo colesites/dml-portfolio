@@ -1,4 +1,4 @@
-import { isWhiteSpace } from './characterClasses.mjs';
+import { isWhiteSpace } from "./characterClasses.mjs";
 /**
  * Produces the value of a block string from its parsed raw value, similar to
  * CoffeeScript's block string, Python's docstring trim or Ruby's strip_heredoc.
@@ -62,7 +62,7 @@ function leadingWhitespace(str) {
  */
 
 export function isPrintableAsBlockString(value) {
-  if (value === '') {
+  if (value === "") {
     return true; // empty string is printable
   }
 
@@ -151,7 +151,7 @@ export function printBlockString(value, options) {
   const hasTrailingTripleQuotes = escapedValue.endsWith('\\"""'); // Trailing quote (single or double) or slash forces trailing new line
 
   const hasTrailingQuote = value.endsWith('"') && !hasTrailingTripleQuotes;
-  const hasTrailingSlash = value.endsWith('\\');
+  const hasTrailingSlash = value.endsWith("\\");
   const forceTrailingNewline = hasTrailingQuote || hasTrailingSlash;
   const printAsMultipleLines =
     !(options !== null && options !== void 0 && options.minimize) && // add leading and trailing new lines only if it improves readability
@@ -160,18 +160,18 @@ export function printBlockString(value, options) {
       forceTrailingNewline ||
       forceLeadingNewLine ||
       hasTrailingTripleQuotes);
-  let result = ''; // Format a multi-line block quote to account for leading space.
+  let result = ""; // Format a multi-line block quote to account for leading space.
 
   const skipLeadingNewLine = isSingleLine && isWhiteSpace(value.charCodeAt(0));
 
   if ((printAsMultipleLines && !skipLeadingNewLine) || forceLeadingNewLine) {
-    result += '\n';
+    result += "\n";
   }
 
   result += escapedValue;
 
   if (printAsMultipleLines || forceTrailingNewline) {
-    result += '\n';
+    result += "\n";
   }
 
   return '"""' + result + '"""';

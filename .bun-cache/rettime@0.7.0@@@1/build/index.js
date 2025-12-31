@@ -47,7 +47,7 @@ class Emitter {
    * @returns {AbortController} An `AbortController` that can be used to remove the listener.
    */
   once(type, listener, options) {
-    return this.on(type, listener, { ...options || {}, once: true });
+    return this.on(type, listener, { ...(options || {}), once: true });
   }
   /**
    * Prepends a listener for the given event type.
@@ -61,7 +61,7 @@ class Emitter {
    * Prepends a one-time listener for the given event type.
    */
   earlyOnce(type, listener, options) {
-    return this.earlyOn(type, listener, { ...options || {}, once: true });
+    return this.earlyOn(type, listener, { ...(options || {}), once: true });
   }
   /**
    * Emits the given typed event.
@@ -74,7 +74,10 @@ class Emitter {
     }
     const proxiedEvent = this.#proxyEvent(event);
     for (const listener of this.#listeners[event.type]) {
-      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+      if (
+        proxiedEvent.event[kPropagationStopped] != null &&
+        proxiedEvent.event[kPropagationStopped] !== this
+      ) {
         return false;
       }
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
@@ -99,7 +102,10 @@ class Emitter {
     const pendingListeners = [];
     const proxiedEvent = this.#proxyEvent(event);
     for (const listener of this.#listeners[event.type]) {
-      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+      if (
+        proxiedEvent.event[kPropagationStopped] != null &&
+        proxiedEvent.event[kPropagationStopped] !== this
+      ) {
         return [];
       }
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
@@ -107,13 +113,13 @@ class Emitter {
       }
       pendingListeners.push(
         // Awaiting individual listeners guarantees their call order.
-        await Promise.resolve(this.#callListener(proxiedEvent.event, listener))
+        await Promise.resolve(this.#callListener(proxiedEvent.event, listener)),
       );
     }
     proxiedEvent.revoke();
     return Promise.allSettled(pendingListeners).then((results) => {
-      return results.map(
-        (result) => result.status === "fulfilled" ? result.value : result.reason
+      return results.map((result) =>
+        result.status === "fulfilled" ? result.value : result.reason,
       );
     });
   }
@@ -128,7 +134,10 @@ class Emitter {
     }
     const proxiedEvent = this.#proxyEvent(event);
     for (const listener of this.#listeners[event.type]) {
-      if (proxiedEvent.event[kPropagationStopped] != null && proxiedEvent.event[kPropagationStopped] !== this) {
+      if (
+        proxiedEvent.event[kPropagationStopped] != null &&
+        proxiedEvent.event[kPropagationStopped] !== this
+      ) {
         return;
       }
       if (proxiedEvent.event[kImmediatePropagationStopped]) {
@@ -192,7 +201,7 @@ class Emitter {
       Object.defineProperty(listener, kListenerOptions, {
         value: options,
         enumerable: false,
-        writable: false
+        writable: false,
       });
       if (options.signal) {
         options.signal.addEventListener(
@@ -200,7 +209,7 @@ class Emitter {
           () => {
             this.removeListener(type, listener);
           },
-          { once: true }
+          { once: true },
         );
       }
     }
@@ -212,13 +221,13 @@ class Emitter {
       apply: (target, thisArg, argArray) => {
         event[kPropagationStopped] = this;
         return Reflect.apply(target, thisArg, argArray);
-      }
+      },
     });
     return {
       event,
       revoke() {
         event.stopPropagation = stopPropagation;
-      }
+      },
     };
   }
   #callListener(event, listener) {
@@ -229,8 +238,5 @@ class Emitter {
     return returnValue;
   }
 }
-export {
-  Emitter,
-  TypedEvent
-};
+export { Emitter, TypedEvent };
 //# sourceMappingURL=index.js.map

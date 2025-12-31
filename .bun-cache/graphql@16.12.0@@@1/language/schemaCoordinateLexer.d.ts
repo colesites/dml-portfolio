@@ -1,6 +1,6 @@
-import { Token } from './ast';
-import type { LexerInterface } from './lexer';
-import type { Source } from './source';
+import { Token } from "./ast";
+import type { LexerInterface } from "./lexer";
+import type { Source } from "./source";
 /**
  * Given a Source schema coordinate, creates a Lexer for that source.
  * A SchemaCoordinateLexer is a stateful stream generator in that every time

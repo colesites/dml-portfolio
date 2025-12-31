@@ -1,10 +1,10 @@
-function pluralize (word, count) {
+function pluralize(word, count) {
   // simple pluralization: add 's' at the end
   if (count === 0 || count > 1) {
-    return word + 's'
+    return word + "s";
   } else {
-    return word
+    return word;
   }
 }
 
-module.exports = pluralize
+module.exports = pluralize;

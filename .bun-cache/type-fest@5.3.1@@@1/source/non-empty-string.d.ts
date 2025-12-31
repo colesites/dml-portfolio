@@ -27,6 +27,4 @@ foo(someString);
 
 @category String
 */
-export type NonEmptyString<T extends string> = '' extends T ? never : T;
-
-export {};
+export type NonEmptyString<T extends string> = "" extends T ? never : T;

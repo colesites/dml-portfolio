@@ -1,4 +1,4 @@
-import { Path } from './matchRequestUrl.mjs';
+import { Path } from "./matchRequestUrl.mjs";
 
 /**
  * Normalizes a given request handler path:

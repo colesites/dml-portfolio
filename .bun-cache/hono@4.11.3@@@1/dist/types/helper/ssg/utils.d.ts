@@ -1,5 +1,5 @@
-import type { Hono } from '../../hono';
-import type { Env } from '../../types';
+import type { Hono } from "../../hono";
+import type { Env } from "../../types";
 /**
  * Get dirname
  * @param path File Path
@@ -8,8 +8,9 @@ import type { Env } from '../../types';
 export declare const dirname: (path: string) => string;
 export declare const joinPaths: (...paths: string[]) => string;
 interface FilterStaticGenerateRouteData {
-    path: string;
+  path: string;
 }
-export declare const filterStaticGenerateRoutes: <E extends Env>(hono: Hono<E>) => FilterStaticGenerateRouteData[];
+export declare const filterStaticGenerateRoutes: <E extends Env>(
+  hono: Hono<E>,
+) => FilterStaticGenerateRouteData[];
 export declare const isDynamicRoute: (path: string) => boolean;
-export {};

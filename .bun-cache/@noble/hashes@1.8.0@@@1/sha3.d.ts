@@ -1,31 +1,43 @@
-import { Hash, type CHash, type CHashXO, type HashXOF, type Input } from './utils.ts';
+import {
+  Hash,
+  type CHash,
+  type CHashXO,
+  type HashXOF,
+  type Input,
+} from "./utils.ts";
 /** `keccakf1600` internal function, additionally allows to adjust round count. */
 export declare function keccakP(s: Uint32Array, rounds?: number): void;
 /** Keccak sponge function. */
 export declare class Keccak extends Hash<Keccak> implements HashXOF<Keccak> {
-    protected state: Uint8Array;
-    protected pos: number;
-    protected posOut: number;
-    protected finished: boolean;
-    protected state32: Uint32Array;
-    protected destroyed: boolean;
-    blockLen: number;
-    suffix: number;
-    outputLen: number;
-    protected enableXOF: boolean;
-    protected rounds: number;
-    constructor(blockLen: number, suffix: number, outputLen: number, enableXOF?: boolean, rounds?: number);
-    clone(): Keccak;
-    protected keccak(): void;
-    update(data: Input): this;
-    protected finish(): void;
-    protected writeInto(out: Uint8Array): Uint8Array;
-    xofInto(out: Uint8Array): Uint8Array;
-    xof(bytes: number): Uint8Array;
-    digestInto(out: Uint8Array): Uint8Array;
-    digest(): Uint8Array;
-    destroy(): void;
-    _cloneInto(to?: Keccak): Keccak;
+  protected state: Uint8Array;
+  protected pos: number;
+  protected posOut: number;
+  protected finished: boolean;
+  protected state32: Uint32Array;
+  protected destroyed: boolean;
+  blockLen: number;
+  suffix: number;
+  outputLen: number;
+  protected enableXOF: boolean;
+  protected rounds: number;
+  constructor(
+    blockLen: number,
+    suffix: number,
+    outputLen: number,
+    enableXOF?: boolean,
+    rounds?: number,
+  );
+  clone(): Keccak;
+  protected keccak(): void;
+  update(data: Input): this;
+  protected finish(): void;
+  protected writeInto(out: Uint8Array): Uint8Array;
+  xofInto(out: Uint8Array): Uint8Array;
+  xof(bytes: number): Uint8Array;
+  digestInto(out: Uint8Array): Uint8Array;
+  digest(): Uint8Array;
+  destroy(): void;
+  _cloneInto(to?: Keccak): Keccak;
 }
 /** SHA3-224 hash function. */
 export declare const sha3_224: CHash;
@@ -44,7 +56,7 @@ export declare const keccak_384: CHash;
 /** keccak-512 hash function. */
 export declare const keccak_512: CHash;
 export type ShakeOpts = {
-    dkLen?: number;
+  dkLen?: number;
 };
 /** SHAKE128 XOF with 128-bit security. */
 export declare const shake128: CHashXO;

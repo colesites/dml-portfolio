@@ -3,9 +3,9 @@ export function tryCatch<Fn extends (...args: any[]) => any>(
   onException?: (error: Error) => void,
 ): ReturnType<Fn> | undefined {
   try {
-    const result = fn()
-    return result
+    const result = fn();
+    return result;
   } catch (error) {
-    onException?.(error as Error)
+    onException?.(error as Error);
   }
 }

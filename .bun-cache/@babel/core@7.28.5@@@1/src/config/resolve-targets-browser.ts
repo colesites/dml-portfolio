@@ -1,11 +1,10 @@
 /* c8 ignore start */
 
-import type { InputOptions } from "./validation/options.ts";
+import type { Targets } from "@babel/helper-compilation-targets";
 import getTargets, {
   type InputTargets,
 } from "@babel/helper-compilation-targets";
-
-import type { Targets } from "@babel/helper-compilation-targets";
+import type { InputOptions } from "./validation/options.ts";
 
 export function resolveBrowserslistConfigFile(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

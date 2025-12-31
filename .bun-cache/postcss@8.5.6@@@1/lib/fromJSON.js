@@ -1,54 +1,52 @@
-'use strict'
-
-let AtRule = require('./at-rule')
-let Comment = require('./comment')
-let Declaration = require('./declaration')
-let Input = require('./input')
-let PreviousMap = require('./previous-map')
-let Root = require('./root')
-let Rule = require('./rule')
+const AtRule = require("./at-rule");
+const Comment = require("./comment");
+const Declaration = require("./declaration");
+const Input = require("./input");
+const PreviousMap = require("./previous-map");
+const Root = require("./root");
+const Rule = require("./rule");
 
 function fromJSON(json, inputs) {
-  if (Array.isArray(json)) return json.map(n => fromJSON(n))
+  if (Array.isArray(json)) return json.map((n) => fromJSON(n));
 
-  let { inputs: ownInputs, ...defaults } = json
+  const { inputs: ownInputs, ...defaults } = json;
   if (ownInputs) {
-    inputs = []
-    for (let input of ownInputs) {
-      let inputHydrated = { ...input, __proto__: Input.prototype }
+    inputs = [];
+    for (const input of ownInputs) {
+      const inputHydrated = { ...input, __proto__: Input.prototype };
       if (inputHydrated.map) {
         inputHydrated.map = {
           ...inputHydrated.map,
-          __proto__: PreviousMap.prototype
-        }
+          __proto__: PreviousMap.prototype,
+        };
       }
-      inputs.push(inputHydrated)
+      inputs.push(inputHydrated);
     }
   }
   if (defaults.nodes) {
-    defaults.nodes = json.nodes.map(n => fromJSON(n, inputs))
+    defaults.nodes = json.nodes.map((n) => fromJSON(n, inputs));
   }
   if (defaults.source) {
-    let { inputId, ...source } = defaults.source
-    defaults.source = source
+    const { inputId, ...source } = defaults.source;
+    defaults.source = source;
     if (inputId != null) {
-      defaults.source.input = inputs[inputId]
+      defaults.source.input = inputs[inputId];
     }
   }
-  if (defaults.type === 'root') {
-    return new Root(defaults)
-  } else if (defaults.type === 'decl') {
-    return new Declaration(defaults)
-  } else if (defaults.type === 'rule') {
-    return new Rule(defaults)
-  } else if (defaults.type === 'comment') {
-    return new Comment(defaults)
-  } else if (defaults.type === 'atrule') {
-    return new AtRule(defaults)
+  if (defaults.type === "root") {
+    return new Root(defaults);
+  } else if (defaults.type === "decl") {
+    return new Declaration(defaults);
+  } else if (defaults.type === "rule") {
+    return new Rule(defaults);
+  } else if (defaults.type === "comment") {
+    return new Comment(defaults);
+  } else if (defaults.type === "atrule") {
+    return new AtRule(defaults);
   } else {
-    throw new Error('Unknown node type: ' + json.type)
+    throw new Error("Unknown node type: " + json.type);
   }
 }
 
-module.exports = fromJSON
-fromJSON.default = fromJSON
+module.exports = fromJSON;
+fromJSON.default = fromJSON;

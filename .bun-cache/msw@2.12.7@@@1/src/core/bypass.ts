@@ -1,6 +1,6 @@
-import { invariant } from 'outvariant'
+import { invariant } from "outvariant";
 
-export type BypassRequestInput = string | URL | Request
+export type BypassRequestInput = string | URL | Request;
 
 /**
  * Creates a `Request` instance that will always be ignored by MSW.
@@ -23,16 +23,16 @@ export function bypass(input: BypassRequestInput, init?: RequestInit): Request {
     // the original request's body.
     input instanceof Request ? input.clone() : input,
     init,
-  )
+  );
 
   invariant(
     !request.bodyUsed,
     'Failed to create a bypassed request to "%s %s": given request instance already has its body read. Make sure to clone the intercepted request if you wish to read its body before bypassing it.',
     request.method,
     request.url,
-  )
+  );
 
-  const requestClone = request.clone()
+  const requestClone = request.clone();
 
   /**
    * Send the internal request header that would instruct MSW
@@ -40,7 +40,7 @@ export function bypass(input: BypassRequestInput, init?: RequestInit): Request {
    * @note Use the `accept` header to support scenarios when the
    * request cannot have headers (e.g. `sendBeacon` requests).
    */
-  requestClone.headers.append('accept', 'msw/passthrough')
+  requestClone.headers.append("accept", "msw/passthrough");
 
-  return requestClone
+  return requestClone;
 }

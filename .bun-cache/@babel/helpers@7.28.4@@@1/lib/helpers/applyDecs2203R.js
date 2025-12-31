@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = applyDecs2203R;
 var _setFunctionName = require("setFunctionName");
@@ -14,7 +14,16 @@ function applyDecs2203RFactory() {
       initializers.push(initializer);
     };
   }
-  function memberDec(dec, name, desc, initializers, kind, isStatic, isPrivate, value) {
+  function memberDec(
+    dec,
+    name,
+    desc,
+    initializers,
+    kind,
+    isStatic,
+    isPrivate,
+    value,
+  ) {
     var kindStr;
     switch (kind) {
       case 1:
@@ -36,13 +45,16 @@ function applyDecs2203RFactory() {
       kind: kindStr,
       name: isPrivate ? "#" + name : _toPropertyKey(name),
       static: isStatic,
-      private: isPrivate
+      private: isPrivate,
     };
     var decoratorFinishedRef = {
-      v: false
+      v: false,
     };
     if (kind !== 0) {
-      ctx.addInitializer = createAddInitializerMethod(initializers, decoratorFinishedRef);
+      ctx.addInitializer = createAddInitializerMethod(
+        initializers,
+        decoratorFinishedRef,
+      );
     }
     var get, set;
     if (kind === 0) {
@@ -58,9 +70,7 @@ function applyDecs2203RFactory() {
         };
       }
     } else if (kind === 2) {
-      get = function () {
-        return desc.value;
-      };
+      get = () => desc.value;
     } else {
       if (kind === 1 || kind === 3) {
         get = function () {
@@ -73,14 +83,19 @@ function applyDecs2203RFactory() {
         };
       }
     }
-    ctx.access = get && set ? {
-      get: get,
-      set: set
-    } : get ? {
-      get: get
-    } : {
-      set: set
-    };
+    ctx.access =
+      get && set
+        ? {
+            get: get,
+            set: set,
+          }
+        : get
+          ? {
+              get: get,
+            }
+          : {
+              set: set,
+            };
     try {
       return dec(value, ctx);
     } finally {
@@ -89,7 +104,9 @@ function applyDecs2203RFactory() {
   }
   function assertNotFinished(decoratorFinishedRef, fnName) {
     if (decoratorFinishedRef.v) {
-      throw new Error("attempted to call " + fnName + " after decoration was finished");
+      throw new Error(
+        "attempted to call " + fnName + " after decoration was finished",
+      );
     }
   }
   function assertCallable(fn, hint) {
@@ -101,7 +118,9 @@ function applyDecs2203RFactory() {
     var type = typeof value;
     if (kind === 1) {
       if (type !== "object" || value === null) {
-        throw new TypeError("accessor decorators must return an object with get, set, or init properties or void 0");
+        throw new TypeError(
+          "accessor decorators must return an object with get, set, or init properties or void 0",
+        );
       }
       if (value.get !== undefined) {
         assertCallable(value.get, "accessor.get");
@@ -121,32 +140,43 @@ function applyDecs2203RFactory() {
       } else {
         hint = "method";
       }
-      throw new TypeError(hint + " decorators must return a function or void 0");
+      throw new TypeError(
+        hint + " decorators must return a function or void 0",
+      );
     }
   }
-  function applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers) {
+  function applyMemberDec(
+    ret,
+    base,
+    decInfo,
+    name,
+    kind,
+    isStatic,
+    isPrivate,
+    initializers,
+  ) {
     var decs = decInfo[0];
     var desc, init, prefix, value;
     if (isPrivate) {
       if (kind === 0 || kind === 1) {
         desc = {
           get: decInfo[3],
-          set: decInfo[4]
+          set: decInfo[4],
         };
         prefix = "get";
       } else if (kind === 3) {
         desc = {
-          get: decInfo[3]
+          get: decInfo[3],
         };
         prefix = "get";
       } else if (kind === 4) {
         desc = {
-          set: decInfo[3]
+          set: decInfo[3],
         };
         prefix = "set";
       } else {
         desc = {
-          value: decInfo[3]
+          value: decInfo[3],
         };
       }
       if (kind !== 0) {
@@ -161,7 +191,7 @@ function applyDecs2203RFactory() {
     if (kind === 1) {
       value = {
         get: desc.get,
-        set: desc.set
+        set: desc.set,
       };
     } else if (kind === 2) {
       value = desc.value;
@@ -172,7 +202,16 @@ function applyDecs2203RFactory() {
     }
     var newValue, get, set;
     if (typeof decs === "function") {
-      newValue = memberDec(decs, name, desc, initializers, kind, isStatic, isPrivate, value);
+      newValue = memberDec(
+        decs,
+        name,
+        desc,
+        initializers,
+        kind,
+        isStatic,
+        isPrivate,
+        value,
+      );
       if (newValue !== void 0) {
         assertValidReturnValue(kind, newValue);
         if (kind === 0) {
@@ -183,7 +222,7 @@ function applyDecs2203RFactory() {
           set = newValue.set || value.set;
           value = {
             get: get,
-            set: set
+            set: set,
           };
         } else {
           value = newValue;
@@ -192,7 +231,16 @@ function applyDecs2203RFactory() {
     } else {
       for (var i = decs.length - 1; i >= 0; i--) {
         var dec = decs[i];
-        newValue = memberDec(dec, name, desc, initializers, kind, isStatic, isPrivate, value);
+        newValue = memberDec(
+          dec,
+          name,
+          desc,
+          initializers,
+          kind,
+          isStatic,
+          isPrivate,
+          value,
+        );
         if (newValue !== void 0) {
           assertValidReturnValue(kind, newValue);
           var newInit;
@@ -204,7 +252,7 @@ function applyDecs2203RFactory() {
             set = newValue.set || value.set;
             value = {
               get: get,
-              set: set
+              set: set,
             };
           } else {
             value = newValue;
@@ -223,12 +271,10 @@ function applyDecs2203RFactory() {
     }
     if (kind === 0 || kind === 1) {
       if (init === void 0) {
-        init = function (instance, init) {
-          return init;
-        };
+        init = (instance, init) => init;
       } else if (typeof init !== "function") {
         var ownInitializers = init;
-        init = function (instance, init) {
+        init = (instance, init) => {
           var value = init;
           for (var i = 0; i < ownInitializers.length; i++) {
             value = ownInitializers[i].call(instance, value);
@@ -237,9 +283,7 @@ function applyDecs2203RFactory() {
         };
       } else {
         var originalInitializer = init;
-        init = function (instance, init) {
-          return originalInitializer.call(instance, init);
-        };
+        init = (instance, init) => originalInitializer.call(instance, init);
       }
       ret.push(init);
     }
@@ -256,18 +300,12 @@ function applyDecs2203RFactory() {
       }
       if (isPrivate) {
         if (kind === 1) {
-          ret.push(function (instance, args) {
-            return value.get.call(instance, args);
-          });
-          ret.push(function (instance, args) {
-            return value.set.call(instance, args);
-          });
+          ret.push((instance, args) => value.get.call(instance, args));
+          ret.push((instance, args) => value.set.call(instance, args));
         } else if (kind === 2) {
           ret.push(value);
         } else {
-          ret.push(function (instance, args) {
-            return value.call(instance, args);
-          });
+          ret.push((instance, args) => value.call(instance, args));
         }
       } else {
         Object.defineProperty(base, name, desc);
@@ -304,17 +342,35 @@ function applyDecs2203RFactory() {
         }
       }
       if (kind !== 0 && !isPrivate) {
-        var existingNonFields = isStatic ? existingStaticNonFields : existingProtoNonFields;
+        var existingNonFields = isStatic
+          ? existingStaticNonFields
+          : existingProtoNonFields;
         var existingKind = existingNonFields.get(name) || 0;
-        if (existingKind === true || existingKind === 3 && kind !== 4 || existingKind === 4 && kind !== 3) {
-          throw new Error("Attempted to decorate a public method/accessor that has the same name as a previously decorated public method/accessor. This is not currently supported by the decorators plugin. Property name was: " + name);
+        if (
+          existingKind === true ||
+          (existingKind === 3 && kind !== 4) ||
+          (existingKind === 4 && kind !== 3)
+        ) {
+          throw new Error(
+            "Attempted to decorate a public method/accessor that has the same name as a previously decorated public method/accessor. This is not currently supported by the decorators plugin. Property name was: " +
+              name,
+          );
         } else if (!existingKind && kind > 2) {
           existingNonFields.set(name, kind);
         } else {
           existingNonFields.set(name, true);
         }
       }
-      applyMemberDec(ret, base, decInfo, name, kind, isStatic, isPrivate, initializers);
+      applyMemberDec(
+        ret,
+        base,
+        decInfo,
+        name,
+        kind,
+        isStatic,
+        isPrivate,
+        initializers,
+      );
     }
     pushInitializers(ret, protoInitializers);
     pushInitializers(ret, staticInitializers);
@@ -322,7 +378,7 @@ function applyDecs2203RFactory() {
   }
   function pushInitializers(ret, initializers) {
     if (initializers) {
-      ret.push(function (instance) {
+      ret.push((instance) => {
         for (var i = 0; i < initializers.length; i++) {
           initializers[i].call(instance);
         }
@@ -337,13 +393,16 @@ function applyDecs2203RFactory() {
       var name = targetClass.name;
       for (var i = classDecs.length - 1; i >= 0; i--) {
         var decoratorFinishedRef = {
-          v: false
+          v: false,
         };
         try {
           var nextNewClass = classDecs[i](newClass, {
             kind: "class",
             name: name,
-            addInitializer: createAddInitializerMethod(initializers, decoratorFinishedRef)
+            addInitializer: createAddInitializerMethod(
+              initializers,
+              decoratorFinishedRef,
+            ),
           });
         } finally {
           decoratorFinishedRef.v = true;
@@ -353,11 +412,14 @@ function applyDecs2203RFactory() {
           newClass = nextNewClass;
         }
       }
-      return [newClass, function () {
-        for (var i = 0; i < initializers.length; i++) {
-          initializers[i].call(newClass);
-        }
-      }];
+      return [
+        newClass,
+        () => {
+          for (var i = 0; i < initializers.length; i++) {
+            initializers[i].call(newClass);
+          }
+        },
+      ];
     }
   }
   return function applyDecs2203R(targetClass, memberDecs, classDecs) {
@@ -365,12 +427,16 @@ function applyDecs2203RFactory() {
       e: applyMemberDecs(targetClass, memberDecs),
       get c() {
         return applyClassDecs(targetClass, classDecs);
-      }
+      },
     };
   };
 }
 function applyDecs2203R(targetClass, memberDecs, classDecs) {
-  return (exports.default = applyDecs2203R = applyDecs2203RFactory())(targetClass, memberDecs, classDecs);
+  return (exports.default = applyDecs2203R = applyDecs2203RFactory())(
+    targetClass,
+    memberDecs,
+    classDecs,
+  );
 }
 
 //# sourceMappingURL=applyDecs2203R.js.map

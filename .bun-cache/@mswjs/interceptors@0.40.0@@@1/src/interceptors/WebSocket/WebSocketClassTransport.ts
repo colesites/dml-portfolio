@@ -1,12 +1,12 @@
-import { bindEvent } from './utils/bindEvent'
-import {
+import { bindEvent } from "./utils/bindEvent";
+import { CancelableMessageEvent, CloseEvent } from "./utils/events";
+import { kClose, kOnSend, type WebSocketOverride } from "./WebSocketOverride";
+import type {
   StrictEventListenerOrEventListenerObject,
   WebSocketData,
   WebSocketTransport,
   WebSocketTransportEventMap,
-} from './WebSocketTransport'
-import { kOnSend, kClose, WebSocketOverride } from './WebSocketOverride'
-import { CancelableMessageEvent, CloseEvent } from './utils/events'
+} from "./WebSocketTransport";
 
 /**
  * Abstraction over the given mock `WebSocket` instance that allows
@@ -17,14 +17,16 @@ export class WebSocketClassTransport
   implements WebSocketTransport
 {
   constructor(protected readonly socket: WebSocketOverride) {
-    super()
+    super();
 
     // Emit the "close" event on the transport if the close
     // originates from the WebSocket client. E.g. the application
     // calls "ws.close()", not the interceptor.
-    this.socket.addEventListener('close', (event) => {
-      this.dispatchEvent(bindEvent(this.socket, new CloseEvent('close', event)))
-    })
+    this.socket.addEventListener("close", (event) => {
+      this.dispatchEvent(
+        bindEvent(this.socket, new CloseEvent("close", event)),
+      );
+    });
 
     /**
      * Emit the "outgoing" event on the transport
@@ -36,14 +38,14 @@ export class WebSocketClassTransport
           this.socket,
           // Dispatch this as cancelable because "client" connection
           // re-creates this message event (cannot dispatch the same event).
-          new CancelableMessageEvent('outgoing', {
+          new CancelableMessageEvent("outgoing", {
             data,
             origin: this.socket.url,
             cancelable: true,
-          })
-        )
-      )
-    }
+          }),
+        ),
+      );
+    };
   }
 
   public addEventListener<EventType extends keyof WebSocketTransportEventMap>(
@@ -51,15 +53,15 @@ export class WebSocketClassTransport
     callback: StrictEventListenerOrEventListenerObject<
       WebSocketTransportEventMap[EventType]
     > | null,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void {
-    return super.addEventListener(type, callback as EventListener, options)
+    return super.addEventListener(type, callback as EventListener, options);
   }
 
   public dispatchEvent<EventType extends keyof WebSocketTransportEventMap>(
-    event: WebSocketTransportEventMap[EventType]
+    event: WebSocketTransportEventMap[EventType],
   ): boolean {
-    return super.dispatchEvent(event)
+    return super.dispatchEvent(event);
   }
 
   public send(data: WebSocketData): void {
@@ -68,7 +70,7 @@ export class WebSocketClassTransport
         this.socket.readyState === this.socket.CLOSING ||
         this.socket.readyState === this.socket.CLOSED
       ) {
-        return
+        return;
       }
 
       const dispatchEvent = () => {
@@ -83,26 +85,26 @@ export class WebSocketClassTransport
              * (must be dispatched on the client instance).
              */
             this.socket,
-            new MessageEvent('message', {
+            new MessageEvent("message", {
               data,
               origin: this.socket.url,
-            })
-          )
-        )
-      }
+            }),
+          ),
+        );
+      };
 
       if (this.socket.readyState === this.socket.CONNECTING) {
         this.socket.addEventListener(
-          'open',
+          "open",
           () => {
-            dispatchEvent()
+            dispatchEvent();
           },
-          { once: true }
-        )
+          { once: true },
+        );
       } else {
-        dispatchEvent()
+        dispatchEvent();
       }
-    })
+    });
   }
 
   public close(code: number, reason?: string): void {
@@ -111,6 +113,6 @@ export class WebSocketClassTransport
      * to allow closing the connection with the status codes
      * that are non-configurable by the user (> 1000 <= 1015).
      */
-    this.socket[kClose](code, reason)
+    this.socket[kClose](code, reason);
   }
 }

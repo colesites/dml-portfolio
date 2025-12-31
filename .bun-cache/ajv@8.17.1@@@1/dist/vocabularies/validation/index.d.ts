@@ -8,9 +8,27 @@ import { ConstError } from "./const";
 import { EnumError } from "./enum";
 declare const validation: Vocabulary;
 export default validation;
-type LimitError = ErrorObject<"maxItems" | "minItems" | "minProperties" | "maxProperties" | "minLength" | "maxLength", {
+type LimitError = ErrorObject<
+  | "maxItems"
+  | "minItems"
+  | "minProperties"
+  | "maxProperties"
+  | "minLength"
+  | "maxLength",
+  {
     limit: number;
-}, number | {
-    $data: string;
-}>;
-export type ValidationKeywordError = LimitError | LimitNumberError | MultipleOfError | PatternError | RequiredError | UniqueItemsError | ConstError | EnumError;
+  },
+  | number
+  | {
+      $data: string;
+    }
+>;
+export type ValidationKeywordError =
+  | LimitError
+  | LimitNumberError
+  | MultipleOfError
+  | PatternError
+  | RequiredError
+  | UniqueItemsError
+  | ConstError
+  | EnumError;

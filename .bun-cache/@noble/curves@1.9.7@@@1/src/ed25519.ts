@@ -6,16 +6,16 @@
  * @module
  */
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
-import { sha512 } from '@noble/hashes/sha2.js';
-import { abytes, concatBytes, utf8ToBytes } from '@noble/hashes/utils.js';
-import { pippenger, type AffinePoint } from './abstract/curve.ts';
+import { sha512 } from "@noble/hashes/sha2.js";
+import { abytes, concatBytes, utf8ToBytes } from "@noble/hashes/utils.js";
+import { type AffinePoint, pippenger } from "./abstract/curve.ts";
 import {
-  PrimeEdwardsPoint,
-  twistedEdwards,
   type CurveFn,
   type EdwardsOpts,
   type EdwardsPoint,
-} from './abstract/edwards.ts';
+  PrimeEdwardsPoint,
+  twistedEdwards,
+} from "./abstract/edwards.ts";
 import {
   _DST_scalar,
   createHasher,
@@ -24,27 +24,34 @@ import {
   type H2CHasherBase,
   type H2CMethod,
   type htfBasicOpts,
-} from './abstract/hash-to-curve.ts';
+} from "./abstract/hash-to-curve.ts";
 import {
   Field,
   FpInvertBatch,
   FpSqrtEven,
+  type IField,
   isNegativeLE,
   mod,
   pow2,
-  type IField,
-} from './abstract/modular.ts';
-import { montgomery, type MontgomeryECDH as XCurveFn } from './abstract/montgomery.ts';
-import { bytesToNumberLE, ensureBytes, equalBytes, type Hex } from './utils.ts';
+} from "./abstract/modular.ts";
+import {
+  montgomery,
+  type MontgomeryECDH as XCurveFn,
+} from "./abstract/montgomery.ts";
+import { bytesToNumberLE, ensureBytes, equalBytes, type Hex } from "./utils.ts";
 
 // prettier-ignore
-const _0n = /* @__PURE__ */ BigInt(0), _1n = BigInt(1), _2n = BigInt(2), _3n = BigInt(3);
+const _0n = /* @__PURE__ */ BigInt(0),
+  _1n = BigInt(1),
+  _2n = BigInt(2),
+  _3n = BigInt(3);
 // prettier-ignore
-const _5n = BigInt(5), _8n = BigInt(8);
+const _5n = BigInt(5),
+  _8n = BigInt(8);
 
 // P = 2n**255n-19n
 const ed25519_CURVE_p = BigInt(
-  '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffed'
+  "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffed",
 );
 
 // N = 2n**252n + 27742317777372353535851937790883648493n
@@ -52,17 +59,30 @@ const ed25519_CURVE_p = BigInt(
 // d = -121665/121666 a.k.a. Fp.neg(121665 * Fp.inv(121666))
 const ed25519_CURVE: EdwardsOpts = /* @__PURE__ */ (() => ({
   p: ed25519_CURVE_p,
-  n: BigInt('0x1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed'),
+  n: BigInt(
+    "0x1000000000000000000000000000000014def9dea2f79cd65812631a5cf5d3ed",
+  ),
   h: _8n,
-  a: BigInt('0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffec'),
-  d: BigInt('0x52036cee2b6ffe738cc740797779e89800700a4d4141d8ab75eb4dca135978a3'),
-  Gx: BigInt('0x216936d3cd6e53fec0a4e231fdd6dc5c692cc7609525a7b2c9562d608f25d51a'),
-  Gy: BigInt('0x6666666666666666666666666666666666666666666666666666666666666658'),
+  a: BigInt(
+    "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffec",
+  ),
+  d: BigInt(
+    "0x52036cee2b6ffe738cc740797779e89800700a4d4141d8ab75eb4dca135978a3",
+  ),
+  Gx: BigInt(
+    "0x216936d3cd6e53fec0a4e231fdd6dc5c692cc7609525a7b2c9562d608f25d51a",
+  ),
+  Gy: BigInt(
+    "0x6666666666666666666666666666666666666666666666666666666666666658",
+  ),
 }))();
 
 function ed25519_pow_2_252_3(x: bigint) {
   // prettier-ignore
-  const _10n = BigInt(10), _20n = BigInt(20), _40n = BigInt(40), _80n = BigInt(80);
+  const _10n = BigInt(10),
+    _20n = BigInt(20),
+    _40n = BigInt(40),
+    _80n = BigInt(80);
   const P = ed25519_CURVE_p;
   const x2 = (x * x) % P;
   const b2 = (x2 * x) % P; // x^3, 11
@@ -94,7 +114,7 @@ function adjustScalarBytes(bytes: Uint8Array): Uint8Array {
 // √(-1) aka √(a) aka 2^((p-1)/4)
 // Fp.sqrt(Fp.neg(1))
 const ED25519_SQRT_M1 = /* @__PURE__ */ BigInt(
-  '19681161376707505956807079304988542015446066515923890162744021073123829784752'
+  "19681161376707505956807079304988542015446066515923890162744021073123829784752",
 );
 // sqrt(u/v)
 function uvRatio(u: bigint, v: bigint): { isValid: boolean; value: bigint } {
@@ -140,15 +160,16 @@ const ed25519Defaults = /* @__PURE__ */ (() => ({
  * ed25519.verify(sig, msg, pub); // Default mode: follows ZIP215
  * ed25519.verify(sig, msg, pub, { zip215: false }); // RFC8032 / FIPS 186-5
  */
-export const ed25519: CurveFn = /* @__PURE__ */ (() => twistedEdwards(ed25519Defaults))();
+export const ed25519: CurveFn = /* @__PURE__ */ (() =>
+  twistedEdwards(ed25519Defaults))();
 
 function ed25519_domain(data: Uint8Array, ctx: Uint8Array, phflag: boolean) {
-  if (ctx.length > 255) throw new Error('Context is too big');
+  if (ctx.length > 255) throw new Error("Context is too big");
   return concatBytes(
-    utf8ToBytes('SigEd25519 no Ed25519 collisions'),
+    utf8ToBytes("SigEd25519 no Ed25519 collisions"),
     new Uint8Array([phflag ? 1 : 0, ctx.length]),
     ctx,
-    data
+    data,
   );
 }
 
@@ -165,7 +186,7 @@ export const ed25519ph: CurveFn = /* @__PURE__ */ (() =>
     Object.assign({}, ed25519Defaults, {
       domain: ed25519_domain,
       prehash: sha512,
-    })
+    }),
   ))();
 
 /**
@@ -182,7 +203,7 @@ export const x25519: XCurveFn = /* @__PURE__ */ (() => {
   const P = Fp.ORDER;
   return montgomery({
     P,
-    type: 'x25519',
+    type: "x25519",
     powPminus2: (x: bigint): bigint => {
       // x^(p-2) aka x^(2^255-21)
       const { pow_p_5_8, b2 } = ed25519_pow_2_252_3(x);
@@ -204,48 +225,49 @@ function map_to_curve_elligator2_curve25519(u: bigint) {
   const ELL2_C4 = (ed25519_CURVE_p - _5n) / _8n; // 4. c4 = (q - 5) / 8       # Integer arithmetic
   const ELL2_J = BigInt(486662);
 
-  let tv1 = Fp.sqr(u);          //  1.  tv1 = u^2
-  tv1 = Fp.mul(tv1, _2n);       //  2.  tv1 = 2 * tv1
-  let xd = Fp.add(tv1, Fp.ONE); //  3.   xd = tv1 + 1         # Nonzero: -1 is square (mod p), tv1 is not
-  let x1n = Fp.neg(ELL2_J);     //  4.  x1n = -J              # x1 = x1n / xd = -J / (1 + 2 * u^2)
-  let tv2 = Fp.sqr(xd);         //  5.  tv2 = xd^2
-  let gxd = Fp.mul(tv2, xd);    //  6.  gxd = tv2 * xd        # gxd = xd^3
-  let gx1 = Fp.mul(tv1, ELL2_J);//  7.  gx1 = J * tv1         # x1n + J * xd
-  gx1 = Fp.mul(gx1, x1n);       //  8.  gx1 = gx1 * x1n       # x1n^2 + J * x1n * xd
-  gx1 = Fp.add(gx1, tv2);       //  9.  gx1 = gx1 + tv2       # x1n^2 + J * x1n * xd + xd^2
-  gx1 = Fp.mul(gx1, x1n);       //  10. gx1 = gx1 * x1n       # x1n^3 + J * x1n^2 * xd + x1n * xd^2
-  let tv3 = Fp.sqr(gxd);        //  11. tv3 = gxd^2
-  tv2 = Fp.sqr(tv3);            //  12. tv2 = tv3^2           # gxd^4
-  tv3 = Fp.mul(tv3, gxd);       //  13. tv3 = tv3 * gxd       # gxd^3
-  tv3 = Fp.mul(tv3, gx1);       //  14. tv3 = tv3 * gx1       # gx1 * gxd^3
-  tv2 = Fp.mul(tv2, tv3);       //  15. tv2 = tv2 * tv3       # gx1 * gxd^7
+  let tv1 = Fp.sqr(u); //  1.  tv1 = u^2
+  tv1 = Fp.mul(tv1, _2n); //  2.  tv1 = 2 * tv1
+  const xd = Fp.add(tv1, Fp.ONE); //  3.   xd = tv1 + 1         # Nonzero: -1 is square (mod p), tv1 is not
+  const x1n = Fp.neg(ELL2_J); //  4.  x1n = -J              # x1 = x1n / xd = -J / (1 + 2 * u^2)
+  let tv2 = Fp.sqr(xd); //  5.  tv2 = xd^2
+  const gxd = Fp.mul(tv2, xd); //  6.  gxd = tv2 * xd        # gxd = xd^3
+  let gx1 = Fp.mul(tv1, ELL2_J); //  7.  gx1 = J * tv1         # x1n + J * xd
+  gx1 = Fp.mul(gx1, x1n); //  8.  gx1 = gx1 * x1n       # x1n^2 + J * x1n * xd
+  gx1 = Fp.add(gx1, tv2); //  9.  gx1 = gx1 + tv2       # x1n^2 + J * x1n * xd + xd^2
+  gx1 = Fp.mul(gx1, x1n); //  10. gx1 = gx1 * x1n       # x1n^3 + J * x1n^2 * xd + x1n * xd^2
+  let tv3 = Fp.sqr(gxd); //  11. tv3 = gxd^2
+  tv2 = Fp.sqr(tv3); //  12. tv2 = tv3^2           # gxd^4
+  tv3 = Fp.mul(tv3, gxd); //  13. tv3 = tv3 * gxd       # gxd^3
+  tv3 = Fp.mul(tv3, gx1); //  14. tv3 = tv3 * gx1       # gx1 * gxd^3
+  tv2 = Fp.mul(tv2, tv3); //  15. tv2 = tv2 * tv3       # gx1 * gxd^7
   let y11 = Fp.pow(tv2, ELL2_C4); //  16. y11 = tv2^c4        # (gx1 * gxd^7)^((p - 5) / 8)
-  y11 = Fp.mul(y11, tv3);       //  17. y11 = y11 * tv3       # gx1*gxd^3*(gx1*gxd^7)^((p-5)/8)
-  let y12 = Fp.mul(y11, ELL2_C3); //  18. y12 = y11 * c3
-  tv2 = Fp.sqr(y11);            //  19. tv2 = y11^2
-  tv2 = Fp.mul(tv2, gxd);       //  20. tv2 = tv2 * gxd
-  let e1 = Fp.eql(tv2, gx1);    //  21.  e1 = tv2 == gx1
-  let y1 = Fp.cmov(y12, y11, e1); //  22.  y1 = CMOV(y12, y11, e1)  # If g(x1) is square, this is its sqrt
-  let x2n = Fp.mul(x1n, tv1);   //  23. x2n = x1n * tv1       # x2 = x2n / xd = 2 * u^2 * x1n / xd
-  let y21 = Fp.mul(y11, u);     //  24. y21 = y11 * u
-  y21 = Fp.mul(y21, ELL2_C2);   //  25. y21 = y21 * c2
-  let y22 = Fp.mul(y21, ELL2_C3); //  26. y22 = y21 * c3
-  let gx2 = Fp.mul(gx1, tv1);   //  27. gx2 = gx1 * tv1       # g(x2) = gx2 / gxd = 2 * u^2 * g(x1)
-  tv2 = Fp.sqr(y21);            //  28. tv2 = y21^2
-  tv2 = Fp.mul(tv2, gxd);       //  29. tv2 = tv2 * gxd
-  let e2 = Fp.eql(tv2, gx2);    //  30.  e2 = tv2 == gx2
-  let y2 = Fp.cmov(y22, y21, e2); //  31.  y2 = CMOV(y22, y21, e2)  # If g(x2) is square, this is its sqrt
-  tv2 = Fp.sqr(y1);             //  32. tv2 = y1^2
-  tv2 = Fp.mul(tv2, gxd);       //  33. tv2 = tv2 * gxd
-  let e3 = Fp.eql(tv2, gx1);    //  34.  e3 = tv2 == gx1
-  let xn = Fp.cmov(x2n, x1n, e3); //  35.  xn = CMOV(x2n, x1n, e3)  # If e3, x = x1, else x = x2
-  let y = Fp.cmov(y2, y1, e3);  //  36.   y = CMOV(y2, y1, e3)    # If e3, y = y1, else y = y2
-  let e4 = Fp.isOdd!(y);         //  37.  e4 = sgn0(y) == 1        # Fix sign of y
+  y11 = Fp.mul(y11, tv3); //  17. y11 = y11 * tv3       # gx1*gxd^3*(gx1*gxd^7)^((p-5)/8)
+  const y12 = Fp.mul(y11, ELL2_C3); //  18. y12 = y11 * c3
+  tv2 = Fp.sqr(y11); //  19. tv2 = y11^2
+  tv2 = Fp.mul(tv2, gxd); //  20. tv2 = tv2 * gxd
+  const e1 = Fp.eql(tv2, gx1); //  21.  e1 = tv2 == gx1
+  const y1 = Fp.cmov(y12, y11, e1); //  22.  y1 = CMOV(y12, y11, e1)  # If g(x1) is square, this is its sqrt
+  const x2n = Fp.mul(x1n, tv1); //  23. x2n = x1n * tv1       # x2 = x2n / xd = 2 * u^2 * x1n / xd
+  let y21 = Fp.mul(y11, u); //  24. y21 = y11 * u
+  y21 = Fp.mul(y21, ELL2_C2); //  25. y21 = y21 * c2
+  const y22 = Fp.mul(y21, ELL2_C3); //  26. y22 = y21 * c3
+  const gx2 = Fp.mul(gx1, tv1); //  27. gx2 = gx1 * tv1       # g(x2) = gx2 / gxd = 2 * u^2 * g(x1)
+  tv2 = Fp.sqr(y21); //  28. tv2 = y21^2
+  tv2 = Fp.mul(tv2, gxd); //  29. tv2 = tv2 * gxd
+  const e2 = Fp.eql(tv2, gx2); //  30.  e2 = tv2 == gx2
+  const y2 = Fp.cmov(y22, y21, e2); //  31.  y2 = CMOV(y22, y21, e2)  # If g(x2) is square, this is its sqrt
+  tv2 = Fp.sqr(y1); //  32. tv2 = y1^2
+  tv2 = Fp.mul(tv2, gxd); //  33. tv2 = tv2 * gxd
+  const e3 = Fp.eql(tv2, gx1); //  34.  e3 = tv2 == gx1
+  const xn = Fp.cmov(x2n, x1n, e3); //  35.  xn = CMOV(x2n, x1n, e3)  # If e3, x = x1, else x = x2
+  let y = Fp.cmov(y2, y1, e3); //  36.   y = CMOV(y2, y1, e3)    # If e3, y = y1, else y = y2
+  const e4 = Fp.isOdd!(y); //  37.  e4 = sgn0(y) == 1        # Fix sign of y
   y = Fp.cmov(y, Fp.neg(y), e3 !== e4); //  38.   y = CMOV(y, -y, e3 XOR e4)
   return { xMn: xn, xMd: xd, yMn: y, yMd: _1n }; //  39. return (xn, xd, y, 1)
 }
 
-const ELL2_C1_EDWARDS = /* @__PURE__ */ (() => FpSqrtEven(Fp, Fp.neg(BigInt(486664))))(); // sgn0(c1) MUST equal 0
+const ELL2_C1_EDWARDS = /* @__PURE__ */ (() =>
+  FpSqrtEven(Fp, Fp.neg(BigInt(486664))))(); // sgn0(c1) MUST equal 0
 function map_to_curve_elligator2_edwards25519(u: bigint) {
   const { xMn, xMd, yMn, yMd } = map_to_curve_elligator2_curve25519(u); //  1.  (xMn, xMd, yMn, yMd) =
   // map_to_curve_elligator2_curve25519(u)
@@ -254,8 +276,8 @@ function map_to_curve_elligator2_edwards25519(u: bigint) {
   let xd = Fp.mul(xMd, yMn); //  4.  xd = xMd * yMn    # xn / xd = c1 * xM / yM
   let yn = Fp.sub(xMn, xMd); //  5.  yn = xMn - xMd
   let yd = Fp.add(xMn, xMd); //  6.  yd = xMn + xMd    # (n / d - 1) / (n / d + 1) = (n - d) / (n + d)
-  let tv1 = Fp.mul(xd, yd); //  7. tv1 = xd * yd
-  let e = Fp.eql(tv1, Fp.ZERO); //  8.   e = tv1 == 0
+  const tv1 = Fp.mul(xd, yd); //  7. tv1 = xd * yd
+  const e = Fp.eql(tv1, Fp.ZERO); //  8.   e = tv1 == 0
   xn = Fp.cmov(xn, Fp.ZERO, e); //  9.  xn = CMOV(xn, 0, e)
   xd = Fp.cmov(xd, Fp.ONE, e); //  10. xd = CMOV(xd, 1, e)
   yn = Fp.cmov(yn, Fp.ONE, e); //  11. yn = CMOV(yn, 1, e)
@@ -270,39 +292,39 @@ export const ed25519_hasher: H2CHasher<bigint> = /* @__PURE__ */ (() =>
     ed25519.Point,
     (scalars: bigint[]) => map_to_curve_elligator2_edwards25519(scalars[0]),
     {
-      DST: 'edwards25519_XMD:SHA-512_ELL2_RO_',
-      encodeDST: 'edwards25519_XMD:SHA-512_ELL2_NU_',
+      DST: "edwards25519_XMD:SHA-512_ELL2_RO_",
+      encodeDST: "edwards25519_XMD:SHA-512_ELL2_NU_",
       p: ed25519_CURVE_p,
       m: 1,
       k: 128,
-      expand: 'xmd',
+      expand: "xmd",
       hash: sha512,
-    }
+    },
   ))();
 
 // √(-1) aka √(a) aka 2^((p-1)/4)
 const SQRT_M1 = ED25519_SQRT_M1;
 // √(ad - 1)
 const SQRT_AD_MINUS_ONE = /* @__PURE__ */ BigInt(
-  '25063068953384623474111414158702152701244531502492656460079210482610430750235'
+  "25063068953384623474111414158702152701244531502492656460079210482610430750235",
 );
 // 1 / √(a-d)
 const INVSQRT_A_MINUS_D = /* @__PURE__ */ BigInt(
-  '54469307008909316920995813868745141605393597292927456921205312896311721017578'
+  "54469307008909316920995813868745141605393597292927456921205312896311721017578",
 );
 // 1-d²
 const ONE_MINUS_D_SQ = /* @__PURE__ */ BigInt(
-  '1159843021668779879193775521855586647937357759715417654439879720876111806838'
+  "1159843021668779879193775521855586647937357759715417654439879720876111806838",
 );
 // (d-1)²
 const D_MINUS_ONE_SQ = /* @__PURE__ */ BigInt(
-  '40440834346308536858101042469323190826248399146238708352240133220865137265952'
+  "40440834346308536858101042469323190826248399146238708352240133220865137265952",
 );
 // Calculates 1/√(number)
 const invertSqrt = (number: bigint) => uvRatio(_1n, number);
 
 const MAX_255B = /* @__PURE__ */ BigInt(
-  '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+  "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
 );
 const bytes255ToNumberLE = (bytes: Uint8Array) =>
   ed25519.Point.Fp.create(bytesToNumberLE(bytes) & MAX_255B);
@@ -333,7 +355,12 @@ function calcElligatorRistrettoMap(r0: bigint): ExtendedPoint {
   const W1 = mod(Nt * SQRT_AD_MINUS_ONE); // 11
   const W2 = mod(_1n - s2); // 12
   const W3 = mod(_1n + s2); // 13
-  return new ed25519.Point(mod(W0 * W3), mod(W2 * W1), mod(W1 * W3), mod(W0 * W2));
+  return new ed25519.Point(
+    mod(W0 * W3),
+    mod(W2 * W1),
+    mod(W1 * W3),
+    mod(W0 * W2),
+  );
 }
 
 function ristretto255_map(bytes: Uint8Array): _RistrettoPoint {
@@ -358,17 +385,15 @@ class _RistrettoPoint extends PrimeEdwardsPoint<_RistrettoPoint> {
   // Do NOT change syntax: the following gymnastics is done,
   // because typescript strips comments, which makes bundlers disable tree-shaking.
   // prettier-ignore
-  static BASE: _RistrettoPoint =
-    /* @__PURE__ */ (() => new _RistrettoPoint(ed25519.Point.BASE))();
+  static BASE: _RistrettoPoint = /* @__PURE__ */ (() =>
+    new _RistrettoPoint(ed25519.Point.BASE))();
   // prettier-ignore
-  static ZERO: _RistrettoPoint =
-    /* @__PURE__ */ (() => new _RistrettoPoint(ed25519.Point.ZERO))();
+  static ZERO: _RistrettoPoint = /* @__PURE__ */ (() =>
+    new _RistrettoPoint(ed25519.Point.ZERO))();
   // prettier-ignore
-  static Fp: IField<bigint> =
-    /* @__PURE__ */ (() => Fp)();
+  static Fp: IField<bigint> = /* @__PURE__ */ (() => Fp)();
   // prettier-ignore
-  static Fn: IField<bigint> =
-    /* @__PURE__ */ (() => Fn)();
+  static Fn: IField<bigint> = /* @__PURE__ */ (() => Fn)();
 
   constructor(ep: ExtendedPoint) {
     super(ep);
@@ -379,7 +404,8 @@ class _RistrettoPoint extends PrimeEdwardsPoint<_RistrettoPoint> {
   }
 
   protected assertSame(other: _RistrettoPoint): void {
-    if (!(other instanceof _RistrettoPoint)) throw new Error('RistrettoPoint expected');
+    if (!(other instanceof _RistrettoPoint))
+      throw new Error("RistrettoPoint expected");
   }
 
   protected init(ep: EdwardsPoint): _RistrettoPoint {
@@ -388,7 +414,7 @@ class _RistrettoPoint extends PrimeEdwardsPoint<_RistrettoPoint> {
 
   /** @deprecated use `import { ristretto255_hasher } from '@noble/curves/ed25519.js';` */
   static hashToCurve(hex: Hex): _RistrettoPoint {
-    return ristretto255_map(ensureBytes('ristrettoHash', hex, 64));
+    return ristretto255_map(ensureBytes("ristrettoHash", hex, 64));
   }
 
   static fromBytes(bytes: Uint8Array): _RistrettoPoint {
@@ -400,7 +426,7 @@ class _RistrettoPoint extends PrimeEdwardsPoint<_RistrettoPoint> {
     // 1. Check that s_bytes is the canonical encoding of a field element, or else abort.
     // 3. Check that s is non-negative, or else abort
     if (!equalBytes(Fp.toBytes(s), bytes) || isNegativeLE(s, P))
-      throw new Error('invalid ristretto255 encoding 1');
+      throw new Error("invalid ristretto255 encoding 1");
     const s2 = mod(s * s);
     const u1 = mod(_1n + a * s2); // 4 (a is -1)
     const u2 = mod(_1n - a * s2); // 5
@@ -415,7 +441,7 @@ class _RistrettoPoint extends PrimeEdwardsPoint<_RistrettoPoint> {
     const y = mod(u1 * Dy); // 11
     const t = mod(x * y); // 12
     if (!isValid || isNegativeLE(t, P) || y === _0n)
-      throw new Error('invalid ristretto255 encoding 2');
+      throw new Error("invalid ristretto255 encoding 2");
     return new _RistrettoPoint(new ed25519.Point(x, y, _1n, t));
   }
 
@@ -425,7 +451,7 @@ class _RistrettoPoint extends PrimeEdwardsPoint<_RistrettoPoint> {
    * @param hex Ristretto-encoded 32 bytes. Not every 32-byte string is valid ristretto encoding
    */
   static fromHex(hex: Hex): _RistrettoPoint {
-    return _RistrettoPoint.fromBytes(ensureBytes('ristrettoHex', hex, 32));
+    return _RistrettoPoint.fromBytes(ensureBytes("ristrettoHex", hex, 32));
   }
 
   static msm(points: _RistrettoPoint[], scalars: bigint[]): _RistrettoPoint {
@@ -450,8 +476,8 @@ class _RistrettoPoint extends PrimeEdwardsPoint<_RistrettoPoint> {
     const zInv = mod(D1 * D2 * T); // 6
     let D: bigint; // 7
     if (isNegativeLE(T * zInv, P)) {
-      let _x = mod(Y * SQRT_M1);
-      let _y = mod(X * SQRT_M1);
+      const _x = mod(Y * SQRT_M1);
+      const _y = mod(X * SQRT_M1);
       X = _x;
       Y = _y;
       D = mod(D1 * INVSQRT_A_MINUS_D);
@@ -491,7 +517,7 @@ export const ristretto255: {
 /** Hashing to ristretto255 points / field. RFC 9380 methods. */
 export const ristretto255_hasher: H2CHasherBase<bigint> = {
   hashToCurve(msg: Uint8Array, options?: htfBasicOpts): _RistrettoPoint {
-    const DST = options?.DST || 'ristretto255_XMD:SHA-512_R255MAP_RO_';
+    const DST = options?.DST || "ristretto255_XMD:SHA-512_R255MAP_RO_";
     const xmd = expand_message_xmd(msg, DST, 64, sha512);
     return ristretto255_map(xmd);
   },
@@ -516,32 +542,34 @@ export const ristretto255_hasher: H2CHasherBase<bigint> = {
  * ⟨T⟩ = { O, T, 2T, 3T, 4T, 5T, 6T, 7T }
  */
 export const ED25519_TORSION_SUBGROUP: string[] = [
-  '0100000000000000000000000000000000000000000000000000000000000000',
-  'c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac037a',
-  '0000000000000000000000000000000000000000000000000000000000000080',
-  '26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05',
-  'ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f',
-  '26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc85',
-  '0000000000000000000000000000000000000000000000000000000000000000',
-  'c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac03fa',
+  "0100000000000000000000000000000000000000000000000000000000000000",
+  "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac037a",
+  "0000000000000000000000000000000000000000000000000000000000000080",
+  "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc05",
+  "ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f",
+  "26e8958fc2b227b045c3f489f2ef98f0d5dfac05d3c63339b13802886d53fc85",
+  "0000000000000000000000000000000000000000000000000000000000000000",
+  "c7176a703d4dd84fba3c0b760d10670f2a2053fa2c39ccc64ec7fd7792ac03fa",
 ];
 
 /** @deprecated use `ed25519.utils.toMontgomery` */
 export function edwardsToMontgomeryPub(edwardsPub: Hex): Uint8Array {
-  return ed25519.utils.toMontgomery(ensureBytes('pub', edwardsPub));
+  return ed25519.utils.toMontgomery(ensureBytes("pub", edwardsPub));
 }
 /** @deprecated use `ed25519.utils.toMontgomery` */
-export const edwardsToMontgomery: typeof edwardsToMontgomeryPub = edwardsToMontgomeryPub;
+export const edwardsToMontgomery: typeof edwardsToMontgomeryPub =
+  edwardsToMontgomeryPub;
 
 /** @deprecated use `ed25519.utils.toMontgomerySecret` */
 export function edwardsToMontgomeryPriv(edwardsPriv: Uint8Array): Uint8Array {
-  return ed25519.utils.toMontgomerySecret(ensureBytes('pub', edwardsPriv));
+  return ed25519.utils.toMontgomerySecret(ensureBytes("pub", edwardsPriv));
 }
 
 /** @deprecated use `ristretto255.Point` */
 export const RistrettoPoint: typeof _RistrettoPoint = _RistrettoPoint;
 /** @deprecated use `import { ed25519_hasher } from '@noble/curves/ed25519.js';` */
-export const hashToCurve: H2CMethod<bigint> = /* @__PURE__ */ (() => ed25519_hasher.hashToCurve)();
+export const hashToCurve: H2CMethod<bigint> = /* @__PURE__ */ (() =>
+  ed25519_hasher.hashToCurve)();
 /** @deprecated use `import { ed25519_hasher } from '@noble/curves/ed25519.js';` */
 export const encodeToCurve: H2CMethod<bigint> = /* @__PURE__ */ (() =>
   ed25519_hasher.encodeToCurve)();

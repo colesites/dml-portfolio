@@ -1,14 +1,13 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});
+Object.defineProperty(exports, "__esModule", { value: true });
 
-
-var _chunkJQ2S7G56js = require('./chunk-JQ2S7G56.js');
+var _chunkJQ2S7G56js = require("./chunk-JQ2S7G56.js");
 
 // src/glossary.ts
 var IS_PATCHED_MODULE = Symbol("isPatchedModule");
 
 // src/RequestController.ts
-var _deferredpromise = require('@open-draft/deferred-promise');
-var _outvariant = require('outvariant');
+var _deferredpromise = require("@open-draft/deferred-promise");
+var _outvariant = require("outvariant");
 
 // src/InterceptorError.ts
 var InterceptorError = class extends Error {
@@ -38,11 +37,13 @@ var _RequestController = class {
       this.readyState === _RequestController.PENDING,
       'Failed to passthrough the "%s %s" request: the request has already been handled',
       this.request.method,
-      this.request.url
+      this.request.url,
     );
     this.readyState = _RequestController.PASSTHROUGH;
     await this.source.passthrough();
-    _chunkJQ2S7G56js.__privateGet.call(void 0, this, _handled, handled_get).resolve();
+    _chunkJQ2S7G56js.__privateGet
+      .call(void 0, this, _handled, handled_get)
+      .resolve();
   }
   /**
    * Respond to this request with the given `Response` instance.
@@ -61,10 +62,12 @@ var _RequestController = class {
       this.request.url,
       response.status,
       response.statusText || "OK",
-      this.readyState
+      this.readyState,
     );
     this.readyState = _RequestController.RESPONSE;
-    _chunkJQ2S7G56js.__privateGet.call(void 0, this, _handled, handled_get).resolve();
+    _chunkJQ2S7G56js.__privateGet
+      .call(void 0, this, _handled, handled_get)
+      .resolve();
     this.source.respondWith(response);
   }
   /**
@@ -83,16 +86,18 @@ var _RequestController = class {
       this.request.method,
       this.request.url,
       reason == null ? void 0 : reason.toString(),
-      this.readyState
+      this.readyState,
     );
     this.readyState = _RequestController.ERROR;
     this.source.errorWith(reason);
-    _chunkJQ2S7G56js.__privateGet.call(void 0, this, _handled, handled_get).resolve();
+    _chunkJQ2S7G56js.__privateGet
+      .call(void 0, this, _handled, handled_get)
+      .resolve();
   }
 };
 var RequestController = _RequestController;
 _handled = new WeakSet();
-handled_get = function() {
+handled_get = function () {
   return this.handled;
 };
 RequestController.PENDING = 0;
@@ -149,7 +154,7 @@ var _FetchResponse = class extends Response {
         value: url,
         enumerable: true,
         configurable: true,
-        writable: false
+        writable: false,
       });
     }
   }
@@ -166,12 +171,14 @@ var _FetchResponse = class extends Response {
   constructor(body, init = {}) {
     var _a;
     const status = (_a = init.status) != null ? _a : 200;
-    const safeStatus = _FetchResponse.isConfigurableStatusCode(status) ? status : 200;
+    const safeStatus = _FetchResponse.isConfigurableStatusCode(status)
+      ? status
+      : 200;
     const finalBody = _FetchResponse.isResponseWithBody(status) ? body : null;
     super(finalBody, {
       status: safeStatus,
       statusText: init.statusText,
-      headers: init.headers
+      headers: init.headers,
     });
     if (status !== safeStatus) {
       const state = getValueBySymbol("state", this);
@@ -182,7 +189,7 @@ var _FetchResponse = class extends Response {
           value: status,
           enumerable: true,
           configurable: true,
-          writable: false
+          writable: false,
         });
       }
     }
@@ -206,13 +213,11 @@ function setRawRequest(request, rawRequest) {
   Reflect.set(request, kRawRequest, rawRequest);
 }
 
-
-
-
-
-
-
-
-
-exports.IS_PATCHED_MODULE = IS_PATCHED_MODULE; exports.InterceptorError = InterceptorError; exports.RequestController = RequestController; exports.canParseUrl = canParseUrl; exports.FetchResponse = FetchResponse; exports.getRawRequest = getRawRequest; exports.setRawRequest = setRawRequest;
+exports.IS_PATCHED_MODULE = IS_PATCHED_MODULE;
+exports.InterceptorError = InterceptorError;
+exports.RequestController = RequestController;
+exports.canParseUrl = canParseUrl;
+exports.FetchResponse = FetchResponse;
+exports.getRawRequest = getRawRequest;
+exports.setRawRequest = setRawRequest;
 //# sourceMappingURL=chunk-57RIRQUY.js.map

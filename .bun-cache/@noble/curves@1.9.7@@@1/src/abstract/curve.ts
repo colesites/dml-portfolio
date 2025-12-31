@@ -4,8 +4,14 @@
  * @module
  */
 /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
-import { bitLen, bitMask, validateObject } from '../utils.ts';
-import { Field, FpInvertBatch, nLength, validateField, type IField } from './modular.ts';
+import { bitLen, bitMask, validateObject } from "../utils.ts";
+import {
+  Field,
+  FpInvertBatch,
+  type IField,
+  nLength,
+  validateField,
+} from "./modular.ts";
 
 const _0n = BigInt(0);
 const _1n = BigInt(1);
@@ -92,11 +98,14 @@ export interface CurvePointCons<P extends CurvePoint<any, P>> {
 //   if we want type safety around P, otherwise PC_P<PC> will be any
 
 /** Returns Fp type from Point (P_F<P> == P.F) */
-export type P_F<P extends CurvePoint<any, P>> = P extends CurvePoint<infer F, P> ? F : never;
+export type P_F<P extends CurvePoint<any, P>> = P extends CurvePoint<infer F, P>
+  ? F
+  : never;
 /** Returns Fp type from PointCons (PC_F<PC> == PC.P.F) */
-export type PC_F<PC extends CurvePointCons<CurvePoint<any, any>>> = PC['Fp']['ZERO'];
+export type PC_F<PC extends CurvePointCons<CurvePoint<any, any>>> =
+  PC["Fp"]["ZERO"];
 /** Returns Point type from PointCons (PC_P<PC> == PC.P) */
-export type PC_P<PC extends CurvePointCons<CurvePoint<any, any>>> = PC['ZERO'];
+export type PC_P<PC extends CurvePointCons<CurvePoint<any, any>>> = PC["ZERO"];
 
 // Ugly hack to get proper type inference, because in typescript fails to infer resursively.
 // The hack allows to do up to 10 chained operations without applying type erasure.
@@ -113,17 +122,28 @@ export type PC_P<PC extends CurvePointCons<CurvePoint<any, any>>> = PC['ZERO'];
 //       types, making them un-inferable
 // prettier-ignore
 export type PC_ANY = CurvePointCons<
-  CurvePoint<any,
-  CurvePoint<any,
-  CurvePoint<any,
-  CurvePoint<any,
-  CurvePoint<any,
-  CurvePoint<any,
-  CurvePoint<any,
-  CurvePoint<any,
-  CurvePoint<any,
-  CurvePoint<any, any>
-  >>>>>>>>>
+  CurvePoint<
+    any,
+    CurvePoint<
+      any,
+      CurvePoint<
+        any,
+        CurvePoint<
+          any,
+          CurvePoint<
+            any,
+            CurvePoint<
+              any,
+              CurvePoint<
+                any,
+                CurvePoint<any, CurvePoint<any, CurvePoint<any, any>>>
+              >
+            >
+          >
+        >
+      >
+    >
+  >
 >;
 
 export interface CurveLengths {
@@ -146,7 +166,10 @@ export type ExtendedGroupConstructor<T> = GroupConstructor<T> & {
 };
 export type Mapper<T> = (i: T[]) => T[];
 
-export function negateCt<T extends { negate: () => T }>(condition: boolean, item: T): T {
+export function negateCt<T extends { negate: () => T }>(
+  condition: boolean,
+  item: T,
+): T {
   const neg = item.negate();
   return condition ? neg : item;
 }
@@ -157,20 +180,22 @@ export function negateCt<T extends { negate: () => T }>(condition: boolean, item
  * so this improves performance massively.
  * Optimization: converts a list of projective points to a list of identical points with Z=1.
  */
-export function normalizeZ<P extends CurvePoint<any, P>, PC extends CurvePointCons<P>>(
-  c: PC,
-  points: P[]
-): P[] {
+export function normalizeZ<
+  P extends CurvePoint<any, P>,
+  PC extends CurvePointCons<P>,
+>(c: PC, points: P[]): P[] {
   const invertedZs = FpInvertBatch(
     c.Fp,
-    points.map((p) => p.Z!)
+    points.map((p) => p.Z!),
   );
   return points.map((p, i) => c.fromAffine(p.toAffine(invertedZs[i])));
 }
 
 function validateW(W: number, bits: number) {
   if (!Number.isSafeInteger(W) || W <= 0 || W > bits)
-    throw new Error('invalid window size, expected [1..' + bits + '], got W=' + W);
+    throw new Error(
+      "invalid window size, expected [1.." + bits + "], got W=" + W,
+    );
 }
 
 /** Internal wNAF opts for specific W and scalarBits */
@@ -218,15 +243,15 @@ function calcOffsets(n: bigint, window: number, wOpts: WOpts) {
 }
 
 function validateMSMPoints(points: any[], c: any) {
-  if (!Array.isArray(points)) throw new Error('array expected');
+  if (!Array.isArray(points)) throw new Error("array expected");
   points.forEach((p, i) => {
-    if (!(p instanceof c)) throw new Error('invalid point at index ' + i);
+    if (!(p instanceof c)) throw new Error("invalid point at index " + i);
   });
 }
 function validateMSMScalars(scalars: any[], field: any) {
-  if (!Array.isArray(scalars)) throw new Error('array of scalars expected');
+  if (!Array.isArray(scalars)) throw new Error("array of scalars expected");
   scalars.forEach((s, i) => {
-    if (!field.isValid(s)) throw new Error('invalid scalar at index ' + i);
+    if (!field.isValid(s)) throw new Error("invalid scalar at index " + i);
   });
 }
 
@@ -243,7 +268,7 @@ function getW(P: any): number {
 }
 
 function assert0(n: bigint): void {
-  if (n !== _0n) throw new Error('invalid wNAF');
+  if (n !== _0n) throw new Error("invalid wNAF");
 }
 
 /**
@@ -267,7 +292,7 @@ function assert0(n: bigint): void {
 export class wNAF<PC extends PC_ANY> {
   private readonly BASE: PC_P<PC>;
   private readonly ZERO: PC_P<PC>;
-  private readonly Fn: PC['Fn'];
+  private readonly Fn: PC["Fn"];
   readonly bits: number;
 
   // Parametrized with a given Point class (not individual point)
@@ -325,9 +350,13 @@ export class wNAF<PC extends PC_ANY> {
    * https://github.com/paulmillr/noble-secp256k1/blob/47cb1669b6e506ad66b35fe7d76132ae97465da2/index.ts#L502-L541
    * @returns real and fake (for const-time) points
    */
-  private wNAF(W: number, precomputes: PC_P<PC>[], n: bigint): { p: PC_P<PC>; f: PC_P<PC> } {
+  private wNAF(
+    W: number,
+    precomputes: PC_P<PC>[],
+    n: bigint,
+  ): { p: PC_P<PC>; f: PC_P<PC> } {
     // Scalar should be smaller than field order
-    if (!this.Fn.isValid(n)) throw new Error('invalid scalar');
+    if (!this.Fn.isValid(n)) throw new Error("invalid scalar");
     // Accumulators
     let p = this.ZERO;
     let f = this.BASE;
@@ -339,7 +368,11 @@ export class wNAF<PC extends PC_ANY> {
     const wo = calcWOpts(W, this.bits);
     for (let window = 0; window < wo.windows; window++) {
       // (n === _0n) is handled and not early-exited. isEven and offsetF are used for noise
-      const { nextN, offset, isZero, isNeg, isNegF, offsetF } = calcOffsets(n, window, wo);
+      const { nextN, offset, isZero, isNeg, isNegF, offsetF } = calcOffsets(
+        n,
+        window,
+        wo,
+      );
       n = nextN;
       if (isZero) {
         // bits are 0: add garbage to fake point
@@ -366,7 +399,7 @@ export class wNAF<PC extends PC_ANY> {
     W: number,
     precomputes: PC_P<PC>[],
     n: bigint,
-    acc: PC_P<PC> = this.ZERO
+    acc: PC_P<PC> = this.ZERO,
   ): PC_P<PC> {
     const wo = calcWOpts(W, this.bits);
     for (let window = 0; window < wo.windows; window++) {
@@ -374,9 +407,6 @@ export class wNAF<PC extends PC_ANY> {
       const { nextN, offset, isZero, isNeg } = calcOffsets(n, window, wo);
       n = nextN;
       if (isZero) {
-        // Window bits are 0: skip processing.
-        // Move to next window.
-        continue;
       } else {
         const item = precomputes[offset];
         acc = acc.add(isNeg ? item.negate() : item); // Re-using acc allows to save adds in MSM
@@ -386,14 +416,18 @@ export class wNAF<PC extends PC_ANY> {
     return acc;
   }
 
-  private getPrecomputes(W: number, point: PC_P<PC>, transform?: Mapper<PC_P<PC>>): PC_P<PC>[] {
+  private getPrecomputes(
+    W: number,
+    point: PC_P<PC>,
+    transform?: Mapper<PC_P<PC>>,
+  ): PC_P<PC>[] {
     // Calculate precomputes on a first run, reuse them after
     let comp = pointPrecomputes.get(point);
     if (!comp) {
       comp = this.precomputeWindow(point, W) as PC_P<PC>[];
       if (W !== 1) {
         // Doing transform outside of if brings 15% perf hit
-        if (typeof transform === 'function') comp = transform(comp);
+        if (typeof transform === "function") comp = transform(comp);
         pointPrecomputes.set(point, comp);
       }
     }
@@ -403,16 +437,26 @@ export class wNAF<PC extends PC_ANY> {
   cached(
     point: PC_P<PC>,
     scalar: bigint,
-    transform?: Mapper<PC_P<PC>>
+    transform?: Mapper<PC_P<PC>>,
   ): { p: PC_P<PC>; f: PC_P<PC> } {
     const W = getW(point);
     return this.wNAF(W, this.getPrecomputes(W, point, transform), scalar);
   }
 
-  unsafe(point: PC_P<PC>, scalar: bigint, transform?: Mapper<PC_P<PC>>, prev?: PC_P<PC>): PC_P<PC> {
+  unsafe(
+    point: PC_P<PC>,
+    scalar: bigint,
+    transform?: Mapper<PC_P<PC>>,
+    prev?: PC_P<PC>,
+  ): PC_P<PC> {
     const W = getW(point);
     if (W === 1) return this._unsafeLadder(point, scalar, prev); // For W=1 ladder is ~x2 faster
-    return this.wNAFUnsafe(W, this.getPrecomputes(W, point, transform), scalar, prev);
+    return this.wNAFUnsafe(
+      W,
+      this.getPrecomputes(W, point, transform),
+      scalar,
+      prev,
+    );
   }
 
   // We calculate precomputes for elliptic curve point multiplication
@@ -433,12 +477,10 @@ export class wNAF<PC extends PC_ANY> {
  * Endomorphism-specific multiplication for Koblitz curves.
  * Cost: 128 dbl, 0-256 adds.
  */
-export function mulEndoUnsafe<P extends CurvePoint<any, P>, PC extends CurvePointCons<P>>(
-  Point: PC,
-  point: P,
-  k1: bigint,
-  k2: bigint
-): { p1: P; p2: P } {
+export function mulEndoUnsafe<
+  P extends CurvePoint<any, P>,
+  PC extends CurvePointCons<P>,
+>(Point: PC, point: P, k1: bigint, k2: bigint): { p1: P; p2: P } {
   let acc = point;
   let p1 = Point.ZERO;
   let p2 = Point.ZERO;
@@ -462,12 +504,10 @@ export function mulEndoUnsafe<P extends CurvePoint<any, P>, PC extends CurvePoin
  * @param points array of L curve points
  * @param scalars array of L scalars (aka secret keys / bigints)
  */
-export function pippenger<P extends CurvePoint<any, P>, PC extends CurvePointCons<P>>(
-  c: PC,
-  fieldN: IField<bigint>,
-  points: P[],
-  scalars: bigint[]
-): P {
+export function pippenger<
+  P extends CurvePoint<any, P>,
+  PC extends CurvePointCons<P>,
+>(c: PC, fieldN: IField<bigint>, points: P[], scalars: bigint[]): P {
   // If we split scalars by some window (let's say 8 bits), every chunk will only
   // take 256 buckets even if there are 4096 scalars, also re-uses double.
   // TODO:
@@ -478,7 +518,8 @@ export function pippenger<P extends CurvePoint<any, P>, PC extends CurvePointCon
   validateMSMScalars(scalars, fieldN);
   const plength = points.length;
   const slength = scalars.length;
-  if (plength !== slength) throw new Error('arrays of points and scalars must have equal length');
+  if (plength !== slength)
+    throw new Error("arrays of points and scalars must have equal length");
   // if (plength === 0) throw new Error('array must be of length >= 2');
   const zero = c.ZERO;
   const wbits = bitLen(BigInt(plength));
@@ -515,11 +556,14 @@ export function pippenger<P extends CurvePoint<any, P>, PC extends CurvePointCon
  * @param points array of L curve points
  * @returns function which multiplies points with scaars
  */
-export function precomputeMSMUnsafe<P extends CurvePoint<any, P>, PC extends CurvePointCons<P>>(
+export function precomputeMSMUnsafe<
+  P extends CurvePoint<any, P>,
+  PC extends CurvePointCons<P>,
+>(
   c: PC,
   fieldN: IField<bigint>,
   points: P[],
-  windowSize: number
+  windowSize: number,
 ): (scalars: bigint[]) => P {
   /**
    * Performance Analysis of Window-based Precomputation
@@ -573,7 +617,7 @@ export function precomputeMSMUnsafe<P extends CurvePoint<any, P>, PC extends Cur
   return (scalars: bigint[]): P => {
     validateMSMScalars(scalars, fieldN);
     if (scalars.length > points.length)
-      throw new Error('array of scalars must be smaller than array of points');
+      throw new Error("array of scalars must be smaller than array of points");
     let res = zero;
     for (let i = 0; i < chunks; i++) {
       // No need to double if accumulator is still zero.
@@ -610,7 +654,7 @@ export type BasicCurve<T> = {
 // TODO: remove
 /** @deprecated */
 export function validateBasic<FP, T>(
-  curve: BasicCurve<FP> & T
+  curve: BasicCurve<FP> & T,
 ): Readonly<
   {
     readonly nBitLength: number;
@@ -624,15 +668,15 @@ export function validateBasic<FP, T>(
   validateObject(
     curve,
     {
-      n: 'bigint',
-      h: 'bigint',
-      Gx: 'field',
-      Gy: 'field',
+      n: "bigint",
+      h: "bigint",
+      Gx: "field",
+      Gy: "field",
     },
     {
-      nBitLength: 'isSafeInteger',
-      nByteLength: 'isSafeInteger',
-    }
+      nBitLength: "isSafeInteger",
+      nByteLength: "isSafeInteger",
+    },
   );
   // Set defaults
   return Object.freeze({
@@ -653,9 +697,14 @@ export type ValidCurveParams<T> = {
   Gy: T;
 };
 
-function createField<T>(order: bigint, field?: IField<T>, isLE?: boolean): IField<T> {
+function createField<T>(
+  order: bigint,
+  field?: IField<T>,
+  isLE?: boolean,
+): IField<T> {
   if (field) {
-    if (field.ORDER !== order) throw new Error('Field.ORDER must match order: Fp == p, Fn == n');
+    if (field.ORDER !== order)
+      throw new Error("Field.ORDER must match order: Fp == p, Fn == n");
     validateField(field);
     return field;
   } else {
@@ -666,24 +715,25 @@ export type FpFn<T> = { Fp: IField<T>; Fn: IField<bigint> };
 
 /** Validates CURVE opts and creates fields */
 export function _createCurveFields<T>(
-  type: 'weierstrass' | 'edwards',
+  type: "weierstrass" | "edwards",
   CURVE: ValidCurveParams<T>,
   curveOpts: Partial<FpFn<T>> = {},
-  FpFnLE?: boolean
+  FpFnLE?: boolean,
 ): FpFn<T> & { CURVE: ValidCurveParams<T> } {
-  if (FpFnLE === undefined) FpFnLE = type === 'edwards';
-  if (!CURVE || typeof CURVE !== 'object') throw new Error(`expected valid ${type} CURVE object`);
-  for (const p of ['p', 'n', 'h'] as const) {
+  if (FpFnLE === undefined) FpFnLE = type === "edwards";
+  if (!CURVE || typeof CURVE !== "object")
+    throw new Error(`expected valid ${type} CURVE object`);
+  for (const p of ["p", "n", "h"] as const) {
     const val = CURVE[p];
-    if (!(typeof val === 'bigint' && val > _0n))
+    if (!(typeof val === "bigint" && val > _0n))
       throw new Error(`CURVE.${p} must be positive bigint`);
   }
   const Fp = createField(CURVE.p, curveOpts.Fp, FpFnLE);
   const Fn = createField(CURVE.n, curveOpts.Fn, FpFnLE);
-  const _b: 'b' | 'd' = type === 'weierstrass' ? 'b' : 'd';
-  const params = ['Gx', 'Gy', 'a', _b] as const;
+  const _b: "b" | "d" = type === "weierstrass" ? "b" : "d";
+  const params = ["Gx", "Gy", "a", _b] as const;
   for (const p of params) {
-    // @ts-ignore
+    // @ts-expect-error
     if (!Fp.isValid(CURVE[p]))
       throw new Error(`CURVE.${p} must be valid field element of CURVE.Fp`);
   }

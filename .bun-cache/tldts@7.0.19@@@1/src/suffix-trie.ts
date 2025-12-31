@@ -1,12 +1,12 @@
 import {
   fastPathLookup,
-  IPublicSuffix,
-  ISuffixLookupOptions,
-} from 'tldts-core';
-import { exceptions, ITrie, rules } from './data/trie';
+  type IPublicSuffix,
+  type ISuffixLookupOptions,
+} from "tldts-core";
+import { exceptions, type ITrie, rules } from "./data/trie";
 
 // Flags used to know if a rule is ICANN or Private
-const enum RULE_TYPE {
+enum RULE_TYPE {
   ICANN = 1,
   PRIVATE = 2,
 }
@@ -44,9 +44,7 @@ function lookupInTrie(
     }
 
     const succ: { [label: string]: ITrie } = node[1];
-    node = Object.prototype.hasOwnProperty.call(succ, parts[index]!)
-      ? succ[parts[index]!]
-      : succ['*'];
+    node = Object.hasOwn(succ, parts[index]!) ? succ[parts[index]!] : succ["*"];
     index -= 1;
   }
 
@@ -65,7 +63,7 @@ export default function suffixLookup(
     return;
   }
 
-  const hostnameParts = hostname.split('.');
+  const hostnameParts = hostname.split(".");
 
   const allowedMask =
     (options.allowPrivateDomains ? RULE_TYPE.PRIVATE : 0) |
@@ -82,7 +80,7 @@ export default function suffixLookup(
   if (exceptionMatch !== null) {
     out.isIcann = exceptionMatch.isIcann;
     out.isPrivate = exceptionMatch.isPrivate;
-    out.publicSuffix = hostnameParts.slice(exceptionMatch.index + 1).join('.');
+    out.publicSuffix = hostnameParts.slice(exceptionMatch.index + 1).join(".");
     return;
   }
 
@@ -97,7 +95,7 @@ export default function suffixLookup(
   if (rulesMatch !== null) {
     out.isIcann = rulesMatch.isIcann;
     out.isPrivate = rulesMatch.isPrivate;
-    out.publicSuffix = hostnameParts.slice(rulesMatch.index).join('.');
+    out.publicSuffix = hostnameParts.slice(rulesMatch.index).join(".");
     return;
   }
 

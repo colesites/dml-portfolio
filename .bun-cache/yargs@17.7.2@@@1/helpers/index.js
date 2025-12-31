@@ -3,7 +3,7 @@ const {
   cjsPlatformShim,
   Parser,
   processArgv,
-} = require('../build/index.cjs');
+} = require("../build/index.cjs");
 
 module.exports = {
   applyExtends: (config, cwd, mergeExtends) => {

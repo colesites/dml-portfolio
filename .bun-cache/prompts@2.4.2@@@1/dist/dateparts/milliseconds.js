@@ -1,6 +1,4 @@
-'use strict';
-
-const DatePart = require('./datepart');
+const DatePart = require("./datepart");
 
 class Milliseconds extends DatePart {
   constructor(opts = {}) {
@@ -20,9 +18,10 @@ class Milliseconds extends DatePart {
   }
 
   toString() {
-    return String(this.date.getMilliseconds()).padStart(4, '0').substr(0, this.token.length);
+    return String(this.date.getMilliseconds())
+      .padStart(4, "0")
+      .substr(0, this.token.length);
   }
-
 }
 
 module.exports = Milliseconds;

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = rewriteThis;
 var _core = require("@babel/core");
@@ -11,8 +11,14 @@ function rewriteThis(programPath) {
   if (!rewriteThisVisitor) {
     rewriteThisVisitor = _traverse.visitors.environmentVisitor({
       ThisExpression(path) {
-        path.replaceWith(_core.types.unaryExpression("void", _core.types.numericLiteral(0), true));
-      }
+        path.replaceWith(
+          _core.types.unaryExpression(
+            "void",
+            _core.types.numericLiteral(0),
+            true,
+          ),
+        );
+      },
     });
     rewriteThisVisitor.noScope = true;
   }

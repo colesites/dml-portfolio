@@ -10,7 +10,10 @@ export declare function abool(b: boolean): void;
 /** Asserts something is positive integer. */
 export declare function anumber(n: number): void;
 /** Asserts something is Uint8Array. */
-export declare function abytes(b: Uint8Array | undefined, ...lengths: number[]): void;
+export declare function abytes(
+  b: Uint8Array | undefined,
+  ...lengths: number[]
+): void;
 /**
  * Asserts something is hash
  * TODO: remove
@@ -22,13 +25,20 @@ export declare function aexists(instance: any, checkFinished?: boolean): void;
 /** Asserts output is properly-sized byte array */
 export declare function aoutput(out: any, instance: any): void;
 export type IHash = {
-    (data: string | Uint8Array): Uint8Array;
-    blockLen: number;
-    outputLen: number;
-    create: any;
+  (data: string | Uint8Array): Uint8Array;
+  blockLen: number;
+  outputLen: number;
+  create: any;
 };
 /** Generic type encompassing 8/16/32-byte arrays - but not 64-byte. */
-export type TypedArray = Int8Array | Uint8ClampedArray | Uint8Array | Uint16Array | Int16Array | Uint32Array | Int32Array;
+export type TypedArray =
+  | Int8Array
+  | Uint8ClampedArray
+  | Uint8Array
+  | Uint16Array
+  | Int16Array
+  | Uint32Array
+  | Int32Array;
 /** Cast u8 / u16 / u32 to u8. */
 export declare function u8(arr: TypedArray): Uint8Array;
 /** Cast u8 / u16 / u32 to u32. */
@@ -51,7 +61,10 @@ export declare function bytesToHex(bytes: Uint8Array): string;
 export declare function hexToBytes(hex: string): Uint8Array;
 export declare function hexToNumber(hex: string): bigint;
 export declare function bytesToNumberBE(bytes: Uint8Array): bigint;
-export declare function numberToBytesBE(n: number | bigint, len: number): Uint8Array;
+export declare function numberToBytesBE(
+  n: number | bigint,
+  len: number,
+): Uint8Array;
 export declare const nextTick: () => Promise<void>;
 /**
  * Converts string to bytes using UTF8 encoding.
@@ -79,77 +92,114 @@ export declare function overlapBytes(a: Uint8Array, b: Uint8Array): boolean;
  * If input and output overlap and input starts before output, we will overwrite end of input before
  * we start processing it, so this is not supported for most ciphers (except chacha/salse, which designed with this)
  */
-export declare function complexOverlapBytes(input: Uint8Array, output: Uint8Array): void;
+export declare function complexOverlapBytes(
+  input: Uint8Array,
+  output: Uint8Array,
+): void;
 /**
  * Copies several Uint8Arrays into one.
  */
 export declare function concatBytes(...arrays: Uint8Array[]): Uint8Array;
 type EmptyObj = {};
-export declare function checkOpts<T1 extends EmptyObj, T2 extends EmptyObj>(defaults: T1, opts: T2): T1 & T2;
+export declare function checkOpts<T1 extends EmptyObj, T2 extends EmptyObj>(
+  defaults: T1,
+  opts: T2,
+): T1 & T2;
 /** Compares 2 uint8array-s in kinda constant time. */
 export declare function equalBytes(a: Uint8Array, b: Uint8Array): boolean;
 /** For runtime check if class implements interface. */
 export declare abstract class Hash<T extends Hash<T>> {
-    abstract blockLen: number;
-    abstract outputLen: number;
-    abstract update(buf: string | Uint8Array): this;
-    abstract digestInto(buf: Uint8Array): void;
-    abstract digest(): Uint8Array;
-    /**
-     * Resets internal state. Makes Hash instance unusable.
-     * Reset is impossible for keyed hashes if key is consumed into state. If digest is not consumed
-     * by user, they will need to manually call `destroy()` when zeroing is necessary.
-     */
-    abstract destroy(): void;
+  abstract blockLen: number;
+  abstract outputLen: number;
+  abstract update(buf: string | Uint8Array): this;
+  abstract digestInto(buf: Uint8Array): void;
+  abstract digest(): Uint8Array;
+  /**
+   * Resets internal state. Makes Hash instance unusable.
+   * Reset is impossible for keyed hashes if key is consumed into state. If digest is not consumed
+   * by user, they will need to manually call `destroy()` when zeroing is necessary.
+   */
+  abstract destroy(): void;
 }
 /** Sync cipher: takes byte array and returns byte array. */
 export type Cipher = {
-    encrypt(plaintext: Uint8Array): Uint8Array;
-    decrypt(ciphertext: Uint8Array): Uint8Array;
+  encrypt(plaintext: Uint8Array): Uint8Array;
+  decrypt(ciphertext: Uint8Array): Uint8Array;
 };
 /** Async cipher e.g. from built-in WebCrypto. */
 export type AsyncCipher = {
-    encrypt(plaintext: Uint8Array): Promise<Uint8Array>;
-    decrypt(ciphertext: Uint8Array): Promise<Uint8Array>;
+  encrypt(plaintext: Uint8Array): Promise<Uint8Array>;
+  decrypt(ciphertext: Uint8Array): Promise<Uint8Array>;
 };
 /** Cipher with `output` argument which can optimize by doing 1 less allocation. */
 export type CipherWithOutput = Cipher & {
-    encrypt(plaintext: Uint8Array, output?: Uint8Array): Uint8Array;
-    decrypt(ciphertext: Uint8Array, output?: Uint8Array): Uint8Array;
+  encrypt(plaintext: Uint8Array, output?: Uint8Array): Uint8Array;
+  decrypt(ciphertext: Uint8Array, output?: Uint8Array): Uint8Array;
 };
 /**
  * Params are outside of return type, so it is accessible before calling constructor.
  * If function support multiple nonceLength's, we return the best one.
  */
 export type CipherParams = {
-    blockSize: number;
-    nonceLength?: number;
-    tagLength?: number;
-    varSizeNonce?: boolean;
+  blockSize: number;
+  nonceLength?: number;
+  tagLength?: number;
+  varSizeNonce?: boolean;
 };
 /** ARX cipher, like salsa or chacha. */
-export type ARXCipher = ((key: Uint8Array, nonce: Uint8Array, AAD?: Uint8Array) => CipherWithOutput) & {
-    blockSize: number;
-    nonceLength: number;
-    tagLength: number;
+export type ARXCipher = ((
+  key: Uint8Array,
+  nonce: Uint8Array,
+  AAD?: Uint8Array,
+) => CipherWithOutput) & {
+  blockSize: number;
+  nonceLength: number;
+  tagLength: number;
 };
-export type CipherCons<T extends any[]> = (key: Uint8Array, ...args: T) => Cipher;
+export type CipherCons<T extends any[]> = (
+  key: Uint8Array,
+  ...args: T
+) => Cipher;
 /**
  * Wraps a cipher: validates args, ensures encrypt() can only be called once.
  * @__NO_SIDE_EFFECTS__
  */
-export declare const wrapCipher: <C extends CipherCons<any>, P extends CipherParams>(params: P, constructor: C) => C & P;
+export declare const wrapCipher: <
+  C extends CipherCons<any>,
+  P extends CipherParams,
+>(
+  params: P,
+  constructor: C,
+) => C & P;
 /** Represents salsa / chacha stream. */
-export type XorStream = (key: Uint8Array, nonce: Uint8Array, data: Uint8Array, output?: Uint8Array, counter?: number) => Uint8Array;
+export type XorStream = (
+  key: Uint8Array,
+  nonce: Uint8Array,
+  data: Uint8Array,
+  output?: Uint8Array,
+  counter?: number,
+) => Uint8Array;
 /**
  * By default, returns u8a of length.
  * When out is available, it checks it for validity and uses it.
  */
-export declare function getOutput(expectedLength: number, out?: Uint8Array, onlyAligned?: boolean): Uint8Array;
+export declare function getOutput(
+  expectedLength: number,
+  out?: Uint8Array,
+  onlyAligned?: boolean,
+): Uint8Array;
 /** Polyfill for Safari 14. */
-export declare function setBigUint64(view: DataView, byteOffset: number, value: bigint, isLE: boolean): void;
-export declare function u64Lengths(dataLength: number, aadLength: number, isLE: boolean): Uint8Array;
+export declare function setBigUint64(
+  view: DataView,
+  byteOffset: number,
+  value: bigint,
+  isLE: boolean,
+): void;
+export declare function u64Lengths(
+  dataLength: number,
+  aadLength: number,
+  isLE: boolean,
+): Uint8Array;
 export declare function isAligned32(bytes: Uint8Array): boolean;
 export declare function copyBytes(bytes: Uint8Array): Uint8Array;
-export {};
 //# sourceMappingURL=utils.d.ts.map

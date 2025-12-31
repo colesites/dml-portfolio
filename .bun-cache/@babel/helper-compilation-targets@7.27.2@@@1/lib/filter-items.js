@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.default = filterItems;
 exports.isRequired = isRequired;
@@ -14,8 +14,11 @@ function targetsSupported(target, support) {
   if (targetEnvironments.length === 0) {
     return false;
   }
-  const unsupportedEnvironments = targetEnvironments.filter(environment => {
-    const lowestImplementedVersion = (0, _utils.getLowestImplementedVersion)(support, environment);
+  const unsupportedEnvironments = targetEnvironments.filter((environment) => {
+    const lowestImplementedVersion = (0, _utils.getLowestImplementedVersion)(
+      support,
+      environment,
+    );
     if (!lowestImplementedVersion) {
       return true;
     }
@@ -23,31 +26,47 @@ function targetsSupported(target, support) {
     if ((0, _utils.isUnreleasedVersion)(lowestTargetedVersion, environment)) {
       return false;
     }
-    if ((0, _utils.isUnreleasedVersion)(lowestImplementedVersion, environment)) {
+    if (
+      (0, _utils.isUnreleasedVersion)(lowestImplementedVersion, environment)
+    ) {
       return true;
     }
     if (!_semver.valid(lowestTargetedVersion.toString())) {
-      throw new Error(`Invalid version passed for target "${environment}": "${lowestTargetedVersion}". ` + "Versions must be in semver format (major.minor.patch)");
+      throw new Error(
+        `Invalid version passed for target "${environment}": "${lowestTargetedVersion}". ` +
+          "Versions must be in semver format (major.minor.patch)",
+      );
     }
-    return _semver.gt((0, _utils.semverify)(lowestImplementedVersion), lowestTargetedVersion.toString());
+    return _semver.gt(
+      (0, _utils.semverify)(lowestImplementedVersion),
+      lowestTargetedVersion.toString(),
+    );
   });
   return unsupportedEnvironments.length === 0;
 }
-function isRequired(name, targets, {
-  compatData = pluginsCompatData,
-  includes,
-  excludes
-} = {}) {
+function isRequired(
+  name,
+  targets,
+  { compatData = pluginsCompatData, includes, excludes } = {},
+) {
   if (excludes != null && excludes.has(name)) return false;
   if (includes != null && includes.has(name)) return true;
   return !targetsSupported(targets, compatData[name]);
 }
-function filterItems(list, includes, excludes, targets, defaultIncludes, defaultExcludes, pluginSyntaxMap) {
+function filterItems(
+  list,
+  includes,
+  excludes,
+  targets,
+  defaultIncludes,
+  defaultExcludes,
+  pluginSyntaxMap,
+) {
   const result = new Set();
   const options = {
     compatData: list,
     includes,
-    excludes
+    excludes,
   };
   for (const item in list) {
     if (isRequired(item, targets, options)) {
@@ -59,8 +78,12 @@ function filterItems(list, includes, excludes, targets, defaultIncludes, default
       }
     }
   }
-  defaultIncludes == null || defaultIncludes.forEach(item => !excludes.has(item) && result.add(item));
-  defaultExcludes == null || defaultExcludes.forEach(item => !includes.has(item) && result.delete(item));
+  defaultIncludes == null ||
+    defaultIncludes.forEach((item) => !excludes.has(item) && result.add(item));
+  defaultExcludes == null ||
+    defaultExcludes.forEach(
+      (item) => !includes.has(item) && result.delete(item),
+    );
   return result;
 }
 

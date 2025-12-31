@@ -12,7 +12,9 @@ function createDeferredExecutor() {
         return value;
       };
       return resolve(
-        data instanceof Promise ? data : Promise.resolve(data).then(onFulfilled)
+        data instanceof Promise
+          ? data
+          : Promise.resolve(data).then(onFulfilled),
       );
     };
     executor.reject = (reason) => {
@@ -22,7 +24,7 @@ function createDeferredExecutor() {
       queueMicrotask(() => {
         executor.state = "rejected";
       });
-      return reject(executor.rejectionReason = reason);
+      return reject((executor.rejectionReason = reason));
     };
   };
   return executor;
@@ -61,12 +63,9 @@ var DeferredPromise = class extends Promise {
   #decorate(promise) {
     return Object.defineProperties(promise, {
       resolve: { configurable: true, value: this.resolve },
-      reject: { configurable: true, value: this.reject }
+      reject: { configurable: true, value: this.reject },
     });
   }
 };
-export {
-  DeferredPromise,
-  createDeferredExecutor
-};
+export { DeferredPromise, createDeferredExecutor };
 //# sourceMappingURL=index.mjs.map

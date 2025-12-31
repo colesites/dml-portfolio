@@ -1,16 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+  value: true,
 });
 exports.transform = void 0;
 exports.transformAsync = transformAsync;
 exports.transformSync = transformSync;
 function _gensync() {
   const data = require("gensync");
-  _gensync = function () {
-    return data;
-  };
+  _gensync = () => data;
   return data;
 }
 var _index = require("./config/index.js");
@@ -21,7 +19,11 @@ const transformRunner = _gensync()(function* transform(code, opts) {
   if (config === null) return null;
   return yield* (0, _index2.run)(config, code);
 });
-const transform = exports.transform = function transform(code, optsOrCallback, maybeCallback) {
+const transform = (exports.transform = function transform(
+  code,
+  optsOrCallback,
+  maybeCallback,
+) {
   let opts;
   let callback;
   if (typeof optsOrCallback === "function") {
@@ -32,17 +34,26 @@ const transform = exports.transform = function transform(code, optsOrCallback, m
     callback = maybeCallback;
   }
   if (callback === undefined) {
-    {
-      return (0, _rewriteStackTrace.beginHiddenCallStack)(transformRunner.sync)(code, opts);
-    }
+    return (0, _rewriteStackTrace.beginHiddenCallStack)(transformRunner.sync)(
+      code,
+      opts,
+    );
   }
-  (0, _rewriteStackTrace.beginHiddenCallStack)(transformRunner.errback)(code, opts, callback);
-};
+  (0, _rewriteStackTrace.beginHiddenCallStack)(transformRunner.errback)(
+    code,
+    opts,
+    callback,
+  );
+});
 function transformSync(...args) {
-  return (0, _rewriteStackTrace.beginHiddenCallStack)(transformRunner.sync)(...args);
+  return (0, _rewriteStackTrace.beginHiddenCallStack)(transformRunner.sync)(
+    ...args,
+  );
 }
 function transformAsync(...args) {
-  return (0, _rewriteStackTrace.beginHiddenCallStack)(transformRunner.async)(...args);
+  return (0, _rewriteStackTrace.beginHiddenCallStack)(transformRunner.async)(
+    ...args,
+  );
 }
 0 && 0;
 

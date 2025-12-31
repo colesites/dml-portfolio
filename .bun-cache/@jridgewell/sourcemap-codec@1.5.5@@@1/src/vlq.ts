@@ -1,9 +1,10 @@
-import type { StringReader, StringWriter } from './strings';
+import type { StringReader, StringWriter } from "./strings";
 
-export const comma = ','.charCodeAt(0);
-export const semicolon = ';'.charCodeAt(0);
+export const comma = ",".charCodeAt(0);
+export const semicolon = ";".charCodeAt(0);
 
-const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const chars =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const intToChar = new Uint8Array(64); // 64 possible chars.
 const charToInt = new Uint8Array(128); // z is 122 in ASCII
 
@@ -35,7 +36,11 @@ export function decodeInteger(reader: StringReader, relative: number): number {
   return relative + value;
 }
 
-export function encodeInteger(builder: StringWriter, num: number, relative: number): number {
+export function encodeInteger(
+  builder: StringWriter,
+  num: number,
+  relative: number,
+): number {
   let delta = num - relative;
 
   delta = delta < 0 ? (-delta << 1) | 1 : delta << 1;

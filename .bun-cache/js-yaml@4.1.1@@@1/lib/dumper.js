@@ -1,61 +1,73 @@
-'use strict';
-
 /*eslint-disable no-use-before-define*/
 
-var common              = require('./common');
-var YAMLException       = require('./exception');
-var DEFAULT_SCHEMA      = require('./schema/default');
+var common = require("./common");
+var YAMLException = require("./exception");
+var DEFAULT_SCHEMA = require("./schema/default");
 
-var _toString       = Object.prototype.toString;
+var _toString = Object.prototype.toString;
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
-var CHAR_BOM                  = 0xFEFF;
-var CHAR_TAB                  = 0x09; /* Tab */
-var CHAR_LINE_FEED            = 0x0A; /* LF */
-var CHAR_CARRIAGE_RETURN      = 0x0D; /* CR */
-var CHAR_SPACE                = 0x20; /* Space */
-var CHAR_EXCLAMATION          = 0x21; /* ! */
-var CHAR_DOUBLE_QUOTE         = 0x22; /* " */
-var CHAR_SHARP                = 0x23; /* # */
-var CHAR_PERCENT              = 0x25; /* % */
-var CHAR_AMPERSAND            = 0x26; /* & */
-var CHAR_SINGLE_QUOTE         = 0x27; /* ' */
-var CHAR_ASTERISK             = 0x2A; /* * */
-var CHAR_COMMA                = 0x2C; /* , */
-var CHAR_MINUS                = 0x2D; /* - */
-var CHAR_COLON                = 0x3A; /* : */
-var CHAR_EQUALS               = 0x3D; /* = */
-var CHAR_GREATER_THAN         = 0x3E; /* > */
-var CHAR_QUESTION             = 0x3F; /* ? */
-var CHAR_COMMERCIAL_AT        = 0x40; /* @ */
-var CHAR_LEFT_SQUARE_BRACKET  = 0x5B; /* [ */
-var CHAR_RIGHT_SQUARE_BRACKET = 0x5D; /* ] */
-var CHAR_GRAVE_ACCENT         = 0x60; /* ` */
-var CHAR_LEFT_CURLY_BRACKET   = 0x7B; /* { */
-var CHAR_VERTICAL_LINE        = 0x7C; /* | */
-var CHAR_RIGHT_CURLY_BRACKET  = 0x7D; /* } */
+var CHAR_BOM = 0xfeff;
+var CHAR_TAB = 0x09; /* Tab */
+var CHAR_LINE_FEED = 0x0a; /* LF */
+var CHAR_CARRIAGE_RETURN = 0x0d; /* CR */
+var CHAR_SPACE = 0x20; /* Space */
+var CHAR_EXCLAMATION = 0x21; /* ! */
+var CHAR_DOUBLE_QUOTE = 0x22; /* " */
+var CHAR_SHARP = 0x23; /* # */
+var CHAR_PERCENT = 0x25; /* % */
+var CHAR_AMPERSAND = 0x26; /* & */
+var CHAR_SINGLE_QUOTE = 0x27; /* ' */
+var CHAR_ASTERISK = 0x2a; /* * */
+var CHAR_COMMA = 0x2c; /* , */
+var CHAR_MINUS = 0x2d; /* - */
+var CHAR_COLON = 0x3a; /* : */
+var CHAR_EQUALS = 0x3d; /* = */
+var CHAR_GREATER_THAN = 0x3e; /* > */
+var CHAR_QUESTION = 0x3f; /* ? */
+var CHAR_COMMERCIAL_AT = 0x40; /* @ */
+var CHAR_LEFT_SQUARE_BRACKET = 0x5b; /* [ */
+var CHAR_RIGHT_SQUARE_BRACKET = 0x5d; /* ] */
+var CHAR_GRAVE_ACCENT = 0x60; /* ` */
+var CHAR_LEFT_CURLY_BRACKET = 0x7b; /* { */
+var CHAR_VERTICAL_LINE = 0x7c; /* | */
+var CHAR_RIGHT_CURLY_BRACKET = 0x7d; /* } */
 
 var ESCAPE_SEQUENCES = {};
 
-ESCAPE_SEQUENCES[0x00]   = '\\0';
-ESCAPE_SEQUENCES[0x07]   = '\\a';
-ESCAPE_SEQUENCES[0x08]   = '\\b';
-ESCAPE_SEQUENCES[0x09]   = '\\t';
-ESCAPE_SEQUENCES[0x0A]   = '\\n';
-ESCAPE_SEQUENCES[0x0B]   = '\\v';
-ESCAPE_SEQUENCES[0x0C]   = '\\f';
-ESCAPE_SEQUENCES[0x0D]   = '\\r';
-ESCAPE_SEQUENCES[0x1B]   = '\\e';
-ESCAPE_SEQUENCES[0x22]   = '\\"';
-ESCAPE_SEQUENCES[0x5C]   = '\\\\';
-ESCAPE_SEQUENCES[0x85]   = '\\N';
-ESCAPE_SEQUENCES[0xA0]   = '\\_';
-ESCAPE_SEQUENCES[0x2028] = '\\L';
-ESCAPE_SEQUENCES[0x2029] = '\\P';
+ESCAPE_SEQUENCES[0x00] = "\\0";
+ESCAPE_SEQUENCES[0x07] = "\\a";
+ESCAPE_SEQUENCES[0x08] = "\\b";
+ESCAPE_SEQUENCES[0x09] = "\\t";
+ESCAPE_SEQUENCES[0x0a] = "\\n";
+ESCAPE_SEQUENCES[0x0b] = "\\v";
+ESCAPE_SEQUENCES[0x0c] = "\\f";
+ESCAPE_SEQUENCES[0x0d] = "\\r";
+ESCAPE_SEQUENCES[0x1b] = "\\e";
+ESCAPE_SEQUENCES[0x22] = '\\"';
+ESCAPE_SEQUENCES[0x5c] = "\\\\";
+ESCAPE_SEQUENCES[0x85] = "\\N";
+ESCAPE_SEQUENCES[0xa0] = "\\_";
+ESCAPE_SEQUENCES[0x2028] = "\\L";
+ESCAPE_SEQUENCES[0x2029] = "\\P";
 
 var DEPRECATED_BOOLEANS_SYNTAX = [
-  'y', 'Y', 'yes', 'Yes', 'YES', 'on', 'On', 'ON',
-  'n', 'N', 'no', 'No', 'NO', 'off', 'Off', 'OFF'
+  "y",
+  "Y",
+  "yes",
+  "Yes",
+  "YES",
+  "on",
+  "On",
+  "ON",
+  "n",
+  "N",
+  "no",
+  "No",
+  "NO",
+  "off",
+  "Off",
+  "OFF",
 ];
 
 var DEPRECATED_BASE60_SYNTAX = /^[-+]?[0-9_]+(?::[0-9_]+)+(?:\.[0-9_]*)?$/;
@@ -72,10 +84,10 @@ function compileStyleMap(schema, map) {
     tag = keys[index];
     style = String(map[tag]);
 
-    if (tag.slice(0, 2) === '!!') {
-      tag = 'tag:yaml.org,2002:' + tag.slice(2);
+    if (tag.slice(0, 2) === "!!") {
+      tag = "tag:yaml.org,2002:" + tag.slice(2);
     }
-    type = schema.compiledTypeMap['fallback'][tag];
+    type = schema.compiledTypeMap["fallback"][tag];
 
     if (type && _hasOwnProperty.call(type.styleAliases, style)) {
       style = type.styleAliases[style];
@@ -92,47 +104,52 @@ function encodeHex(character) {
 
   string = character.toString(16).toUpperCase();
 
-  if (character <= 0xFF) {
-    handle = 'x';
+  if (character <= 0xff) {
+    handle = "x";
     length = 2;
-  } else if (character <= 0xFFFF) {
-    handle = 'u';
+  } else if (character <= 0xffff) {
+    handle = "u";
     length = 4;
-  } else if (character <= 0xFFFFFFFF) {
-    handle = 'U';
+  } else if (character <= 0xffffffff) {
+    handle = "U";
     length = 8;
   } else {
-    throw new YAMLException('code point within a string may not be greater than 0xFFFFFFFF');
+    throw new YAMLException(
+      "code point within a string may not be greater than 0xFFFFFFFF",
+    );
   }
 
-  return '\\' + handle + common.repeat('0', length - string.length) + string;
+  return "\\" + handle + common.repeat("0", length - string.length) + string;
 }
 
-
 var QUOTING_TYPE_SINGLE = 1,
-    QUOTING_TYPE_DOUBLE = 2;
+  QUOTING_TYPE_DOUBLE = 2;
 
 function State(options) {
-  this.schema        = options['schema'] || DEFAULT_SCHEMA;
-  this.indent        = Math.max(1, (options['indent'] || 2));
-  this.noArrayIndent = options['noArrayIndent'] || false;
-  this.skipInvalid   = options['skipInvalid'] || false;
-  this.flowLevel     = (common.isNothing(options['flowLevel']) ? -1 : options['flowLevel']);
-  this.styleMap      = compileStyleMap(this.schema, options['styles'] || null);
-  this.sortKeys      = options['sortKeys'] || false;
-  this.lineWidth     = options['lineWidth'] || 80;
-  this.noRefs        = options['noRefs'] || false;
-  this.noCompatMode  = options['noCompatMode'] || false;
-  this.condenseFlow  = options['condenseFlow'] || false;
-  this.quotingType   = options['quotingType'] === '"' ? QUOTING_TYPE_DOUBLE : QUOTING_TYPE_SINGLE;
-  this.forceQuotes   = options['forceQuotes'] || false;
-  this.replacer      = typeof options['replacer'] === 'function' ? options['replacer'] : null;
+  this.schema = options["schema"] || DEFAULT_SCHEMA;
+  this.indent = Math.max(1, options["indent"] || 2);
+  this.noArrayIndent = options["noArrayIndent"] || false;
+  this.skipInvalid = options["skipInvalid"] || false;
+  this.flowLevel = common.isNothing(options["flowLevel"])
+    ? -1
+    : options["flowLevel"];
+  this.styleMap = compileStyleMap(this.schema, options["styles"] || null);
+  this.sortKeys = options["sortKeys"] || false;
+  this.lineWidth = options["lineWidth"] || 80;
+  this.noRefs = options["noRefs"] || false;
+  this.noCompatMode = options["noCompatMode"] || false;
+  this.condenseFlow = options["condenseFlow"] || false;
+  this.quotingType =
+    options["quotingType"] === '"' ? QUOTING_TYPE_DOUBLE : QUOTING_TYPE_SINGLE;
+  this.forceQuotes = options["forceQuotes"] || false;
+  this.replacer =
+    typeof options["replacer"] === "function" ? options["replacer"] : null;
 
   this.implicitTypes = this.schema.compiledImplicit;
   this.explicitTypes = this.schema.compiledExplicit;
 
   this.tag = null;
-  this.result = '';
+  this.result = "";
 
   this.duplicates = [];
   this.usedDuplicates = null;
@@ -140,15 +157,15 @@ function State(options) {
 
 // Indents every line in a string. Empty lines (\n only) are not indented.
 function indentString(string, spaces) {
-  var ind = common.repeat(' ', spaces),
-      position = 0,
-      next = -1,
-      result = '',
-      line,
-      length = string.length;
+  var ind = common.repeat(" ", spaces),
+    position = 0,
+    next = -1,
+    result = "",
+    line,
+    length = string.length;
 
   while (position < length) {
-    next = string.indexOf('\n', position);
+    next = string.indexOf("\n", position);
     if (next === -1) {
       line = string.slice(position);
       position = length;
@@ -157,7 +174,7 @@ function indentString(string, spaces) {
       position = next + 1;
     }
 
-    if (line.length && line !== '\n') result += ind;
+    if (line.length && line !== "\n") result += ind;
 
     result += line;
   }
@@ -166,13 +183,17 @@ function indentString(string, spaces) {
 }
 
 function generateNextLine(state, level) {
-  return '\n' + common.repeat(' ', state.indent * level);
+  return "\n" + common.repeat(" ", state.indent * level);
 }
 
 function testImplicitResolving(state, str) {
   var index, length, type;
 
-  for (index = 0, length = state.implicitTypes.length; index < length; index += 1) {
+  for (
+    index = 0, length = state.implicitTypes.length;
+    index < length;
+    index += 1
+  ) {
     type = state.implicitTypes[index];
 
     if (type.resolve(str)) {
@@ -193,10 +214,12 @@ function isWhitespace(c) {
 // should also be escaped. [However,] This isn’t mandatory"
 // Derived from nb-char - \t - #x85 - #xA0 - #x2028 - #x2029.
 function isPrintable(c) {
-  return  (0x00020 <= c && c <= 0x00007E)
-      || ((0x000A1 <= c && c <= 0x00D7FF) && c !== 0x2028 && c !== 0x2029)
-      || ((0x0E000 <= c && c <= 0x00FFFD) && c !== CHAR_BOM)
-      ||  (0x10000 <= c && c <= 0x10FFFF);
+  return (
+    (0x00020 <= c && c <= 0x00007e) ||
+    (0x000a1 <= c && c <= 0x00d7ff && c !== 0x2028 && c !== 0x2029) ||
+    (0x0e000 <= c && c <= 0x00fffd && c !== CHAR_BOM) ||
+    (0x10000 <= c && c <= 0x10ffff)
+  );
 }
 
 // [34] ns-char ::= nb-char - s-white
@@ -205,11 +228,13 @@ function isPrintable(c) {
 // Including s-white (for some reason, examples doesn't match specs in this aspect)
 // ns-char ::= c-printable - b-line-feed - b-carriage-return - c-byte-order-mark
 function isNsCharOrWhitespace(c) {
-  return isPrintable(c)
-    && c !== CHAR_BOM
+  return (
+    isPrintable(c) &&
+    c !== CHAR_BOM &&
     // - b-char
-    && c !== CHAR_CARRIAGE_RETURN
-    && c !== CHAR_LINE_FEED;
+    c !== CHAR_CARRIAGE_RETURN &&
+    c !== CHAR_LINE_FEED
+  );
 }
 
 // [127]  ns-plain-safe(c) ::= c = flow-out  ⇒ ns-plain-safe-out
@@ -226,21 +251,22 @@ function isPlainSafe(c, prev, inblock) {
   var cIsNsChar = cIsNsCharOrWhitespace && !isWhitespace(c);
   return (
     // ns-plain-safe
-    inblock ? // c = flow-in
-      cIsNsCharOrWhitespace
-      : cIsNsCharOrWhitespace
+    ((inblock
+      ? // c = flow-in
+        cIsNsCharOrWhitespace
+      : cIsNsCharOrWhitespace &&
         // - c-flow-indicator
-        && c !== CHAR_COMMA
-        && c !== CHAR_LEFT_SQUARE_BRACKET
-        && c !== CHAR_RIGHT_SQUARE_BRACKET
-        && c !== CHAR_LEFT_CURLY_BRACKET
-        && c !== CHAR_RIGHT_CURLY_BRACKET
-  )
-    // ns-plain-char
-    && c !== CHAR_SHARP // false on '#'
-    && !(prev === CHAR_COLON && !cIsNsChar) // false on ': '
-    || (isNsCharOrWhitespace(prev) && !isWhitespace(prev) && c === CHAR_SHARP) // change to true on '[^ ]#'
-    || (prev === CHAR_COLON && cIsNsChar); // change to true on ':[^ ]'
+        c !== CHAR_COMMA &&
+        c !== CHAR_LEFT_SQUARE_BRACKET &&
+        c !== CHAR_RIGHT_SQUARE_BRACKET &&
+        c !== CHAR_LEFT_CURLY_BRACKET &&
+        c !== CHAR_RIGHT_CURLY_BRACKET) &&
+      // ns-plain-char
+      c !== CHAR_SHARP && // false on '#'
+      !(prev === CHAR_COLON && !cIsNsChar)) || // false on ': '
+    (isNsCharOrWhitespace(prev) && !isWhitespace(prev) && c === CHAR_SHARP) || // change to true on '[^ ]#'
+    (prev === CHAR_COLON && cIsNsChar)
+  ); // change to true on ':[^ ]'
 }
 
 // Simplified test for values allowed as the first character in plain style.
@@ -248,32 +274,35 @@ function isPlainSafeFirst(c) {
   // Uses a subset of ns-char - c-indicator
   // where ns-char = nb-char - s-white.
   // No support of ( ( “?” | “:” | “-” ) /* Followed by an ns-plain-safe(c)) */ ) part
-  return isPrintable(c) && c !== CHAR_BOM
-    && !isWhitespace(c) // - s-white
+  return (
+    isPrintable(c) &&
+    c !== CHAR_BOM &&
+    !isWhitespace(c) && // - s-white
     // - (c-indicator ::=
     // “-” | “?” | “:” | “,” | “[” | “]” | “{” | “}”
-    && c !== CHAR_MINUS
-    && c !== CHAR_QUESTION
-    && c !== CHAR_COLON
-    && c !== CHAR_COMMA
-    && c !== CHAR_LEFT_SQUARE_BRACKET
-    && c !== CHAR_RIGHT_SQUARE_BRACKET
-    && c !== CHAR_LEFT_CURLY_BRACKET
-    && c !== CHAR_RIGHT_CURLY_BRACKET
+    c !== CHAR_MINUS &&
+    c !== CHAR_QUESTION &&
+    c !== CHAR_COLON &&
+    c !== CHAR_COMMA &&
+    c !== CHAR_LEFT_SQUARE_BRACKET &&
+    c !== CHAR_RIGHT_SQUARE_BRACKET &&
+    c !== CHAR_LEFT_CURLY_BRACKET &&
+    c !== CHAR_RIGHT_CURLY_BRACKET &&
     // | “#” | “&” | “*” | “!” | “|” | “=” | “>” | “'” | “"”
-    && c !== CHAR_SHARP
-    && c !== CHAR_AMPERSAND
-    && c !== CHAR_ASTERISK
-    && c !== CHAR_EXCLAMATION
-    && c !== CHAR_VERTICAL_LINE
-    && c !== CHAR_EQUALS
-    && c !== CHAR_GREATER_THAN
-    && c !== CHAR_SINGLE_QUOTE
-    && c !== CHAR_DOUBLE_QUOTE
+    c !== CHAR_SHARP &&
+    c !== CHAR_AMPERSAND &&
+    c !== CHAR_ASTERISK &&
+    c !== CHAR_EXCLAMATION &&
+    c !== CHAR_VERTICAL_LINE &&
+    c !== CHAR_EQUALS &&
+    c !== CHAR_GREATER_THAN &&
+    c !== CHAR_SINGLE_QUOTE &&
+    c !== CHAR_DOUBLE_QUOTE &&
     // | “%” | “@” | “`”)
-    && c !== CHAR_PERCENT
-    && c !== CHAR_COMMERCIAL_AT
-    && c !== CHAR_GRAVE_ACCENT;
+    c !== CHAR_PERCENT &&
+    c !== CHAR_COMMERCIAL_AT &&
+    c !== CHAR_GRAVE_ACCENT
+  );
 }
 
 // Simplified test for values allowed as the last character in plain style.
@@ -284,12 +313,13 @@ function isPlainSafeLast(c) {
 
 // Same as 'string'.codePointAt(pos), but works in older browsers.
 function codePointAt(string, pos) {
-  var first = string.charCodeAt(pos), second;
-  if (first >= 0xD800 && first <= 0xDBFF && pos + 1 < string.length) {
+  var first = string.charCodeAt(pos),
+    second;
+  if (first >= 0xd800 && first <= 0xdbff && pos + 1 < string.length) {
     second = string.charCodeAt(pos + 1);
-    if (second >= 0xDC00 && second <= 0xDFFF) {
+    if (second >= 0xdc00 && second <= 0xdfff) {
       // https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-      return (first - 0xD800) * 0x400 + second - 0xDC00 + 0x10000;
+      return (first - 0xd800) * 0x400 + second - 0xdc00 + 0x10000;
     }
   }
   return first;
@@ -301,11 +331,11 @@ function needIndentIndicator(string) {
   return leadingSpaceRe.test(string);
 }
 
-var STYLE_PLAIN   = 1,
-    STYLE_SINGLE  = 2,
-    STYLE_LITERAL = 3,
-    STYLE_FOLDED  = 4,
-    STYLE_DOUBLE  = 5;
+var STYLE_PLAIN = 1,
+  STYLE_SINGLE = 2,
+  STYLE_LITERAL = 3,
+  STYLE_FOLDED = 4,
+  STYLE_DOUBLE = 5;
 
 // Determines which scalar styles are possible and returns the preferred style.
 // lineWidth = -1 => no limit.
@@ -314,9 +344,16 @@ var STYLE_PLAIN   = 1,
 //    STYLE_PLAIN or STYLE_SINGLE => no \n are in the string.
 //    STYLE_LITERAL => no lines are suitable for folding (or lineWidth is -1).
 //    STYLE_FOLDED => a line > lineWidth and can be folded (and lineWidth != -1).
-function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth,
-  testAmbiguousType, quotingType, forceQuotes, inblock) {
-
+function chooseScalarStyle(
+  string,
+  singleLineOnly,
+  indentPerLevel,
+  lineWidth,
+  testAmbiguousType,
+  quotingType,
+  forceQuotes,
+  inblock,
+) {
   var i;
   var char = 0;
   var prevChar = null;
@@ -324,13 +361,14 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth,
   var hasFoldableLine = false; // only checked if shouldTrackWidth
   var shouldTrackWidth = lineWidth !== -1;
   var previousLineBreak = -1; // count the first line correctly
-  var plain = isPlainSafeFirst(codePointAt(string, 0))
-          && isPlainSafeLast(codePointAt(string, string.length - 1));
+  var plain =
+    isPlainSafeFirst(codePointAt(string, 0)) &&
+    isPlainSafeLast(codePointAt(string, string.length - 1));
 
   if (singleLineOnly || forceQuotes) {
     // Case: no block styles.
     // Check for disallowed characters to rule out plain and single.
-    for (i = 0; i < string.length; char >= 0x10000 ? i += 2 : i++) {
+    for (i = 0; i < string.length; char >= 0x10000 ? (i += 2) : i++) {
       char = codePointAt(string, i);
       if (!isPrintable(char)) {
         return STYLE_DOUBLE;
@@ -340,16 +378,17 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth,
     }
   } else {
     // Case: block styles permitted.
-    for (i = 0; i < string.length; char >= 0x10000 ? i += 2 : i++) {
+    for (i = 0; i < string.length; char >= 0x10000 ? (i += 2) : i++) {
       char = codePointAt(string, i);
       if (char === CHAR_LINE_FEED) {
         hasLineBreak = true;
         // Check if any line can be folded.
         if (shouldTrackWidth) {
-          hasFoldableLine = hasFoldableLine ||
+          hasFoldableLine =
+            hasFoldableLine ||
             // Foldable line = too long, and not more-indented.
             (i - previousLineBreak - 1 > lineWidth &&
-             string[previousLineBreak + 1] !== ' ');
+              string[previousLineBreak + 1] !== " ");
           previousLineBreak = i;
         }
       } else if (!isPrintable(char)) {
@@ -359,9 +398,11 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth,
       prevChar = char;
     }
     // in case the end is missing a \n
-    hasFoldableLine = hasFoldableLine || (shouldTrackWidth &&
-      (i - previousLineBreak - 1 > lineWidth &&
-       string[previousLineBreak + 1] !== ' '));
+    hasFoldableLine =
+      hasFoldableLine ||
+      (shouldTrackWidth &&
+        i - previousLineBreak - 1 > lineWidth &&
+        string[previousLineBreak + 1] !== " ");
   }
   // Although every style can represent \n without escaping, prefer block styles
   // for multiline, since they're more readable and they don't add empty lines.
@@ -393,13 +434,18 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth,
 //    • Ending newline    => removed then restored.
 //  Importantly, this keeps the "+" chomp indicator from gaining an extra line.
 function writeScalar(state, string, level, iskey, inblock) {
-  state.dump = (function () {
+  state.dump = (() => {
     if (string.length === 0) {
       return state.quotingType === QUOTING_TYPE_DOUBLE ? '""' : "''";
     }
     if (!state.noCompatMode) {
-      if (DEPRECATED_BOOLEANS_SYNTAX.indexOf(string) !== -1 || DEPRECATED_BASE60_SYNTAX.test(string)) {
-        return state.quotingType === QUOTING_TYPE_DOUBLE ? ('"' + string + '"') : ("'" + string + "'");
+      if (
+        DEPRECATED_BOOLEANS_SYNTAX.indexOf(string) !== -1 ||
+        DEPRECATED_BASE60_SYNTAX.test(string)
+      ) {
+        return state.quotingType === QUOTING_TYPE_DOUBLE
+          ? '"' + string + '"'
+          : "'" + string + "'";
       }
     }
 
@@ -411,53 +457,73 @@ function writeScalar(state, string, level, iskey, inblock) {
     //  state.lineWidth > 40 + state.indent: width decreases until the lower bound.
     // This behaves better than a constant minimum width which disallows narrower options,
     // or an indent threshold which causes the width to suddenly increase.
-    var lineWidth = state.lineWidth === -1
-      ? -1 : Math.max(Math.min(state.lineWidth, 40), state.lineWidth - indent);
+    var lineWidth =
+      state.lineWidth === -1
+        ? -1
+        : Math.max(Math.min(state.lineWidth, 40), state.lineWidth - indent);
 
     // Without knowing if keys are implicit/explicit, assume implicit for safety.
-    var singleLineOnly = iskey
+    var singleLineOnly =
+      iskey ||
       // No block styles in flow mode.
-      || (state.flowLevel > -1 && level >= state.flowLevel);
+      (state.flowLevel > -1 && level >= state.flowLevel);
     function testAmbiguity(string) {
       return testImplicitResolving(state, string);
     }
 
-    switch (chooseScalarStyle(string, singleLineOnly, state.indent, lineWidth,
-      testAmbiguity, state.quotingType, state.forceQuotes && !iskey, inblock)) {
-
+    switch (
+      chooseScalarStyle(
+        string,
+        singleLineOnly,
+        state.indent,
+        lineWidth,
+        testAmbiguity,
+        state.quotingType,
+        state.forceQuotes && !iskey,
+        inblock,
+      )
+    ) {
       case STYLE_PLAIN:
         return string;
       case STYLE_SINGLE:
         return "'" + string.replace(/'/g, "''") + "'";
       case STYLE_LITERAL:
-        return '|' + blockHeader(string, state.indent)
-          + dropEndingNewline(indentString(string, indent));
+        return (
+          "|" +
+          blockHeader(string, state.indent) +
+          dropEndingNewline(indentString(string, indent))
+        );
       case STYLE_FOLDED:
-        return '>' + blockHeader(string, state.indent)
-          + dropEndingNewline(indentString(foldString(string, lineWidth), indent));
+        return (
+          ">" +
+          blockHeader(string, state.indent) +
+          dropEndingNewline(indentString(foldString(string, lineWidth), indent))
+        );
       case STYLE_DOUBLE:
         return '"' + escapeString(string, lineWidth) + '"';
       default:
-        throw new YAMLException('impossible error: invalid scalar style');
+        throw new YAMLException("impossible error: invalid scalar style");
     }
-  }());
+  })();
 }
 
 // Pre-conditions: string is valid for a block scalar, 1 <= indentPerLevel <= 9.
 function blockHeader(string, indentPerLevel) {
-  var indentIndicator = needIndentIndicator(string) ? String(indentPerLevel) : '';
+  var indentIndicator = needIndentIndicator(string)
+    ? String(indentPerLevel)
+    : "";
 
   // note the special case: the string '\n' counts as a "trailing" empty line.
-  var clip =          string[string.length - 1] === '\n';
-  var keep = clip && (string[string.length - 2] === '\n' || string === '\n');
-  var chomp = keep ? '+' : (clip ? '' : '-');
+  var clip = string[string.length - 1] === "\n";
+  var keep = clip && (string[string.length - 2] === "\n" || string === "\n");
+  var chomp = keep ? "+" : clip ? "" : "-";
 
-  return indentIndicator + chomp + '\n';
+  return indentIndicator + chomp + "\n";
 }
 
 // (See the note for writeScalar.)
 function dropEndingNewline(string) {
-  return string[string.length - 1] === '\n' ? string.slice(0, -1) : string;
+  return string[string.length - 1] === "\n" ? string.slice(0, -1) : string;
 }
 
 // Note: a long line without a suitable break point will exceed the width limit.
@@ -470,25 +536,26 @@ function foldString(string, width) {
   var lineRe = /(\n+)([^\n]*)/g;
 
   // first line (possibly an empty line)
-  var result = (function () {
-    var nextLF = string.indexOf('\n');
+  var result = (() => {
+    var nextLF = string.indexOf("\n");
     nextLF = nextLF !== -1 ? nextLF : string.length;
     lineRe.lastIndex = nextLF;
     return foldLine(string.slice(0, nextLF), width);
-  }());
+  })();
   // If we haven't reached the first content line yet, don't add an extra \n.
-  var prevMoreIndented = string[0] === '\n' || string[0] === ' ';
+  var prevMoreIndented = string[0] === "\n" || string[0] === " ";
   var moreIndented;
 
   // rest of the lines
   var match;
   while ((match = lineRe.exec(string))) {
-    var prefix = match[1], line = match[2];
-    moreIndented = (line[0] === ' ');
-    result += prefix
-      + (!prevMoreIndented && !moreIndented && line !== ''
-        ? '\n' : '')
-      + foldLine(line, width);
+    var prefix = match[1],
+      line = match[2];
+    moreIndented = line[0] === " ";
+    result +=
+      prefix +
+      (!prevMoreIndented && !moreIndented && line !== "" ? "\n" : "") +
+      foldLine(line, width);
     prevMoreIndented = moreIndented;
   }
 
@@ -500,14 +567,17 @@ function foldString(string, width) {
 // otherwise settles for the shortest line over the limit.
 // NB. More-indented lines *cannot* be folded, as that would add an extra \n.
 function foldLine(line, width) {
-  if (line === '' || line[0] === ' ') return line;
+  if (line === "" || line[0] === " ") return line;
 
   // Since a more-indented line adds a \n, breaks can't be followed by a space.
   var breakRe = / [^ ]/g; // note: the match index will always be <= length-2.
   var match;
   // start is an inclusive index. end, curr, and next are exclusive.
-  var start = 0, end, curr = 0, next = 0;
-  var result = '';
+  var start = 0,
+    end,
+    curr = 0,
+    next = 0;
+  var result = "";
 
   // Invariants: 0 <= start <= length-1.
   //   0 <= curr <= next <= max(0, length-2). curr - start <= width.
@@ -517,20 +587,20 @@ function foldLine(line, width) {
     next = match.index;
     // maintain invariant: curr - start <= width
     if (next - start > width) {
-      end = (curr > start) ? curr : next; // derive end <= length-2
-      result += '\n' + line.slice(start, end);
+      end = curr > start ? curr : next; // derive end <= length-2
+      result += "\n" + line.slice(start, end);
       // skip the space that was output as \n
-      start = end + 1;                    // derive start <= length-1
+      start = end + 1; // derive start <= length-1
     }
     curr = next;
   }
 
   // By the invariants, start <= length-1, so there is something left over.
   // It is either the whole string or a part starting from non-whitespace.
-  result += '\n';
+  result += "\n";
   // Insert a break if the remainder is too long and there is a break available.
   if (line.length - start > width && curr > start) {
-    result += line.slice(start, curr) + '\n' + line.slice(curr + 1);
+    result += line.slice(start, curr) + "\n" + line.slice(curr + 1);
   } else {
     result += line.slice(start);
   }
@@ -540,11 +610,11 @@ function foldLine(line, width) {
 
 // Escapes a double-quoted string.
 function escapeString(string) {
-  var result = '';
+  var result = "";
   var char = 0;
   var escapeSeq;
 
-  for (var i = 0; i < string.length; char >= 0x10000 ? i += 2 : i++) {
+  for (var i = 0; i < string.length; char >= 0x10000 ? (i += 2) : i++) {
     char = codePointAt(string, i);
     escapeSeq = ESCAPE_SEQUENCES[char];
 
@@ -560,11 +630,11 @@ function escapeString(string) {
 }
 
 function writeFlowSequence(state, level, object) {
-  var _result = '',
-      _tag    = state.tag,
-      index,
-      length,
-      value;
+  var _result = "",
+    _tag = state.tag,
+    index,
+    length,
+    value;
 
   for (index = 0, length = object.length; index < length; index += 1) {
     value = object[index];
@@ -574,25 +644,26 @@ function writeFlowSequence(state, level, object) {
     }
 
     // Write only valid elements, put null instead of invalid elements.
-    if (writeNode(state, level, value, false, false) ||
-        (typeof value === 'undefined' &&
-         writeNode(state, level, null, false, false))) {
-
-      if (_result !== '') _result += ',' + (!state.condenseFlow ? ' ' : '');
+    if (
+      writeNode(state, level, value, false, false) ||
+      (typeof value === "undefined" &&
+        writeNode(state, level, null, false, false))
+    ) {
+      if (_result !== "") _result += "," + (!state.condenseFlow ? " " : "");
       _result += state.dump;
     }
   }
 
   state.tag = _tag;
-  state.dump = '[' + _result + ']';
+  state.dump = "[" + _result + "]";
 }
 
 function writeBlockSequence(state, level, object, compact) {
-  var _result = '',
-      _tag    = state.tag,
-      index,
-      length,
-      value;
+  var _result = "",
+    _tag = state.tag,
+    index,
+    length,
+    value;
 
   for (index = 0, length = object.length; index < length; index += 1) {
     value = object[index];
@@ -602,18 +673,19 @@ function writeBlockSequence(state, level, object, compact) {
     }
 
     // Write only valid elements, put null instead of invalid elements.
-    if (writeNode(state, level + 1, value, true, true, false, true) ||
-        (typeof value === 'undefined' &&
-         writeNode(state, level + 1, null, true, true, false, true))) {
-
-      if (!compact || _result !== '') {
+    if (
+      writeNode(state, level + 1, value, true, true, false, true) ||
+      (typeof value === "undefined" &&
+        writeNode(state, level + 1, null, true, true, false, true))
+    ) {
+      if (!compact || _result !== "") {
         _result += generateNextLine(state, level);
       }
 
       if (state.dump && CHAR_LINE_FEED === state.dump.charCodeAt(0)) {
-        _result += '-';
+        _result += "-";
       } else {
-        _result += '- ';
+        _result += "- ";
       }
 
       _result += state.dump;
@@ -621,23 +693,22 @@ function writeBlockSequence(state, level, object, compact) {
   }
 
   state.tag = _tag;
-  state.dump = _result || '[]'; // Empty sequence if no valid values.
+  state.dump = _result || "[]"; // Empty sequence if no valid values.
 }
 
 function writeFlowMapping(state, level, object) {
-  var _result       = '',
-      _tag          = state.tag,
-      objectKeyList = Object.keys(object),
-      index,
-      length,
-      objectKey,
-      objectValue,
-      pairBuffer;
+  var _result = "",
+    _tag = state.tag,
+    objectKeyList = Object.keys(object),
+    index,
+    length,
+    objectKey,
+    objectValue,
+    pairBuffer;
 
   for (index = 0, length = objectKeyList.length; index < length; index += 1) {
-
-    pairBuffer = '';
-    if (_result !== '') pairBuffer += ', ';
+    pairBuffer = "";
+    if (_result !== "") pairBuffer += ", ";
 
     if (state.condenseFlow) pairBuffer += '"';
 
@@ -652,9 +723,13 @@ function writeFlowMapping(state, level, object) {
       continue; // Skip this pair because of invalid key;
     }
 
-    if (state.dump.length > 1024) pairBuffer += '? ';
+    if (state.dump.length > 1024) pairBuffer += "? ";
 
-    pairBuffer += state.dump + (state.condenseFlow ? '"' : '') + ':' + (state.condenseFlow ? '' : ' ');
+    pairBuffer +=
+      state.dump +
+      (state.condenseFlow ? '"' : "") +
+      ":" +
+      (state.condenseFlow ? "" : " ");
 
     if (!writeNode(state, level, objectValue, false, false)) {
       continue; // Skip this pair because of invalid value.
@@ -667,36 +742,36 @@ function writeFlowMapping(state, level, object) {
   }
 
   state.tag = _tag;
-  state.dump = '{' + _result + '}';
+  state.dump = "{" + _result + "}";
 }
 
 function writeBlockMapping(state, level, object, compact) {
-  var _result       = '',
-      _tag          = state.tag,
-      objectKeyList = Object.keys(object),
-      index,
-      length,
-      objectKey,
-      objectValue,
-      explicitPair,
-      pairBuffer;
+  var _result = "",
+    _tag = state.tag,
+    objectKeyList = Object.keys(object),
+    index,
+    length,
+    objectKey,
+    objectValue,
+    explicitPair,
+    pairBuffer;
 
   // Allow sorting keys so that the output file is deterministic
   if (state.sortKeys === true) {
     // Default sorting
     objectKeyList.sort();
-  } else if (typeof state.sortKeys === 'function') {
+  } else if (typeof state.sortKeys === "function") {
     // Custom sort function
     objectKeyList.sort(state.sortKeys);
   } else if (state.sortKeys) {
     // Something is wrong
-    throw new YAMLException('sortKeys must be a boolean or a function');
+    throw new YAMLException("sortKeys must be a boolean or a function");
   }
 
   for (index = 0, length = objectKeyList.length; index < length; index += 1) {
-    pairBuffer = '';
+    pairBuffer = "";
 
-    if (!compact || _result !== '') {
+    if (!compact || _result !== "") {
       pairBuffer += generateNextLine(state, level);
     }
 
@@ -711,14 +786,15 @@ function writeBlockMapping(state, level, object, compact) {
       continue; // Skip this pair because of invalid key.
     }
 
-    explicitPair = (state.tag !== null && state.tag !== '?') ||
-                   (state.dump && state.dump.length > 1024);
+    explicitPair =
+      (state.tag !== null && state.tag !== "?") ||
+      (state.dump && state.dump.length > 1024);
 
     if (explicitPair) {
       if (state.dump && CHAR_LINE_FEED === state.dump.charCodeAt(0)) {
-        pairBuffer += '?';
+        pairBuffer += "?";
       } else {
-        pairBuffer += '? ';
+        pairBuffer += "? ";
       }
     }
 
@@ -733,9 +809,9 @@ function writeBlockMapping(state, level, object, compact) {
     }
 
     if (state.dump && CHAR_LINE_FEED === state.dump.charCodeAt(0)) {
-      pairBuffer += ':';
+      pairBuffer += ":";
     } else {
-      pairBuffer += ': ';
+      pairBuffer += ": ";
     }
 
     pairBuffer += state.dump;
@@ -745,7 +821,7 @@ function writeBlockMapping(state, level, object, compact) {
   }
 
   state.tag = _tag;
-  state.dump = _result || '{}'; // Empty mapping if no valid pairs.
+  state.dump = _result || "{}"; // Empty mapping if no valid pairs.
 }
 
 function detectType(state, object, explicit) {
@@ -756,10 +832,12 @@ function detectType(state, object, explicit) {
   for (index = 0, length = typeList.length; index < length; index += 1) {
     type = typeList[index];
 
-    if ((type.instanceOf  || type.predicate) &&
-        (!type.instanceOf || ((typeof object === 'object') && (object instanceof type.instanceOf))) &&
-        (!type.predicate  || type.predicate(object))) {
-
+    if (
+      (type.instanceOf || type.predicate) &&
+      (!type.instanceOf ||
+        (typeof object === "object" && object instanceof type.instanceOf)) &&
+      (!type.predicate || type.predicate(object))
+    ) {
       if (explicit) {
         if (type.multi && type.representName) {
           state.tag = type.representName(object);
@@ -767,18 +845,24 @@ function detectType(state, object, explicit) {
           state.tag = type.tag;
         }
       } else {
-        state.tag = '?';
+        state.tag = "?";
       }
 
       if (type.represent) {
         style = state.styleMap[type.tag] || type.defaultStyle;
 
-        if (_toString.call(type.represent) === '[object Function]') {
+        if (_toString.call(type.represent) === "[object Function]") {
           _result = type.represent(object, style);
         } else if (_hasOwnProperty.call(type.represent, style)) {
           _result = type.represent[style](object, style);
         } else {
-          throw new YAMLException('!<' + type.tag + '> tag resolver accepts not "' + style + '" style');
+          throw new YAMLException(
+            "!<" +
+              type.tag +
+              '> tag resolver accepts not "' +
+              style +
+              '" style',
+          );
         }
 
         state.dump = _result;
@@ -807,68 +891,72 @@ function writeNode(state, level, object, block, compact, iskey, isblockseq) {
   var tagStr;
 
   if (block) {
-    block = (state.flowLevel < 0 || state.flowLevel > level);
+    block = state.flowLevel < 0 || state.flowLevel > level;
   }
 
-  var objectOrArray = type === '[object Object]' || type === '[object Array]',
-      duplicateIndex,
-      duplicate;
+  var objectOrArray = type === "[object Object]" || type === "[object Array]",
+    duplicateIndex,
+    duplicate;
 
   if (objectOrArray) {
     duplicateIndex = state.duplicates.indexOf(object);
     duplicate = duplicateIndex !== -1;
   }
 
-  if ((state.tag !== null && state.tag !== '?') || duplicate || (state.indent !== 2 && level > 0)) {
+  if (
+    (state.tag !== null && state.tag !== "?") ||
+    duplicate ||
+    (state.indent !== 2 && level > 0)
+  ) {
     compact = false;
   }
 
   if (duplicate && state.usedDuplicates[duplicateIndex]) {
-    state.dump = '*ref_' + duplicateIndex;
+    state.dump = "*ref_" + duplicateIndex;
   } else {
     if (objectOrArray && duplicate && !state.usedDuplicates[duplicateIndex]) {
       state.usedDuplicates[duplicateIndex] = true;
     }
-    if (type === '[object Object]') {
-      if (block && (Object.keys(state.dump).length !== 0)) {
+    if (type === "[object Object]") {
+      if (block && Object.keys(state.dump).length !== 0) {
         writeBlockMapping(state, level, state.dump, compact);
         if (duplicate) {
-          state.dump = '&ref_' + duplicateIndex + state.dump;
+          state.dump = "&ref_" + duplicateIndex + state.dump;
         }
       } else {
         writeFlowMapping(state, level, state.dump);
         if (duplicate) {
-          state.dump = '&ref_' + duplicateIndex + ' ' + state.dump;
+          state.dump = "&ref_" + duplicateIndex + " " + state.dump;
         }
       }
-    } else if (type === '[object Array]') {
-      if (block && (state.dump.length !== 0)) {
+    } else if (type === "[object Array]") {
+      if (block && state.dump.length !== 0) {
         if (state.noArrayIndent && !isblockseq && level > 0) {
           writeBlockSequence(state, level - 1, state.dump, compact);
         } else {
           writeBlockSequence(state, level, state.dump, compact);
         }
         if (duplicate) {
-          state.dump = '&ref_' + duplicateIndex + state.dump;
+          state.dump = "&ref_" + duplicateIndex + state.dump;
         }
       } else {
         writeFlowSequence(state, level, state.dump);
         if (duplicate) {
-          state.dump = '&ref_' + duplicateIndex + ' ' + state.dump;
+          state.dump = "&ref_" + duplicateIndex + " " + state.dump;
         }
       }
-    } else if (type === '[object String]') {
-      if (state.tag !== '?') {
+    } else if (type === "[object String]") {
+      if (state.tag !== "?") {
         writeScalar(state, state.dump, level, iskey, inblock);
       }
-    } else if (type === '[object Undefined]') {
+    } else if (type === "[object Undefined]") {
       return false;
     } else {
       if (state.skipInvalid) return false;
-      throw new YAMLException('unacceptable kind of an object to dump ' + type);
+      throw new YAMLException("unacceptable kind of an object to dump " + type);
     }
 
-    if (state.tag !== null && state.tag !== '?') {
+    if (state.tag !== null && state.tag !== "?") {
       // Need to encode all characters except those allowed by the spec:
       //
       // [35] ns-dec-digit    ::=  [#x30-#x39] /* 0-9 */
@@ -883,18 +971,18 @@ function writeNode(state, level, object, block, compact, iskey, isblockseq) {
       // Also need to encode '!' because it has special meaning (end of tag prefix).
       //
       tagStr = encodeURI(
-        state.tag[0] === '!' ? state.tag.slice(1) : state.tag
-      ).replace(/!/g, '%21');
+        state.tag[0] === "!" ? state.tag.slice(1) : state.tag,
+      ).replace(/!/g, "%21");
 
-      if (state.tag[0] === '!') {
-        tagStr = '!' + tagStr;
-      } else if (tagStr.slice(0, 18) === 'tag:yaml.org,2002:') {
-        tagStr = '!!' + tagStr.slice(18);
+      if (state.tag[0] === "!") {
+        tagStr = "!" + tagStr;
+      } else if (tagStr.slice(0, 18) === "tag:yaml.org,2002:") {
+        tagStr = "!!" + tagStr.slice(18);
       } else {
-        tagStr = '!<' + tagStr + '>';
+        tagStr = "!<" + tagStr + ">";
       }
 
-      state.dump = tagStr + ' ' + state.dump;
+      state.dump = tagStr + " " + state.dump;
     }
   }
 
@@ -903,24 +991,26 @@ function writeNode(state, level, object, block, compact, iskey, isblockseq) {
 
 function getDuplicateReferences(object, state) {
   var objects = [],
-      duplicatesIndexes = [],
-      index,
-      length;
+    duplicatesIndexes = [],
+    index,
+    length;
 
   inspectNode(object, objects, duplicatesIndexes);
 
-  for (index = 0, length = duplicatesIndexes.length; index < length; index += 1) {
+  for (
+    index = 0, length = duplicatesIndexes.length;
+    index < length;
+    index += 1
+  ) {
     state.duplicates.push(objects[duplicatesIndexes[index]]);
   }
   state.usedDuplicates = new Array(length);
 }
 
 function inspectNode(object, objects, duplicatesIndexes) {
-  var objectKeyList,
-      index,
-      length;
+  var objectKeyList, index, length;
 
-  if (object !== null && typeof object === 'object') {
+  if (object !== null && typeof object === "object") {
     index = objects.indexOf(object);
     if (index !== -1) {
       if (duplicatesIndexes.indexOf(index) === -1) {
@@ -936,7 +1026,11 @@ function inspectNode(object, objects, duplicatesIndexes) {
       } else {
         objectKeyList = Object.keys(object);
 
-        for (index = 0, length = objectKeyList.length; index < length; index += 1) {
+        for (
+          index = 0, length = objectKeyList.length;
+          index < length;
+          index += 1
+        ) {
           inspectNode(object[objectKeyList[index]], objects, duplicatesIndexes);
         }
       }
@@ -954,12 +1048,12 @@ function dump(input, options) {
   var value = input;
 
   if (state.replacer) {
-    value = state.replacer.call({ '': value }, '', value);
+    value = state.replacer.call({ "": value }, "", value);
   }
 
-  if (writeNode(state, 0, value, true, true)) return state.dump + '\n';
+  if (writeNode(state, 0, value, true, true)) return state.dump + "\n";
 
-  return '';
+  return "";
 }
 
 module.exports.dump = dump;

@@ -8,19 +8,23 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
+  if ((from && typeof from === "object") || typeof from === "function") {
+    for (const key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var mime_exports = {};
 __export(mime_exports, {
   getExtension: () => getExtension,
   getMimeType: () => getMimeType,
-  mimes: () => baseMimes
+  mimes: () => baseMimes,
 });
 module.exports = __toCommonJS(mime_exports);
 const getMimeType = (filename, mimes = baseMimes) => {
@@ -98,12 +102,13 @@ const _baseMimes = {
   "3gp": "video/3gpp",
   "3g2": "video/3gpp2",
   gltf: "model/gltf+json",
-  glb: "model/gltf-binary"
+  glb: "model/gltf-binary",
 };
 const baseMimes = _baseMimes;
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  getExtension,
-  getMimeType,
-  mimes
-});
+0 &&
+  (module.exports = {
+    getExtension,
+    getMimeType,
+    mimes,
+  });

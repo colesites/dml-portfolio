@@ -29,7 +29,7 @@ Unfortunately, `Record<string, never>`, `Record<keyof any, never>` and `Record<n
 
 @category Object
 */
-export type EmptyObject = {[emptyObjectSymbol]?: never};
+export type EmptyObject = { [emptyObjectSymbol]?: never };
 
 /**
 Returns a `boolean` for whether the type is strictly equal to an empty plain object, the `{}` value.
@@ -47,5 +47,3 @@ type Fail2 = IsEmptyObject<null>; //=> false
 @category Object
 */
 export type IsEmptyObject<T> = T extends EmptyObject ? true : false;
-
-export {};

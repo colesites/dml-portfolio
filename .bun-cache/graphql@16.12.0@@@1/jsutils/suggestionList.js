@@ -1,11 +1,9 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true,
 });
 exports.suggestionList = suggestionList;
 
-var _naturalCompare = require('./naturalCompare.js');
+var _naturalCompare = require("./naturalCompare.js");
 
 /**
  * Given an invalid input string and a list of valid options, returns a filtered

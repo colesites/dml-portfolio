@@ -1,23 +1,23 @@
-import { getCallFrame } from '../utils/internal/getCallFrame'
-import {
-  AsyncIterable,
-  Iterable,
-  isIterable,
-} from '../utils/internal/isIterable'
-import type { ResponseResolutionContext } from '../utils/executeHandlers'
-import type { MaybePromise } from '../typeUtils'
-import {
-  StrictRequest,
-  HttpResponse,
+import type {
   DefaultUnsafeFetchResponse,
-} from '../HttpResponse'
-import type { HandlerKind } from './common'
-import type { GraphQLRequestBody } from './GraphQLHandler'
+  HttpResponse,
+  StrictRequest,
+} from "../HttpResponse";
+import type { MaybePromise } from "../typeUtils";
+import type { ResponseResolutionContext } from "../utils/executeHandlers";
+import { getCallFrame } from "../utils/internal/getCallFrame";
+import {
+  type AsyncIterable,
+  type Iterable,
+  isIterable,
+} from "../utils/internal/isIterable";
+import type { HandlerKind } from "./common";
+import type { GraphQLRequestBody } from "./GraphQLHandler";
 
 export type DefaultRequestMultipartBody = Record<
   string,
   string | File | Array<string | File>
->
+>;
 
 export type DefaultBodyType =
   | Record<string, any>
@@ -26,7 +26,7 @@ export type DefaultBodyType =
   | number
   | boolean
   | null
-  | undefined
+  | undefined;
 
 export type JsonBodyType =
   | Record<string, any>
@@ -34,14 +34,14 @@ export type JsonBodyType =
   | number
   | boolean
   | null
-  | undefined
+  | undefined;
 
 export interface RequestHandlerDefaultInfo {
-  header: string
+  header: string;
 }
 
 export interface RequestHandlerInternalInfo {
-  callFrame?: string
+  callFrame?: string;
 }
 
 export type ResponseResolverReturnType<
@@ -61,11 +61,11 @@ export type ResponseResolverReturnType<
         ? HttpResponse<ResponseBodyType> | DefaultUnsafeFetchResponse
         : HttpResponse<ResponseBodyType>)
   | undefined
-  | void
+  | void;
 
 export type MaybeAsyncResponseResolverReturnType<
   ResponseBodyType extends DefaultBodyType,
-> = MaybePromise<ResponseResolverReturnType<ResponseBodyType>>
+> = MaybePromise<ResponseResolverReturnType<ResponseBodyType>>;
 
 export type AsyncResponseResolverReturnType<
   ResponseBodyType extends DefaultBodyType,
@@ -81,15 +81,15 @@ export type AsyncResponseResolverReturnType<
       MaybeAsyncResponseResolverReturnType<ResponseBodyType>,
       MaybeAsyncResponseResolverReturnType<ResponseBodyType>
     >
->
+>;
 
 export type ResponseResolverInfo<
   ResolverExtraInfo extends Record<string, unknown>,
   RequestBodyType extends DefaultBodyType = DefaultBodyType,
 > = {
-  request: StrictRequest<RequestBodyType>
-  requestId: string
-} & ResolverExtraInfo
+  request: StrictRequest<RequestBodyType>;
+  requestId: string;
+} & ResolverExtraInfo;
 
 export type ResponseResolver<
   ResolverExtraInfo extends Record<string, unknown> = Record<string, unknown>,
@@ -97,29 +97,29 @@ export type ResponseResolver<
   ResponseBodyType extends DefaultBodyType = undefined,
 > = (
   info: ResponseResolverInfo<ResolverExtraInfo, RequestBodyType>,
-) => AsyncResponseResolverReturnType<ResponseBodyType>
+) => AsyncResponseResolverReturnType<ResponseBodyType>;
 
 export interface RequestHandlerArgs<
   HandlerInfo,
   HandlerOptions extends RequestHandlerOptions,
 > {
-  info: HandlerInfo
-  resolver: ResponseResolver<any>
-  options?: HandlerOptions
+  info: HandlerInfo;
+  resolver: ResponseResolver<any>;
+  options?: HandlerOptions;
 }
 
 export interface RequestHandlerOptions {
-  once?: boolean
+  once?: boolean;
 }
 
 export interface RequestHandlerExecutionResult<
   ParsedResult extends Record<string, unknown> | undefined,
 > {
-  handler: RequestHandler
-  parsedResult?: ParsedResult
-  request: Request
-  requestId: string
-  response?: Response
+  handler: RequestHandler;
+  parsedResult?: ParsedResult;
+  request: Request;
+  requestId: string;
+  response?: Response;
 }
 
 export abstract class RequestHandler<
@@ -131,18 +131,18 @@ export abstract class RequestHandler<
   static cache = new WeakMap<
     StrictRequest<DefaultBodyType>,
     StrictRequest<DefaultBodyType>
-  >()
+  >();
 
-  private readonly __kind: HandlerKind
+  private readonly __kind: HandlerKind;
 
-  public info: HandlerInfo & RequestHandlerInternalInfo
+  public info: HandlerInfo & RequestHandlerInternalInfo;
   /**
    * Indicates whether this request handler has been used
    * (its resolver has successfully executed).
    */
-  public isUsed: boolean
+  public isUsed: boolean;
 
-  protected resolver: ResponseResolver<ResolverExtras, any, any>
+  protected resolver: ResponseResolver<ResolverExtras, any, any>;
   private resolverIterator?:
     | Iterator<
         MaybeAsyncResponseResolverReturnType<any>,
@@ -153,52 +153,52 @@ export abstract class RequestHandler<
         MaybeAsyncResponseResolverReturnType<any>,
         MaybeAsyncResponseResolverReturnType<any>,
         MaybeAsyncResponseResolverReturnType<any>
-      >
-  private resolverIteratorResult?: Response | HttpResponse<any>
-  private options?: HandlerOptions
+      >;
+  private resolverIteratorResult?: Response | HttpResponse<any>;
+  private options?: HandlerOptions;
 
   constructor(args: RequestHandlerArgs<HandlerInfo, HandlerOptions>) {
-    this.resolver = args.resolver
-    this.options = args.options
+    this.resolver = args.resolver;
+    this.options = args.options;
 
-    const callFrame = getCallFrame(new Error())
+    const callFrame = getCallFrame(new Error());
 
     this.info = {
       ...args.info,
       callFrame,
-    }
+    };
 
-    this.isUsed = false
-    this.__kind = 'RequestHandler'
+    this.isUsed = false;
+    this.__kind = "RequestHandler";
   }
 
   /**
    * Determine if the intercepted request should be mocked.
    */
   abstract predicate(args: {
-    request: Request
-    parsedResult: ParsedResult
-    resolutionContext?: ResponseResolutionContext
-  }): boolean | Promise<boolean>
+    request: Request;
+    parsedResult: ParsedResult;
+    resolutionContext?: ResponseResolutionContext;
+  }): boolean | Promise<boolean>;
 
   /**
    * Print out the successfully handled request.
    */
   abstract log(args: {
-    request: Request
-    response: Response
-    parsedResult: ParsedResult
-  }): void
+    request: Request;
+    response: Response;
+    parsedResult: ParsedResult;
+  }): void;
 
   /**
    * Parse the intercepted request to extract additional information from it.
    * Parsed result is then exposed to other methods of this request handler.
    */
   async parse(_args: {
-    request: Request
-    resolutionContext?: ResponseResolutionContext
+    request: Request;
+    resolutionContext?: ResponseResolutionContext;
   }): Promise<ParsedResult> {
-    return {} as ParsedResult
+    return {} as ParsedResult;
   }
 
   /**
@@ -209,26 +209,26 @@ export abstract class RequestHandler<
    * handlers.
    */
   public async test(args: {
-    request: Request
-    resolutionContext?: ResponseResolutionContext
+    request: Request;
+    resolutionContext?: ResponseResolutionContext;
   }): Promise<boolean> {
     const parsedResult = await this.parse({
       request: args.request,
       resolutionContext: args.resolutionContext,
-    })
+    });
 
     return this.predicate({
       request: args.request,
       parsedResult,
       resolutionContext: args.resolutionContext,
-    })
+    });
   }
 
   protected extendResolverArgs(_args: {
-    request: Request
-    parsedResult: ParsedResult
+    request: Request;
+    parsedResult: ParsedResult;
   }): ResolverExtras {
-    return {} as ResolverExtras
+    return {} as ResolverExtras;
   }
 
   // Clone the request instance before it's passed to the handler phases
@@ -237,16 +237,16 @@ export abstract class RequestHandler<
   private cloneRequestOrGetFromCache(
     request: StrictRequest<DefaultBodyType>,
   ): StrictRequest<DefaultBodyType> {
-    const existingClone = RequestHandler.cache.get(request)
+    const existingClone = RequestHandler.cache.get(request);
 
-    if (typeof existingClone !== 'undefined') {
-      return existingClone
+    if (typeof existingClone !== "undefined") {
+      return existingClone;
     }
 
-    const clonedRequest = request.clone()
-    RequestHandler.cache.set(request, clonedRequest)
+    const clonedRequest = request.clone();
+    RequestHandler.cache.set(request, clonedRequest);
 
-    return clonedRequest
+    return clonedRequest;
   }
 
   /**
@@ -254,12 +254,12 @@ export abstract class RequestHandler<
    * using the given resolver function.
    */
   public async run(args: {
-    request: StrictRequest<any>
-    requestId: string
-    resolutionContext?: ResponseResolutionContext
+    request: StrictRequest<any>;
+    requestId: string;
+    resolutionContext?: ResponseResolutionContext;
   }): Promise<RequestHandlerExecutionResult<ParsedResult> | null> {
     if (this.isUsed && this.options?.once) {
-      return null
+      return null;
     }
 
     // Clone the request.
@@ -267,41 +267,41 @@ export abstract class RequestHandler<
     // will be created and cached. Upon further handling of the same request,
     // the request clone from the cache will be reused to prevent abundant
     // "abort" listeners and save up resources on cloning.
-    const requestClone = this.cloneRequestOrGetFromCache(args.request)
+    const requestClone = this.cloneRequestOrGetFromCache(args.request);
 
     const parsedResult = await this.parse({
       request: args.request,
       resolutionContext: args.resolutionContext,
-    })
+    });
     const shouldInterceptRequest = await this.predicate({
       request: args.request,
       parsedResult,
       resolutionContext: args.resolutionContext,
-    })
+    });
 
     if (!shouldInterceptRequest) {
-      return null
+      return null;
     }
 
     // Re-check isUsed, in case another request hit this handler while we were
     // asynchronously parsing the request.
     if (this.isUsed && this.options?.once) {
-      return null
+      return null;
     }
 
     // Preemptively mark the handler as used.
     // Generators will undo this because only when the resolver reaches the
     // "done" state of the generator that it considers the handler used.
-    this.isUsed = true
+    this.isUsed = true;
 
     // Create a response extraction wrapper around the resolver
     // since it can be both an async function and a generator.
-    const executeResolver = this.wrapResolver(this.resolver)
+    const executeResolver = this.wrapResolver(this.resolver);
 
     const resolverExtras = this.extendResolverArgs({
       request: args.request,
       parsedResult,
-    })
+    });
 
     const mockedResponsePromise = (
       executeResolver({
@@ -312,14 +312,14 @@ export abstract class RequestHandler<
     ).catch((errorOrResponse) => {
       // Allow throwing a Response instance in a response resolver.
       if (errorOrResponse instanceof Response) {
-        return errorOrResponse
+        return errorOrResponse;
       }
 
       // Otherwise, throw the error as-is.
-      throw errorOrResponse
-    })
+      throw errorOrResponse;
+    });
 
-    const mockedResponse = await mockedResponsePromise
+    const mockedResponse = await mockedResponsePromise;
 
     const executionResult = this.createExecutionResult({
       // Pass the cloned request to the result so that logging
@@ -328,9 +328,9 @@ export abstract class RequestHandler<
       requestId: args.requestId,
       response: mockedResponse,
       parsedResult,
-    })
+    });
 
-    return executionResult
+    return executionResult;
   }
 
   private wrapResolver(
@@ -338,47 +338,47 @@ export abstract class RequestHandler<
   ): ResponseResolver<ResolverExtras> {
     return async (info): Promise<ResponseResolverReturnType<any>> => {
       if (!this.resolverIterator) {
-        const result = await resolver(info)
+        const result = await resolver(info);
 
         if (!isIterable(result)) {
-          return result
+          return result;
         }
 
         this.resolverIterator =
           Symbol.iterator in result
             ? result[Symbol.iterator]()
-            : result[Symbol.asyncIterator]()
+            : result[Symbol.asyncIterator]();
       }
 
       // Opt-out from marking this handler as used.
-      this.isUsed = false
+      this.isUsed = false;
 
-      const { done, value } = await this.resolverIterator.next()
-      const nextResponse = await value
+      const { done, value } = await this.resolverIterator.next();
+      const nextResponse = await value;
 
       if (nextResponse) {
-        this.resolverIteratorResult = nextResponse.clone()
+        this.resolverIteratorResult = nextResponse.clone();
       }
 
       if (done) {
         // A one-time generator resolver stops affecting the network
         // only after it's been completely exhausted.
-        this.isUsed = true
+        this.isUsed = true;
 
         // Clone the previously stored response so it can be read
         // when receiving it repeatedly from the "done" generator.
-        return this.resolverIteratorResult?.clone()
+        return this.resolverIteratorResult?.clone();
       }
 
-      return nextResponse
-    }
+      return nextResponse;
+    };
   }
 
   private createExecutionResult(args: {
-    request: Request
-    requestId: string
-    parsedResult: ParsedResult
-    response?: Response
+    request: Request;
+    requestId: string;
+    parsedResult: ParsedResult;
+    response?: Response;
   }): RequestHandlerExecutionResult<ParsedResult> {
     return {
       handler: this,
@@ -386,6 +386,6 @@ export abstract class RequestHandler<
       requestId: args.requestId,
       response: args.response,
       parsedResult: args.parsedResult,
-    }
+    };
   }
 }
