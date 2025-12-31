@@ -76,7 +76,7 @@ export const DEFAULT_CHAT_TONE_ID: ChatToneOption["id"] = "clear";
 export function getToneInstructions(toneId: string): string {
   return (
     CHAT_TONE_OPTIONS.find((tone) => tone.id === toneId)?.instructions ??
-    CHAT_TONE_OPTIONS.find((tone) => tone.id === DEFAULT_CHAT_TONE_ID)!
-      .instructions
+    CHAT_TONE_OPTIONS.find((tone) => tone.id === DEFAULT_CHAT_TONE_ID)
+      ?.instructions
   );
 }

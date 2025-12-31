@@ -9,11 +9,7 @@ import {
   sendChatCompletion,
   sendChatCompletionStream,
 } from "@/lib/chat/gateway";
-import {
-  CHAT_GREETING_FALLBACK,
-  DEFAULT_CHAT_TONE_ID,
-  getToneInstructions,
-} from "@/lib/config";
+import { DEFAULT_CHAT_TONE_ID, getToneInstructions } from "@/lib/config";
 import { loadPrompt } from "@/lib/prompts";
 import type { ChatMessage } from "@/types/chat";
 
