@@ -12,6 +12,6 @@ export const serverClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true,
+  useCdn: false,
   token: token || undefined,
 });
