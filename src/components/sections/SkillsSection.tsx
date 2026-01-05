@@ -12,6 +12,8 @@ const SKILLS_QUERY =
   color
 }`);
 
+export const dynamic = "force-dynamic";
+
 export async function SkillsSection() {
   const { data: skills } = await sanityFetch({ query: SKILLS_QUERY });
 
