@@ -1,7 +1,8 @@
 import { defineQuery } from "next-sanity";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
 import { urlFor } from "@/sanity/lib/image";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
+import { cacheLife } from "next/cache";
 
 const TESTIMONIALS_QUERY =
   defineQuery(`*[_type == "testimonial" && featured == true] | order(order asc){
@@ -17,9 +18,10 @@ const TESTIMONIALS_QUERY =
 }`);
 
 export async function TestimonialsSection() {
-  const { data: testimonials } = await sanityFetch({
-    query: TESTIMONIALS_QUERY,
-  });
+  "use cache";
+  cacheLife("minutes");
+
+  const testimonials = await client.fetch(TESTIMONIALS_QUERY);
 
   if (!testimonials || testimonials.length === 0) {
     return null;

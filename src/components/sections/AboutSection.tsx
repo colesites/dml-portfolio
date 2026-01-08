@@ -1,7 +1,8 @@
 import { PortableText } from "@portabletext/react";
 import Link from "next/link";
 import { defineQuery } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
+import { cacheLife } from "next/cache";
 
 const ABOUT_QUERY = defineQuery(`*[_id == "singleton-profile"][0]{
   firstName,
@@ -15,7 +16,10 @@ const ABOUT_QUERY = defineQuery(`*[_id == "singleton-profile"][0]{
 }`);
 
 export async function AboutSection() {
-  const { data: profile } = await sanityFetch({ query: ABOUT_QUERY });
+  "use cache";
+  cacheLife("weeks");
+
+  const profile = await client.fetch(ABOUT_QUERY);
 
   if (!profile) {
     return null;

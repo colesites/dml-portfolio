@@ -4,8 +4,9 @@ import { CiCircleCheck, CiLocationOn, CiMail } from "react-icons/ci";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { LayoutTextFlip } from "@/components/ui/layout-text-flip";
 import { urlFor } from "@/sanity/lib/image";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
 import { ProfileImage } from "./ProfileImage";
+import { cacheLife } from "next/cache";
 
 const HERO_QUERY = defineQuery(`*[_id == "singleton-profile"][0]{
   firstName,
@@ -25,7 +26,10 @@ const HERO_QUERY = defineQuery(`*[_id == "singleton-profile"][0]{
 }`);
 
 export async function HeroSection() {
-  const { data: profile } = await sanityFetch({ query: HERO_QUERY });
+  "use cache";
+  cacheLife("weeks");
+
+  const profile = await client.fetch(HERO_QUERY);
 
   if (!profile) {
     return null;

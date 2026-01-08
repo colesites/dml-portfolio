@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { defineQuery } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
+import { cacheLife } from "next/cache";
 
 const PROJECTS_QUERY =
   defineQuery(`*[_type == "project" && featured == true] | order(order asc)[0...6]{
@@ -17,7 +18,10 @@ const PROJECTS_QUERY =
 }`);
 
 export async function ProjectsSection() {
-  const { data: projects } = await sanityFetch({ query: PROJECTS_QUERY });
+  "use cache";
+  cacheLife("minutes");
+
+  const projects = await client.fetch(PROJECTS_QUERY);
 
   if (!projects || projects.length === 0) {
     return null;

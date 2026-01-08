@@ -4,7 +4,8 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import { defineQuery } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
+import { cacheLife } from "next/cache";
 
 const SERVICES_QUERY =
   defineQuery(`*[_type == "service"] | order(order asc, _createdAt desc){
@@ -23,7 +24,10 @@ const SERVICES_QUERY =
 }`);
 
 export async function ServicesSection() {
-  const { data: services } = await sanityFetch({ query: SERVICES_QUERY });
+  "use cache";
+  cacheLife("days");
+
+  const services = await client.fetch(SERVICES_QUERY);
 
   if (!services || services.length === 0) {
     return null;

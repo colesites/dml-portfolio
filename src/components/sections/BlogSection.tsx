@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { defineQuery } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
+import { cacheLife } from "next/cache";
 
 const BLOG_QUERY = defineQuery(`*[_type == "blog"] | order(publishedAt desc){
   title,
@@ -16,9 +17,10 @@ const BLOG_QUERY = defineQuery(`*[_type == "blog"] | order(publishedAt desc){
 }`);
 
 export async function BlogSection() {
-  const { data: posts } = await sanityFetch({
-    query: BLOG_QUERY,
-  });
+  "use cache";
+  cacheLife("weeks");
+
+  const posts = await client.fetch(BLOG_QUERY);
 
   if (!posts || posts.length === 0) {
     return null;

@@ -9,6 +9,7 @@
 
 import { NextStudio } from "next-sanity/studio";
 import config from "../../../../../sanity.config";
+import { cacheLife } from "next/cache";
 
 export { metadata, viewport } from "next-sanity/studio";
 
@@ -17,6 +18,9 @@ export function generateStaticParams() {
   return [{ tool: [] }];
 }
 
-export default function StudioPage() {
+export default async function StudioPage() {
+  "use cache";
+  cacheLife("max");
+
   return <NextStudio config={config} />;
 }

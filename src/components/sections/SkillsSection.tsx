@@ -1,6 +1,7 @@
 import { defineQuery } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
 import { SkillsChart } from "./SkillsChart";
+import { cacheLife } from "next/cache";
 
 const SKILLS_QUERY =
   defineQuery(`*[_type == "skill"] | order(category asc, order asc){
@@ -13,7 +14,10 @@ const SKILLS_QUERY =
 }`);
 
 export async function SkillsSection() {
-  const { data: skills } = await sanityFetch({ query: SKILLS_QUERY });
+  "use cache";
+  cacheLife("minutes");
+
+  const skills = await client.fetch(SKILLS_QUERY);
 
   if (!skills || skills.length === 0) {
     return null;

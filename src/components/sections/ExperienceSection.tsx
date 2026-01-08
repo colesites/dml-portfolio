@@ -2,7 +2,8 @@ import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 import { defineQuery } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
+import { cacheLife } from "next/cache";
 
 const EXPERIENCE_QUERY =
   defineQuery(`*[_type == "experience"] | order(startDate desc){
@@ -22,7 +23,10 @@ const EXPERIENCE_QUERY =
 }`);
 
 export async function ExperienceSection() {
-  const { data: experiences } = await sanityFetch({ query: EXPERIENCE_QUERY });
+  "use cache";
+  cacheLife("hours");
+
+  const experiences = await client.fetch(EXPERIENCE_QUERY);
 
   if (!experiences || experiences.length === 0) {
     return null;

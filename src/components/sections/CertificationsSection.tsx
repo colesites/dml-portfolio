@@ -4,7 +4,8 @@ import Link from "next/link";
 import { defineQuery } from "next-sanity";
 import { CometCard } from "@/components/ui/comet-card";
 import { urlFor } from "@/sanity/lib/image";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
+import { cacheLife } from "next/cache";
 
 const CERTIFICATIONS_QUERY =
   defineQuery(`*[_type == "certification"] | order(issueDate desc){
@@ -21,9 +22,10 @@ const CERTIFICATIONS_QUERY =
 }`);
 
 export async function CertificationsSection() {
-  const { data: certifications } = await sanityFetch({
-    query: CERTIFICATIONS_QUERY,
-  });
+  "use cache";
+  cacheLife("days");
+
+  const certifications = await client.fetch(CERTIFICATIONS_QUERY);
 
   if (!certifications || certifications.length === 0) {
     return null;

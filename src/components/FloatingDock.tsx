@@ -1,6 +1,7 @@
 import { defineQuery } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
 import { FloatingDockClient } from "./FloatingDockClient";
+import { cacheLife } from "next/cache";
 
 const NAVIGATION_QUERY =
   defineQuery(`*[_type == "navigation"] | order(order asc){
@@ -11,7 +12,10 @@ const NAVIGATION_QUERY =
 }`);
 
 export async function FloatingDock() {
-  const { data: navItems } = await sanityFetch({ query: NAVIGATION_QUERY });
+  "use cache";
+  cacheLife("max");
+
+  const navItems = await client.fetch(NAVIGATION_QUERY);
 
   if (!navItems || navItems.length === 0) {
     return null;

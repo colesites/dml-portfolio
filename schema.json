@@ -2762,6 +2762,10 @@
             },
             {
               "type": "string",
+              "value": "full-stack"
+            },
+            {
+              "type": "string",
               "value": "ai-ml"
             },
             {
