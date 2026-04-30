@@ -24,6 +24,7 @@ export default defineType({
           { title: "DevOps", value: "devops" },
           { title: "Database", value: "database" },
           { title: "Mobile", value: "mobile" },
+          { title: "Desktop", value: "desktop" },
           { title: "Cloud", value: "cloud" },
           { title: "Testing", value: "testing" },
           { title: "Design", value: "design" },

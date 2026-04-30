@@ -75,6 +75,14 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "body",
+      title: "Project Description",
+      type: "array",
+      of: [{ type: "block" }],
+      description:
+        "Detailed description, challenges faced, and how it was built. Appears in the project details modal.",
+    }),
+    defineField({
       name: "liveUrl",
       title: "Live URL",
       type: "url",

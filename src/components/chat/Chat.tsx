@@ -84,11 +84,20 @@ export function Chat({ profile }: ChatProps) {
   const [typingMessageId, setTypingMessageId] = useState<string | null>(null);
   const [displayedContent, setDisplayedContent] = useState<string>("");
 
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    if (typeof window === "undefined") return [];
-    const stored = sessionStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = sessionStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          setMessages(JSON.parse(stored));
+        }
+      } catch (e) {
+        console.error("Failed to restore chat messages", e);
+      }
+    }
+  }, []);
 
   const ready = Boolean(session);
 

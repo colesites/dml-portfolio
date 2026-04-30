@@ -9,5 +9,6 @@ export { ExperienceSection } from "./ExperienceSection";
 export { HeroSection } from "./HeroSection";
 export { ProjectsSection } from "./ProjectsSection";
 export { ServicesSection } from "./ServicesSection";
+export * from "./Skeletons";
 export { SkillsSection } from "./SkillsSection";
 export { TestimonialsSection } from "./TestimonialsSection";

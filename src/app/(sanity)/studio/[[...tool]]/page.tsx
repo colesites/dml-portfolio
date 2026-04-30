@@ -7,9 +7,9 @@
  * https://github.com/sanity-io/next-sanity
  */
 
+import { cacheLife } from "next/cache";
 import { NextStudio } from "next-sanity/studio";
 import config from "../../../../../sanity.config";
-import { cacheLife } from "next/cache";
 
 export { metadata, viewport } from "next-sanity/studio";
 

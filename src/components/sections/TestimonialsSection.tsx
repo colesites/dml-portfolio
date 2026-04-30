@@ -1,8 +1,9 @@
 import { defineQuery } from "next-sanity";
+import { Suspense } from "react";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
-import { urlFor } from "@/sanity/lib/image";
 import { client } from "@/sanity/lib/client";
-import { cacheLife } from "next/cache";
+import { urlFor } from "@/sanity/lib/image";
+import { GenericSectionSkeleton } from "./Skeletons";
 
 const TESTIMONIALS_QUERY =
   defineQuery(`*[_type == "testimonial" && featured == true] | order(order asc){
@@ -17,11 +18,32 @@ const TESTIMONIALS_QUERY =
   linkedinUrl
 }`);
 
-export async function TestimonialsSection() {
-  "use cache";
-  cacheLife("minutes");
+export function TestimonialsSection() {
+  return (
+    <section id="testimonials" className="py-20 px-6">
+      <div className="container mx-auto max-w-6xl">
+        <div className="text-center mb-8">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Client Testimonials
+          </h2>
+          <p className="text-xl text-muted-foreground">
+            What people say about working with me
+          </p>
+        </div>
+        <Suspense fallback={<GenericSectionSkeleton />}>
+          <TestimonialsList />
+        </Suspense>
+      </div>
+    </section>
+  );
+}
 
-  const testimonials = await client.fetch(TESTIMONIALS_QUERY);
+async function TestimonialsList() {
+  const testimonials = await client.fetch(
+    TESTIMONIALS_QUERY,
+    {},
+    { next: { revalidate: 3600 } },
+  );
 
   if (!testimonials || testimonials.length === 0) {
     return null;
@@ -45,24 +67,11 @@ export async function TestimonialsSection() {
   }));
 
   return (
-    <section id="testimonials" className="py-20 px-6">
-      <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Client Testimonials
-          </h2>
-          <p className="text-xl text-muted-foreground">
-            What people say about working with me
-          </p>
-        </div>
-
-        <div className="relative z-10">
-          <AnimatedTestimonials
-            testimonials={formattedTestimonials}
-            autoplay={true}
-          />
-        </div>
-      </div>
-    </section>
+    <div className="relative z-10">
+      <AnimatedTestimonials
+        testimonials={formattedTestimonials}
+        autoplay={true}
+      />
+    </div>
   );
 }

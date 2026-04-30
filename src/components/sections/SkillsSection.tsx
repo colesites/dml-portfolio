@@ -1,7 +1,8 @@
 import { defineQuery } from "next-sanity";
+import { Suspense } from "react";
 import { client } from "@/sanity/lib/client";
+import { SkillsSkeleton } from "./Skeletons";
 import { SkillsChart } from "./SkillsChart";
-import { cacheLife } from "next/cache";
 
 const SKILLS_QUERY =
   defineQuery(`*[_type == "skill"] | order(category asc, order asc){
@@ -13,16 +14,7 @@ const SKILLS_QUERY =
   color
 }`);
 
-export async function SkillsSection() {
-  "use cache";
-  cacheLife("minutes");
-
-  const skills = await client.fetch(SKILLS_QUERY);
-
-  if (!skills || skills.length === 0) {
-    return null;
-  }
-
+export function SkillsSection() {
   return (
     <section id="skills" className="py-20 px-6 bg-muted/30">
       <div className="container mx-auto max-w-7xl">
@@ -35,9 +27,24 @@ export async function SkillsSection() {
             work with daily
           </p>
         </div>
-
-        <SkillsChart skills={skills} />
+        <Suspense fallback={<SkillsSkeleton />}>
+          <SkillsList />
+        </Suspense>
       </div>
     </section>
   );
+}
+
+async function SkillsList() {
+  const skills = await client.fetch(
+    SKILLS_QUERY,
+    {},
+    { next: { revalidate: 3600 } },
+  );
+
+  if (!skills || skills.length === 0) {
+    return null;
+  }
+
+  return <SkillsChart skills={skills} />;
 }
