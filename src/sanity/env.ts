@@ -11,6 +11,16 @@ export const projectId = assertValue(
   "Missing environment variable: NEXT_PUBLIC_SANITY_PROJECT_ID",
 );
 
+export const studioUrl = process.env.NEXT_PUBLIC_SANITY_STUDIO_URL || "/studio";
+
+export function getPreviewOrigin(url: string = studioUrl): string | undefined {
+  try {
+    return new URL(url).origin;
+  } catch {
+    return undefined;
+  }
+}
+
 function assertValue<T>(v: T | undefined, errorMessage: string): T {
   if (v === undefined) {
     throw new Error(errorMessage);
