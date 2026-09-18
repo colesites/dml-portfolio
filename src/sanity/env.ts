@@ -13,13 +13,14 @@ export const projectId = assertValue(
 
 export const studioUrl = process.env.NEXT_PUBLIC_SANITY_STUDIO_URL || "/studio";
 
-export function getPreviewOrigin(url: string = studioUrl): string | undefined {
+/** Site origin for Presentation. Relative studio URLs stay same-origin (`"/"`). */
+export const previewInitial = (() => {
   try {
-    return new URL(url).origin;
+    return new URL("/", studioUrl).origin;
   } catch {
-    return undefined;
+    return "/";
   }
-}
+})();
 
 function assertValue<T>(v: T | undefined, errorMessage: string): T {
   if (v === undefined) {
